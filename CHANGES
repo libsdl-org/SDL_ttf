@@ -1,4 +1,6 @@
 2.0.7:
+Sam Lantinga - Wed Nov 19 00:23:44 PST 2003
+ * Updated libtool support for new mingw32 DLL build process
 Sam Lantinga - Sun Sep  7 20:58:38 PDT 2003
  * Fixed glyph metrics for bold style fonts
 Bursig Rafal - Wed Aug  6 15:02:59 PDT 2003
