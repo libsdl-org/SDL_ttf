@@ -65,8 +65,8 @@ extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
 #define UNICODE_BOM_SWAPPED	0xFFFE
 
 /* This function tells the library whether UNICODE text is generally
-   byteswapped.  A UNICODE BOM character at the beginning of a string
-   will override this setting for that string.
+   byteswapped.  A UNICODE BOM character in a string will override
+   this setting for the remainder of that string.
 */
 extern DECLSPEC void SDLCALL TTF_ByteSwappedUNICODE(int swapped);
 

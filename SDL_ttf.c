@@ -814,12 +814,11 @@ int TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h)
 	return status;
 }
 
-int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *_text, int *w, int *h)
+int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 {
 	int status;
 	const Uint16 *ch;
-	Uint16 *text;
-	int textlen;
+	int swapped;
 	int x, z;
 	int minx, maxx;
 	int miny, maxy;
@@ -834,24 +833,32 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *_text, int *w, int *h)
 	status = 0;
 	minx = maxx = 0;
 	miny = maxy = 0;
-
-	/* Perform any UNICODE endian conversions */
-	textlen = UNICODE_strlen(_text);
-	text = (Uint16 *)ALLOCA((textlen + 1) * (sizeof *text));
-	if ( *_text == UNICODE_BOM_NATIVE ) {
-		UNICODE_strcpy(text, _text+1, 0);
-	} else if ( *_text == UNICODE_BOM_SWAPPED ) {
-		UNICODE_strcpy(text, _text+1, 1);
-	} else {
-		UNICODE_strcpy(text, _text, TTF_byteswapped);
-	}
+	swapped = TTF_byteswapped;
 
 	/* Load each character and sum it's bounding box */
 	x= 0;
 	for ( ch=text; *ch; ++ch ) {
-		error = Find_Glyph(font, *ch, CACHED_METRICS);
+		Uint16 c = *ch;
+		if ( c == UNICODE_BOM_NATIVE ) {
+			swapped = 0;
+			if ( text == ch ) {
+				++text;
+			}
+			continue;
+		}
+		if ( c == UNICODE_BOM_SWAPPED ) {
+			swapped = 1;
+			if ( text == ch ) {
+				++text;
+			}
+			continue;
+		}
+		if ( swapped ) {
+			c = SDL_Swap16(c);
+		}
+
+		error = Find_Glyph(font, c, CACHED_METRICS);
 		if ( error ) {
-			FREEA(text);
 			return -1;
 		}
 		glyph = font->current;
@@ -969,7 +976,7 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
 }
 
 SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
-				const Uint16 *_text, SDL_Color fg)
+				const Uint16 *text, SDL_Color fg)
 {
 	int xstart;
 	int width;
@@ -977,17 +984,16 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	SDL_Surface* textbuf;
 	SDL_Palette* palette;
 	const Uint16* ch;
-	Uint16 *text;
-	int textlen;
 	Uint8* src;
 	Uint8* dst;
-	int row;
-	int col;
+	int swapped;
+	int row, col;
 	c_glyph *glyph;
+	FT_Bitmap *current;
 	FT_Error error;
 
 	/* Get the dimensions of the text surface */
-	if( ( TTF_SizeUNICODE(font, _text, &width, NULL) < 0 ) || !width ) {
+	if( ( TTF_SizeUNICODE(font, text, &width, NULL) < 0 ) || !width ) {
 		TTF_SetError( "Text has zero width" );
 		return NULL;
 	}
@@ -1009,27 +1015,32 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	palette->colors[1].b = fg.b;
 	SDL_SetColorKey( textbuf, SDL_SRCCOLORKEY, 0 );
 
-	/* Perform any UNICODE endian conversions */
-	textlen = UNICODE_strlen(_text);
-	text = (Uint16 *)ALLOCA((textlen + 1) * (sizeof *text));
-	if ( *_text == UNICODE_BOM_NATIVE ) {
-		UNICODE_strcpy(text, _text+1, 0);
-	} else if ( *_text == UNICODE_BOM_SWAPPED ) {
-		UNICODE_strcpy(text, _text+1, 1);
-	} else {
-		UNICODE_strcpy(text, _text, TTF_byteswapped);
-	}
-
 	/* Load and render each character */
 	xstart = 0;
-
+	swapped = TTF_byteswapped;
 	for( ch=text; *ch; ++ch ) {
-		FT_Bitmap* current = NULL;
+		Uint16 c = *ch;
+		if ( c == UNICODE_BOM_NATIVE ) {
+			swapped = 0;
+			if ( text == ch ) {
+				++text;
+			}
+			continue;
+		}
+		if ( c == UNICODE_BOM_SWAPPED ) {
+			swapped = 1;
+			if ( text == ch ) {
+				++text;
+			}
+			continue;
+		}
+		if ( swapped ) {
+			c = SDL_Swap16(c);
+		}
 
-		error = Find_Glyph(font, *ch, CACHED_METRICS|CACHED_BITMAP);
+		error = Find_Glyph(font, c, CACHED_METRICS|CACHED_BITMAP);
 		if( error ) {
 			SDL_FreeSurface( textbuf );
-			FREEA(text);
 			return NULL;
 		}
 		glyph = font->current;
@@ -1073,7 +1084,6 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 			dst += textbuf->pitch;
 		}
 	}
-	FREEA(text);
 	return textbuf;
 }
 
@@ -1193,7 +1203,7 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
 }
 
 SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
-				       const Uint16* _text,
+				       const Uint16* text,
 				       SDL_Color fg,
 				       SDL_Color bg )
 {
@@ -1207,16 +1217,16 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 	int gdiff;
 	int bdiff;
 	const Uint16* ch;
-	Uint16* text;
-	int textlen;
 	Uint8* src;
 	Uint8* dst;
+	int swapped;
 	int row, col;
+	FT_Bitmap* current;
 	c_glyph *glyph;
 	FT_Error error;
 
 	/* Get the dimensions of the text surface */
-	if( ( TTF_SizeUNICODE(font, _text, &width, NULL) < 0 ) || !width ) {
+	if( ( TTF_SizeUNICODE(font, text, &width, NULL) < 0 ) || !width ) {
 		TTF_SetError("Text has zero width");
 		return NULL;
 	}
@@ -1240,26 +1250,32 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 		palette->colors[index].b = bg.b + (index*bdiff) / (NUM_GRAYS-1);
 	}
 
-	/* Perform any UNICODE endian conversions */
-	textlen = UNICODE_strlen(_text);
-	text = (Uint16 *)ALLOCA((textlen + 1) * (sizeof *text));
-	if ( *_text == UNICODE_BOM_NATIVE ) {
-		UNICODE_strcpy(text, _text+1, 0);
-	} else if ( *_text == UNICODE_BOM_SWAPPED ) {
-		UNICODE_strcpy(text, _text+1, 1);
-	} else {
-		UNICODE_strcpy(text, _text, TTF_byteswapped);
-	}
-
 	/* Load and render each character */
 	xstart = 0;
+	swapped = TTF_byteswapped;
 	for( ch = text; *ch; ++ch ) {
-		FT_Bitmap* current;
+		Uint16 c = *ch;
+		if ( c == UNICODE_BOM_NATIVE ) {
+			swapped = 0;
+			if ( text == ch ) {
+				++text;
+			}
+			continue;
+		}
+		if ( c == UNICODE_BOM_SWAPPED ) {
+			swapped = 1;
+			if ( text == ch ) {
+				++text;
+			}
+			continue;
+		}
+		if ( swapped ) {
+			c = SDL_Swap16(c);
+		}
 
-		error = Find_Glyph(font, *ch, CACHED_METRICS|CACHED_PIXMAP);
+		error = Find_Glyph(font, c, CACHED_METRICS|CACHED_PIXMAP);
 		if( error ) {
 			SDL_FreeSurface( textbuf );
-			FREEA(text);
 			return NULL;
 		}
 		glyph = font->current;
@@ -1301,7 +1317,6 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 			dst += textbuf->pitch;
 		}
 	}
-	FREEA(text);
 	return textbuf;
 }
 
@@ -1428,7 +1443,7 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
 }
 
 SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
-				const Uint16 *_text, SDL_Color fg)
+				const Uint16 *text, SDL_Color fg)
 {
 	int xstart;
 	int width, height;
@@ -1436,16 +1451,15 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	Uint32 alpha;
 	Uint32 pixel;
 	const Uint16 *ch;
-	Uint16 *text;
-	int textlen;
 	Uint8 *src;
 	Uint32 *dst;
+	int swapped;
 	int row, col;
 	c_glyph *glyph;
 	FT_Error error;
 
 	/* Get the dimensions of the text surface */
-	if ( (TTF_SizeUNICODE(font, _text, &width, NULL) < 0) || !width ) {
+	if ( (TTF_SizeUNICODE(font, text, &width, NULL) < 0) || !width ) {
 		TTF_SetError("Text has zero width");
 		return(NULL);
 	}
@@ -1457,25 +1471,32 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 		return(NULL);
 	}
 
-	/* Perform any UNICODE endian conversions */
-	textlen = UNICODE_strlen(_text);
-	text = (Uint16 *)ALLOCA((textlen + 1) * (sizeof *text));
-	if ( *_text == UNICODE_BOM_NATIVE ) {
-		UNICODE_strcpy(text, _text+1, 0);
-	} else if ( *_text == UNICODE_BOM_SWAPPED ) {
-		UNICODE_strcpy(text, _text+1, 1);
-	} else {
-		UNICODE_strcpy(text, _text, TTF_byteswapped);
-	}
-
 	/* Load and render each character */
 	xstart = 0;
+	swapped = TTF_byteswapped;
 	pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
 	for ( ch=text; *ch; ++ch ) {
-		error = Find_Glyph(font, *ch, CACHED_METRICS|CACHED_PIXMAP);
+		Uint16 c = *ch;
+		if ( c == UNICODE_BOM_NATIVE ) {
+			swapped = 0;
+			if ( text == ch ) {
+				++text;
+			}
+			continue;
+		}
+		if ( c == UNICODE_BOM_SWAPPED ) {
+			swapped = 1;
+			if ( text == ch ) {
+				++text;
+			}
+			continue;
+		}
+		if ( swapped ) {
+			c = SDL_Swap16(c);
+		}
+		error = Find_Glyph(font, c, CACHED_METRICS|CACHED_PIXMAP);
 		if( error ) {
 			SDL_FreeSurface( textbuf );
-			FREEA(text);
 			return NULL;
 		}
 		glyph = font->current;
@@ -1524,7 +1545,6 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 			dst += textbuf->pitch/4;
 		}
 	}
-	FREEA(text);
 	return(textbuf);
 }
 
