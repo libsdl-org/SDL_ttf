@@ -45,7 +45,7 @@ extern "C" {
 #define TTF_PATCHLEVEL		6
 
 /* This macro can be used to fill a version structure with the compile-time
- * version of the SDL_mixer library.
+ * version of the SDL_ttf library.
  */
 #define TTF_VERSION(X)							\
 {									\
