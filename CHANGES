@@ -1,5 +1,7 @@
 
 2.0.4:
+Sam Lantinga - Wed Nov 21 23:08:01 PST 2001
+ * Added 'glfont', a program to demonstrate using SDL_ttf with OpenGL
 akira yamada - Thu Nov  1 08:17:26 PST 2001
  * Added support for selecting individual font faces
 Thomas Krennwallner - Tue, 24 Jul 2001 19:16:37

@@ -21,9 +21,10 @@ libSDL_ttf_la_LDFLAGS = 		\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 libSDL_ttf_la_LIBADD = 
 
-bin_PROGRAMS = showfont
+bin_PROGRAMS = showfont glfont
 
 showfont_LDADD = libSDL_ttf.la
+glfont_LDADD = libSDL_ttf.la @GL_LIBS@ @MATHLIB@
 
 # Rule to build tar-gzipped distribution package
 $(PACKAGE)-$(VERSION).tar.gz: distcheck
