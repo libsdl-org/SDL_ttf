@@ -53,7 +53,8 @@ AC_PROG_INSTALL
 AC_FUNC_ALLOCA
 
 dnl Check for iconv (character conversion library; see iconv.m4)
-AM_ICONV
+dnl This isn't available on many systems
+dnl AM_ICONV
 
 dnl The alpha architecture needs special flags for binary portability
 case "$target" in
