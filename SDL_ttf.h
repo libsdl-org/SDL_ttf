@@ -42,7 +42,7 @@ extern "C" {
 */
 #define TTF_MAJOR_VERSION	2
 #define TTF_MINOR_VERSION	0
-#define TTF_PATCHLEVEL		6
+#define TTF_PATCHLEVEL		7
 
 /* This macro can be used to fill a version structure with the compile-time
  * version of the SDL_ttf library.
