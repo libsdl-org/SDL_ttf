@@ -13,9 +13,9 @@ dnl Set various version strings - taken gratefully from the GTk sources
 
 MAJOR_VERSION=2
 MINOR_VERSION=0
-MICRO_VERSION=3
-INTERFACE_AGE=3
-BINARY_AGE=3
+MICRO_VERSION=4
+INTERFACE_AGE=4
+BINARY_AGE=4
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION
 
 AC_SUBST(MAJOR_VERSION)
@@ -36,12 +36,12 @@ AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 
-dnl Setup for automake
-AM_INIT_AUTOMAKE(SDL_ttf, $VERSION)
-
 dnl Detect the canonical host and target build environment
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
+
+dnl Setup for automake
+AM_INIT_AUTOMAKE(SDL_ttf, $VERSION)
 
 dnl Check for tools
 

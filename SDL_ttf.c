@@ -1097,7 +1097,6 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	const Uint16 *ch;
 	Uint8 *src;
 	Uint32 *dst;
-	Uint32 Rmask, Gmask, Bmask, Amask;
 	int row, col;
 	c_glyph *glyph;
 	FT_Error error;
@@ -1109,20 +1108,8 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	}
 	height = font->height;
 
-	/* Create the target surface, 32-bit ARGB format */
-	if ( SDL_BYTEORDER == SDL_LIL_ENDIAN ) {
-		Rmask = 0x000000FF;
-		Gmask = 0x0000FF00;
-		Bmask = 0x00FF0000;
-		Amask = 0xFF000000;
-	} else {
-		Rmask = 0xFF000000;
-		Gmask = 0x00FF0000;
-		Bmask = 0x0000FF00;
-		Amask = 0x000000FF;
-	}
 	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 32,
-	                           Rmask, Gmask, Bmask, Amask);
+                  0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 	if ( textbuf == NULL ) {
 		return(NULL);
 	}
@@ -1163,7 +1150,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 			row = (textbuf->h-1) - font->underline_height;
 		}
 		dst = (Uint32 *)textbuf->pixels + row * textbuf->pitch/4;
-		pixel |= Amask;
+		pixel |= 0xFF000000; /* Amask */
 		for ( row=font->underline_height; row>0; --row ) {
 			for ( col=0; col < textbuf->w; ++col ) {
 				dst[col] = pixel;
@@ -1181,7 +1168,6 @@ SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	Uint32 pixel;
 	Uint8 *src;
 	Uint32 *dst;
-	Uint32 Rmask, Gmask, Bmask, Amask;
 	int row, col;
 	FT_Error error;
 	c_glyph *glyph;
@@ -1193,21 +1179,9 @@ SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	}
 	glyph = font->current;
 
-	/* Create the target surface, 32-bit ARGB format */
-	if ( SDL_BYTEORDER == SDL_LIL_ENDIAN ) {
-		Rmask = 0x000000FF;
-		Gmask = 0x0000FF00;
-		Bmask = 0x00FF0000;
-		Amask = 0xFF000000;
-	} else {
-		Rmask = 0xFF000000;
-		Gmask = 0x00FF0000;
-		Bmask = 0x0000FF00;
-		Amask = 0x000000FF;
-	}
 	textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE,
 	              glyph->pixmap.width, glyph->pixmap.rows, 32,
-	                           Rmask, Gmask, Bmask, Amask);
+                  0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 	if ( ! textbuf ) {
 		return(NULL);
 	}
@@ -1230,7 +1204,7 @@ SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 			row = (textbuf->h-1) - font->underline_height;
 		}
 		dst = (Uint32 *)textbuf->pixels + row * textbuf->pitch/4;
-		pixel |= Amask;
+		pixel |= 0xFF000000; /* Amask */
 		for ( row=font->underline_height; row>0; --row ) {
 			for ( col=0; col < textbuf->w; ++col ) {
 				dst[col] = pixel;

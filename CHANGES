@@ -1,4 +1,8 @@
 
+2.0.4:
+Mattias Engdegård, Thomas Krennwallner - Mon, 23 Jul 2001 04:47:54
+ * Fixed endian bug in blended font rendering
+
 2.0.3:
 Sam Lantinga - Tue May 22 17:48:10 PDT 2001
  * Updated for FreeType 2.0
