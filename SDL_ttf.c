@@ -713,7 +713,7 @@ int TTF_FontHeight(TTF_Font *font)
 
 int TTF_FontAscent(TTF_Font *font)
 {
-       return(font->ascent);
+	return(font->ascent);
 }
 
 int TTF_FontDescent(TTF_Font *font)
@@ -1003,8 +1003,11 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	int swapped;
 	int row, col;
 	c_glyph *glyph;
+
 	FT_Bitmap *current;
 	FT_Error error;
+	FT_Long use_kerning;
+	FT_UInt prev_index = 0;
 
 	/* Get the dimensions of the text surface */
 	if( ( TTF_SizeUNICODE(font, text, &width, NULL) < 0 ) || !width ) {
@@ -1029,6 +1032,9 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	palette->colors[1].b = fg.b;
 	SDL_SetColorKey( textbuf, SDL_SRCCOLORKEY, 0 );
 
+	/* check kerning */
+	use_kerning = FT_HAS_KERNING( font->face );
+	
 	/* Load and render each character */
 	xstart = 0;
 	swapped = TTF_byteswapped;
@@ -1059,6 +1065,13 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 		}
 		glyph = font->current;
 		current = &glyph->bitmap;
+
+		/* do kerning, if possible AC-Patch */
+		if ( use_kerning && prev_index && glyph->index ) {
+			FT_Vector delta; 
+			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta ); 
+			xstart += delta.x >> 6;
+		}
 		/* Compensate for wrap around bug with negative minx's */
 		if ( (ch == text) && (glyph->minx < 0) ) {
 			xstart -= glyph->minx;
@@ -1083,6 +1096,7 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 		if ( font->style & TTF_STYLE_BOLD ) {
 			xstart += font->glyph_overhang;
 		}
+		prev_index = glyph->index;
 	}
 
 	/* Handle the underline style */
@@ -1238,6 +1252,8 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 	FT_Bitmap* current;
 	c_glyph *glyph;
 	FT_Error error;
+	FT_Long use_kerning;
+	FT_UInt prev_index = 0;
 
 	/* Get the dimensions of the text surface */
 	if( ( TTF_SizeUNICODE(font, text, &width, NULL) < 0 ) || !width ) {
@@ -1264,6 +1280,9 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 		palette->colors[index].b = bg.b + (index*bdiff) / (NUM_GRAYS-1);
 	}
 
+	/* check kerning */
+	use_kerning = FT_HAS_KERNING( font->face );
+	
 	/* Load and render each character */
 	xstart = 0;
 	swapped = TTF_byteswapped;
@@ -1293,6 +1312,13 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 			return NULL;
 		}
 		glyph = font->current;
+   
+		/* do kerning, if possible AC-Patch */
+		if ( use_kerning && prev_index && glyph->index ) {
+			FT_Vector delta; 
+			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta ); 
+			xstart += delta.x >> 6;
+		}
 		/* Compensate for the wrap around with negative minx's */
 		if ( (ch == text) && (glyph->minx < 0) ) {
 			xstart -= glyph->minx;
@@ -1317,6 +1343,7 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 		if( font->style & TTF_STYLE_BOLD ) {
 			xstart += font->glyph_overhang;
 		}
+		prev_index = glyph->index;
 	}
 
 	/* Handle the underline style */
@@ -1471,6 +1498,8 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	int row, col;
 	c_glyph *glyph;
 	FT_Error error;
+	FT_Long use_kerning;
+	FT_UInt prev_index = 0;
 
 	/* Get the dimensions of the text surface */
 	if ( (TTF_SizeUNICODE(font, text, &width, NULL) < 0) || !width ) {
@@ -1480,11 +1509,14 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	height = font->height;
 
 	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 32,
-                  0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+	                           0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 	if ( textbuf == NULL ) {
 		return(NULL);
 	}
 
+	/* check kerning */
+	use_kerning = FT_HAS_KERNING( font->face );
+	
 	/* Load and render each character */
 	xstart = 0;
 	swapped = TTF_byteswapped;
@@ -1515,6 +1547,13 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 		}
 		glyph = font->current;
 		width = glyph->pixmap.width;
+		/* do kerning, if possible AC-Patch */
+		if ( use_kerning && prev_index && glyph->index ) {
+			FT_Vector delta; 
+			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta ); 
+			xstart += delta.x >> 6;
+		}
+		
 		/* Compensate for the wrap around bug with negative minx's */
 		if ( (ch == text) && (glyph->minx < 0) ) {
 			xstart -= glyph->minx;
@@ -1542,6 +1581,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 		if ( font->style & TTF_STYLE_BOLD ) {
 			xstart += font->glyph_overhang;
 		}
+		prev_index = glyph->index;
 	}
 
 	/* Handle the underline style */
