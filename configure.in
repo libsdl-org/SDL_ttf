@@ -51,6 +51,9 @@ AC_PROG_MAKE_SET
 AC_PROG_CC
 AC_PROG_INSTALL
 
+dnl Check for iconv (character conversion library; see iconv.m4)
+AM_ICONV
+
 dnl The alpha architecture needs special flags for binary portability
 case "$target" in
     alpha*-*-linux*)

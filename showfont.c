@@ -28,6 +28,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef HAVE_ICONV
+#include <iconv.h>
+#endif
+
 #include "SDL.h"
 #include "SDL_ttf.h"
 
@@ -245,17 +249,42 @@ int main(int argc, char *argv[])
 
 	    case RENDER_UNICODE:
 		{
-			/* This doesn't actually work because you can't pass
-			   UNICODE text in via command line, AFAIK, but...
-			 */
 			Uint16 unicode_text[BUFSIZ];
 			int index;
-			for ( index = 0; (message[0] || message[1]); ++index ) {
-				unicode_text[index]  = ((Uint8 *)message)[0];
-				unicode_text[index] <<= 8;
-				unicode_text[index] |= ((Uint8 *)message)[1];
-				message += 2;
+#ifdef HAVE_ICONV
+			/* Use iconv to convert the message into utf-16.
+			 * "char" and "" are aliases for the local 8-bit encoding */
+			iconv_t cd;
+			ICONV_CONST char *from_str = message;
+			char *to_str = (char*)unicode_text;
+			size_t from_sz = strlen(message) + 1;
+			size_t to_sz = sizeof(unicode_text);
+			size_t res;
+			int i;
+
+			if ((cd = iconv_open("UTF-16", "char")) == (iconv_t)-1
+			    && (cd = iconv_open("UTF-16", "")) == (iconv_t)-1) {
+				perror("Couldn't open iconv");
+				exit(1);
 			}
+
+			res = iconv(cd, &from_str, &from_sz, &to_str, &to_sz);
+			if (res == -1) {
+				perror("Couldn't use iconv");
+				exit(1);
+			}
+
+			iconv_close(cd);
+#else
+			/* Convert the message from ascii into utf-16.
+			 * This is unreliable as a test because it always
+			 * gives the local ordering. */
+			for (index = 0; message[index]; index++) {
+				unicode_text[index] = message[index];
+			}
+			unicode_text[index] = 0;
+#endif
+
 			if ( rendersolid ) {
 				text = TTF_RenderUNICODE_Solid(font,
 					unicode_text, *forecol);
