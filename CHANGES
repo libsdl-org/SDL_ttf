@@ -1,4 +1,6 @@
 2.0.7:
+Kyle Davenport - Sat, 19 Apr 2003 17:13:31 -0500
+ * Added .la files to the development RPM, fixing RPM build on RedHat 8
 Bryan Kadzban - Mon, 24 Mar 2003 21:31:48 -0500
  * Fixed crash when opening a font file that doesn't exist
 
