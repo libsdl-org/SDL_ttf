@@ -104,6 +104,14 @@ struct _TTF_Font {
 static FT_Library library;
 static int TTF_initialized = 0;
 
+/* rcg06192001 get linked library's version. */
+const SDL_version *TTF_Linked_Version(void)
+{
+	static SDL_version linked_ttfver;
+	MIX_VERSION(&linked_mixver);
+	return(&linked_ttfver);
+}
+
 static void TTF_SetFTError(const char *msg, FT_Error error)
 {
 #ifdef USE_FREETYPE_ERRORS

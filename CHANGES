@@ -1,5 +1,7 @@
 
 2.0.6:
+Sam Lantinga - Sat Aug 24 22:08:26 PDT 2002
+ * Added a version number so runtime version checking is possible
 Sam Lantinga - Sat Aug 24 22:06:22 PDT 2002
  * Added the ability to load a font from an SDL_RWops stream
 

@@ -38,6 +38,29 @@
 extern "C" {
 #endif
 
+/* Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
+*/
+#define TTF_MAJOR_VERSION	2
+#define TTF_MINOR_VERSION	0
+#define TTF_PATCHLEVEL		6
+
+/* This macro can be used to fill a version structure with the compile-time
+ * version of the SDL_mixer library.
+ */
+#define TTF_VERSION(X)							\
+{									\
+	(X)->major = TTF_MAJOR_VERSION;					\
+	(X)->minor = TTF_MINOR_VERSION;					\
+	(X)->patch = TTF_PATCHLEVEL;					\
+}
+
+/* This function gets the version of the dynamically linked SDL_ttf library.
+   it should NOT be used to fill a version structure, instead you should
+   use the TTF_VERSION() macro.
+ */
+extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
+
+
 /* The internal structure containing font information */
 typedef struct _TTF_Font TTF_Font;
 
