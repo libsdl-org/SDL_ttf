@@ -67,7 +67,10 @@ typedef struct _TTF_Font TTF_Font;
 /* Initialize the TTF engine - returns 0 if successful, -1 on error */
 extern DECLSPEC int SDLCALL TTF_Init(void);
 
-/* Open a font file and create a font of the specified point size */
+/* Open a font file and create a font of the specified point size.
+ * Some .fon fonts will have several sizes embedded in the file, so the
+ * point size becomes the index of choosing which size.  If the value
+ * is too high, the last indexed size will be the default. */
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFont(const char *file, int ptsize);
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int ptsize, long index);
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontRW(SDL_RWops *src, int freesrc, int ptsize);

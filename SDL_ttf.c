@@ -98,6 +98,9 @@ struct _TTF_Font {
 	SDL_RWops *src;
 	int freesrc;
 	FT_Open_Args args;
+
+	/* For non-scalable formats, we must remember which font index size */
+	int font_size_family;
 };
 
 /* The FreeType font engine/library */
@@ -235,31 +238,53 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	face = font->face;
 
 	/* Make sure that our font face is scalable (global metrics) */
-	if ( ! FT_IS_SCALABLE(face) ) {
-		TTF_SetError("Font face is not scalable");
-		TTF_CloseFont( font );
-		return NULL;
+	if ( FT_IS_SCALABLE(face) ) {
+
+	  	/* Set the character size and use default DPI (72) */
+	  	error = FT_Set_Char_Size( font->face, 0, ptsize * 64, 0, 0 );
+			if( error ) {
+	    	TTF_SetFTError( "Couldn't set font size", error );
+	    	TTF_CloseFont( font );
+	    	return NULL;
+	  }
+
+	  /* Get the scalable font metrics for this font */
+	  scale = face->size->metrics.y_scale;
+	  font->ascent  = FT_CEIL(FT_MulFix(face->bbox.yMax, scale));
+	  font->descent = FT_CEIL(FT_MulFix(face->bbox.yMin, scale));
+	  font->height  = font->ascent - font->descent + /* baseline */ 1;
+	  font->lineskip = FT_CEIL(FT_MulFix(face->height, scale));
+	  font->underline_offset = FT_FLOOR(FT_MulFix(face->underline_position, scale));
+	  font->underline_height = FT_FLOOR(FT_MulFix(face->underline_thickness, scale));
+
+	} else {
+		/* Non-scalable font case.  ptsize determines which family
+		 * or series of fonts to grab from the non-scalable format.
+		 * It is not the point size of the font.
+		 * */
+		if ( ptsize >= font->face->num_fixed_sizes )
+			ptsize = font->face->num_fixed_sizes - 1;
+		font->font_size_family = ptsize;
+		error = FT_Set_Pixel_Sizes( face,
+				face->available_sizes[ptsize].height,
+				face->available_sizes[ptsize].width );
+	  	/* With non-scalale fonts, Freetype2 likes to fill many of the
+		 * font metrics with the value of 0.  The size of the
+		 * non-scalable fonts must be determined differently
+		 * or sometimes cannot be determined.
+		 * */
+	  	font->ascent = face->available_sizes[ptsize].height;
+	  	font->descent = 0;
+	  	font->height = face->available_sizes[ptsize].height;
+	  	font->lineskip = FT_CEIL(font->ascent);
+	  	font->underline_offset = FT_FLOOR(face->underline_position);
+	  	font->underline_height = FT_FLOOR(face->underline_thickness);
 	}
 
-	/* Set the character size and use default DPI (72) */
-	error = FT_Set_Char_Size( font->face, 0, ptsize * 64, 0, 0 );
-	if( error ) {
-		TTF_SetFTError( "Couldn't set font size", error );
-		TTF_CloseFont( font );
-		return NULL;
-	}
-
-	/* Get the scalable font metrics for this font */
-	scale = face->size->metrics.y_scale;
-	font->ascent  = FT_CEIL(FT_MulFix(face->bbox.yMax, scale));
-	font->descent = FT_CEIL(FT_MulFix(face->bbox.yMin, scale));
-	font->height  = font->ascent - font->descent + /* baseline */ 1;
-	font->lineskip = FT_CEIL(FT_MulFix(face->height, scale));
-	font->underline_offset = FT_FLOOR(FT_MulFix(face->underline_position, scale));
-	font->underline_height = FT_FLOOR(FT_MulFix(face->underline_thickness, scale));
 	if ( font->underline_height < 1 ) {
 		font->underline_height = 1;
 	}
+
 #ifdef DEBUG_FONTS
 	printf("Font metrics:\n");
 	printf("\tascent = %d, descent = %d\n",
@@ -356,14 +381,29 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 
 	/* Get the glyph metrics if desired */
 	if ( (want & CACHED_METRICS) && !(cached->stored & CACHED_METRICS) ) {
-		/* Get the bounding box */
-		cached->minx = FT_FLOOR(metrics->horiBearingX);
-		cached->maxx = cached->minx + FT_CEIL(metrics->width);
-		cached->maxy = FT_FLOOR(metrics->horiBearingY);
-		cached->miny = cached->maxy - FT_CEIL(metrics->height);
-		cached->yoffset = font->ascent - cached->maxy;
-		cached->advance = FT_CEIL(metrics->horiAdvance);
-
+		if ( FT_IS_SCALABLE( face ) ) {
+			/* Get the bounding box */
+			cached->minx = FT_FLOOR(metrics->horiBearingX);
+			cached->maxx = cached->minx + FT_CEIL(metrics->width);
+			cached->maxy = FT_FLOOR(metrics->horiBearingY);
+			cached->miny = cached->maxy - FT_CEIL(metrics->height);
+			cached->yoffset = font->ascent - cached->maxy;
+			cached->advance = FT_CEIL(metrics->horiAdvance);
+		} else {
+			/* Get the bounding box for non-scalable format.
+			 * Again, freetype2 fills in many of the font metrics
+			 * with the value of 0, so some of the values we
+			 * need must be calculated differently with certain
+			 * assumptions about non-scalable formats.
+			 * */
+			cached->minx = FT_FLOOR(metrics->horiBearingX);
+			cached->maxx = cached->minx + FT_CEIL(metrics->horiAdvance);
+			cached->maxy = FT_FLOOR(metrics->horiBearingY);
+			cached->miny = cached->maxy - FT_CEIL(face->available_sizes[font->font_size_family].height);
+			cached->yoffset = 0;
+			cached->advance = FT_CEIL(metrics->horiAdvance);
+		}
+		
 		/* Adjust for bold and italic text */
 		if( font->style & TTF_STYLE_BOLD ) {
 			cached->maxx += font->glyph_overhang;
@@ -411,7 +451,14 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 			dst = &cached->pixmap;
 		}
 		memcpy( dst, src, sizeof( *dst ) );
-		if ( mono ) {
+
+		/* FT_Render_Glyph() and .fon fonts always generate a
+		 * two-color (black and white) glyphslot surface, even
+		 * when rendered in ft_render_mode_normal.  This is probably
+		 * a freetype2 bug because it is inconsistent with the
+		 * freetype2 documentation under FT_Render_Mode section.
+		 * */
+		if ( mono || !FT_IS_SCALABLE(face) ) {
 			dst->pitch *= 8;
 		}
 
@@ -458,6 +505,31 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 						*dstp++ = (ch&0x80) >> 7;
 						ch <<= 1;
 						*dstp++ = (ch&0x80) >> 7;
+					}
+				} else if ( !FT_IS_SCALABLE(face) ) {
+					/* This special case wouldn't
+					 * be here if the FT_Render_Glyph()
+					 * function wasn't buggy when it tried
+					 * to render a .fon font with 256
+					 * shades of gray.  Instead, it
+					 * returns a black and white surface
+					 * and we have to translate it back
+					 * to a 256 gray shaded surface. 
+					 * */
+					unsigned char *srcp = src->buffer + soffset;
+					unsigned char *dstp = dst->buffer + doffset;
+					unsigned char ch;
+					int j, k;
+					for ( j = 0; j < src->width; j += 8) {
+						ch = *srcp++;
+						for (k = 0; k < 8; ++k) {
+							if ((ch&0x80) >> 7) {
+								*dstp++ = NUM_GRAYS - 1;
+							} else {
+								*dstp++ = 0x00;
+							}
+							ch <<= 1;
+						}
 					}
 				} else {
 					memcpy(dst->buffer+doffset,
@@ -720,6 +792,24 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 		}
 		glyph = font->current;
 
+		if ( (ch == text) && (glyph->minx < 0) ) {
+		/* Fixes the texture wrapping bug when the first letter
+		 * has a negative minx value or horibearing value.  The entire
+		 * bounding box must be adjusted to be bigger so the entire
+		 * letter can fit without any texture corruption or wrapping.
+		 *
+		 * Effects: First enlarges bounding box.
+		 * Second, xstart has to start ahead of its normal spot in the
+		 * negative direction of the negative minx value.
+		 * (pushes everything to the right).
+		 *
+		 * This will make the memory copy of the glyph bitmap data
+		 * work out correctly.
+		 * */
+			z -= glyph->minx;
+			
+		}
+		
 		z = x + glyph->minx;
 		if ( minx > z ) {
 			minx = z;
@@ -862,9 +952,17 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 			return NULL;
 		}
 		glyph = font->current;
-
 		current = &glyph->bitmap;
+		/* Compensate for wrap around bug with negative minx's */
+		if ( (ch == text) && (glyph->minx < 0) ) {
+			xstart -= glyph->minx;
+		}
+		
 		for( row = 0; row < current->rows; ++row ) {
+			/* Make sure we don't go over the limit */
+			if ( row+glyph->yoffset >= textbuf->h ) {
+				continue;
+			}
 			dst = (Uint8*) textbuf->pixels +
 				(row+glyph->yoffset) * textbuf->pitch +
 				xstart + glyph->minx;
@@ -915,8 +1013,8 @@ SDL_Surface *TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
 
 	/* Create the target surface */
 	textbuf = SDL_CreateRGBSurface( SDL_SWSURFACE,
-					glyph->pixmap.width,
-					glyph->pixmap.rows,
+					glyph->bitmap.pitch,
+					glyph->bitmap.rows,
 					8, 0, 0, 0, 0 );
 	if ( ! textbuf ) {
 		return(NULL);
@@ -933,11 +1031,11 @@ SDL_Surface *TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	SDL_SetColorKey(textbuf, SDL_SRCCOLORKEY, 0);
 
 	/* Copy the character from the pixmap */
-	src = glyph->pixmap.buffer;
+	src = glyph->bitmap.buffer;
 	dst = (Uint8*) textbuf->pixels;
 	for ( row = 0; row < textbuf->h; ++row ) {
-		memcpy( dst, src, glyph->pixmap.pitch );
-		src += glyph->pixmap.pitch;
+		memcpy( dst, src, glyph->bitmap.pitch );
+		src += glyph->bitmap.pitch;
 		dst += textbuf->pitch;
 	}
 
@@ -1067,9 +1165,17 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 			return NULL;
 		}
 		glyph = font->current;
-
+		/* Compensate for the wrap around with negative minx's */
+		if ( (ch == text) && (glyph->minx < 0) ) {
+			xstart -= glyph->minx;
+		}
+		
 		current = &glyph->pixmap;
 		for( row = 0; row < current->rows; ++row ) {
+			/* Make sure we don't go over the limit */
+			if ( row+glyph->yoffset >= textbuf->h ) {
+				continue;
+			}
 			dst = (Uint8*) textbuf->pixels +
 				(row+glyph->yoffset) * textbuf->pitch +
 				xstart + glyph->minx;
@@ -1258,14 +1364,25 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 			return NULL;
 		}
 		glyph = font->current;
-
 		width = glyph->pixmap.width;
-		src = (Uint8 *)glyph->pixmap.buffer;
+		/* Compensate for the wrap around bug with negative minx's */
+		if ( (ch == text) && (glyph->minx < 0) ) {
+			xstart -= glyph->minx;
+		}
+
 		for ( row = 0; row < glyph->pixmap.rows; ++row ) {
+			/* Make sure we don't go over the limit */
+			if ( row+glyph->yoffset >= textbuf->h ) {
+				continue;
+			}
 			dst = (Uint32*) textbuf->pixels +
 				(row+glyph->yoffset) * textbuf->pitch/4 +
 				xstart + glyph->minx;
-			for ( col=width; col>0; --col ) {
+			/* Added code to adjust src pointer for pixmaps to
+			 * account for pitch.
+			 * */
+			src = (Uint8*) (glyph->pixmap.buffer + glyph->pixmap.pitch * row);
+			for ( col = width; col>0; --col) {
 				alpha = *src++;
 				*dst++ |= pixel | (alpha << 24);
 			}
@@ -1323,7 +1440,8 @@ SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	/* Copy the character from the pixmap */
 	pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
 	for ( row=0; row<textbuf->h; ++row ) {
-		src = glyph->pixmap.buffer + row * glyph->pixmap.width;
+		/* Changed src to take pitch into account, not just width */
+		src = glyph->pixmap.buffer + row * glyph->pixmap.pitch;
 		dst = (Uint32 *)textbuf->pixels + row * textbuf->pitch/4;
 		for ( col=0; col<glyph->pixmap.width; ++col ) {
 			alpha = *src++;

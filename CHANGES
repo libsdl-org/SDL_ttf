@@ -1,4 +1,10 @@
 2.0.6:
+Sam Lantinga - Sun Dec  1 18:34:40 PST 2002
+ * Fixed memory corruption problem with small point sizes
+Wesley Leong - Mon, 18 Nov 2002 11:30:15 -0800
+ * Added initial .fon support to SDL_ttf
+ * Fixed wrapping bug with negative horizontal bearing
+ * Fixed TTF_RenderGlyph_Solid() to use the bitmap instead of pixmap
 Sam Lantinga - Sun Oct 20 20:57:09 PDT 2002
  * Added shared library support for MacOS X
 Pete Shinners - Tue Sep  3 10:17:45 PDT 2002
