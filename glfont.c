@@ -244,18 +244,24 @@ int main(int argc, char *argv[])
 			dump = 1;
 		} else
 		if ( strcmp(argv[i], "-fgcol") == 0 ) {
-			if ( sscanf (argv[++i], "%d,%d,%d",
-										&forecol->r, &forecol->g, &forecol->b) != 3 ) {
-					fprintf(stderr, Usage, argv0);
-					return(1);
-				}
+			int r, g, b;
+			if ( sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3 ) {
+				fprintf(stderr, Usage, argv0);
+				return(1);
+			}
+			forecol->r = (Uint8)r;
+			forecol->g = (Uint8)g;
+			forecol->b = (Uint8)b;
 		} else
 		if ( strcmp(argv[i], "-bgcol") == 0 ) {
-			if ( sscanf (argv[++i], "%d,%d,%d",
-										&backcol->r, &backcol->g, &backcol->b) != 3 ) {
-					fprintf(stderr, Usage, argv0);
-					return(1);
-				}
+			int r, g, b;
+			if ( sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3 ) {
+				fprintf(stderr, Usage, argv0);
+				return(1);
+			}
+			backcol->r = (Uint8)r;
+			backcol->g = (Uint8)g;
+			backcol->b = (Uint8)b;
 		} else {
 			fprintf(stderr, Usage, argv0);
 			return(1);
