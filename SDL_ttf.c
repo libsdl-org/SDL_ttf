@@ -917,7 +917,6 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 		*h = font->height;
 #endif
 	}
-	FREEA(text);
 	return status;
 }
 
