@@ -368,40 +368,42 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 			dst->width += bump;
 		}
 
-		dst->buffer = malloc( dst->pitch * dst->rows );
-		if( !dst->buffer ) {
-			return FT_Err_Out_Of_Memory;
-		}
-		memset( dst->buffer, 0, dst->pitch * dst->rows );
+		if (dst->rows != 0) {
+			dst->buffer = malloc( dst->pitch * dst->rows );
+			if( !dst->buffer ) {
+				return FT_Err_Out_Of_Memory;
+			}
+			memset( dst->buffer, 0, dst->pitch * dst->rows );
 
-		for( i = 0; i < src->rows; i++ ) {
-			int soffset = i * src->pitch;
-			int doffset = i * dst->pitch;
-			if ( mono ) {
-				unsigned char *srcp = src->buffer + soffset;
-				unsigned char *dstp = dst->buffer + doffset;
-				int j;
-				for ( j = 0; j < src->width; j += 8 ) {
-					unsigned char ch = *srcp++;
-					*dstp++ = (ch&0x80) >> 7;
-					ch <<= 1;
-					*dstp++ = (ch&0x80) >> 7;
-					ch <<= 1;
-					*dstp++ = (ch&0x80) >> 7;
-					ch <<= 1;
-					*dstp++ = (ch&0x80) >> 7;
-					ch <<= 1;
-					*dstp++ = (ch&0x80) >> 7;
-					ch <<= 1;
-					*dstp++ = (ch&0x80) >> 7;
-					ch <<= 1;
-					*dstp++ = (ch&0x80) >> 7;
-					ch <<= 1;
-					*dstp++ = (ch&0x80) >> 7;
+			for( i = 0; i < src->rows; i++ ) {
+				int soffset = i * src->pitch;
+				int doffset = i * dst->pitch;
+				if ( mono ) {
+					unsigned char *srcp = src->buffer + soffset;
+					unsigned char *dstp = dst->buffer + doffset;
+					int j;
+					for ( j = 0; j < src->width; j += 8 ) {
+						unsigned char ch = *srcp++;
+						*dstp++ = (ch&0x80) >> 7;
+						ch <<= 1;
+						*dstp++ = (ch&0x80) >> 7;
+						ch <<= 1;
+						*dstp++ = (ch&0x80) >> 7;
+						ch <<= 1;
+						*dstp++ = (ch&0x80) >> 7;
+						ch <<= 1;
+						*dstp++ = (ch&0x80) >> 7;
+						ch <<= 1;
+						*dstp++ = (ch&0x80) >> 7;
+						ch <<= 1;
+						*dstp++ = (ch&0x80) >> 7;
+						ch <<= 1;
+						*dstp++ = (ch&0x80) >> 7;
+					}
+				} else {
+					memcpy(dst->buffer+doffset,
+					       src->buffer+soffset, src->pitch);
 				}
-			} else {
-				memcpy(dst->buffer+doffset,
-				       src->buffer+soffset, src->pitch);
 			}
 		}
 

@@ -1,4 +1,8 @@
 
+2.0.5:
+Jered Wierzbicki Fri Jan 18 13:45:10 PST 2002
+ * Fixed a potential malloc of zero bytes in the font code.
+
 2.0.4:
 Sam Lantinga - Wed Nov 21 23:08:01 PST 2001
  * Added 'glfont', a program to demonstrate using SDL_ttf with OpenGL
