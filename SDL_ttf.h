@@ -178,7 +178,7 @@ extern DECLSPEC void TTF_Quit(void);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-};
+}
 #endif
 #include "close_code.h"
 
