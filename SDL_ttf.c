@@ -532,7 +532,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 		}
 
 		if (dst->rows != 0) {
-			dst->buffer = malloc( dst->pitch * dst->rows );
+			dst->buffer = (unsigned char *)malloc( dst->pitch * dst->rows );
 			if( !dst->buffer ) {
 				return FT_Err_Out_Of_Memory;
 			}
