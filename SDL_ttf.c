@@ -44,6 +44,10 @@
 #include <freetype/ttnameid.h>
 #include <freetype/internal/ftobjs.h>
 
+#ifndef FT_OPEN_STREAM
+#define FT_OPEN_STREAM ft_open_stream
+#endif
+
 #include "SDL.h"
 #include "SDL_endian.h"
 #include "SDL_ttf.h"
@@ -273,7 +277,7 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	stream->size = (unsigned long)(SDL_RWtell(src) - position);
 	SDL_RWseek(src, position, SEEK_SET);
 
-	font->args.flags = ft_open_stream;
+	font->args.flags = FT_OPEN_STREAM;
 	font->args.stream = stream;
 
 	error = FT_Open_Face( library, &font->args, index, &font->face );

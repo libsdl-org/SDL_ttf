@@ -1,4 +1,6 @@
 2.0.7:
+Bursig Rafal - Wed Aug  6 15:02:59 PDT 2003
+ * Fixed compilation with newer versions of FreeType
 Kyle Davenport - Sat, 19 Apr 2003 17:13:31 -0500
  * Added .la files to the development RPM, fixing RPM build on RedHat 8
 Bryan Kadzban - Mon, 24 Mar 2003 21:31:48 -0500
