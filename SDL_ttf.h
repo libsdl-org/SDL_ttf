@@ -27,8 +27,8 @@
 	http://www.freetype.org/
 */
 
-#ifndef _SDL_ttf_h
-#define _SDL_ttf_h
+#ifndef _SDL_TTF_H
+#define _SDL_TTF_H
 
 #include "SDL.h"
 #include "begin_code.h"
@@ -228,4 +228,4 @@ extern DECLSPEC int SDLCALL TTF_WasInit(void);
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_ttf_h */
+#endif /* _SDL_TTF_H */
