@@ -8,7 +8,7 @@ applications.
 
 To make the library, first install the FreeType library, then type
 './configure' then 'make' to build the SDL truetype library and the
-showfont example application.
+showfont and glfont example applications.
 
 Be careful when including fonts with your application, as many of them
 are copyrighted.  The Microsoft fonts, for example, are not freely 
