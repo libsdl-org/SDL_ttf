@@ -274,6 +274,11 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	return font;
 }
 
+TTF_Font* TTF_OpenFontRW( SDL_RWops *src, int freesrc, int ptsize )
+{
+	return TTF_OpenFontIndexRW(src, freesrc, ptsize, 0);
+}
+
 TTF_Font* TTF_OpenFontIndex( const char *file, int ptsize, long index )
 {
 	return TTF_OpenFontIndexRW(SDL_RWFromFile(file, "rb"), 1, ptsize, index);
