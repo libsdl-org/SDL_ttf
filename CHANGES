@@ -1,5 +1,8 @@
 
 2.0.5:
+Sam Lantinga - Sat Apr 13 07:49:47 PDT 2002
+ * Updated autogen.sh for new versions of automake
+ * Specify the SDL API calling convention (C by default)
 Jered Wierzbicki Fri Jan 18 13:45:10 PST 2002
  * Fixed a potential malloc of zero bytes in the font code.
 
