@@ -233,7 +233,7 @@ TTF_Font* TTF_OpenFontIndex( const char *file, int ptsize, long index )
 
 TTF_Font* TTF_OpenFont( const char *file, int ptsize )
 {
-	TTF_OpenFontIndex(file, ptsize, 0);
+	return TTF_OpenFontIndex(file, ptsize, 0);
 }
 
 static void Flush_Glyph( c_glyph* glyph )
@@ -378,8 +378,8 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 			int soffset = i * src->pitch;
 			int doffset = i * dst->pitch;
 			if ( mono ) {
-				char *srcp = src->buffer + soffset;
-				char *dstp = dst->buffer + doffset;
+				unsigned char *srcp = src->buffer + soffset;
+				unsigned char *dstp = dst->buffer + doffset;
 				int j;
 				for ( j = 0; j < src->width; j += 8 ) {
 					unsigned char ch = *srcp++;

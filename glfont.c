@@ -73,7 +73,7 @@ void SDL_GL_Enter2DMode()
 	glPushMatrix();
 	glLoadIdentity();
 
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 void SDL_GL_Leave2DMode()
@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
 		RENDER_UTF8,
 		RENDER_UNICODE
 	} rendertype;
-	char *message, string[128];
+	char *message;
 
 	/* Look for special execution mode */
 	dump = 0;
