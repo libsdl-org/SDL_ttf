@@ -39,9 +39,15 @@
 #define FREEA(p) free(p)
 #endif
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_OUTLINE_H
+#include FT_TRUETYPE_IDS_H
+/*
 #include <freetype/freetype.h>
 #include <freetype/ftoutln.h>
 #include <freetype/ttnameid.h>
+*/
 #include <freetype/internal/ftobjs.h>
 
 #ifndef FT_OPEN_STREAM
