@@ -762,6 +762,9 @@ int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
 	}
 	if ( maxx ) {
 		*maxx = font->current->maxx;
+		if( font->style & TTF_STYLE_BOLD ) {
+			*maxx += font->glyph_overhang;
+		}
 	}
 	if ( miny ) {
 		*miny = font->current->miny;
@@ -771,6 +774,9 @@ int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
 	}
 	if ( advance ) {
 		*advance = font->current->advance;
+		if( font->style & TTF_STYLE_BOLD ) {
+			*advance += font->glyph_overhang;
+		}
 	}
 	return 0;
 }
