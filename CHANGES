@@ -1,5 +1,7 @@
 
 2.0.4:
+Thomas Krennwallner - Tue, 24 Jul 2001 19:16:37
+ * Added support for foreground/background color in showfont
 Mattias Engdegård, Thomas Krennwallner - Mon, 23 Jul 2001 04:47:54
  * Fixed endian bug in blended font rendering
 

@@ -12,7 +12,8 @@
 #define NUM_COLORS      256
 
 static char *Usage =
-"Usage: %s [-utf8|-unicode] [-b] [-i] [-u] <font>.ttf [ptsize] [text]\n";
+"Usage: %s [-utf8|-unicode] [-b] [-i] [-u] [-fgcol r,g,b] [-bgcol r,g,b] \
+<font>.ttf [ptsize] [text]\n";
 
 int main(int argc, char *argv[])
 {
@@ -26,6 +27,8 @@ int main(int argc, char *argv[])
 	SDL_Color colors[NUM_COLORS];
 	SDL_Color white = { 0xFF, 0xFF, 0xFF, 0 };
 	SDL_Color black = { 0x00, 0x00, 0x00, 0 };
+	SDL_Color *forecol;
+	SDL_Color *backcol;
 	SDL_Rect dstrect;
 	SDL_Event event;
 	int rendersolid;
@@ -44,6 +47,9 @@ int main(int argc, char *argv[])
 	rendersolid = 0;
 	renderstyle = TTF_STYLE_NORMAL;
 	rendertype = RENDER_LATIN1;
+	/* Default is black and white */
+	forecol = &black;
+	backcol = &white;
 	for ( i=1; argv[i] && argv[i][0] == '-'; ++i ) {
 		if ( strcmp(argv[i], "-solid") == 0 ) {
 			rendersolid = 1;
@@ -65,6 +71,20 @@ int main(int argc, char *argv[])
 		} else
 		if ( strcmp(argv[i], "-dump") == 0 ) {
 			dump = 1;
+		} else
+		if ( strcmp(argv[i], "-fgcol") == 0 ) {
+			if ( sscanf (argv[++i], "%d,%d,%d",
+										&forecol->r, &forecol->g, &forecol->b) != 3 ) {
+					fprintf(stderr, Usage, argv0);
+					return(1);
+				}
+		} else
+		if ( strcmp(argv[i], "-bgcol") == 0 ) {
+			if ( sscanf (argv[++i], "%d,%d,%d",
+										&backcol->r, &backcol->g, &backcol->b) != 3 ) {
+					fprintf(stderr, Usage, argv0);
+					return(1);
+				}
 		} else {
 			fprintf(stderr, Usage, argv0);
 			return(1);
@@ -117,7 +137,7 @@ int main(int argc, char *argv[])
 		for( i = 48; i < 123; i++ ) {
 			SDL_Surface* glyph = NULL;
 
-			glyph = TTF_RenderGlyph_Shaded( font, i, black, white );
+			glyph = TTF_RenderGlyph_Shaded( font, i, *forecol, *backcol );
 
 			if( glyph ) {
 				char outname[64];
@@ -138,28 +158,28 @@ int main(int argc, char *argv[])
 		return(2);
 	}
 
-	/* Set a palette that is good for black text */
-	rdiff = white.r - black.r;
-	gdiff = white.g - black.g;
-	bdiff = white.b - black.b;
+	/* Set a palette that is good for the foreground colored text */
+	rdiff = backcol->r - forecol->r;
+	gdiff = backcol->g - forecol->g;
+	bdiff = backcol->b - forecol->b;
 	for ( i=0; i<NUM_COLORS; ++i ) {
-		colors[i].r = black.r + (i*rdiff)/4;
-		colors[i].g = black.g + (i*gdiff)/4;
-		colors[i].b = black.b + (i*bdiff)/4;
+		colors[i].r = forecol->r + (i*rdiff)/4;
+		colors[i].g = forecol->g + (i*gdiff)/4;
+		colors[i].b = forecol->b + (i*bdiff)/4;
 	}
 	SDL_SetColors(screen, colors, 0, NUM_COLORS);
 
-	/* Clear the background to white */
+	/* Clear the background to background color */
 	SDL_FillRect(screen, NULL,
-			SDL_MapRGB(screen->format, white.r, white.g, white.b));
+			SDL_MapRGB(screen->format, backcol->r, backcol->g, backcol->b));
 	SDL_UpdateRect(screen, 0, 0, 0, 0);
 
 	/* Show which font file we're looking at */
 	sprintf(string, "Font file: %s", argv[0]);  /* possible overflow */
 	if ( rendersolid ) {
-		text = TTF_RenderText_Solid(font, string, black);
+		text = TTF_RenderText_Solid(font, string, *forecol);
 	} else {
-		text = TTF_RenderText_Shaded(font, string, black, white);
+		text = TTF_RenderText_Shaded(font, string, *forecol, *backcol);
 	}
 	if ( text != NULL ) {
 		dstrect.x = 4;
@@ -179,17 +199,17 @@ int main(int argc, char *argv[])
 	switch (rendertype) {
 	    case RENDER_LATIN1:
 		if ( rendersolid ) {
-			text = TTF_RenderText_Solid(font,message,black);
+			text = TTF_RenderText_Solid(font,message,*forecol);
 		} else {
-			text = TTF_RenderText_Shaded(font,message,black,white);
+			text = TTF_RenderText_Shaded(font,message,*forecol,*backcol);
 		}
 		break;
 
 	    case RENDER_UTF8:
 		if ( rendersolid ) {
-			text = TTF_RenderUTF8_Solid(font,message,black);
+			text = TTF_RenderUTF8_Solid(font,message,*forecol);
 		} else {
-			text = TTF_RenderUTF8_Shaded(font,message,black,white);
+			text = TTF_RenderUTF8_Shaded(font,message,*forecol,*backcol);
 		}
 		break;
 
@@ -208,10 +228,10 @@ int main(int argc, char *argv[])
 			}
 			if ( rendersolid ) {
 				text = TTF_RenderUNICODE_Solid(font,
-					unicode_text, black);
+					unicode_text, *forecol);
 			} else {
 				text = TTF_RenderUNICODE_Shaded(font,
-					unicode_text, black, white);
+					unicode_text, *forecol, *backcol);
 			}
 		}
 		break;
