@@ -70,7 +70,7 @@ extern DECLSPEC int SDLCALL TTF_Init(void);
 /* Open a font file and create a font of the specified point size */
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFont(const char *file, int ptsize);
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int ptsize, long index);
-extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long index )
+extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long index);
 
 /* Set and retrieve the font style
    This font style is implemented by modifying the font glyphs, and
