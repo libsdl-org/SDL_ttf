@@ -17,8 +17,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     Sam Lantinga
-    slouken@devolution.com
+    slouken@libsdl.org
 */
+
+/* $Id$ */
 
 /* This library is a wrapper around the excellent FreeType 2.0 library,
    available at:
