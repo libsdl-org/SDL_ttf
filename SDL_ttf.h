@@ -126,7 +126,10 @@ extern DECLSPEC int SDLCALL TTF_FontFaceIsFixedWidth(TTF_Font *font);
 extern DECLSPEC char * SDLCALL TTF_FontFaceFamilyName(TTF_Font *font);
 extern DECLSPEC char * SDLCALL TTF_FontFaceStyleName(TTF_Font *font);
 
-/* Get the metrics (dimensions) of a glyph */
+/* Get the metrics (dimensions) of a glyph
+   To understand what these metrics mean, here is a useful link:
+    http://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
+ */
 extern DECLSPEC int SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
 				     int *minx, int *maxx,
                                      int *miny, int *maxy, int *advance);
