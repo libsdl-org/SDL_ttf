@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 
 			if( glyph ) {
 				char outname[64];
-				snprintf( outname, sizeof( outname ), "glyph-%d.bmp", i );
+				sprintf( outname, "glyph-%d.bmp", i );
 				SDL_SaveBMP( glyph, outname );
 			}
 
