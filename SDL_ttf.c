@@ -123,7 +123,7 @@ int TTF_Init( void )
 	return status;
 }
 
-TTF_Font* TTF_OpenFont( const char *file, int ptsize )
+TTF_Font* TTF_OpenFontIndex( const char *file, int ptsize, long index )
 {
 	TTF_Font* font;
 	FT_Error error;
@@ -143,6 +143,21 @@ TTF_Font* TTF_OpenFont( const char *file, int ptsize )
 		TTF_SetFTError( "Couldn't load font file", error);
 		free( font );
 		return NULL;
+	}
+	if ( index != 0 ) {
+		if ( font->face->num_faces > index ) {
+		  	FT_Done_Face( font->face );
+			error = FT_New_Face( library, file, index, &font->face );
+			if( error ) {
+				TTF_SetFTError( "Couldn't get font face", error);
+				free( font );
+				return NULL;
+			}
+		} else {
+			TTF_SetFTError( "No such font face", error);
+			free( font );
+			return NULL;
+		}
 	}
 	face = font->face;
 
@@ -190,6 +205,11 @@ TTF_Font* TTF_OpenFont( const char *file, int ptsize )
 	font->glyph_italics *= font->height;
 
 	return font;
+}
+
+TTF_Font* TTF_OpenFont( const char *file, int ptsize )
+{
+	TTF_OpenFontIndex(file, ptsize, 0);
 }
 
 static void Flush_Glyph( c_glyph* glyph )
@@ -482,6 +502,26 @@ int TTF_FontDescent(TTF_Font *font)
 int TTF_FontLineSkip(TTF_Font *font)
 {
 	return(font->lineskip);
+}
+
+long TTF_FontFaces(TTF_Font *font)
+{
+	return(font->face->num_faces);
+}
+
+int TTF_FontFaceIsFixedWidth(TTF_Font *font)
+{
+	return(FT_IS_FIXED_WIDTH(font->face));
+}
+
+char *TTF_FontFaceFamilyName(TTF_Font *font)
+{
+	return(font->face->family_name);
+}
+
+char *TTF_FontFaceStyleName(TTF_Font *font)
+{
+	return(font->face->style_name);
 }
 
 int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,

@@ -1,5 +1,7 @@
 
 2.0.4:
+akira yamada - Thu Nov  1 08:17:26 PST 2001
+ * Added support for selecting individual font faces
 Thomas Krennwallner - Tue, 24 Jul 2001 19:16:37
  * Added support for foreground/background color in showfont
 Mattias Engdegård, Thomas Krennwallner - Mon, 23 Jul 2001 04:47:54

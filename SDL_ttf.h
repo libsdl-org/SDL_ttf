@@ -44,6 +44,7 @@ extern DECLSPEC int TTF_Init(void);
 
 /* Open a font file and create a font of the specified point size */
 extern DECLSPEC TTF_Font *TTF_OpenFont(const char *file, int ptsize);
+extern DECLSPEC TTF_Font *TTF_OpenFontIndex(const char *file, int ptsize, long index);
 
 /* Set and retrieve the font style
    This font style is implemented by modifying the font glyphs, and
@@ -71,6 +72,14 @@ extern DECLSPEC int TTF_FontDescent(TTF_Font *font);
 
 /* Get the recommended spacing between lines of text for this font */
 extern DECLSPEC int TTF_FontLineSkip(TTF_Font *font);
+
+/* Get the number of faces of the font */
+extern DECLSPEC long TTF_FontFaces(TTF_Font *font);
+
+/* Get the font face attributes, if any */
+extern DECLSPEC int TTF_FontFaceIsFixedWidth(TTF_Font *font);
+extern DECLSPEC char *TTF_FontFaceFamilyName(TTF_Font *font);
+extern DECLSPEC char *TTF_FontFaceStyleName(TTF_Font *font);
 
 /* Get the metrics (dimensions) of a glyph */
 extern DECLSPEC int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
