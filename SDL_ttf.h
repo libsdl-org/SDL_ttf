@@ -60,6 +60,15 @@ extern "C" {
  */
 extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
 
+/* ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark) */
+#define UNICODE_BOM_NATIVE	0xFEFF
+#define UNICODE_BOM_SWAPPED	0xFFFE
+
+/* This function tells the library whether UNICODE text is generally
+   byteswapped.  A UNICODE BOM character at the beginning of a string
+   will override this setting for that string.
+*/
+extern DECLSPEC void SDLCALL TTF_ByteSwappedUNICODE(int swapped);
 
 /* The internal structure containing font information */
 typedef struct _TTF_Font TTF_Font;

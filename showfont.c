@@ -40,8 +40,7 @@
 #define NUM_COLORS      256
 
 static char *Usage =
-"Usage: %s [-utf8|-unicode] [-b] [-i] [-u] [-fgcol r,g,b] [-bgcol r,g,b] \
-<font>.ttf [ptsize] [text]\n";
+"Usage: %s [-solid] [-utf8|-unicode] [-b] [-i] [-u] [-fgcol r,g,b] [-bgcol r,g,b] <font>.ttf [ptsize] [text]\n";
 
 int main(int argc, char *argv[])
 {
