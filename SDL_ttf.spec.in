@@ -12,8 +12,8 @@ Group: System Environment/Libraries
 BuildRoot: /var/tmp/%{name}-buildroot
 Prefix: %{_prefix}
 Packager: Hakan Tandogan <hakan@iconsult.com>
-BuildRequires: SDL-devel
-BuildRequires: freetype-devel
+#BuildRequires: SDL-devel
+#BuildRequires: freetype-devel
 
 %description
 This library allows you to use TrueType fonts to render text in SDL

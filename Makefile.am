@@ -11,6 +11,7 @@ libSDL_ttf_la_SOURCES =		\
 
 EXTRA_DIST =			\
 	CHANGES			\
+	VisualC.zip		\
 	SDL_ttf.spec		\
 	SDL_ttf.spec.in		\
 	autogen.sh
