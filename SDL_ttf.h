@@ -27,8 +27,8 @@
 	http://www.freetype.org/
 */
 
-#ifndef _SDLttf_h
-#define _SDLttf_h
+#ifndef _SDL_ttf_h
+#define _SDL_ttf_h
 
 #include "SDL.h"
 #include "begin_code.h"
@@ -40,23 +40,29 @@ extern "C" {
 
 /* Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
 */
-#define TTF_MAJOR_VERSION	2
-#define TTF_MINOR_VERSION	0
-#define TTF_PATCHLEVEL		7
+#define SDL_TTF_MAJOR_VERSION	2
+#define SDL_TTF_MINOR_VERSION	0
+#define SDL_TTF_PATCHLEVEL	7
 
 /* This macro can be used to fill a version structure with the compile-time
  * version of the SDL_ttf library.
  */
-#define TTF_VERSION(X)							\
+#define SDL_TTF_VERSION(X)						\
 {									\
-	(X)->major = TTF_MAJOR_VERSION;					\
-	(X)->minor = TTF_MINOR_VERSION;					\
-	(X)->patch = TTF_PATCHLEVEL;					\
+	(X)->major = SDL_TTF_MAJOR_VERSION;				\
+	(X)->minor = SDL_TTF_MINOR_VERSION;				\
+	(X)->patch = SDL_TTF_PATCHLEVEL;				\
 }
+
+/* Backwards compatibility */
+#define TTF_MAJOR_VERSION	SDL_TTF_MAJOR_VERSION
+#define TTF_MINOR_VERSION	SDL_TTF_MINOR_VERSION
+#define TTF_PATCHLEVEL		SDL_TTF_PATCHLEVEL
+#define TTF_VERSION(X)		SDL_TTF_VERSION(X)
 
 /* This function gets the version of the dynamically linked SDL_ttf library.
    it should NOT be used to fill a version structure, instead you should
-   use the TTF_VERSION() macro.
+   use the SDL_TTF_VERSION() macro.
  */
 extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
 
@@ -222,4 +228,4 @@ extern DECLSPEC int SDLCALL TTF_WasInit(void);
 #endif
 #include "close_code.h"
 
-#endif /* _SDLttf_h */
+#endif /* _SDL_ttf_h */

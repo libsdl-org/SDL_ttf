@@ -149,7 +149,7 @@ static __inline__ void UNICODE_strcpy(Uint16 *dst, const Uint16 *src, int swap)
 const SDL_version *TTF_Linked_Version(void)
 {
 	static SDL_version linked_version;
-	TTF_VERSION(&linked_version);
+	SDL_TTF_VERSION(&linked_version);
 	return(&linked_version);
 }
 
