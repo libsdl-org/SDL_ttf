@@ -197,6 +197,9 @@ extern DECLSPEC void SDLCALL TTF_CloseFont(TTF_Font *font);
 /* De-initialize the TTF engine */
 extern DECLSPEC void SDLCALL TTF_Quit(void);
 
+/* Check if the TTF engine is initialized */
+extern DECLSPEC int SDLCALL TTF_WasInit(void);
+
 /* We'll use SDL for reporting errors */
 #define TTF_SetError	SDL_SetError
 #define TTF_GetError	SDL_GetError

@@ -147,16 +147,17 @@ static void TTF_SetFTError(const char *msg, FT_Error error)
 
 int TTF_Init( void )
 {
-	int status;
-	FT_Error error;
+	int status = 0;
 
-	status = 0;
-	error = FT_Init_FreeType( &library );
-	if ( error ) {
-		TTF_SetFTError( "Couldn't init FreeType engine", error );
-		status = -1;
-	} else {
-		TTF_initialized = 1;
+	if ( ! TTF_initialized ) {
+		FT_Error error = FT_Init_FreeType( &library );
+		if ( error ) {
+			TTF_SetFTError("Couldn't init FreeType engine", error);
+			status = -1;
+		}
+	}
+	if ( status == 0 ) {
+		++TTF_initialized;
 	}
 	return status;
 }
@@ -183,6 +184,11 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	FT_Fixed scale;
 	FT_Stream stream;
 	int position;
+
+	if ( ! TTF_initialized ) {
+		TTF_SetError( "Library not initialized" );
+		return NULL;
+	}
 
 	/* Check to make sure we can seek in this stream */
 	position = SDL_RWtell(src);
@@ -698,6 +704,7 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 
 	/* Initialize everything to 0 */
 	if ( ! TTF_initialized ) {
+		TTF_SetError( "Library not initialized" );
 		return -1;
 	}
 	status = 0;
@@ -1356,7 +1363,13 @@ int TTF_GetFontStyle( TTF_Font* font )
 void TTF_Quit( void )
 {
 	if ( TTF_initialized ) {
-		FT_Done_FreeType( library );
+		if ( --TTF_initialized == 0 ) {
+			FT_Done_FreeType( library );
+		}
 	}
-	TTF_initialized = 0;
+}
+
+int TTF_WasInit( void )
+{
+	return TTF_initialized;
 }
