@@ -1,0 +1,116 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(README)
+
+dnl Set various version strings - taken gratefully from the GTk sources
+
+# Making releases:
+#   MICRO_VERSION += 1;
+#   INTERFACE_AGE += 1;
+#   BINARY_AGE += 1;
+# if any functions have been added, set INTERFACE_AGE to 0.
+# if backwards compatibility has been broken,
+# set BINARY_AGE and INTERFACE_AGE to 0.
+
+MAJOR_VERSION=2
+MINOR_VERSION=0
+MICRO_VERSION=3
+INTERFACE_AGE=3
+BINARY_AGE=3
+VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION
+
+AC_SUBST(MAJOR_VERSION)
+AC_SUBST(MINOR_VERSION)
+AC_SUBST(MICRO_VERSION)
+AC_SUBST(INTERFACE_AGE)
+AC_SUBST(BINARY_AGE)
+AC_SUBST(VERSION)
+
+# libtool versioning
+LT_RELEASE=$MAJOR_VERSION.$MINOR_VERSION
+LT_CURRENT=`expr $MICRO_VERSION - $INTERFACE_AGE`
+LT_REVISION=$INTERFACE_AGE
+LT_AGE=`expr $BINARY_AGE - $INTERFACE_AGE`
+
+AC_SUBST(LT_RELEASE)
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_REVISION)
+AC_SUBST(LT_AGE)
+
+dnl Setup for automake
+AM_INIT_AUTOMAKE(SDL_ttf, $VERSION)
+
+dnl Detect the canonical host and target build environment
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
+dnl Check for tools
+
+AC_LIBTOOL_WIN32_DLL
+AM_PROG_LIBTOOL
+AC_PROG_MAKE_SET
+AC_PROG_CC
+AC_PROG_INSTALL
+
+dnl The alpha architecture needs special flags for binary portability
+case "$target" in
+    alpha*-*-linux*)
+        CFLAGS="$CFLAGS -mcpu=ev4 -Wa,-mall"
+        ;;
+    *-*-beos*)
+        ac_default_prefix=/boot/develop/tools/gnupro
+        ;;
+    *-*-cygwin* | *-*-mingw32*)
+        if test "$build" != "$target"; then # cross-compiling
+            ac_default_prefix=/usr/local/cross-tools/i386-mingw32msvc
+        fi
+        ;;
+esac
+
+dnl Check for the FreeType 2 library
+dnl
+dnl Get the cflags and libraries from the freetype-config script
+dnl
+AC_ARG_WITH(freetype-prefix,[  --with-freetype-prefix=PFX   Prefix where FREETYPE is 
+installed (optional)],
+            freetype_prefix="$withval", freetype_prefix="")
+AC_ARG_WITH(freetype-exec-prefix,[  --with-freetype-exec-prefix=PFX Exec prefix 
+where FREETYPE is installed (optional)],
+            freetype_exec_prefix="$withval", freetype_exec_prefix="")
+
+if test x$freetype_exec_prefix != x ; then
+     freetype_args="$freetype_args --exec-prefix=$freetype_exec_prefix"
+     if test x${FREETYPE_CONFIG+set} != xset ; then
+        FREETYPE_CONFIG=$freetype_exec_prefix/bin/freetype-config
+     fi
+fi
+if test x$freetype_prefix != x ; then
+     freetype_args="$freetype_args --prefix=$freetype_prefix"
+     if test x${FREETYPE_CONFIG+set} != xset ; then
+        FREETYPE_CONFIG=$freetype_prefix/bin/freetype-config
+     fi
+fi
+AC_PATH_PROG(FREETYPE_CONFIG, freetype-config, no)
+no_freetype=""
+if test "$FREETYPE_CONFIG" = "no" ; then
+    AC_MSG_ERROR([
+*** Unable to find FreeType2 library (http://www.freetype.org/)
+])
+else
+    CFLAGS="$CFLAGS `$FREETYPE_CONFIG $freetypeconf_args --cflags`"
+    LIBS="$LIBS `$FREETYPE_CONFIG $freetypeconf_args --libs`"
+fi
+
+dnl Check for SDL
+SDL_VERSION=1.2.0
+AM_PATH_SDL($SDL_VERSION,
+            :,
+	    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+)
+CFLAGS="$CFLAGS $SDL_CFLAGS"
+LIBS="$LIBS $SDL_LIBS"
+
+# Finally create all the generated files
+AC_OUTPUT([
+Makefile
+SDL_ttf.spec
+])

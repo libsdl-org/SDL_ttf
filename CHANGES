@@ -1,0 +1,55 @@
+
+2.0.3:
+Sam Lantinga - Tue May 22 17:48:10 PDT 2001
+ * Updated for FreeType 2.0
+
+1.2.2:
+Sam Lantinga - Tue Sep 26 15:04:04 PDT 2000
+ * Added TTF_RenderGlyph_* functions to render a single glyph
+Michael Vance - Tue Sep 12 12:20:03 PDT 2000
+ * Added TTF_GetGlyphMetrics() to retrieve the glyph bounding box
+Sam Lantinga - Tue Sep 12 07:15:34 PDT 2000
+ * Fixed the alpha blending for SDL 1.1.5
+Michael Vance - Mon Sep 11 15:45:05 PDT 2000
+ * Added TTF_FontAscent() for completeness
+Ray Kelm - Fri, 04 Aug 2000 20:58:00 -0400
+ * Added support for cross-compiling Windows DLL from Linux
+
+1.2.1:
+Sam Lantinga - Wed May 10 19:54:56 PDT 2000
+ * Fixed bounding box width computation
+Sam Lantinga - Wed May 10 19:52:39 PDT 2000
+ * Fixed compile problem with Visual C++
+ * Don't allocate memory for zero sized glyphs (like space)
+Sam Lantinga - Sat May  6 13:39:15 PDT 2000
+ * Fixed bolding of large fonts
+
+1.2.0:
+Sam Lantinga - Fri May  5 11:08:24 PDT 2000
+ * Added support for font styles (bold, italic, underline)
+   New functions: TTF_GetFontStyle(), TTF_SetFontStyle()
+
+1.1.1:
+Sam Lantinga - Thu May  4 02:19:36 PDT 2000
+ * Improved the quality of the alpha blended text rendering
+Sam Lantinga - Thu May  4 01:11:00 PDT 2000
+ * Added font glyph caching, speeded up text rendering
+ * Added font attribute information.
+   New functions: TTF_FontDescent(), TTF_FontLineSkip()
+
+1.1.0:
+Sam Lantinga - Tue Apr 25 22:36:41 PDT 2000
+ * Added two new styles of font rendering:
+	solid colorkey (no dither) and alpha blended dithering
+   New functions: TTF_RenderText_Solid(), TTF_RenderText_Blended()
+
+1.0.2:
+Sam Lantinga - Sun Apr 23 18:01:44 PDT 2000
+ * TTF_OpenFont() takes a const char * argument, instead of char *
+
+1.0.1:
+Sam Lantinga - Wed Jan 19 22:10:52 PST 2000
+ * Added CHANGES
+ * Added rpm spec file contributed by Hakan Tandogan
+ * Removed freetype.h header dependency from public headers
+ * Added /usr/include/freetype/ directory detection to configure.in
