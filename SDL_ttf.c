@@ -1078,7 +1078,11 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 		}
 		
 		for( row = 0; row < current->rows; ++row ) {
-			/* Make sure we don't go over the limit */
+			/* Make sure we don't go either over, or under the
+			 * limit */
+			if ( row+glyph->yoffset < 0 ) {
+				continue;
+			}
 			if ( row+glyph->yoffset >= textbuf->h ) {
 				continue;
 			}
@@ -1326,7 +1330,11 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 		
 		current = &glyph->pixmap;
 		for( row = 0; row < current->rows; ++row ) {
-			/* Make sure we don't go over the limit */
+			/* Make sure we don't go either over, or under the
+			 * limit */
+			if ( row+glyph->yoffset < 0 ) {
+				continue;
+			}
 			if ( row+glyph->yoffset >= textbuf->h ) {
 				continue;
 			}
@@ -1560,7 +1568,11 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 		}
 
 		for ( row = 0; row < glyph->pixmap.rows; ++row ) {
-			/* Make sure we don't go over the limit */
+			/* Make sure we don't go either over, or under the
+			 * limit */
+			if ( row+glyph->yoffset < 0 ) {
+				continue;
+			}
 			if ( row+glyph->yoffset >= textbuf->h ) {
 				continue;
 			}
