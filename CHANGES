@@ -1,4 +1,8 @@
 
+2.0.6:
+Sam Lantinga - Sat Aug 24 22:06:22 PDT 2002
+ * Added the ability to load a font from an SDL_RWops stream
+
 2.0.5:
 Sam Lantinga - Sat Apr 13 07:49:47 PDT 2002
  * Updated autogen.sh for new versions of automake

@@ -31,6 +31,7 @@
 #include <freetype/freetype.h>
 #include <freetype/ftoutln.h>
 #include <freetype/ttnameid.h>
+#include <freetype/internal/ftobjs.h>
 
 #include "SDL.h"
 #include "SDL_ttf.h"
@@ -92,6 +93,11 @@ struct _TTF_Font {
 	c_glyph *current;
 	c_glyph cache[256];
 	c_glyph scratch;
+
+	/* We are responsible for closing the font stream */
+	SDL_RWops *src;
+	int freesrc;
+	FT_Open_Args args;
 };
 
 /* The FreeType font engine/library */
@@ -147,41 +153,70 @@ int TTF_Init( void )
 	return status;
 }
 
-TTF_Font* TTF_OpenFontIndex( const char *file, int ptsize, long index )
+static unsigned long RWread(
+	FT_Stream stream,
+	unsigned long offset,
+	unsigned char* buffer,
+	unsigned long count
+)
+{
+	SDL_RWops *src;
+
+	src = (SDL_RWops *)stream->descriptor.pointer;
+	SDL_RWseek( src, (int)offset, SEEK_SET );
+	return SDL_RWread( src, buffer, 1, (int)count );
+}
+
+TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long index )
 {
 	TTF_Font* font;
 	FT_Error error;
 	FT_Face face;
 	FT_Fixed scale;
+	FT_Stream stream;
+	int position;
+
+	/* Check to make sure we can seek in this stream */
+	position = SDL_RWtell(src);
+	if ( position < 0 ) {
+		TTF_SetError( "Can't seek in stream" );
+		return NULL;
+	}
 
 	font = (TTF_Font*) malloc(sizeof *font);
 	if ( font == NULL ) {
 		TTF_SetError( "Out of memory" );
 		return NULL;
 	}
-	memset( font, 0, sizeof( *font ) );
+	memset(font, 0, sizeof(*font));
 
-	/* Open the font and create ancillary data */
-	error = FT_New_Face( library, file, 0, &font->face );
-	if( error ) {
-		TTF_SetFTError( "Couldn't load font file", error);
-		free( font );
+	font->src = src;
+	font->freesrc = freesrc;
+
+	stream = (FT_Stream)malloc(sizeof(*stream));
+	if ( stream == NULL ) {
+		TTF_SetError( "Out of memory" );
+		TTF_CloseFont( font );
 		return NULL;
 	}
-	if ( index != 0 ) {
-		if ( font->face->num_faces > index ) {
-		  	FT_Done_Face( font->face );
-			error = FT_New_Face( library, file, index, &font->face );
-			if( error ) {
-				TTF_SetFTError( "Couldn't get font face", error);
-				free( font );
-				return NULL;
-			}
-		} else {
-			TTF_SetFTError( "No such font face", error);
-			free( font );
-			return NULL;
-		}
+	memset(stream, 0, sizeof(*stream));
+
+	stream->memory = library->memory;
+	stream->read = RWread;
+	stream->descriptor.pointer = src;
+	stream->pos = (unsigned long)position;
+	SDL_RWseek(src, 0, SEEK_END);
+	stream->size = (unsigned long)(SDL_RWtell(src) - position);
+	SDL_RWseek(src, position, SEEK_SET);
+
+	font->args.flags = ft_open_stream;
+	font->args.stream = stream;
+
+	error = FT_Open_Face( library, &font->args, index, &font->face );
+	if( error ) {
+		TTF_SetFTError( "Couldn't load font file", error );
+		TTF_CloseFont( font );
+		return NULL;
 	}
 	face = font->face;
 
@@ -229,6 +264,11 @@ TTF_Font* TTF_OpenFontIndex( const char *file, int ptsize, long index )
 	font->glyph_italics *= font->height;
 
 	return font;
+}
+
+TTF_Font* TTF_OpenFontIndex( const char *file, int ptsize, long index )
+{
+	return TTF_OpenFontIndexRW(SDL_RWFromFile(file, "rb"), 1, ptsize, index);
 }
 
 TTF_Font* TTF_OpenFont( const char *file, int ptsize )
@@ -465,7 +505,15 @@ static FT_Error Find_Glyph( TTF_Font* font, Uint16 ch, int want )
 void TTF_CloseFont( TTF_Font* font )
 {
 	Flush_Cache( font );
-	FT_Done_Face( font->face );
+	if ( font->face ) {
+		FT_Done_Face( font->face );
+	}
+	if ( font->args.stream ) {
+		free( font->args.stream );
+	}
+	if ( font->freesrc ) {
+		SDL_RWclose( font->src );
+	}
 	free( font );
 }
 
