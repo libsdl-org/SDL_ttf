@@ -1,0 +1,17 @@
+configure
+config.log
+config.status
+aclocal.m4
+autom4te.cache
+libtool
+depcomp
+Makefile.in
+Makefile
+.libs
+.deps
+*.o
+*.lo
+*.la
+*.spec
+showfont
+glfont
