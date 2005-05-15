@@ -12,6 +12,7 @@ libSDL_ttf_la_SOURCES =		\
 EXTRA_DIST =			\
 	CHANGES			\
 	VisualC.zip		\
+	Xcode.tar.gz		\
 	PBProjects.tar.gz	\
 	MPWmake.sea.bin		\
 	SDL_ttf.spec		\
