@@ -1575,6 +1575,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	xstart = 0;
 	swapped = TTF_byteswapped;
 	pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
+	SDL_FillRect(textbuf, NULL, pixel);	/* Initialize with fg and 0 alpha */
 
 	for ( ch=text; *ch; ++ch ) {
 		Uint16 c = *ch;
@@ -1694,6 +1695,8 @@ SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 
 	/* Copy the character from the pixmap */
 	pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
+	SDL_FillRect(textbuf, NULL, pixel);	/* Initialize with fg and 0 alpha */
+
 	for ( row=0; row<textbuf->h; ++row ) {
 		/* Changed src to take pitch into account, not just width */
 		src = glyph->pixmap.buffer + row * glyph->pixmap.pitch;
