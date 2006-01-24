@@ -233,6 +233,9 @@ static unsigned long RWread(
 
 	src = (SDL_RWops *)stream->descriptor.pointer;
 	SDL_RWseek( src, (int)offset, SEEK_SET );
+	if ( count == 0 ) {
+		return 0;
+	}
 	return SDL_RWread( src, buffer, 1, (int)count );
 }
 
