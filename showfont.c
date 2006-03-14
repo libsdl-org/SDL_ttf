@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
 			/* Use iconv to convert the message into utf-16.
 			 * "char" and "" are aliases for the local 8-bit encoding */
 			iconv_t cd;
-			ICONV_CONST char *from_str = message;
+			/*ICONV_CONST*/ char *from_str = message;
 			char *to_str = (char*)unicode_text;
 			size_t from_sz = strlen(message) + 1;
 			size_t to_sz = sizeof(unicode_text);
