@@ -36,8 +36,8 @@ AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 
-dnl Detect the canonical host and target build environment
-AC_CANONICAL_SYSTEM
+dnl Detect the canonical build and host environments
+AC_CANONICAL_HOST
 
 dnl Setup for automake
 AM_INIT_AUTOMAKE(SDL_ttf, $VERSION)
@@ -56,7 +56,7 @@ dnl This isn't available on many systems
 dnl AM_ICONV
 
 dnl The alpha architecture needs special flags for binary portability
-case "$target" in
+case "$host" in
     alpha*-*-linux*)
         CFLAGS="$CFLAGS -mcpu=ev4 -Wa,-mall"
         ;;
@@ -64,7 +64,7 @@ case "$target" in
         ac_default_prefix=/boot/develop/tools/gnupro
         ;;
     *-*-cygwin* | *-*-mingw32*)
-        if test "$build" != "$target"; then # cross-compiling
+        if test "$build" != "$host"; then # cross-compiling
             ac_default_prefix=/usr/local/cross-tools/i386-mingw32msvc
         fi
         ;;
@@ -114,7 +114,7 @@ CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
 dnl Check for OpenGL
-case "$target" in
+case "$host" in
     *-*-cygwin* | *-*-mingw32*)
         MATHLIB=""
         SYS_GL_LIBS="-lopengl32"
