@@ -16,7 +16,7 @@ EXTRA_DIST =			\
 	MPWmake.sea.bin		\
 	SDL_ttf.spec		\
 	SDL_ttf.spec.in		\
-	gcc-fat			\
+	gcc-fat.sh		\
 	autogen.sh
 
 libSDL_ttf_la_LDFLAGS = 	\
