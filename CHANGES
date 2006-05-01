@@ -1,4 +1,6 @@
 2.0.7:
+Stepan Roh - 2005-10-02 09:46
+ * Fixed line spacing by using font ascender and descender
 Sam Lantinga - Sun Apr 30 01:48:40 PDT 2006
  * Added gcc-fat.sh for generating Universal binaries on Mac OS X
  * Updated libtool support to version 1.5.22
