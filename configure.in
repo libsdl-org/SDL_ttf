@@ -125,7 +125,7 @@ case "$host" in
         ;;
     *-*-darwin*)
         MATHLIB=""
-        SYS_GL_LIBS=""
+        SYS_GL_LIBS="-Wl,-framework,OpenGL"
         ;;
     *-*-aix*)
         if test x$ac_cv_prog_gcc = xyes; then
