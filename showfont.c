@@ -42,6 +42,13 @@
 static char *Usage =
 "Usage: %s [-solid] [-utf8|-unicode] [-b] [-i] [-u] [-fgcol r,g,b] [-bgcol r,g,b] <font>.ttf [ptsize] [text]\n";
 
+static void cleanup(int exitcode)
+{
+	TTF_Quit();
+	SDL_Quit();
+	exit(exitcode);
+}
+
 int main(int argc, char *argv[])
 {
 	char *argv0 = argv[0];
@@ -137,14 +144,13 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Couldn't initialize SDL: %s\n",SDL_GetError());
 		return(2);
 	}
-	atexit(SDL_Quit);
 
 	/* Initialize the TTF library */
 	if ( TTF_Init() < 0 ) {
 		fprintf(stderr, "Couldn't initialize TTF: %s\n",SDL_GetError());
+		SDL_Quit();
 		return(2);
 	}
-	atexit(TTF_Quit);
 
 	/* Open the font file with the requested point size */
 	ptsize = 0;
@@ -161,12 +167,11 @@ int main(int argc, char *argv[])
 	if ( font == NULL ) {
 		fprintf(stderr, "Couldn't load %d pt font from %s: %s\n",
 					ptsize, argv[0], SDL_GetError());
-		return(2);
+		cleanup(2);
 	}
 	TTF_SetFontStyle(font, renderstyle);
 
 	if( dump ) {
-
 		for( i = 48; i < 123; i++ ) {
 			SDL_Surface* glyph = NULL;
 
@@ -179,8 +184,7 @@ int main(int argc, char *argv[])
 			}
 
 		}
-
-		return( 0 );
+		cleanup(0);
 	}
 
 	/* Set a 640x480x8 video mode */
@@ -188,7 +192,7 @@ int main(int argc, char *argv[])
 	if ( screen == NULL ) {
 		fprintf(stderr, "Couldn't set 640x480x8 video mode: %s\n",
 							SDL_GetError());
-		return(2);
+		cleanup(2);
 	}
 
 	/* Set a palette that is good for the foreground colored text */
@@ -300,7 +304,7 @@ int main(int argc, char *argv[])
 	if ( text == NULL ) {
 		fprintf(stderr, "Couldn't render text: %s\n", SDL_GetError());
 		TTF_CloseFont(font);
-		return(2);
+		cleanup(2);
 	}
 	dstrect.x = (screen->w - text->w)/2;
 	dstrect.y = (screen->h - text->h)/2;
@@ -314,7 +318,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Couldn't blit text to display: %s\n", 
 								SDL_GetError());
 		TTF_CloseFont(font);
-		return(2);
+		cleanup(2);
 	}
 	SDL_UpdateRect(screen, 0, 0, 0, 0);
 
@@ -364,5 +368,8 @@ int main(int argc, char *argv[])
 	}
 	SDL_FreeSurface(text);
 	TTF_CloseFont(font);
-	return(0);
+	cleanup(0);
+
+	/* Not reached, but fixes compiler warnings */
+	return 0;
 }
