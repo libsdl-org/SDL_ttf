@@ -172,6 +172,13 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 	return texture;
 }
 
+static void cleanup(int exitcode)
+{
+	TTF_Quit();
+	SDL_Quit();
+	exit(exitcode);
+}
+
 int main(int argc, char *argv[])
 {
 	char *argv0 = argv[0];
@@ -281,14 +288,13 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Couldn't initialize SDL: %s\n",SDL_GetError());
 		return(2);
 	}
-	atexit(SDL_Quit);
 
 	/* Initialize the TTF library */
 	if ( TTF_Init() < 0 ) {
 		fprintf(stderr, "Couldn't initialize TTF: %s\n",SDL_GetError());
+		SDL_Quit();
 		return(2);
 	}
-	atexit(TTF_Quit);
 
 	/* Open the font file with the requested point size */
 	ptsize = 0;
@@ -305,12 +311,11 @@ int main(int argc, char *argv[])
 	if ( font == NULL ) {
 		fprintf(stderr, "Couldn't load %d pt font from %s: %s\n",
 					ptsize, argv[0], SDL_GetError());
-		return(2);
+		cleanup(2);
 	}
 	TTF_SetFontStyle(font, renderstyle);
 
 	if( dump ) {
-
 		for( i = 48; i < 123; i++ ) {
 			SDL_Surface* glyph = NULL;
 
@@ -323,8 +328,7 @@ int main(int argc, char *argv[])
 			}
 
 		}
-
-		return( 0 );
+		cleanup(0);
 	}
 
 	/* Set a 640x480 video mode */
@@ -332,7 +336,7 @@ int main(int argc, char *argv[])
 	if ( screen == NULL ) {
 		fprintf(stderr, "Couldn't set 640x480 OpenGL mode: %s\n",
 							SDL_GetError());
-		return(2);
+		cleanup(2);
 	}
 
 	/* Render and center the message */
@@ -374,7 +378,7 @@ int main(int argc, char *argv[])
 	if ( text == NULL ) {
 		fprintf(stderr, "Couldn't render text: %s\n", SDL_GetError());
 		TTF_CloseFont(font);
-		return(2);
+		cleanup(2);
 	}
 	x = (screen->w - text->w)/2;
 	y = (screen->h - text->h)/2;
@@ -516,7 +520,10 @@ int main(int argc, char *argv[])
 		SDL_GL_SwapBuffers( );
 	}
 	TTF_CloseFont(font);
-	return(0);
+	cleanup(0);
+
+	/* Not reached, but fixes compiler warnings */
+	return 0;
 }
 
 #else /* HAVE_OPENGL */
