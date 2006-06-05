@@ -661,17 +661,19 @@ static FT_Error Find_Glyph( TTF_Font* font, Uint16 ch, int want )
 
 void TTF_CloseFont( TTF_Font* font )
 {
-	Flush_Cache( font );
-	if ( font->face ) {
-		FT_Done_Face( font->face );
+	if ( font ) {
+		Flush_Cache( font );
+		if ( font->face ) {
+			FT_Done_Face( font->face );
+		}
+		if ( font->args.stream ) {
+			free( font->args.stream );
+		}
+		if ( font->freesrc ) {
+			SDL_RWclose( font->src );
+		}
+		free( font );
 	}
-	if ( font->args.stream ) {
-		free( font->args.stream );
-	}
-	if ( font->freesrc ) {
-		SDL_RWclose( font->src );
-	}
-	free( font );
 }
 
 static Uint16 *LATIN1_to_UNICODE(Uint16 *unicode, const char *text, int len)
