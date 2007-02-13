@@ -49,7 +49,15 @@ AM_PROG_LIBTOOL
 AC_PROG_MAKE_SET
 AC_PROG_CC
 AC_PROG_INSTALL
-AC_FUNC_ALLOCA
+
+case "$host" in
+    *-*-cygwin* | *-*-mingw32*)
+	;;
+    *)
+	AC_FUNC_ALLOCA
+	;;
+esac
+
 
 dnl Check for iconv (character conversion library; see iconv.m4)
 dnl This isn't available on many systems
