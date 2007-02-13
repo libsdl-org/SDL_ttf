@@ -706,42 +706,42 @@ static Uint16 *UTF8_to_UNICODE(Uint16 *unicode, const char *utf8, int len)
 	return unicode;
 }
 
-int TTF_FontHeight(TTF_Font *font)
+int TTF_FontHeight(const TTF_Font *font)
 {
 	return(font->height);
 }
 
-int TTF_FontAscent(TTF_Font *font)
+int TTF_FontAscent(const TTF_Font *font)
 {
 	return(font->ascent);
 }
 
-int TTF_FontDescent(TTF_Font *font)
+int TTF_FontDescent(const TTF_Font *font)
 {
 	return(font->descent);
 }
 
-int TTF_FontLineSkip(TTF_Font *font)
+int TTF_FontLineSkip(const TTF_Font *font)
 {
 	return(font->lineskip);
 }
 
-long TTF_FontFaces(TTF_Font *font)
+long TTF_FontFaces(const TTF_Font *font)
 {
 	return(font->face->num_faces);
 }
 
-int TTF_FontFaceIsFixedWidth(TTF_Font *font)
+int TTF_FontFaceIsFixedWidth(const TTF_Font *font)
 {
 	return(FT_IS_FIXED_WIDTH(font->face));
 }
 
-char *TTF_FontFaceFamilyName(TTF_Font *font)
+char *TTF_FontFaceFamilyName(const TTF_Font *font)
 {
 	return(font->face->family_name);
 }
 
-char *TTF_FontFaceStyleName(TTF_Font *font)
+char *TTF_FontFaceStyleName(const TTF_Font *font)
 {
 	return(font->face->style_name);
 }
@@ -1725,7 +1725,7 @@ void TTF_SetFontStyle( TTF_Font* font, int style )
 	Flush_Cache( font );
 }
 
-int TTF_GetFontStyle( TTF_Font* font )
+int TTF_GetFontStyle( const TTF_Font* font )
 {
 	return font->style;
 }
