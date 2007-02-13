@@ -99,32 +99,32 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexRW(SDL_RWops *src, int frees
 #define TTF_STYLE_BOLD		0x01
 #define TTF_STYLE_ITALIC	0x02
 #define TTF_STYLE_UNDERLINE	0x04
-extern DECLSPEC int SDLCALL TTF_GetFontStyle(TTF_Font *font);
+extern DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
 extern DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
 
 /* Get the total height of the font - usually equal to point size */
-extern DECLSPEC int SDLCALL TTF_FontHeight(TTF_Font *font);
+extern DECLSPEC int SDLCALL TTF_FontHeight(const TTF_Font *font);
 
 /* Get the offset from the baseline to the top of the font
    This is a positive value, relative to the baseline.
  */
-extern DECLSPEC int SDLCALL TTF_FontAscent(TTF_Font *font);
+extern DECLSPEC int SDLCALL TTF_FontAscent(const TTF_Font *font);
 
 /* Get the offset from the baseline to the bottom of the font
    This is a negative value, relative to the baseline.
  */
-extern DECLSPEC int SDLCALL TTF_FontDescent(TTF_Font *font);
+extern DECLSPEC int SDLCALL TTF_FontDescent(const TTF_Font *font);
 
 /* Get the recommended spacing between lines of text for this font */
-extern DECLSPEC int SDLCALL TTF_FontLineSkip(TTF_Font *font);
+extern DECLSPEC int SDLCALL TTF_FontLineSkip(const TTF_Font *font);
 
 /* Get the number of faces of the font */
-extern DECLSPEC long SDLCALL TTF_FontFaces(TTF_Font *font);
+extern DECLSPEC long SDLCALL TTF_FontFaces(const TTF_Font *font);
 
 /* Get the font face attributes, if any */
-extern DECLSPEC int SDLCALL TTF_FontFaceIsFixedWidth(TTF_Font *font);
-extern DECLSPEC char * SDLCALL TTF_FontFaceFamilyName(TTF_Font *font);
-extern DECLSPEC char * SDLCALL TTF_FontFaceStyleName(TTF_Font *font);
+extern DECLSPEC int SDLCALL TTF_FontFaceIsFixedWidth(const TTF_Font *font);
+extern DECLSPEC char * SDLCALL TTF_FontFaceFamilyName(const TTF_Font *font);
+extern DECLSPEC char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *font);
 
 /* Get the metrics (dimensions) of a glyph
    To understand what these metrics mean, here is a useful link:
