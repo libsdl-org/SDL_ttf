@@ -606,11 +606,15 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 				pixmap = (Uint8*) dst->buffer + row * dst->pitch;
 				for( offset=1; offset <= font->glyph_overhang; ++offset ) {
 					for( col = dst->width - 1; col > 0; --col ) {
-						pixel = (pixmap[col] + pixmap[col-1]);
-						if( pixel > NUM_GRAYS - 1 ) {
-							pixel = NUM_GRAYS - 1;
+						if( mono ) {
+							pixmap[col] |= pixmap[col-1];
+						} else {
+							pixel = (pixmap[col] + pixmap[col-1]);
+							if( pixel > NUM_GRAYS - 1 ) {
+								pixel = NUM_GRAYS - 1;
+							}
+							pixmap[col] = (Uint8) pixel;
 						}
-						pixmap[col] = (Uint8) pixel;
 					}
 				}
 			}
