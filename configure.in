@@ -73,7 +73,7 @@ case "$host" in
         ;;
     *-*-cygwin* | *-*-mingw32*)
         if test "$build" != "$host"; then # cross-compiling
-            ac_default_prefix=/usr/local/cross-tools/i386-mingw32msvc
+            ac_default_prefix=/usr/local/cross-tools/i386-mingw32
         fi
         ;;
 esac
