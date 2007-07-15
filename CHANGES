@@ -1,6 +1,10 @@
 2.0.9:
 Sam Lantinga - Wed Jun 13 00:32:29 PDT 2007
  * Fixed bug in solid bold glyph rendering (thanks Roy!)
+Ryan Gordon - Tue Feb 13 10:19:00 2007 UTC
+ * Updated to build with the latest version of FreeType
+Sam Lantinga - Mon Jun 5 16:22:51 2006 UTC
+ * Fixed crash when passing NULL to TTF_CloseFont()
 
 2.0.8:
 Stepan Roh - 2005-10-02 09:46
