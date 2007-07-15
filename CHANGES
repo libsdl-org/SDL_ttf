@@ -1,4 +1,6 @@
 2.0.9:
+Kanou Hiroki - Sat Jul 14 23:15:40 PDT 2007
+ * Fixed rendering of fonts with 2 bit and 4 bit embedded graymaps
 Sam Lantinga - Wed Jun 13 00:32:29 PDT 2007
  * Fixed bug in solid bold glyph rendering (thanks Roy!)
 Ryan Gordon - Tue Feb 13 10:19:00 2007 UTC

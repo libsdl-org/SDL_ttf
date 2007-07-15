@@ -509,12 +509,20 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 
 		/* FT_Render_Glyph() and .fon fonts always generate a
 		 * two-color (black and white) glyphslot surface, even
-		 * when rendered in ft_render_mode_normal.  This is probably
-		 * a freetype2 bug because it is inconsistent with the
-		 * freetype2 documentation under FT_Render_Mode section.
-		 * */
-		if ( mono || !FT_IS_SCALABLE(face) ) {
+		 * when rendered in ft_render_mode_normal. */
+		/* FT_IS_SCALABLE() means that the font is in outline format,
+		 * but does not imply that outline is rendered as 8-bit
+		 * grayscale, because embedded bitmap/graymap is preferred
+		 * (see FT_LOAD_DEFAULT section of FreeType2 API Reference).
+		 * FT_Render_Glyph() canreturn two-color bitmap or 4/16/256-
+		 * color graymap according to the format of embedded bitmap/
+		 * graymap. */
+		if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_MONO ) {
 			dst->pitch *= 8;
+		} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
+			dst->pitch *= 4;
+		} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
+			dst->pitch *= 2;
 		}
 
 		/* Adjust for bold and italic text */
@@ -543,25 +551,50 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 					unsigned char *srcp = src->buffer + soffset;
 					unsigned char *dstp = dst->buffer + doffset;
 					int j;
-					for ( j = 0; j < src->width; j += 8 ) {
-						unsigned char ch = *srcp++;
-						*dstp++ = (ch&0x80) >> 7;
-						ch <<= 1;
-						*dstp++ = (ch&0x80) >> 7;
-						ch <<= 1;
-						*dstp++ = (ch&0x80) >> 7;
-						ch <<= 1;
-						*dstp++ = (ch&0x80) >> 7;
-						ch <<= 1;
-						*dstp++ = (ch&0x80) >> 7;
-						ch <<= 1;
-						*dstp++ = (ch&0x80) >> 7;
-						ch <<= 1;
-						*dstp++ = (ch&0x80) >> 7;
-						ch <<= 1;
-						*dstp++ = (ch&0x80) >> 7;
+					if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_MONO ) {
+						for ( j = 0; j < src->width; j += 8 ) {
+							unsigned char ch = *srcp++;
+							*dstp++ = (ch&0x80) >> 7;
+							ch <<= 1;
+							*dstp++ = (ch&0x80) >> 7;
+							ch <<= 1;
+							*dstp++ = (ch&0x80) >> 7;
+							ch <<= 1;
+							*dstp++ = (ch&0x80) >> 7;
+							ch <<= 1;
+							*dstp++ = (ch&0x80) >> 7;
+							ch <<= 1;
+							*dstp++ = (ch&0x80) >> 7;
+							ch <<= 1;
+							*dstp++ = (ch&0x80) >> 7;
+							ch <<= 1;
+							*dstp++ = (ch&0x80) >> 7;
+						}
+					}  else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
+						for ( j = 0; j < src->width; j += 4 ) {
+							unsigned char ch = *srcp++;
+							*dstp++ = (((ch&0xA0) >> 6) >= 0x2) ? 1 : 0;
+							ch <<= 2;
+							*dstp++ = (((ch&0xA0) >> 6) >= 0x2) ? 1 : 0;
+							ch <<= 2;
+							*dstp++ = (((ch&0xA0) >> 6) >= 0x2) ? 1 : 0;
+							ch <<= 2;
+							*dstp++ = (((ch&0xA0) >> 6) >= 0x2) ? 1 : 0;
+						}
+					} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
+						for ( j = 0; j < src->width; j += 2 ) {
+							unsigned char ch = *srcp++;
+							*dstp++ = (((ch&0xF0) >> 4) >= 0x8) ? 1 : 0;
+							ch <<= 4;
+							*dstp++ = (((ch&0xF0) >> 4) >= 0x8) ? 1 : 0;
+						}
+					} else {
+						for ( j = 0; j < src->width; j++ ) {
+							unsigned char ch = *srcp++;
+							*dstp++ = (ch >= 0x80) ? 1 : 0;
+						}
 					}
-				} else if ( !FT_IS_SCALABLE(face) ) {
+				} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_MONO ) {
 					/* This special case wouldn't
 					 * be here if the FT_Render_Glyph()
 					 * function wasn't buggy when it tried
@@ -584,6 +617,38 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 								*dstp++ = 0x00;
 							}
 							ch <<= 1;
+						}
+					}
+				} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
+					unsigned char *srcp = src->buffer + soffset;
+					unsigned char *dstp = dst->buffer + doffset;
+					unsigned char ch;
+					int j, k;
+					for ( j = 0; j < src->width; j += 4 ) {
+						ch = *srcp++;
+						for ( k = 0; k < 4; ++k ) {
+							if ((ch&0xA0) >> 6) {
+								*dstp++ = NUM_GRAYS * ((ch&0xA0) >> 6) / 3 - 1;
+							} else {
+								*dstp++ = 0x00;
+							}
+							ch <<= 2;
+						}
+					}
+				} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
+					unsigned char *srcp = src->buffer + soffset;
+					unsigned char *dstp = dst->buffer + doffset;
+					unsigned char ch;
+					int j, k;
+					for ( j = 0; j < src->width; j += 2 ) {
+						ch = *srcp++;
+						for ( k = 0; k < 2; ++k ) {
+							if ((ch&0xF0) >> 4) {
+							    *dstp++ = NUM_GRAYS * ((ch&0xF0) >> 4) / 15 - 1;
+							} else {
+								*dstp++ = 0x00;
+							}
+							ch <<= 4;
 						}
 					}
 				} else {
