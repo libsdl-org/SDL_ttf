@@ -63,17 +63,19 @@ dnl Check for iconv (character conversion library; see iconv.m4)
 dnl This isn't available on many systems
 dnl AM_ICONV
 
-dnl The alpha architecture needs special flags for binary portability
 case "$host" in
-    alpha*-*-linux*)
-        CFLAGS="$CFLAGS -mcpu=ev4 -Wa,-mall"
-        ;;
     *-*-beos*)
         ac_default_prefix=/boot/develop/tools/gnupro
         ;;
     *-*-cygwin* | *-*-mingw32*)
         if test "$build" != "$host"; then # cross-compiling
+            # Default cross-compile location
             ac_default_prefix=/usr/local/cross-tools/i386-mingw32
+        else
+            # Look for the location of the tools and install there
+            if test "$BUILD_PREFIX" != ""; then
+                ac_default_prefix=$BUILD_PREFIX
+            fi
         fi
         ;;
 esac
