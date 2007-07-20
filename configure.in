@@ -46,9 +46,15 @@ dnl Check for tools
 
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
-AC_PROG_MAKE_SET
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+if test -z "$host_alias"; then
+    hostaliaswindres=
+else
+    hostaliaswindres="$host_alias-windres"
+fi
+AC_CHECK_PROGS(WINDRES, [windres $hostaliaswindres $host_os-windres])
 
 case "$host" in
     *-*-cygwin* | *-*-mingw32*)
@@ -77,8 +83,12 @@ case "$host" in
                 ac_default_prefix=$BUILD_PREFIX
             fi
         fi
+        if test x$WINDRES != x; then
+            use_version_rc=true
+        fi
         ;;
 esac
+AM_CONDITIONAL(USE_VERSION_RC, test x$use_version_rc = xtrue)
 
 dnl Check for the FreeType 2 library
 dnl
@@ -171,8 +181,9 @@ if test x$have_opengl = xyes; then
 else
     GL_LIBS=""
 fi
-AC_SUBST(GL_LIBS)
-AC_SUBST(MATHLIB)
+AC_SUBST([GL_LIBS])
+AC_SUBST([MATHLIB])
+AC_SUBST([WINDRES])
 
 # Finally create all the generated files
 AC_OUTPUT([
