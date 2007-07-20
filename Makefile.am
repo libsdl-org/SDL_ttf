@@ -20,11 +20,21 @@ EXTRA_DIST =			\
 	gcc-fat.sh		\
 	autogen.sh
 
+if USE_VERSION_RC
+libSDL_ttf_la_LDFLAGS = 	\
+	-no-undefined		\
+	-release $(LT_RELEASE)	\
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -Wl,version.o
+libSDL_ttf_la_DEPENDENCIES = version.o
+else
 libSDL_ttf_la_LDFLAGS = 	\
 	-no-undefined		\
 	-release $(LT_RELEASE)	\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
-libSDL_ttf_la_LIBADD = 
+endif
+
+%.o : %.rc
+	$(WINDRES) $< $@
 
 noinst_PROGRAMS = showfont glfont
 
