@@ -126,6 +126,7 @@ fi
 
 dnl Check for SDL
 SDL_VERSION=1.2.4
+AC_SUBST(SDL_VERSION)
 AM_PATH_SDL($SDL_VERSION,
             :,
 	    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
@@ -189,4 +190,5 @@ AC_SUBST([WINDRES])
 AC_OUTPUT([
 Makefile
 SDL_ttf.spec
+SDL_ttf.pc
 ])
