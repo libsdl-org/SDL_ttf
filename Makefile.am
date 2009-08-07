@@ -34,6 +34,9 @@ libSDL_ttf_la_LDFLAGS = 	\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 endif
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = SDL_ttf.pc
+
 %.o : %.rc
 	$(WINDRES) $< $@
 
