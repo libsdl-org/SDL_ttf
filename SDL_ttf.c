@@ -113,6 +113,9 @@ struct _TTF_Font {
 
 	/* For non-scalable formats, we must remember which font index size */
 	int font_size_family;
+	
+	/* really just flags passed into FT_Load_Glyph */
+	int hinting;
 };
 
 /* The FreeType font engine/library */
@@ -428,7 +431,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 	if ( ! cached->index ) {
 		cached->index = FT_Get_Char_Index( face, ch );
 	}
-	error = FT_Load_Glyph( face, cached->index, FT_LOAD_DEFAULT );
+	error = FT_Load_Glyph( face, cached->index, FT_LOAD_DEFAULT | font->hinting);
 	if( error ) {
 		return error;
 	}
@@ -1813,6 +1816,24 @@ void TTF_SetFontStyle( TTF_Font* font, int style )
 int TTF_GetFontStyle( const TTF_Font* font )
 {
 	return font->style;
+}
+
+void TTF_SetFontHinting( TTF_Font* font, int hinting )
+{
+	if (hinting == TTF_HINTING_LIGHT)
+		font->hinting = FT_LOAD_TARGET_LIGHT;
+	else if (hinting == TTF_HINTING_MONO)
+		font->hinting = FT_LOAD_TARGET_MONO;
+	else if (hinting == TTF_HINTING_NONE)
+		font->hinting = FT_LOAD_NO_HINTING;
+	else
+		font->hinting = 0;
+	Flush_Cache( font );
+}
+
+int TTF_GetFontHinting( const TTF_Font* font )
+{
+	return font->hinting;
 }
 
 void TTF_Quit( void )

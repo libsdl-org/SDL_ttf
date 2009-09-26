@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
 	SDL_Event event;
 	int rendersolid;
 	int renderstyle;
+	int hinting;
 	int kerning;
 	int dump;
 	enum {
@@ -82,6 +83,7 @@ int main(int argc, char *argv[])
 	rendersolid = 0;
 	renderstyle = TTF_STYLE_NORMAL;
 	rendertype = RENDER_LATIN1;
+	hinting = TTF_HINTING_NORMAL;
 	kerning = 1;
 	/* Default is black and white */
 	forecol = &black;
@@ -104,6 +106,15 @@ int main(int argc, char *argv[])
 		} else
 		if ( strcmp(argv[i], "-u") == 0 ) {
 			renderstyle |= TTF_STYLE_UNDERLINE;
+		} else
+		if ( strcmp(argv[i], "-hintlight") == 0 ) {
+			kerning = TTF_HINTING_LIGHT;
+		} else
+		if ( strcmp(argv[i], "-hintmono") == 0 ) {
+			kerning = TTF_HINTING_MONO;
+		} else
+		if ( strcmp(argv[i], "-hintnone") == 0 ) {
+			kerning = TTF_HINTING_NONE;
 		} else
 		if ( strcmp(argv[i], "-nokerning") == 0 ) {
 			kerning = 0;
