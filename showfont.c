@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
 	SDL_Event event;
 	int rendersolid;
 	int renderstyle;
+	int kerning;
 	int dump;
 	enum {
 		RENDER_LATIN1,
@@ -81,6 +82,7 @@ int main(int argc, char *argv[])
 	rendersolid = 0;
 	renderstyle = TTF_STYLE_NORMAL;
 	rendertype = RENDER_LATIN1;
+	kerning = 1;
 	/* Default is black and white */
 	forecol = &black;
 	backcol = &white;
@@ -102,6 +104,9 @@ int main(int argc, char *argv[])
 		} else
 		if ( strcmp(argv[i], "-u") == 0 ) {
 			renderstyle |= TTF_STYLE_UNDERLINE;
+		} else
+		if ( strcmp(argv[i], "-nokerning") == 0 ) {
+			kerning = 0;
 		} else
 		if ( strcmp(argv[i], "-dump") == 0 ) {
 			dump = 1;
@@ -170,6 +175,7 @@ int main(int argc, char *argv[])
 		cleanup(2);
 	}
 	TTF_SetFontStyle(font, renderstyle);
+	TTF_SetFontKerning(font, kerning);
 
 	if( dump ) {
 		for( i = 48; i < 123; i++ ) {

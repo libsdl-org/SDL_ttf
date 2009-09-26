@@ -42,7 +42,7 @@ extern "C" {
 */
 #define SDL_TTF_MAJOR_VERSION	2
 #define SDL_TTF_MINOR_VERSION	0
-#define SDL_TTF_PATCHLEVEL	9
+#define SDL_TTF_PATCHLEVEL	10
 
 /* This macro can be used to fill a version structure with the compile-time
  * version of the SDL_ttf library.
@@ -117,6 +117,10 @@ extern DECLSPEC int SDLCALL TTF_FontDescent(const TTF_Font *font);
 
 /* Get the recommended spacing between lines of text for this font */
 extern DECLSPEC int SDLCALL TTF_FontLineSkip(const TTF_Font *font);
+
+/* Get/Set whether or not kerning is allowed for this font */
+extern DECLSPEC int SDLCALL TTF_GetFontKerning(const TTF_Font *font);
+extern DECLSPEC void SDLCALL TTF_SetFontKerning(TTF_Font *font, int allowed);
 
 /* Get the number of faces of the font */
 extern DECLSPEC long SDLCALL TTF_FontFaces(const TTF_Font *font);
