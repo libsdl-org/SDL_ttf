@@ -90,6 +90,9 @@ struct _TTF_Font {
 	/* The font style */
 	int style;
 
+	/* Whether kerning is desired */
+	int kerning;
+
 	/* Extra width in glyph bounds for text styles */
 	int glyph_overhang;
 	float glyph_italics;
@@ -346,6 +349,7 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 
 	/* Set the default font style */
 	font->style = TTF_STYLE_NORMAL;
+	font->kerning = 1;
 	font->glyph_overhang = face->size->metrics.y_ppem / 10;
 	/* x offset = cos(((90.0-12)/360)*2*M_PI), or 12 degree angle */
 	font->glyph_italics = 0.207f;
@@ -795,6 +799,16 @@ int TTF_FontLineSkip(const TTF_Font *font)
 	return(font->lineskip);
 }
 
+int TTF_GetFontKerning(const TTF_Font *font)
+{
+	return(font->kerning);
+}
+
+void TTF_SetFontKerning(TTF_Font *font, int allowed)
+{
+	font->kerning = allowed;
+}
+
 long TTF_FontFaces(const TTF_Font *font)
 {
 	return(font->face->num_faces);
@@ -927,7 +941,7 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 	swapped = TTF_byteswapped;
 
 	/* check kerning */
-	use_kerning = FT_HAS_KERNING( font->face );
+	use_kerning = FT_HAS_KERNING( font->face ) && font->kerning;
 
 	/* Load each character and sum it's bounding box */
 	x= 0;
@@ -1126,7 +1140,7 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	SDL_SetColorKey( textbuf, SDL_SRCCOLORKEY, 0 );
 
 	/* check kerning */
-	use_kerning = FT_HAS_KERNING( font->face );
+	use_kerning = FT_HAS_KERNING( font->face ) && font->kerning;
 	
 	/* Load and render each character */
 	xstart = 0;
@@ -1387,7 +1401,7 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 	}
 
 	/* check kerning */
-	use_kerning = FT_HAS_KERNING( font->face );
+	use_kerning = FT_HAS_KERNING( font->face ) && font->kerning;
 	
 	/* Load and render each character */
 	xstart = 0;
@@ -1634,7 +1648,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	dst_check = (Uint32*)textbuf->pixels + textbuf->pitch/4 * textbuf->h;
 
 	/* check kerning */
-	use_kerning = FT_HAS_KERNING( font->face );
+	use_kerning = FT_HAS_KERNING( font->face ) && font->kerning;
 	
 	/* Load and render each character */
 	xstart = 0;

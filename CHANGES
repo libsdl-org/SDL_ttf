@@ -1,4 +1,6 @@
 2.0.10:
+Sam Lantinga - Sat Sep 26 01:13:29 PDT 2009
+ * Added API to disable kerning: TTF_GetFontKerning()/TTF_SetFontKerning()
 Sam Lantinga - Sat Sep 26 00:54:30 PDT 2009
  * Fixed height calculation for fonts that extend below the font height
 Matthias Weigand - Mon Jul 23 21:09:20 PDT 2007
