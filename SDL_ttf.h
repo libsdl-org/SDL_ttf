@@ -102,6 +102,14 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexRW(SDL_RWops *src, int frees
 extern DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
 extern DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
 
+/* Set and retrieve FreeType hinter settings */
+#define TTF_HINTING_NORMAL    0
+#define TTF_HINTING_LIGHT     1
+#define TTF_HINTING_MONO      2
+#define TTF_HINTING_NONE      3
+extern DECLSPEC int SDLCALL TTF_GetFontHinting(const TTF_Font *font);
+extern DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting);
+
 /* Get the total height of the font - usually equal to point size */
 extern DECLSPEC int SDLCALL TTF_FontHeight(const TTF_Font *font);
 
