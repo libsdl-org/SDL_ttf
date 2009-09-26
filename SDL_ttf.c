@@ -1015,11 +1015,11 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 		*w = (maxx - minx);
 	}
 	if ( h ) {
-#if 0 /* This is correct, but breaks many applications */
-		*h = (maxy - miny);
-#else
-		*h = font->height;
-#endif
+		/* Some fonts descend below font height (FletcherGothicFLF) */
+		*h = (font->ascent - miny);
+		if (*h < font->height) {
+			*h = font->height;
+		}
 	}
 	return status;
 }
@@ -1100,11 +1100,10 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	FT_UInt prev_index = 0;
 
 	/* Get the dimensions of the text surface */
-	if( ( TTF_SizeUNICODE(font, text, &width, NULL) < 0 ) || !width ) {
+	if( ( TTF_SizeUNICODE(font, text, &width, &height) < 0 ) || !width ) {
 		TTF_SetError( "Text has zero width" );
 		return NULL;
 	}
-	height = font->height;
 
 	/* Create the target surface */
 	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0);
@@ -1360,11 +1359,10 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 	FT_UInt prev_index = 0;
 
 	/* Get the dimensions of the text surface */
-	if( ( TTF_SizeUNICODE(font, text, &width, NULL) < 0 ) || !width ) {
+	if( ( TTF_SizeUNICODE(font, text, &width, &height) < 0 ) || !width ) {
 		TTF_SetError("Text has zero width");
 		return NULL;
 	}
-	height = font->height;
 
 	/* Create the target surface */
 	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0);
@@ -1620,11 +1618,10 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	FT_UInt prev_index = 0;
 
 	/* Get the dimensions of the text surface */
-	if ( (TTF_SizeUNICODE(font, text, &width, NULL) < 0) || !width ) {
+	if ( (TTF_SizeUNICODE(font, text, &width, &height) < 0) || !width ) {
 		TTF_SetError("Text has zero width");
 		return(NULL);
 	}
-	height = font->height;
 
 	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 32,
 	                           0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
