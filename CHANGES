@@ -1,4 +1,6 @@
 2.0.10:
+Adam Strzelecki - Sun Oct 11 03:51:31 PDT 2009
+ * Added API for font outlining: TTF_GetFontOutline()/TTF_SetFontOutline()
 Sam Lantinga - Sat Sep 26 01:13:29 PDT 2009
  * Added API to disable kerning: TTF_GetFontKerning()/TTF_SetFontKerning()
 Sam Lantinga - Sat Sep 26 00:54:30 PDT 2009
