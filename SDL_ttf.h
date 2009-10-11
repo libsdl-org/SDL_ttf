@@ -101,6 +101,8 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexRW(SDL_RWops *src, int frees
 #define TTF_STYLE_UNDERLINE	0x04
 extern DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
 extern DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
+extern DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
+extern DECLSPEC void SDLCALL TTF_SetFontOutline(TTF_Font *font, int outline);
 
 /* Set and retrieve FreeType hinter settings */
 #define TTF_HINTING_NORMAL    0
