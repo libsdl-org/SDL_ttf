@@ -42,6 +42,8 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_OUTLINE_H
+#include FT_STROKER_H
+#include FT_GLYPH_H
 #include FT_TRUETYPE_IDS_H
 
 #include "SDL.h"
@@ -89,6 +91,7 @@ struct _TTF_Font {
 
 	/* The font style */
 	int style;
+	int outline;
 
 	/* Whether kerning is desired */
 	int kerning;
@@ -482,6 +485,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 		int i;
 		FT_Bitmap* src;
 		FT_Bitmap* dst;
+		FT_Glyph bitmap_glyph = NULL;
 
 		/* Handle the italic style */
 		if( font->style & TTF_STYLE_ITALIC ) {
@@ -495,18 +499,33 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 			FT_Outline_Transform( outline, &shear );
 		}
 
-		/* Render the glyph */
-		if ( mono ) {
-			error = FT_Render_Glyph( glyph, ft_render_mode_mono );
+		/* Render as outline */
+		if( (font->outline > 0) && glyph->format != FT_GLYPH_FORMAT_BITMAP ) {
+			FT_Stroker stroker;
+			FT_Get_Glyph( glyph, &bitmap_glyph );
+			error = FT_Stroker_New( library, &stroker );
+			if( error ) {
+				return error;
+			}
+			FT_Stroker_Set( stroker, font->outline * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0 ); 
+			FT_Glyph_Stroke( &bitmap_glyph, stroker, 1 /* delete the original glyph */ );
+			FT_Stroker_Done( stroker );
+			/* Render the glyph */
+			error = FT_Glyph_To_Bitmap( &bitmap_glyph, mono ? ft_render_mode_mono : ft_render_mode_normal, 0, 1 );
+			if( error ) {
+				FT_Done_Glyph( bitmap_glyph );
+				return error;
+			}
+			src = &((FT_BitmapGlyph)bitmap_glyph)->bitmap;
 		} else {
-			error = FT_Render_Glyph( glyph, ft_render_mode_normal );
+			/* Render the glyph */
+			error = FT_Render_Glyph( glyph, mono ? ft_render_mode_mono : ft_render_mode_normal );
+			if( error ) {
+				return error;
+			}
+			src = &glyph->bitmap;
 		}
-		if( error ) {
-			return error;
-		}
-
 		/* Copy over information to cache */
-		src = &glyph->bitmap;
 		if ( mono ) {
 			dst = &cached->bitmap;
 		} else {
@@ -524,11 +543,11 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 		 * FT_Render_Glyph() canreturn two-color bitmap or 4/16/256-
 		 * color graymap according to the format of embedded bitmap/
 		 * graymap. */
-		if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_MONO ) {
+		if ( src->pixel_mode == FT_PIXEL_MODE_MONO ) {
 			dst->pitch *= 8;
-		} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
+		} else if ( src->pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
 			dst->pitch *= 4;
-		} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
+		} else if ( src->pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
 			dst->pitch *= 2;
 		}
 
@@ -558,7 +577,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 					unsigned char *srcp = src->buffer + soffset;
 					unsigned char *dstp = dst->buffer + doffset;
 					int j;
-					if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_MONO ) {
+					if ( src->pixel_mode == FT_PIXEL_MODE_MONO ) {
 						for ( j = 0; j < src->width; j += 8 ) {
 							unsigned char ch = *srcp++;
 							*dstp++ = (ch&0x80) >> 7;
@@ -577,7 +596,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 							ch <<= 1;
 							*dstp++ = (ch&0x80) >> 7;
 						}
-					}  else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
+					}  else if ( src->pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
 						for ( j = 0; j < src->width; j += 4 ) {
 							unsigned char ch = *srcp++;
 							*dstp++ = (((ch&0xA0) >> 6) >= 0x2) ? 1 : 0;
@@ -588,7 +607,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 							ch <<= 2;
 							*dstp++ = (((ch&0xA0) >> 6) >= 0x2) ? 1 : 0;
 						}
-					} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
+					} else if ( src->pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
 						for ( j = 0; j < src->width; j += 2 ) {
 							unsigned char ch = *srcp++;
 							*dstp++ = (((ch&0xF0) >> 4) >= 0x8) ? 1 : 0;
@@ -601,7 +620,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 							*dstp++ = (ch >= 0x80) ? 1 : 0;
 						}
 					}
-				} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_MONO ) {
+				} else if ( src->pixel_mode == FT_PIXEL_MODE_MONO ) {
 					/* This special case wouldn't
 					 * be here if the FT_Render_Glyph()
 					 * function wasn't buggy when it tried
@@ -626,7 +645,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 							ch <<= 1;
 						}
 					}
-				} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
+				} else if ( src->pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
 					unsigned char *srcp = src->buffer + soffset;
 					unsigned char *dstp = dst->buffer + doffset;
 					unsigned char ch;
@@ -642,7 +661,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 							ch <<= 2;
 						}
 					}
-				} else if ( glyph->bitmap.pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
+				} else if ( src->pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
 					unsigned char *srcp = src->buffer + soffset;
 					unsigned char *dstp = dst->buffer + doffset;
 					unsigned char ch;
@@ -697,6 +716,11 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 			cached->stored |= CACHED_BITMAP;
 		} else {
 			cached->stored |= CACHED_PIXMAP;
+		}
+
+		/* Free outlined glyph */
+		if( bitmap_glyph ) {
+			FT_Done_Glyph( bitmap_glyph );
 		}
 	}
 
@@ -1123,7 +1147,7 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	}
 
 	/* Create the target surface */
-	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0);
+	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width + font->outline * 2, height + font->outline * 2, 8, 0, 0, 0, 0);
 	if( textbuf == NULL ) {
 		return NULL;
 	}
@@ -1178,7 +1202,7 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 		/* Ensure the width of the pixmap is correct. On some cases,
 		 * freetype may report a larger pixmap than possible.*/
 		width = current->width;
-		if (width > glyph->maxx - glyph->minx) {
+		if (font->outline <= 0 && width > glyph->maxx - glyph->minx) {
 			width = glyph->maxx - glyph->minx;
 		}
 		/* do kerning, if possible AC-Patch */
@@ -1382,7 +1406,7 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 	}
 
 	/* Create the target surface */
-	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0);
+	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width + font->outline * 2, height + font->outline * 2, 8, 0, 0, 0, 0);
 	if( textbuf == NULL ) {
 		return NULL;
 	}
@@ -1438,7 +1462,7 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 		/* Ensure the width of the pixmap is correct. On some cases,
 		 * freetype may report a larger pixmap than possible.*/
 		width = glyph->pixmap.width;
-		if (width > glyph->maxx - glyph->minx) {
+		if (font->outline <= 0 && width > glyph->maxx - glyph->minx) {
 			width = glyph->maxx - glyph->minx;
 		}
 		/* do kerning, if possible AC-Patch */
@@ -1640,7 +1664,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 		return(NULL);
 	}
 
-	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 32,
+	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width + font->outline * 2, height + font->outline * 2, 32,
 	                           0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 	if ( textbuf == NULL ) {
 		return(NULL);
@@ -1687,7 +1711,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 		/* Ensure the width of the pixmap is correct. On some cases,
 		 * freetype may report a larger pixmap than possible.*/
 		width = glyph->pixmap.width;
-		if (width > glyph->maxx - glyph->minx) {
+		if (font->outline <= 0 && width > glyph->maxx - glyph->minx) {
 			width = glyph->maxx - glyph->minx;
 		}
 		/* do kerning, if possible AC-Patch */
@@ -1816,6 +1840,17 @@ void TTF_SetFontStyle( TTF_Font* font, int style )
 int TTF_GetFontStyle( const TTF_Font* font )
 {
 	return font->style;
+}
+
+void TTF_SetFontOutline( TTF_Font* font, int outline )
+{
+	font->outline = outline;
+	Flush_Cache( font );
+}
+
+int TTF_GetFontOutline( const TTF_Font* font )
+{
+	return font->outline;
 }
 
 void TTF_SetFontHinting( TTF_Font* font, int hinting )

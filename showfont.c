@@ -40,7 +40,7 @@
 #define NUM_COLORS      256
 
 static char *Usage =
-"Usage: %s [-solid] [-utf8|-unicode] [-b] [-i] [-u] [-fgcol r,g,b] [-bgcol r,g,b] <font>.ttf [ptsize] [text]\n";
+"Usage: %s [-solid] [-utf8|-unicode] [-b] [-i] [-u] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-fgcol r,g,b] [-bgcol r,g,b] <font>.ttf [ptsize] [text]\n";
 
 static void cleanup(int exitcode)
 {
@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
 	SDL_Event event;
 	int rendersolid;
 	int renderstyle;
+	int outline;
 	int hinting;
 	int kerning;
 	int dump;
@@ -106,6 +107,12 @@ int main(int argc, char *argv[])
 		} else
 		if ( strcmp(argv[i], "-u") == 0 ) {
 			renderstyle |= TTF_STYLE_UNDERLINE;
+		} else
+		if ( strcmp(argv[i], "-outline") == 0 ) {
+			if ( sscanf (argv[++i], "%d", &outline) != 1 ) {
+				fprintf(stderr, Usage, argv0);
+				return(1);
+			}
 		} else
 		if ( strcmp(argv[i], "-hintlight") == 0 ) {
 			kerning = TTF_HINTING_LIGHT;
@@ -186,6 +193,7 @@ int main(int argc, char *argv[])
 		cleanup(2);
 	}
 	TTF_SetFontStyle(font, renderstyle);
+	TTF_SetFontOutline(font, outline);
 	TTF_SetFontKerning(font, kerning);
 
 	if( dump ) {
