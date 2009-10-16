@@ -90,6 +90,7 @@ struct _TTF_Font {
 	int lineskip;
 
 	/* The font style */
+	int face_style;
 	int style;
 	int outline;
 
@@ -120,6 +121,13 @@ struct _TTF_Font {
 	/* really just flags passed into FT_Load_Glyph */
 	int hinting;
 };
+
+/* Handle a style only if the font does not already handle it */
+#define TTF_HANDLE_STYLE_BOLD(font) (((font)->style & TTF_STYLE_BOLD) && \
+                                    !((font)->face_style & TTF_STYLE_BOLD))
+#define TTF_HANDLE_STYLE_ITALIC(font) (((font)->style & TTF_STYLE_ITALIC) && \
+                                      !((font)->face_style & TTF_STYLE_ITALIC))
+#define TTF_HANDLE_STYLE_UNDERLINE(font) ((font)->style & TTF_STYLE_UNDERLINE)
 
 /* The FreeType font engine/library */
 static FT_Library library;
@@ -152,6 +160,15 @@ static __inline__ void UNICODE_strcpy(Uint16 *dst, const Uint16 *src, int swap)
 		}
 		*dst = '\0';
 	}
+}
+
+static __inline__ int TTF_underline_row(TTF_Font *font, int height)
+{
+	int result = font->ascent - font->underline_offset - 1;
+	if ( result >= height) {
+		result = (height-1) - font->underline_height;
+	}
+	return result;
 }
 
 /* rcg06192001 get linked library's version. */
@@ -353,8 +370,16 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 		font->underline_offset, font->underline_height);
 #endif
 
+	/* Initialize the font face style */
+	font->face_style = TTF_STYLE_NORMAL;
+	if ( font->face->style_flags & FT_STYLE_FLAG_BOLD ) {
+		font->face_style |= TTF_STYLE_BOLD;
+	}
+	if ( font->face->style_flags & FT_STYLE_FLAG_ITALIC ) {
+		font->face_style |= TTF_STYLE_ITALIC;
+	}
 	/* Set the default font style */
-	font->style = TTF_STYLE_NORMAL;
+	font->style = font->face_style;
 	font->kerning = 1;
 	font->glyph_overhang = face->size->metrics.y_ppem / 10;
 	/* x offset = cos(((90.0-12)/360)*2*M_PI), or 12 degree angle */
@@ -470,10 +495,10 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 		}
 		
 		/* Adjust for bold and italic text */
-		if( font->style & TTF_STYLE_BOLD ) {
+		if( TTF_HANDLE_STYLE_BOLD(font) ) {
 			cached->maxx += font->glyph_overhang;
 		}
-		if( font->style & TTF_STYLE_ITALIC ) {
+		if( TTF_HANDLE_STYLE_ITALIC(font) ) {
 			cached->maxx += (int)ceil(font->glyph_italics);
 		}
 		cached->stored |= CACHED_METRICS;
@@ -488,7 +513,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 		FT_Glyph bitmap_glyph = NULL;
 
 		/* Handle the italic style */
-		if( font->style & TTF_STYLE_ITALIC ) {
+		if( TTF_HANDLE_STYLE_ITALIC(font) ) {
 			FT_Matrix shear;
 
 			shear.xx = 1 << 16;
@@ -552,12 +577,12 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 		}
 
 		/* Adjust for bold and italic text */
-		if( font->style & TTF_STYLE_BOLD ) {
+		if( TTF_HANDLE_STYLE_BOLD(font) ) {
 			int bump = font->glyph_overhang;
 			dst->pitch += bump;
 			dst->width += bump;
 		}
-		if( font->style & TTF_STYLE_ITALIC ) {
+		if( TTF_HANDLE_STYLE_ITALIC(font) ) {
 			int bump = (int)ceil(font->glyph_italics);
 			dst->pitch += bump;
 			dst->width += bump;
@@ -685,7 +710,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 		}
 
 		/* Handle the bold style */
-		if ( font->style & TTF_STYLE_BOLD ) {
+		if ( TTF_HANDLE_STYLE_BOLD(font) ) {
 			int row;
 			int col;
 			int offset;
@@ -877,7 +902,7 @@ int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
 	}
 	if ( maxx ) {
 		*maxx = font->current->maxx;
-		if( font->style & TTF_STYLE_BOLD ) {
+		if( TTF_HANDLE_STYLE_BOLD(font) ) {
 			*maxx += font->glyph_overhang;
 		}
 	}
@@ -889,7 +914,7 @@ int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
 	}
 	if ( advance ) {
 		*advance = font->current->advance;
-		if( font->style & TTF_STYLE_BOLD ) {
+		if( TTF_HANDLE_STYLE_BOLD(font) ) {
 			*advance += font->glyph_overhang;
 		}
 	}
@@ -1029,7 +1054,7 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 		if ( minx > z ) {
 			minx = z;
 		}
-		if ( font->style & TTF_STYLE_BOLD ) {
+		if ( TTF_HANDLE_STYLE_BOLD(font) ) {
 			x += font->glyph_overhang;
 		}
 		if ( glyph->advance > glyph->maxx ) {
@@ -1060,6 +1085,13 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 		*h = (font->ascent - miny);
 		if (*h < font->height) {
 			*h = font->height;
+		}
+		/* Update height according to the needs of the underline style */
+		if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+			int rowMax = TTF_underline_row(font, *h) + font->underline_height;
+			if ( rowMax > *h ) {
+				*h = rowMax;
+			}
 		}
 	}
 	return status;
@@ -1236,20 +1268,17 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 		}
 
 		xstart += glyph->advance;
-		if ( font->style & TTF_STYLE_BOLD ) {
+		if ( TTF_HANDLE_STYLE_BOLD(font) ) {
 			xstart += font->glyph_overhang;
 		}
 		prev_index = glyph->index;
 	}
 
 	/* Handle the underline style */
-	if( font->style & TTF_STYLE_UNDERLINE ) {
-		row = font->ascent - font->underline_offset - 1;
-		if ( row >= textbuf->h) {
-			row = (textbuf->h-1) - font->underline_height;
-		}
+	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+		row = TTF_underline_row(font, textbuf->h);
 		dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch;
-		for ( row=font->underline_height; row>0; --row ) {
+		for ( row=font->underline_height; row>0 && dst < dst_check; --row ) {
 			/* 1 because 0 is the bg color */
 			memset( dst, 1, textbuf->w );
 			dst += textbuf->pitch;
@@ -1303,11 +1332,8 @@ SDL_Surface *TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	}
 
 	/* Handle the underline style */
-	if( font->style & TTF_STYLE_UNDERLINE ) {
-		row = font->ascent - font->underline_offset - 1;
-		if ( row >= textbuf->h) {
-			row = (textbuf->h-1) - font->underline_height;
-		}
+	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+		row = TTF_underline_row(font, textbuf->h);
 		dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch;
 		for ( row=font->underline_height; row>0; --row ) {
 			/* 1 because 0 is the bg color */
@@ -1496,20 +1522,17 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 		}
 
 		xstart += glyph->advance;
-		if( font->style & TTF_STYLE_BOLD ) {
+		if( TTF_HANDLE_STYLE_BOLD(font) ) {
 			xstart += font->glyph_overhang;
 		}
 		prev_index = glyph->index;
 	}
 
 	/* Handle the underline style */
-	if( font->style & TTF_STYLE_UNDERLINE ) {
-		row = font->ascent - font->underline_offset - 1;
-		if ( row >= textbuf->h) {
-			row = (textbuf->h-1) - font->underline_height;
-		}
+	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+		row = TTF_underline_row(font, textbuf->h);
 		dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch;
-		for ( row=font->underline_height; row>0; --row ) {
+		for ( row=font->underline_height; row>0 && dst < dst_check; --row ) {
 			memset( dst, NUM_GRAYS - 1, textbuf->w );
 			dst += textbuf->pitch;
 		}
@@ -1571,11 +1594,8 @@ SDL_Surface* TTF_RenderGlyph_Shaded( TTF_Font* font,
 	}
 
 	/* Handle the underline style */
-	if( font->style & TTF_STYLE_UNDERLINE ) {
-		row = font->ascent - font->underline_offset - 1;
-		if ( row >= textbuf->h) {
-			row = (textbuf->h-1) - font->underline_height;
-		}
+	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+		row = TTF_underline_row(font, textbuf->h);
 		dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch;
 		for ( row=font->underline_height; row>0; --row ) {
 			memset( dst, NUM_GRAYS - 1, textbuf->w );
@@ -1664,6 +1684,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 		return(NULL);
 	}
 
+	/* Create the target surface */
 	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width + font->outline * 2, height + font->outline * 2, 32,
 	                           0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 	if ( textbuf == NULL ) {
@@ -1750,21 +1771,18 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 		}
 
 		xstart += glyph->advance;
-		if ( font->style & TTF_STYLE_BOLD ) {
+		if ( TTF_HANDLE_STYLE_BOLD(font) ) {
 			xstart += font->glyph_overhang;
 		}
 		prev_index = glyph->index;
 	}
 
 	/* Handle the underline style */
-	if( font->style & TTF_STYLE_UNDERLINE ) {
-		row = font->ascent - font->underline_offset - 1;
-		if ( row >= textbuf->h) {
-			row = (textbuf->h-1) - font->underline_height;
-		}
+	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+		row = TTF_underline_row(font, textbuf->h);
 		dst = (Uint32 *)textbuf->pixels + row * textbuf->pitch/4;
 		pixel |= 0xFF000000; /* Amask */
-		for ( row=font->underline_height; row>0; --row ) {
+		for ( row=font->underline_height; row>0 && dst < dst_check; --row ) {
 			for ( col=0; col < textbuf->w; ++col ) {
 				dst[col] = pixel;
 			}
@@ -1814,11 +1832,8 @@ SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	}
 
 	/* Handle the underline style */
-	if( font->style & TTF_STYLE_UNDERLINE ) {
-		row = font->ascent - font->underline_offset - 1;
-		if ( row >= textbuf->h) {
-			row = (textbuf->h-1) - font->underline_height;
-		}
+	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+		row = TTF_underline_row(font, textbuf->h);
 		dst = (Uint32 *)textbuf->pixels + row * textbuf->pitch/4;
 		pixel |= 0xFF000000; /* Amask */
 		for ( row=font->underline_height; row>0; --row ) {
@@ -1833,8 +1848,15 @@ SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 
 void TTF_SetFontStyle( TTF_Font* font, int style )
 {
-	font->style = style;
-	Flush_Cache( font );
+	int prev_style = font->style;
+	font->style = style | font->face_style;
+
+	/* Flush the cache if the style has changed.
+	 * Ignore UNDERLINE which does not impact glyph drawning.
+	 * */
+	if ( (font->style | TTF_STYLE_UNDERLINE ) != ( prev_style | TTF_STYLE_UNDERLINE )) {
+		Flush_Cache( font );
+	}
 }
 
 int TTF_GetFontStyle( const TTF_Font* font )
