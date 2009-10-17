@@ -40,7 +40,7 @@
 #define NUM_COLORS      256
 
 static char *Usage =
-"Usage: %s [-solid] [-utf8|-unicode] [-b] [-i] [-u] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-fgcol r,g,b] [-bgcol r,g,b] <font>.ttf [ptsize] [text]\n";
+"Usage: %s [-solid] [-utf8|-unicode] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-fgcol r,g,b] [-bgcol r,g,b] <font>.ttf [ptsize] [text]\n";
 
 static void cleanup(int exitcode)
 {
@@ -107,6 +107,9 @@ int main(int argc, char *argv[])
 		} else
 		if ( strcmp(argv[i], "-u") == 0 ) {
 			renderstyle |= TTF_STYLE_UNDERLINE;
+		} else
+		if ( strcmp(argv[i], "-s") == 0 ) {
+			renderstyle |= TTF_STYLE_STRIKETHROUGH;
 		} else
 		if ( strcmp(argv[i], "-outline") == 0 ) {
 			if ( sscanf (argv[++i], "%d", &outline) != 1 ) {
