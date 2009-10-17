@@ -91,14 +91,12 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int ptsiz
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontRW(SDL_RWops *src, int freesrc, int ptsize);
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long index);
 
-/* Set and retrieve the font style
-   This font style is implemented by modifying the font glyphs, and
-   doesn't reflect any inherent properties of the truetype font file.
-*/
+/* Set and retrieve the font style */
 #define TTF_STYLE_NORMAL	0x00
 #define TTF_STYLE_BOLD		0x01
 #define TTF_STYLE_ITALIC	0x02
 #define TTF_STYLE_UNDERLINE	0x04
+#define TTF_STYLE_STRIKETHROUGH	0x08
 extern DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
 extern DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
 extern DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);

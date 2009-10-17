@@ -1,4 +1,8 @@
 2.0.10:
+Loïc LAMBERT - Sat Oct 17 11:15:33 PDT 2009
+ * Set the appropriate font styles for bold and italic fonts
+ * Added font style TTF_STYLE_STRIKETHROUGH
+ * Fixed size calculations taking outline and underline into account
 Adam Strzelecki - Sun Oct 11 03:51:31 PDT 2009
  * Added API for font outlining: TTF_GetFontOutline()/TTF_SetFontOutline()
 Sam Lantinga - Sat Sep 26 01:13:29 PDT 2009
