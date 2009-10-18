@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
 	rendersolid = 0;
 	renderstyle = TTF_STYLE_NORMAL;
 	rendertype = RENDER_LATIN1;
+	outline = 0;
 	hinting = TTF_HINTING_NORMAL;
 	kerning = 1;
 	/* Default is black and white */

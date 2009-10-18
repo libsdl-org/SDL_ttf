@@ -511,6 +511,7 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	}
 	/* Set the default font style */
 	font->style = font->face_style;
+	font->outline = 0;
 	font->kerning = 1;
 	font->glyph_overhang = face->size->metrics.y_ppem / 10;
 	/* x offset = cos(((90.0-12)/360)*2*M_PI), or 12 degree angle */
@@ -1112,6 +1113,7 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 	FT_Error error;
 	FT_Long use_kerning;
 	FT_UInt prev_index = 0;
+	int outline_delta = 0;
 
 	/* Initialize everything to 0 */
 	if ( ! TTF_initialized ) {
@@ -1127,7 +1129,6 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 	use_kerning = FT_HAS_KERNING( font->face ) && font->kerning;
 
 	/* Init outline handling */
-	int outline_delta = 0;
 	if ( font->outline  > 0 ) {
 		outline_delta = font->outline * 2;
 	}
