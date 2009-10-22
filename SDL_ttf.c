@@ -138,33 +138,6 @@ static FT_Library library;
 static int TTF_initialized = 0;
 static int TTF_byteswapped = 0;
 
-/* UNICODE string utilities */
-static __inline__ int UNICODE_strlen(const Uint16 *text)
-{
-	int size = 0;
-	while ( *text++ ) {
-		++size;
-	}
-	return size;
-}
-static __inline__ void UNICODE_strcpy(Uint16 *dst, const Uint16 *src, int swap)
-{
-	if ( swap ) {
-		while ( *src ) {
-			*dst = SDL_Swap16(*src);
-			++src;
-			++dst;
-		}
-		*dst = '\0';
-	} else {
-		while ( *src ) {
-			*dst = *src;
-			++src;
-			++dst;
-		}
-		*dst = '\0';
-	}
-}
 
 /* Gets the top row of the underline. The outline
    is taken into account.
@@ -198,20 +171,6 @@ static __inline__ int TTF_strikethrough_top_row(TTF_Font *font)
 	/* With outline, the first text row is 'outline'. */
 	/* So, we don't have to remove the top part of the outline height. */
 	return font->height / 2;
-}
-
-/* Gets the bottom row of the strikethrough. The outline
-   is taken into account.
-*/
-static __inline__ int TTF_strikethrough_bottom_row(TTF_Font *font)
-{
-	int row = TTF_strikethrough_top_row(font) + font->underline_height;
-	if( font->outline  > 0 ) {
-		/* Add first text row outline offset and */
-		/* the bottom part of the outline. */
-		row += font->outline * 2;
-	}
-	return row;
 }
 
 static void TTF_initLineMectrics(const TTF_Font *font, const SDL_Surface *textbuf, const int row, Uint8 **pdst, int *pheight)
@@ -736,45 +695,45 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 					int j;
 					if ( src->pixel_mode == FT_PIXEL_MODE_MONO ) {
 						for ( j = 0; j < src->width; j += 8 ) {
-							unsigned char ch = *srcp++;
+							unsigned char c = *srcp++;
 							*dstp++ = (ch&0x80) >> 7;
-							ch <<= 1;
-							*dstp++ = (ch&0x80) >> 7;
-							ch <<= 1;
-							*dstp++ = (ch&0x80) >> 7;
-							ch <<= 1;
-							*dstp++ = (ch&0x80) >> 7;
-							ch <<= 1;
-							*dstp++ = (ch&0x80) >> 7;
-							ch <<= 1;
-							*dstp++ = (ch&0x80) >> 7;
-							ch <<= 1;
-							*dstp++ = (ch&0x80) >> 7;
-							ch <<= 1;
-							*dstp++ = (ch&0x80) >> 7;
+							c <<= 1;
+							*dstp++ = (c&0x80) >> 7;
+							c <<= 1;
+							*dstp++ = (c&0x80) >> 7;
+							c <<= 1;
+							*dstp++ = (c&0x80) >> 7;
+							c <<= 1;
+							*dstp++ = (c&0x80) >> 7;
+							c <<= 1;
+							*dstp++ = (c&0x80) >> 7;
+							c <<= 1;
+							*dstp++ = (c&0x80) >> 7;
+							c <<= 1;
+							*dstp++ = (c&0x80) >> 7;
 						}
 					}  else if ( src->pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
 						for ( j = 0; j < src->width; j += 4 ) {
-							unsigned char ch = *srcp++;
-							*dstp++ = (((ch&0xA0) >> 6) >= 0x2) ? 1 : 0;
-							ch <<= 2;
-							*dstp++ = (((ch&0xA0) >> 6) >= 0x2) ? 1 : 0;
-							ch <<= 2;
-							*dstp++ = (((ch&0xA0) >> 6) >= 0x2) ? 1 : 0;
-							ch <<= 2;
-							*dstp++ = (((ch&0xA0) >> 6) >= 0x2) ? 1 : 0;
+							unsigned char c = *srcp++;
+							*dstp++ = (((c&0xA0) >> 6) >= 0x2) ? 1 : 0;
+							c <<= 2;
+							*dstp++ = (((c&0xA0) >> 6) >= 0x2) ? 1 : 0;
+							c <<= 2;
+							*dstp++ = (((c&0xA0) >> 6) >= 0x2) ? 1 : 0;
+							c <<= 2;
+							*dstp++ = (((c&0xA0) >> 6) >= 0x2) ? 1 : 0;
 						}
 					} else if ( src->pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
 						for ( j = 0; j < src->width; j += 2 ) {
-							unsigned char ch = *srcp++;
-							*dstp++ = (((ch&0xF0) >> 4) >= 0x8) ? 1 : 0;
-							ch <<= 4;
-							*dstp++ = (((ch&0xF0) >> 4) >= 0x8) ? 1 : 0;
+							unsigned char c = *srcp++;
+							*dstp++ = (((c&0xF0) >> 4) >= 0x8) ? 1 : 0;
+							c <<= 4;
+							*dstp++ = (((c&0xF0) >> 4) >= 0x8) ? 1 : 0;
 						}
 					} else {
 						for ( j = 0; j < src->width; j++ ) {
-							unsigned char ch = *srcp++;
-							*dstp++ = (ch >= 0x80) ? 1 : 0;
+							unsigned char c = *srcp++;
+							*dstp++ = (c >= 0x80) ? 1 : 0;
 						}
 					}
 				} else if ( src->pixel_mode == FT_PIXEL_MODE_MONO ) {
@@ -789,49 +748,49 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 					 * */
 					unsigned char *srcp = src->buffer + soffset;
 					unsigned char *dstp = dst->buffer + doffset;
-					unsigned char ch;
+					unsigned char c;
 					int j, k;
 					for ( j = 0; j < src->width; j += 8) {
-						ch = *srcp++;
+						c = *srcp++;
 						for (k = 0; k < 8; ++k) {
-							if ((ch&0x80) >> 7) {
+							if ((c&0x80) >> 7) {
 								*dstp++ = NUM_GRAYS - 1;
 							} else {
 								*dstp++ = 0x00;
 							}
-							ch <<= 1;
+							c <<= 1;
 						}
 					}
 				} else if ( src->pixel_mode == FT_PIXEL_MODE_GRAY2 ) {
 					unsigned char *srcp = src->buffer + soffset;
 					unsigned char *dstp = dst->buffer + doffset;
-					unsigned char ch;
+					unsigned char c;
 					int j, k;
 					for ( j = 0; j < src->width; j += 4 ) {
-						ch = *srcp++;
+						c = *srcp++;
 						for ( k = 0; k < 4; ++k ) {
-							if ((ch&0xA0) >> 6) {
-								*dstp++ = NUM_GRAYS * ((ch&0xA0) >> 6) / 3 - 1;
+							if ((c&0xA0) >> 6) {
+								*dstp++ = NUM_GRAYS * ((c&0xA0) >> 6) / 3 - 1;
 							} else {
 								*dstp++ = 0x00;
 							}
-							ch <<= 2;
+							c <<= 2;
 						}
 					}
 				} else if ( src->pixel_mode == FT_PIXEL_MODE_GRAY4 ) {
 					unsigned char *srcp = src->buffer + soffset;
 					unsigned char *dstp = dst->buffer + doffset;
-					unsigned char ch;
+					unsigned char c;
 					int j, k;
 					for ( j = 0; j < src->width; j += 2 ) {
-						ch = *srcp++;
+						c = *srcp++;
 						for ( k = 0; k < 2; ++k ) {
-							if ((ch&0xF0) >> 4) {
-							    *dstp++ = NUM_GRAYS * ((ch&0xF0) >> 4) / 15 - 1;
+							if ((c&0xF0) >> 4) {
+							    *dstp++ = NUM_GRAYS * ((c&0xF0) >> 4) / 15 - 1;
 							} else {
 								*dstp++ = 0x00;
 							}
-							ch <<= 4;
+							c <<= 4;
 						}
 					}
 				} else {
