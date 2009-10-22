@@ -1,4 +1,6 @@
 2.0.10:
+Adam Strzelecki - Wed Oct 21 21:02:37 PDT 2009
+ * Find the Unicode or symbol character map if it's available in the font
 Loïc LAMBERT - Sat Oct 17 11:15:33 PDT 2009
  * Set the appropriate font styles for bold and italic fonts
  * Added font style TTF_STYLE_STRIKETHROUGH

@@ -350,7 +350,8 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	FT_Face face;
 	FT_Fixed scale;
 	FT_Stream stream;
-	int position;
+	FT_CharMap found;
+	int position, i;
 
 	if ( ! TTF_initialized ) {
 		TTF_SetError( "Library not initialized" );
@@ -399,6 +400,23 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 		return NULL;
 	}
 	face = font->face;
+
+	/* Set charmap for loaded font */
+	found = 0;
+	for (i = 0; i < face->num_charmaps; i++) {
+		FT_CharMap charmap = face->charmaps[i];
+		if ((charmap->platform_id == 3 && charmap->encoding_id == 1) /* Windows Unicode */
+		 || (charmap->platform_id == 3 && charmap->encoding_id == 0) /* Windows Symbol */
+		 || (charmap->platform_id == 2 && charmap->encoding_id == 1) /* ISO Unicode */
+		 || (charmap->platform_id == 0)) { /* Apple Unicode */
+			found = charmap;
+			break;
+		}
+	}
+	if ( found ) {
+		/* If this fails, continue using the default charmap */
+		FT_Set_Charmap(face, found);
+	}
 
 	/* Make sure that our font face is scalable (global metrics) */
 	if ( FT_IS_SCALABLE(face) ) {
