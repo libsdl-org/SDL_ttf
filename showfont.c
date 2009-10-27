@@ -119,13 +119,13 @@ int main(int argc, char *argv[])
 			}
 		} else
 		if ( strcmp(argv[i], "-hintlight") == 0 ) {
-			kerning = TTF_HINTING_LIGHT;
+			hinting = TTF_HINTING_LIGHT;
 		} else
 		if ( strcmp(argv[i], "-hintmono") == 0 ) {
-			kerning = TTF_HINTING_MONO;
+			hinting = TTF_HINTING_MONO;
 		} else
 		if ( strcmp(argv[i], "-hintnone") == 0 ) {
-			kerning = TTF_HINTING_NONE;
+			hinting = TTF_HINTING_NONE;
 		} else
 		if ( strcmp(argv[i], "-nokerning") == 0 ) {
 			kerning = 0;
@@ -199,6 +199,7 @@ int main(int argc, char *argv[])
 	TTF_SetFontStyle(font, renderstyle);
 	TTF_SetFontOutline(font, outline);
 	TTF_SetFontKerning(font, kerning);
+	TTF_SetFontHinting(font, hinting);
 
 	if( dump ) {
 		for( i = 48; i < 123; i++ ) {
