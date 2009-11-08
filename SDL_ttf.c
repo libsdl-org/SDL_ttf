@@ -336,7 +336,7 @@ static unsigned long RWread(
 	SDL_RWops *src;
 
 	src = (SDL_RWops *)stream->descriptor.pointer;
-	SDL_RWseek( src, (int)offset, SEEK_SET );
+	SDL_RWseek( src, (int)offset, RW_SEEK_SET );
 	if ( count == 0 ) {
 		return 0;
 	}
@@ -386,9 +386,9 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	stream->read = RWread;
 	stream->descriptor.pointer = src;
 	stream->pos = (unsigned long)position;
-	SDL_RWseek(src, 0, SEEK_END);
+	SDL_RWseek(src, 0, RW_SEEK_END);
 	stream->size = (unsigned long)(SDL_RWtell(src) - position);
-	SDL_RWseek(src, position, SEEK_SET);
+	SDL_RWseek(src, position, RW_SEEK_SET);
 
 	font->args.flags = FT_OPEN_STREAM;
 	font->args.stream = stream;
