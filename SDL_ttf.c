@@ -149,6 +149,16 @@ static __inline__ int TTF_underline_top_row(TTF_Font *font)
 	return font->ascent - font->underline_offset - 1;
 }
 
+/* Gets the top row of the underline. for a given glyph. The outline
+   is taken into account.
+   Need to update row according to height difference between font and glyph:
+   font_value - font->ascent + glyph->maxy
+*/
+static __inline__ int TTF_Glyph_underline_top_row(TTF_Font *font, c_glyph *glyph)
+{
+	return glyph->maxy - font->underline_offset - 1;
+}
+
 /* Gets the bottom row of the underline. The outline
    is taken into account.
 */
@@ -163,6 +173,16 @@ static __inline__ int TTF_underline_bottom_row(TTF_Font *font)
 	return row;
 }
 
+/* Gets the bottom row of the underline. for a given glyph. The outline
+   is taken into account.
+   Need to update row according to height difference between font and glyph:
+   font_value - font->ascent + glyph->maxy
+*/
+static __inline__ int TTF_Glyph_underline_bottom_row(TTF_Font *font, c_glyph *glyph)
+{
+	return TTF_underline_bottom_row(font) - font->ascent + glyph->maxy;
+}
+
 /* Gets the top row of the strikethrough. The outline
    is taken into account.
 */
@@ -171,6 +191,16 @@ static __inline__ int TTF_strikethrough_top_row(TTF_Font *font)
 	/* With outline, the first text row is 'outline'. */
 	/* So, we don't have to remove the top part of the outline height. */
 	return font->height / 2;
+}
+
+/* Gets the top row of the strikethrough for a given glyph. The outline
+   is taken into account.
+   Need to update row according to height difference between font and glyph:
+   font_value - font->ascent + glyph->maxy
+*/
+static __inline__ int TTF_Glyph_strikethrough_top_row(TTF_Font *font, c_glyph *glyph)
+{
+	return TTF_strikethrough_top_row(font) - font->ascent + glyph->maxy;
 }
 
 static void TTF_initLineMectrics(const TTF_Font *font, const SDL_Surface *textbuf, const int row, Uint8 **pdst, int *pheight)
@@ -714,7 +744,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 					if ( src->pixel_mode == FT_PIXEL_MODE_MONO ) {
 						for ( j = 0; j < src->width; j += 8 ) {
 							unsigned char c = *srcp++;
-							*dstp++ = (ch&0x80) >> 7;
+							*dstp++ = (c&0x80) >> 7;
 							c <<= 1;
 							*dstp++ = (c&0x80) >> 7;
 							c <<= 1;
@@ -1422,9 +1452,18 @@ SDL_Surface *TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	glyph = font->current;
 
 	/* Create the target surface */
+	row = glyph->bitmap.rows;
+	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+		/* Update height according to the needs of the underline style */
+		int bottom_row = TTF_Glyph_underline_bottom_row(font, glyph);
+		if ( row < bottom_row ) {
+			row = bottom_row;
+		}
+	}
+
 	textbuf = SDL_CreateRGBSurface( SDL_SWSURFACE,
-					glyph->bitmap.pitch,
-					glyph->bitmap.rows,
+					glyph->bitmap.width,
+					row,
 					8, 0, 0, 0, 0 );
 	if ( ! textbuf ) {
 		return(NULL);
@@ -1443,21 +1482,21 @@ SDL_Surface *TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	/* Copy the character from the pixmap */
 	src = glyph->bitmap.buffer;
 	dst = (Uint8*) textbuf->pixels;
-	for ( row = 0; row < textbuf->h; ++row ) {
-		memcpy( dst, src, glyph->bitmap.pitch );
+	for ( row = 0; row < glyph->bitmap.rows; ++row ) {
+		memcpy( dst, src, glyph->bitmap.width );
 		src += glyph->bitmap.pitch;
 		dst += textbuf->pitch;
 	}
 
 	/* Handle the underline style */
 	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
-		row = TTF_underline_top_row(font);
+		row = TTF_Glyph_underline_top_row(font, glyph);
 		TTF_drawLine_Solid(font, textbuf, row);
 	}
 
 	/* Handle the strikethrough style */
 	if( TTF_HANDLE_STYLE_STRIKETHROUGH(font) ) {
-		row = TTF_strikethrough_top_row(font);
+		row = TTF_Glyph_strikethrough_top_row(font, glyph);
 		TTF_drawLine_Solid(font, textbuf, row);
 	}
 	return(textbuf);
@@ -1686,9 +1725,18 @@ SDL_Surface* TTF_RenderGlyph_Shaded( TTF_Font* font,
 	glyph = font->current;
 
 	/* Create the target surface */
+	row = glyph->pixmap.rows;
+	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+		/* Update height according to the needs of the underline style */
+		int bottom_row = TTF_Glyph_underline_bottom_row(font, glyph);
+		if ( row < bottom_row ) {
+			row = bottom_row;
+		}
+	}
+
 	textbuf = SDL_CreateRGBSurface( SDL_SWSURFACE,
 					glyph->pixmap.width,
-					glyph->pixmap.rows,
+					row,
 					8, 0, 0, 0, 0 );
 	if( !textbuf ) {
 		return NULL;
@@ -1708,21 +1756,21 @@ SDL_Surface* TTF_RenderGlyph_Shaded( TTF_Font* font,
 	/* Copy the character from the pixmap */
 	src = glyph->pixmap.buffer;
 	dst = (Uint8*) textbuf->pixels;
-	for ( row = 0; row < textbuf->h; ++row ) {
-		memcpy( dst, src, glyph->pixmap.pitch );
+	for ( row = 0; row < glyph->bitmap.rows; ++row ) {
+		memcpy( dst, src, glyph->pixmap.width );
 		src += glyph->pixmap.pitch;
 		dst += textbuf->pitch;
 	}
 
 	/* Handle the underline style */
 	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
-		row = TTF_underline_top_row(font);
+		row = TTF_Glyph_underline_top_row(font, glyph);
 		TTF_drawLine_Shaded(font, textbuf, row);
 	}
 
 	/* Handle the strikethrough style */
 	if( TTF_HANDLE_STYLE_STRIKETHROUGH(font) ) {
-		row = TTF_strikethrough_top_row(font);
+		row = TTF_Glyph_strikethrough_top_row(font, glyph);
 		TTF_drawLine_Shaded(font, textbuf, row);
 	}
 	return textbuf;
@@ -1932,8 +1980,18 @@ SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	}
 	glyph = font->current;
 
+	/* Create the target surface */
+	row = glyph->pixmap.rows;
+	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+		/* Update height according to the needs of the underline style */
+		int bottom_row = TTF_Glyph_underline_bottom_row(font, glyph);
+		if ( row < bottom_row ) {
+			row = bottom_row;
+		}
+	}
+
 	textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE,
-	              glyph->pixmap.width, glyph->pixmap.rows, 32,
+	              glyph->pixmap.width, row, 32,
                   0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 	if ( ! textbuf ) {
 		return(NULL);
@@ -1943,7 +2001,7 @@ SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
 	SDL_FillRect(textbuf, NULL, pixel);	/* Initialize with fg and 0 alpha */
 
-	for ( row=0; row<textbuf->h; ++row ) {
+	for ( row=0; row<glyph->pixmap.rows; ++row ) {
 		/* Changed src to take pitch into account, not just width */
 		src = glyph->pixmap.buffer + row * glyph->pixmap.pitch;
 		dst = (Uint32 *)textbuf->pixels + row * textbuf->pitch/4;
@@ -1955,13 +2013,13 @@ SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 
 	/* Handle the underline style */
 	if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
-		row = TTF_underline_top_row(font);
+		row = TTF_Glyph_underline_top_row(font, glyph);
 		TTF_drawLine_Blended(font, textbuf, row, pixel);
 	}
 
 	/* Handle the strikethrough style */
 	if( TTF_HANDLE_STYLE_STRIKETHROUGH(font) ) {
-		row = TTF_strikethrough_top_row(font);
+		row = TTF_Glyph_strikethrough_top_row(font, glyph);
 		TTF_drawLine_Blended(font, textbuf, row, pixel);
 	}
 	return(textbuf);
