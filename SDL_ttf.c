@@ -2064,12 +2064,19 @@ void TTF_SetFontHinting( TTF_Font* font, int hinting )
 		font->hinting = FT_LOAD_NO_HINTING;
 	else
 		font->hinting = 0;
+
 	Flush_Cache( font );
 }
 
 int TTF_GetFontHinting( const TTF_Font* font )
 {
-	return font->hinting;
+	if (font->hinting = FT_LOAD_TARGET_LIGHT)
+		return TTF_HINTING_LIGHT;
+	else if (font->hinting = FT_LOAD_TARGET_MONO)
+		return TTF_HINTING_MONO;
+	else if (font->hinting = FT_LOAD_NO_HINTING)
+		return TTF_HINTING_NONE;
+	return 0;
 }
 
 void TTF_Quit( void )
