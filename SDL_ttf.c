@@ -1288,7 +1288,7 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
 		return(NULL);
 	}
 	*unicode_text = UNICODE_BOM_NATIVE;
-	UTF8_to_UNICODE(unicode_text, text, unicode_len);
+	UTF8_to_UNICODE(unicode_text+1, text, unicode_len);
 
 	/* Render the new text */
 	textbuf = TTF_RenderUNICODE_Solid(font, unicode_text, fg);
