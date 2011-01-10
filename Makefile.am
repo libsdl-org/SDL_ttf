@@ -10,6 +10,7 @@ libSDL_ttf_la_SOURCES =		\
 	SDL_ttf.c
 
 EXTRA_DIST =			\
+	Android.mk		\
 	CHANGES			\
 	version.rc		\
 	VisualC.zip		\
