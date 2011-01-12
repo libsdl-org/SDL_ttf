@@ -42,7 +42,7 @@ extern "C" {
 */
 #define SDL_TTF_MAJOR_VERSION	2
 #define SDL_TTF_MINOR_VERSION	0
-#define SDL_TTF_PATCHLEVEL	10
+#define SDL_TTF_PATCHLEVEL	11
 
 /* This macro can be used to fill a version structure with the compile-time
  * version of the SDL_ttf library.
@@ -237,7 +237,7 @@ extern DECLSPEC void SDLCALL TTF_Quit(void);
 extern DECLSPEC int SDLCALL TTF_WasInit(void);
 
 /* Get the kerning size of two glyphs */
-extern DECLSPEC int TTF_GetFontKerningSize(const TTF_Font* font, int prev_index, int index);
+extern DECLSPEC int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int index);
 
 /* We'll use SDL for reporting errors */
 #define TTF_SetError	SDL_SetError
