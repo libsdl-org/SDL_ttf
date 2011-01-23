@@ -1,0 +1,620 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		000543B812E9904000C24674 /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = 000543B612E9904000C24674 /* SDL_ttf.c */; };
+		000543B912E9904000C24674 /* SDL_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = 000543B712E9904000C24674 /* SDL_ttf.h */; };
+		000549AF12EBEAC900C24674 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0005499A12EBEA2C00C24674 /* libfreetype.a */; };
+		000549B012EBEAC900C24674 /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0005493712EBE97C00C24674 /* libSDLiPhoneOS.a */; };
+		000549B112EBEAC900C24674 /* libSDL_ttf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC07E0554694100DB518D /* libSDL_ttf.a */; };
+		000549EC12EBECB500C24674 /* showfont.c in Sources */ = {isa = PBXBuildFile; fileRef = 000549EB12EBECB500C24674 /* showfont.c */; };
+		000549FE12EBED4E00C24674 /* glfont.c in Sources */ = {isa = PBXBuildFile; fileRef = 000549E212EBEC6C00C24674 /* glfont.c */; };
+		000549FF12EBED5900C24674 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0005499A12EBEA2C00C24674 /* libfreetype.a */; };
+		00054A0012EBED5900C24674 /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0005493712EBE97C00C24674 /* libSDLiPhoneOS.a */; };
+		00054A0112EBED5900C24674 /* libSDL_ttf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC07E0554694100DB518D /* libSDL_ttf.a */; };
+		00054A0912EBED9400C24674 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00054A0812EBED9400C24674 /* OpenGLES.framework */; };
+		00054A0B12EBED9400C24674 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00054A0A12EBED9400C24674 /* UIKit.framework */; };
+		00054A7C12EBEDBB00C24674 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		00054A8512EBEDFA00C24674 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00054A8412EBEDFA00C24674 /* AudioToolbox.framework */; };
+		00054A9512EBEE2D00C24674 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00054A9412EBEE2D00C24674 /* QuartzCore.framework */; };
+		00054AC712EBEEE100C24674 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00054A8412EBEDFA00C24674 /* AudioToolbox.framework */; };
+		00054AC812EBEEE300C24674 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		00054AC912EBEEE400C24674 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00054A0812EBED9400C24674 /* OpenGLES.framework */; };
+		00054ACA12EBEEE400C24674 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00054A9412EBEE2D00C24674 /* QuartzCore.framework */; };
+		00054ACB12EBEEE500C24674 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00054A0A12EBED9400C24674 /* UIKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0005493612EBE97C00C24674 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0005492C12EBE97C00C24674 /* SDLiPhoneOS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FD6526630DE8FCCB002AD96B;
+			remoteInfo = StaticLibiPhoneOS;
+		};
+		0005493812EBE97C00C24674 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0005492C12EBE97C00C24674 /* SDLiPhoneOS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 006E982211955059001DE610;
+			remoteInfo = testsdl;
+		};
+		0005499912EBEA2C00C24674 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0005499512EBEA2C00C24674 /* freetype.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC07E0554694100DB518D;
+			remoteInfo = freetype;
+		};
+		000549A912EBEA8E00C24674 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0005492C12EBE97C00C24674 /* SDLiPhoneOS.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = FD6526620DE8FCCB002AD96B;
+			remoteInfo = StaticLibiPhoneOS;
+		};
+		000549AB12EBEA8E00C24674 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0005499512EBEA2C00C24674 /* freetype.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D;
+			remoteInfo = freetype;
+		};
+		000549AD12EBEA9700C24674 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D;
+			remoteInfo = SDL_ttf;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		000543B612E9904000C24674 /* SDL_ttf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_ttf.c; path = ../../SDL_ttf.c; sourceTree = SOURCE_ROOT; };
+		000543B712E9904000C24674 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../../SDL_ttf.h; sourceTree = SOURCE_ROOT; };
+		0005492C12EBE97C00C24674 /* SDLiPhoneOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDLiPhoneOS.xcodeproj; path = "../../../SDL/Xcode-iPhoneOS/SDL/SDLiPhoneOS.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		0005499512EBEA2C00C24674 /* freetype.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = freetype.xcodeproj; path = ../../../freetype/Xcode_iOS/freetype/freetype.xcodeproj; sourceTree = SOURCE_ROOT; };
+		000549A312EBEA8400C24674 /* showfont.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = showfont.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		000549A512EBEA8400C24674 /* showfont-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "showfont-Info.plist"; sourceTree = "<group>"; };
+		000549E212EBEC6C00C24674 /* glfont.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glfont.c; path = ../../glfont.c; sourceTree = "<group>"; };
+		000549EB12EBECB500C24674 /* showfont.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = showfont.c; path = ../../showfont.c; sourceTree = "<group>"; };
+		000549F812EBED3000C24674 /* glfont.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = glfont.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		000549FA12EBED3000C24674 /* glfont-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "glfont-Info.plist"; sourceTree = "<group>"; };
+		00054A0612EBED9400C24674 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		00054A0812EBED9400C24674 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		00054A0A12EBED9400C24674 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		00054A8412EBEDFA00C24674 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		00054A9412EBEE2D00C24674 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		D2AAC07E0554694100DB518D /* libSDL_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		000549A112EBEA8400C24674 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000549AF12EBEAC900C24674 /* libfreetype.a in Frameworks */,
+				000549B012EBEAC900C24674 /* libSDLiPhoneOS.a in Frameworks */,
+				000549B112EBEAC900C24674 /* libSDL_ttf.a in Frameworks */,
+				00054A0912EBED9400C24674 /* OpenGLES.framework in Frameworks */,
+				00054A0B12EBED9400C24674 /* UIKit.framework in Frameworks */,
+				00054A7C12EBEDBB00C24674 /* Foundation.framework in Frameworks */,
+				00054A8512EBEDFA00C24674 /* AudioToolbox.framework in Frameworks */,
+				00054A9512EBEE2D00C24674 /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		000549F612EBED3000C24674 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000549FF12EBED5900C24674 /* libfreetype.a in Frameworks */,
+				00054A0012EBED5900C24674 /* libSDLiPhoneOS.a in Frameworks */,
+				00054A0112EBED5900C24674 /* libSDL_ttf.a in Frameworks */,
+				00054AC712EBEEE100C24674 /* AudioToolbox.framework in Frameworks */,
+				00054AC812EBEEE300C24674 /* Foundation.framework in Frameworks */,
+				00054AC912EBEEE400C24674 /* OpenGLES.framework in Frameworks */,
+				00054ACA12EBEEE400C24674 /* QuartzCore.framework in Frameworks */,
+				00054ACB12EBEEE500C24674 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2AAC07C0554694100DB518D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0005492D12EBE97C00C24674 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0005493712EBE97C00C24674 /* libSDLiPhoneOS.a */,
+				0005493912EBE97C00C24674 /* testsdl.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0005499612EBEA2C00C24674 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0005499A12EBEA2C00C24674 /* libfreetype.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		000549C612EBEBDD00C24674 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				000549A512EBEA8400C24674 /* showfont-Info.plist */,
+				000549FA12EBED3000C24674 /* glfont-Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		000549C912EBEC3200C24674 /* showfont */ = {
+			isa = PBXGroup;
+			children = (
+				000549EB12EBECB500C24674 /* showfont.c */,
+			);
+			name = showfont;
+			sourceTree = "<group>";
+		};
+		000549E412EBEC9100C24674 /* glfont */ = {
+			isa = PBXGroup;
+			children = (
+				000549E212EBEC6C00C24674 /* glfont.c */,
+			);
+			name = glfont;
+			sourceTree = "<group>";
+		};
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC07E0554694100DB518D /* libSDL_ttf.a */,
+				000549A312EBEA8400C24674 /* showfont.app */,
+				000549F812EBED3000C24674 /* glfont.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* SDL_ttf */ = {
+			isa = PBXGroup;
+			children = (
+				000549E412EBEC9100C24674 /* glfont */,
+				000549C912EBEC3200C24674 /* showfont */,
+				08FB77AEFE84172EC02AAC07 /* Source */,
+				0867D69AFE84028FC02AAC07 /* Frameworks */,
+				000549C612EBEBDD00C24674 /* Resources */,
+				034768DFFF38A50411DB9C8B /* Products */,
+			);
+			name = SDL_ttf;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				00054A8412EBEDFA00C24674 /* AudioToolbox.framework */,
+				00054A9412EBEE2D00C24674 /* QuartzCore.framework */,
+				0005499512EBEA2C00C24674 /* freetype.xcodeproj */,
+				0005492C12EBE97C00C24674 /* SDLiPhoneOS.xcodeproj */,
+				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
+				00054A0612EBED9400C24674 /* AudioUnit.framework */,
+				00054A0812EBED9400C24674 /* OpenGLES.framework */,
+				00054A0A12EBED9400C24674 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		08FB77AEFE84172EC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				000543B612E9904000C24674 /* SDL_ttf.c */,
+				000543B712E9904000C24674 /* SDL_ttf.h */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC07A0554694100DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000543B912E9904000C24674 /* SDL_ttf.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		000549A212EBEA8400C24674 /* showfont */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 000549A812EBEA8500C24674 /* Build configuration list for PBXNativeTarget "showfont" */;
+			buildPhases = (
+				0005499F12EBEA8400C24674 /* Resources */,
+				000549A012EBEA8400C24674 /* Sources */,
+				000549A112EBEA8400C24674 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				000549AA12EBEA8E00C24674 /* PBXTargetDependency */,
+				000549AC12EBEA8E00C24674 /* PBXTargetDependency */,
+				000549AE12EBEA9700C24674 /* PBXTargetDependency */,
+			);
+			name = showfont;
+			productName = showfont;
+			productReference = 000549A312EBEA8400C24674 /* showfont.app */;
+			productType = "com.apple.product-type.application";
+		};
+		000549F712EBED3000C24674 /* glfont */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 000549FD12EBED3100C24674 /* Build configuration list for PBXNativeTarget "glfont" */;
+			buildPhases = (
+				000549F412EBED3000C24674 /* Resources */,
+				000549F512EBED3000C24674 /* Sources */,
+				000549F612EBED3000C24674 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = glfont;
+			productName = glfont;
+			productReference = 000549F812EBED3000C24674 /* glfont.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D2AAC07D0554694100DB518D /* SDL_ttf */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB921E08733DC00010E9CD /* Build configuration list for PBXNativeTarget "SDL_ttf" */;
+			buildPhases = (
+				D2AAC07A0554694100DB518D /* Headers */,
+				D2AAC07B0554694100DB518D /* Sources */,
+				D2AAC07C0554694100DB518D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SDL_ttf;
+			productName = SDL_ttf;
+			productReference = D2AAC07E0554694100DB518D /* libSDL_ttf.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "SDL_ttf" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 0867D691FE84028FC02AAC07 /* SDL_ttf */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 0005499612EBEA2C00C24674 /* Products */;
+					ProjectRef = 0005499512EBEA2C00C24674 /* freetype.xcodeproj */;
+				},
+				{
+					ProductGroup = 0005492D12EBE97C00C24674 /* Products */;
+					ProjectRef = 0005492C12EBE97C00C24674 /* SDLiPhoneOS.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				D2AAC07D0554694100DB518D /* SDL_ttf */,
+				000549A212EBEA8400C24674 /* showfont */,
+				000549F712EBED3000C24674 /* glfont */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		0005493712EBE97C00C24674 /* libSDLiPhoneOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDLiPhoneOS.a;
+			remoteRef = 0005493612EBE97C00C24674 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		0005493912EBE97C00C24674 /* testsdl.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = testsdl.app;
+			remoteRef = 0005493812EBE97C00C24674 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		0005499A12EBEA2C00C24674 /* libfreetype.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libfreetype.a;
+			remoteRef = 0005499912EBEA2C00C24674 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0005499F12EBEA8400C24674 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		000549F412EBED3000C24674 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		000549A012EBEA8400C24674 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000549EC12EBECB500C24674 /* showfont.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		000549F512EBED3000C24674 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000549FE12EBED4E00C24674 /* glfont.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2AAC07B0554694100DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000543B812E9904000C24674 /* SDL_ttf.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		000549AA12EBEA8E00C24674 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = StaticLibiPhoneOS;
+			targetProxy = 000549A912EBEA8E00C24674 /* PBXContainerItemProxy */;
+		};
+		000549AC12EBEA8E00C24674 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = freetype;
+			targetProxy = 000549AB12EBEA8E00C24674 /* PBXContainerItemProxy */;
+		};
+		000549AE12EBEA9700C24674 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC07D0554694100DB518D /* SDL_ttf */;
+			targetProxy = 000549AD12EBEA9700C24674 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		000549A612EBEA8400C24674 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				INFOPLIST_FILE = "showfont-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = showfont;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		000549A712EBEA8400C24674 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				INFOPLIST_FILE = "showfont-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = showfont;
+				SDKROOT = iphoneos;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		000549FB12EBED3100C24674 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				INFOPLIST_FILE = "glfont-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = glfont;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		000549FC12EBED3100C24674 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				INFOPLIST_FILE = "glfont-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = glfont;
+				SDKROOT = iphoneos;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		1DEB921F08733DC00010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/SDL_ttf.dst;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = SDL_ttf;
+			};
+			name = Debug;
+		};
+		1DEB922008733DC00010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				DSTROOT = /tmp/SDL_ttf.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = SDL_ttf;
+			};
+			name = Release;
+		};
+		1DEB922308733DC00010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../freetype/include",
+					"$(SRCROOT)/../../../SDL/include",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PREBINDING = NO;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		1DEB922408733DC00010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../freetype/include",
+					"$(SRCROOT)/../../../SDL/include",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PREBINDING = NO;
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		000549A812EBEA8500C24674 /* Build configuration list for PBXNativeTarget "showfont" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000549A612EBEA8400C24674 /* Debug */,
+				000549A712EBEA8400C24674 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		000549FD12EBED3100C24674 /* Build configuration list for PBXNativeTarget "glfont" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000549FB12EBED3100C24674 /* Debug */,
+				000549FC12EBED3100C24674 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB921E08733DC00010E9CD /* Build configuration list for PBXNativeTarget "SDL_ttf" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB921F08733DC00010E9CD /* Debug */,
+				1DEB922008733DC00010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "SDL_ttf" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB922308733DC00010E9CD /* Debug */,
+				1DEB922408733DC00010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}
