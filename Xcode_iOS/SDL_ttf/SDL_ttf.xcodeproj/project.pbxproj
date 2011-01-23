@@ -72,6 +72,27 @@
 			remoteGlobalIDString = D2AAC07D0554694100DB518D;
 			remoteInfo = SDL_ttf;
 		};
+		00054B3712EC136200C24674 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D /* SDL_ttf */;
+			remoteInfo = SDL_ttf;
+		};
+		00054B3912EC136200C24674 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0005499512EBEA2C00C24674 /* freetype.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D /* freetype */;
+			remoteInfo = freetype;
+		};
+		00054B3B12EC136200C24674 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0005492C12EBE97C00C24674 /* SDLiPhoneOS.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = FD6526620DE8FCCB002AD96B /* StaticLibiPhoneOS */;
+			remoteInfo = StaticLibiPhoneOS;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -269,6 +290,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				00054B3A12EC136200C24674 /* PBXTargetDependency */,
+				00054B3C12EC136200C24674 /* PBXTargetDependency */,
+				00054B3812EC136200C24674 /* PBXTargetDependency */,
 			);
 			name = glfont;
 			productName = glfont;
@@ -412,6 +436,21 @@
 			isa = PBXTargetDependency;
 			target = D2AAC07D0554694100DB518D /* SDL_ttf */;
 			targetProxy = 000549AD12EBEA9700C24674 /* PBXContainerItemProxy */;
+		};
+		00054B3812EC136200C24674 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC07D0554694100DB518D /* SDL_ttf */;
+			targetProxy = 00054B3712EC136200C24674 /* PBXContainerItemProxy */;
+		};
+		00054B3A12EC136200C24674 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = freetype;
+			targetProxy = 00054B3912EC136200C24674 /* PBXContainerItemProxy */;
+		};
+		00054B3C12EC136200C24674 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = StaticLibiPhoneOS;
+			targetProxy = 00054B3B12EC136200C24674 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
