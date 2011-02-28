@@ -107,8 +107,7 @@ struct _TTF_Font {
 
 	/* Cache for style-transformed glyphs */
 	c_glyph *current;
-	c_glyph cache[256];
-	c_glyph scratch;
+	c_glyph cache[257]; /* 257 is a prime */
 
 	/* We are responsible for closing the font stream */
 	SDL_RWops *src;
@@ -574,10 +573,6 @@ static void Flush_Cache( TTF_Font* font )
 		}
 
 	}
-	if( font->scratch.cached ) {
-		Flush_Glyph( &font->scratch );
-	}
-
 }
 
 static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want )
@@ -897,15 +892,14 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 static FT_Error Find_Glyph( TTF_Font* font, Uint16 ch, int want )
 {
 	int retval = 0;
+	int hsize = sizeof( font->cache ) / sizeof( font->cache[0] );
 
-	if( ch < 256 ) {
-		font->current = &font->cache[ch];
-	} else {
-		if ( font->scratch.cached != ch ) {
-			Flush_Glyph( &font->scratch );
-		}
-		font->current = &font->scratch;
-	}
+	int h = ch % hsize;
+	font->current = &font->cache[h];
+
+	if (font->current->cached != ch)
+		Flush_Glyph( font->current );
+
 	if ( (font->current->stored & want) != want ) {
 		retval = Load_Glyph( font, ch, font->current, want );
 	}
