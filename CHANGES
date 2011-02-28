@@ -1,4 +1,6 @@
 2.0.11:
+Peter Kosyh - Mon Feb 28 14:57:03 PST 2011
+ * Improved font glyph caching for non-latin languages
 Erik Snoek - Wed Jan 12 09:10:15 PST 2011
  * Added API to get kerning info: TTF_GetFontKerningSize()
 
