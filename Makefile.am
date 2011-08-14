@@ -13,7 +13,7 @@ EXTRA_DIST =			\
 	Android.mk		\
 	CHANGES			\
 	version.rc		\
-	VisualC.zip		\
+	VisualC			\
 	Xcode.tar.gz		\
 	MPWmake.sea.bin		\
 	Watcom-Win32.zip	\
