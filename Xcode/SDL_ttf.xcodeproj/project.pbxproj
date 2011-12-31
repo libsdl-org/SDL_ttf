@@ -328,7 +328,7 @@
 				LIBRARY_SEARCH_PATHS = $SDKROOT/usr/X11R6/lib;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lfreetype";
-				PRODUCT_NAME = SDL_ttf;
+				PRODUCT_NAME = SDLttf;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -363,7 +363,7 @@
 				LIBRARY_SEARCH_PATHS = $SDKROOT/usr/X11R6/lib;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lfreetype";
-				PRODUCT_NAME = SDL_ttf;
+				PRODUCT_NAME = SDLttf;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -397,7 +397,7 @@
 				LIBRARY_SEARCH_PATHS = $SDKROOT/usr/X11R6/lib;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-lfreetype";
-				PRODUCT_NAME = SDL_ttf;
+				PRODUCT_NAME = SDLttf;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -428,7 +428,7 @@
 				LIBRARY_STYLE = STATIC;
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = SDL_ttf;
+				PRODUCT_NAME = SDLttf;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -459,7 +459,7 @@
 				LIBRARY_STYLE = STATIC;
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = SDL_ttf;
+				PRODUCT_NAME = SDLttf;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -489,7 +489,7 @@
 				LIBRARY_STYLE = STATIC;
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = SDL_ttf;
+				PRODUCT_NAME = SDLttf;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
