@@ -1,4 +1,6 @@
 2.0.11:
+Sam Lantinga - Sat Dec 31 10:49:42 EST 2011
+ * SDL_ttf is now under the zlib license
 Peter Kosyh - Mon Feb 28 14:57:03 PST 2011
  * Improved font glyph caching for non-latin languages
 Erik Snoek - Wed Jan 12 09:10:15 PST 2011
