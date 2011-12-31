@@ -14,7 +14,7 @@ EXTRA_DIST =			\
 	CHANGES			\
 	version.rc		\
 	VisualC			\
-	Xcode.tar.gz		\
+	Xcode			\
 	MPWmake.sea.bin		\
 	Watcom-Win32.zip	\
 	SDL_ttf.spec		\
