@@ -17,8 +17,7 @@ redistributable in their special executable installer form (May 1998).
 There are plenty of freeware and shareware fonts available on the Internet
 though, and may suit your purposes.
 
-This library is available under the GNU Library General Public License,
-see the file "COPYING" for details.
+This library is under the zlib license, see the file "COPYING" for details.
 
 Enjoy!
 	-Sam Lantinga <slouken@libsdl.org>		(6/20/2001)
