@@ -1,0 +1,11 @@
+syntax:glob
+autom4te*
+config.cache
+config.log
+config.status
+Makefile
+libtool
+.deps
+.libs
+SDL_ttf.pc
+SDL_ttf.spec
