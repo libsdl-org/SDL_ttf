@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="SDL_ttf"
 	ProjectGUID="{DDDBD07D-DC76-4AF6-8D02-3E2DEB6EE255}"
+	RootNamespace="SDL_ttf"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -71,13 +73,16 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib"
+				AdditionalDependencies="SDL.lib libfreetype-6.lib"
 				OutputFile=".\Debug/SDL_ttf.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)\FreeType\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/SDL_ttf.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/SDL_ttf.lib"
 				TargetMachine="1"
 			/>
@@ -100,9 +105,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -167,12 +169,15 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib"
+				AdditionalDependencies="SDL.lib libfreetype-6.lib"
 				OutputFile=".\Release/SDL_ttf.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)\FreeType\lib&quot;"
 				ProgramDatabaseFile=".\Release/SDL_ttf.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/SDL_ttf.lib"
 				TargetMachine="1"
 			/>
@@ -197,9 +202,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -207,10 +209,6 @@
 	<References>
 	</References>
 	<Files>
-		<File
-			RelativePath="FreeType\lib\libfreetype.lib"
-			>
-		</File>
 		<File
 			RelativePath="..\SDL_ttf.c"
 			>
