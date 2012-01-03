@@ -12,7 +12,7 @@
 		BE48FE3207AFA69500BB41DA /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = F5A47A9E01A0483001D3D55B /* SDLMain.m */; };
 		BE48FE3307AFA69500BB41DA /* glfont.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D68C01CDA86B01F3E8B9 /* glfont.c */; };
 		BE48FE3507AFA69500BB41DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		BE48FE3B07AFA6AB00BB41DA /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FE3907AFA6AB00BB41DA /* SDL_ttf.framework */; };
+		BE48FE3B07AFA6AB00BB41DA /* SDLttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FE3907AFA6AB00BB41DA /* SDLttf.framework */; };
 		BE48FE3C07AFA6AB00BB41DA /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FE3A07AFA6AB00BB41DA /* SDL.framework */; };
 		BE48FE6E07AFA72B00BB41DA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FE6D07AFA72B00BB41DA /* OpenGL.framework */; };
 /* End PBXBuildFile section */
@@ -24,7 +24,7 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		BE48FE3607AFA69500BB41DA /* Info-glfont__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-glfont__Upgraded_.plist"; sourceTree = "<group>"; };
 		BE48FE3707AFA69500BB41DA /* glfont.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = glfont.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE48FE3907AFA6AB00BB41DA /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = /Library/Frameworks/SDL_ttf.framework; sourceTree = "<absolute>"; };
+		BE48FE3907AFA6AB00BB41DA /* SDLttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDLttf.framework; path = /Library/Frameworks/SDLttf.framework; sourceTree = "<absolute>"; };
 		BE48FE3A07AFA6AB00BB41DA /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
 		BE48FE6D07AFA72B00BB41DA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		F567D68C01CDA86B01F3E8B9 /* glfont.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = glfont.c; path = ../../glfont.c; sourceTree = SOURCE_ROOT; };
@@ -38,7 +38,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE48FE3507AFA69500BB41DA /* Cocoa.framework in Frameworks */,
-				BE48FE3B07AFA6AB00BB41DA /* SDL_ttf.framework in Frameworks */,
+				BE48FE3B07AFA6AB00BB41DA /* SDLttf.framework in Frameworks */,
 				BE48FE3C07AFA6AB00BB41DA /* SDL.framework in Frameworks */,
 				BE48FE6E07AFA72B00BB41DA /* OpenGL.framework in Frameworks */,
 			);
@@ -59,7 +59,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BE48FE3907AFA6AB00BB41DA /* SDL_ttf.framework */,
+				BE48FE3907AFA6AB00BB41DA /* SDLttf.framework */,
 				BE48FE3A07AFA6AB00BB41DA /* SDL.framework */,
 				BE48FE6D07AFA72B00BB41DA /* OpenGL.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
@@ -162,7 +162,11 @@
 			isa = PBXProject;
 			buildConfigurationList = 00B7E277097E2DB500826121 /* Build configuration list for PBXProject "glfont" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* SDL App */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -207,18 +211,14 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		00B7E274097E2DB500826121 /* Development */ = {
+		00B7E274097E2DB500826121 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(HOME)/Library/Frameworks",
 					/Library/Frameworks,
 				);
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = HAVE_OPENGL;
 				HEADER_SEARCH_PATHS = (
 					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
@@ -228,25 +228,14 @@
 				);
 				INFOPLIST_FILE = "Info-glfont__Upgraded_.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = glfont;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
 				WRAPPER_EXTENSION = app;
-				ZERO_LINK = YES;
 			};
-			name = Development;
+			name = Debug;
 		};
-		00B7E275097E2DB500826121 /* Deployment */ = {
+		00B7E275097E2DB500826121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(HOME)/Library/Frameworks",
 					/Library/Frameworks,
@@ -261,104 +250,23 @@
 				);
 				INFOPLIST_FILE = "Info-glfont__Upgraded_.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = glfont;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = app;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		00B7E276097E2DB500826121 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = HAVE_OPENGL;
-				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
-					/Library/Frameworks/SDL.framework/Headers,
-					"$(HOME)/Library/Frameworks/SDL_ttf.framework/Headers",
-					/Library/Frameworks/SDL_ttf.framework/Headers,
-				);
-				INFOPLIST_FILE = "Info-glfont__Upgraded_.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = glfont;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
 				WRAPPER_EXTENSION = app;
 			};
-			name = Default;
+			name = Release;
 		};
-		00B7E278097E2DB500826121 /* Development */ = {
+		00B7E278097E2DB500826121 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
-				GCC_VERSION_i386 = 4.0;
-				GCC_VERSION_ppc = 4.0;
-				GCC_VERSION_x86_64 = 4.2;
-				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_x86_64 = 10.6;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_x86_64 = /Developer/SDKs/MacOSX10.6.sdk;
+				GCC_OPTIMIZATION_LEVEL = 0;
 			};
-			name = Development;
+			name = Debug;
 		};
-		00B7E279097E2DB500826121 /* Deployment */ = {
+		00B7E279097E2DB500826121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
-				GCC_VERSION_i386 = 4.0;
-				GCC_VERSION_ppc = 4.0;
-				GCC_VERSION_x86_64 = 4.2;
-				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_x86_64 = 10.6;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_x86_64 = /Developer/SDKs/MacOSX10.6.sdk;
 			};
-			name = Deployment;
-		};
-		00B7E27A097E2DB500826121 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
-				GCC_VERSION_i386 = 4.0;
-				GCC_VERSION_ppc = 4.0;
-				GCC_VERSION_x86_64 = 4.2;
-				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_x86_64 = 10.6;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_x86_64 = /Developer/SDKs/MacOSX10.6.sdk;
-			};
-			name = Default;
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -366,22 +274,20 @@
 		00B7E273097E2DB500826121 /* Build configuration list for PBXNativeTarget "glfont" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00B7E274097E2DB500826121 /* Development */,
-				00B7E275097E2DB500826121 /* Deployment */,
-				00B7E276097E2DB500826121 /* Default */,
+				00B7E274097E2DB500826121 /* Debug */,
+				00B7E275097E2DB500826121 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		00B7E277097E2DB500826121 /* Build configuration list for PBXProject "glfont" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00B7E278097E2DB500826121 /* Development */,
-				00B7E279097E2DB500826121 /* Deployment */,
-				00B7E27A097E2DB500826121 /* Default */,
+				00B7E278097E2DB500826121 /* Debug */,
+				00B7E279097E2DB500826121 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
