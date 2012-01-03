@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,7 +12,7 @@
 		BE48FDF407AFA5DC00BB41DA /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = F5A47A9E01A0483001D3D55B /* SDLMain.m */; };
 		BE48FDF507AFA5DC00BB41DA /* showfont.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D68601CDA5FA01F3E8B9 /* showfont.c */; };
 		BE48FDF707AFA5DC00BB41DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		BE48FDF807AFA5DC00BB41DA /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FDE007AFA5B000BB41DA /* SDL_ttf.framework */; };
+		BE48FDF807AFA5DC00BB41DA /* SDLttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FDE007AFA5B000BB41DA /* SDLttf.framework */; };
 		BE48FDF907AFA5DC00BB41DA /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FDE107AFA5B000BB41DA /* SDL.framework */; };
 /* End PBXBuildFile section */
 
@@ -21,7 +21,7 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		BE48FDE007AFA5B000BB41DA /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = /Library/Frameworks/SDL_ttf.framework; sourceTree = "<absolute>"; };
+		BE48FDE007AFA5B000BB41DA /* SDLttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDLttf.framework; path = /Library/Frameworks/SDLttf.framework; sourceTree = "<absolute>"; };
 		BE48FDE107AFA5B000BB41DA /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
 		BE48FDFA07AFA5DD00BB41DA /* Info-showfont__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-showfont__Upgraded_.plist"; sourceTree = "<group>"; };
 		BE48FDFB07AFA5DD00BB41DA /* showfont.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = showfont.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -36,7 +36,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE48FDF707AFA5DC00BB41DA /* Cocoa.framework in Frameworks */,
-				BE48FDF807AFA5DC00BB41DA /* SDL_ttf.framework in Frameworks */,
+				BE48FDF807AFA5DC00BB41DA /* SDLttf.framework in Frameworks */,
 				BE48FDF907AFA5DC00BB41DA /* SDL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,7 +56,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BE48FDE007AFA5B000BB41DA /* SDL_ttf.framework */,
+				BE48FDE007AFA5B000BB41DA /* SDLttf.framework */,
 				BE48FDE107AFA5B000BB41DA /* SDL.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
@@ -156,9 +156,16 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 00B7E228097E2B2800826121 /* Build configuration list for PBXProject "showfont" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* SDL App */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -203,152 +210,66 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		00B7E225097E2B2800826121 /* Development */ = {
+		00B7E225097E2B2800826121 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(HOME)/Library/Frameworks",
 					/Library/Frameworks,
 				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
+					/Library/Frameworks/SDL.framework/Headers,
+					"$(HOME)/Library/Frameworks/SDL_ttf.framework/Headers",
+					/Library/Frameworks/SDL_ttf.framework/Headers,
+				);
+				INFOPLIST_FILE = "Info-showfont__Upgraded_.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = showfont;
+				SECTORDER_FLAGS = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		00B7E226097E2B2800826121 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(HOME)/Library/Frameworks",
+					/Library/Frameworks,
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
+					/Library/Frameworks/SDL.framework/Headers,
+					"$(HOME)/Library/Frameworks/SDL_ttf.framework/Headers",
+					/Library/Frameworks/SDL_ttf.framework/Headers,
+				);
+				INFOPLIST_FILE = "Info-showfont__Upgraded_.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = showfont;
+				SECTORDER_FLAGS = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		00B7E229097E2B2800826121 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 				GCC_OPTIMIZATION_LEVEL = 0;
-				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
-					/Library/Frameworks/SDL.framework/Headers,
-					"$(HOME)/Library/Frameworks/SDL_ttf.framework/Headers",
-					/Library/Frameworks/SDL_ttf.framework/Headers,
-				);
-				INFOPLIST_FILE = "Info-showfont__Upgraded_.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = showfont;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = app;
-				ZERO_LINK = YES;
 			};
-			name = Development;
+			name = Debug;
 		};
-		00B7E226097E2B2800826121 /* Deployment */ = {
+		00B7E22A097E2B2800826121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
-					/Library/Frameworks/SDL.framework/Headers,
-					"$(HOME)/Library/Frameworks/SDL_ttf.framework/Headers",
-					/Library/Frameworks/SDL_ttf.framework/Headers,
-				);
-				INFOPLIST_FILE = "Info-showfont__Upgraded_.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = showfont;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = app;
-				ZERO_LINK = NO;
 			};
-			name = Deployment;
-		};
-		00B7E227097E2B2800826121 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
-					/Library/Frameworks/SDL.framework/Headers,
-					"$(HOME)/Library/Frameworks/SDL_ttf.framework/Headers",
-					/Library/Frameworks/SDL_ttf.framework/Headers,
-				);
-				INFOPLIST_FILE = "Info-showfont__Upgraded_.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = showfont;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = app;
-			};
-			name = Default;
-		};
-		00B7E229097E2B2800826121 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
-				GCC_VERSION_i386 = 4.0;
-				GCC_VERSION_ppc = 4.0;
-				GCC_VERSION_x86_64 = 4.2;
-				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_x86_64 = 10.6;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_x86_64 = /Developer/SDKs/MacOSX10.6.sdk;
-			};
-			name = Development;
-		};
-		00B7E22A097E2B2800826121 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
-				GCC_VERSION_i386 = 4.0;
-				GCC_VERSION_ppc = 4.0;
-				GCC_VERSION_x86_64 = 4.2;
-				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_x86_64 = 10.6;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_x86_64 = /Developer/SDKs/MacOSX10.6.sdk;
-			};
-			name = Deployment;
-		};
-		00B7E22B097E2B2800826121 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
-				GCC_VERSION_i386 = 4.0;
-				GCC_VERSION_ppc = 4.0;
-				GCC_VERSION_x86_64 = 4.2;
-				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				MACOSX_DEPLOYMENT_TARGET_x86_64 = 10.6;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_x86_64 = /Developer/SDKs/MacOSX10.6.sdk;
-			};
-			name = Default;
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -356,22 +277,20 @@
 		00B7E224097E2B2800826121 /* Build configuration list for PBXNativeTarget "showfont" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00B7E225097E2B2800826121 /* Development */,
-				00B7E226097E2B2800826121 /* Deployment */,
-				00B7E227097E2B2800826121 /* Default */,
+				00B7E225097E2B2800826121 /* Debug */,
+				00B7E226097E2B2800826121 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		00B7E228097E2B2800826121 /* Build configuration list for PBXProject "showfont" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00B7E229097E2B2800826121 /* Development */,
-				00B7E22A097E2B2800826121 /* Deployment */,
-				00B7E22B097E2B2800826121 /* Default */,
+				00B7E229097E2B2800826121 /* Debug */,
+				00B7E22A097E2B2800826121 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
