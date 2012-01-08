@@ -470,10 +470,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PRODUCT_NAME = SDLttf;
 				SDKROOT = macosx;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wno-four-char-constants",
-				);
 			};
 			name = Debug;
 		};
@@ -481,6 +477,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				DEPLOYMENT_POSTPROCESSING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED)",
 					"$(HOME)/Library/Frameworks",
@@ -498,10 +495,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PRODUCT_NAME = SDLttf;
 				SDKROOT = macosx;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wno-four-char-constants",
-				);
+				SEPARATE_STRIP = YES;
+				STRIP_STYLE = "non-global";
 			};
 			name = Release;
 		};
