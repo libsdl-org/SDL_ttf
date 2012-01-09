@@ -43,8 +43,8 @@
 		1014BAEA010A4B677F000001 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../SDL_ttf.h; sourceTree = SOURCE_ROOT; };
 		AA9EE79814B2C589008773C0 /* FreeType.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FreeType.framework; path = freetype/FreeType.framework; sourceTree = "<group>"; };
 		BE48FD6607AFA17000BB41DA /* Info-Framework__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Framework__Upgraded_.plist"; sourceTree = "<group>"; };
-		BE48FD6707AFA17000BB41DA /* SDLttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDLttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE48FD6E07AFA17000BB41DA /* libSDLttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDLttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE48FD6707AFA17000BB41DA /* SDL_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE48FD6E07AFA17000BB41DA /* libSDL_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD7207AFA17000BB41DA /* Create DMG */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Create DMG"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD8307AFA29000BB41DA /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
 		F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SDL_ttf.c; path = ../SDL_ttf.c; sourceTree = SOURCE_ROOT; };
@@ -85,8 +85,8 @@
 			isa = PBXGroup;
 			children = (
 				089C1665FE841158C02AAC07 /* Resources */,
-				BE48FD6707AFA17000BB41DA /* SDLttf.framework */,
-				BE48FD6E07AFA17000BB41DA /* libSDLttf.a */,
+				BE48FD6707AFA17000BB41DA /* SDL_ttf.framework */,
+				BE48FD6E07AFA17000BB41DA /* libSDL_ttf.a */,
 				BE48FD7207AFA17000BB41DA /* Create DMG */,
 			);
 			name = Products;
@@ -197,7 +197,7 @@
 			name = Framework;
 			productInstallPath = "@executable_path/../Frameworks";
 			productName = SDL_ttf;
-			productReference = BE48FD6707AFA17000BB41DA /* SDLttf.framework */;
+			productReference = BE48FD6707AFA17000BB41DA /* SDL_ttf.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		BE48FD6807AFA17000BB41DA /* Static Library */ = {
@@ -216,7 +216,7 @@
 			name = "Static Library";
 			productInstallPath = /usr/local/lib;
 			productName = "Static Library";
-			productReference = BE48FD6E07AFA17000BB41DA /* libSDLttf.a */;
+			productReference = BE48FD6E07AFA17000BB41DA /* libSDL_ttf.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		BE48FD6F07AFA17000BB41DA /* Create DMG */ = {
@@ -303,7 +303,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $SYMROOT/$CONFIGURATION/SDLttf.framework\nif ! [ -L Frameworks ]; then\nln -s Versions/Current/Frameworks Frameworks\nfi";
+			shellScript = "cd $SYMROOT/$CONFIGURATION/SDL_ttf.framework\nif ! [ -L Frameworks ]; then\nln -s Versions/Current/Frameworks Frameworks\nfi";
 		};
 		AA9EE79C14B2C5D0008773C0 /* Convert SDL includes to SDL Framework includes */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -317,7 +317,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $SYMROOT/$CONFIGURATION/SDLttf.framework/Versions/Current/Headers\nsed 's,#include \"\\(.*\\)\",#include <SDL/\\1>,' <SDL_ttf.h >SDL_ttf.h.new\nmv SDL_ttf.h.new SDL_ttf.h";
+			shellScript = "cd $SYMROOT/$CONFIGURATION/SDL_ttf.framework/Versions/Current/Headers\nsed 's,#include \"\\(.*\\)\",#include <SDL/\\1>,' <SDL_ttf.h >SDL_ttf.h.new\nmv SDL_ttf.h.new SDL_ttf.h";
 		};
 		BE48FD7107AFA17000BB41DA /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -326,7 +326,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# clean up the framework, remove headers, extra files\nmkdir -p build/dmg-tmp\n/Developer/Tools/CpMac -r $TARGET_BUILD_DIR/SDLttf.framework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname SDL_ttf -srcfolder build/dmg-tmp build/SDL_ttf.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n\n# compress it???\n#(cd build; gnutar -zcvf SDL_ttf.dmg.tar.gz SDL_ttf.dmg)";
+			shellScript = "# clean up the framework, remove headers, extra files\nmkdir -p build/dmg-tmp\n/Developer/Tools/CpMac -r $TARGET_BUILD_DIR/SDL_ttf.framework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname SDL_ttf -srcfolder build/dmg-tmp build/SDL_ttf.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n\n# compress it???\n#(cd build; gnutar -zcvf SDL_ttf.dmg.tar.gz SDL_ttf.dmg)";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -468,7 +468,7 @@
 				);
 				HEADER_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/freetype/FreeType.framework/Headers\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				PRODUCT_NAME = SDLttf;
+				PRODUCT_NAME = SDL_ttf;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -493,7 +493,7 @@
 				);
 				HEADER_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/freetype/FreeType.framework/Headers\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				PRODUCT_NAME = SDLttf;
+				PRODUCT_NAME = SDL_ttf;
 				SDKROOT = macosx;
 				SEPARATE_STRIP = YES;
 				STRIP_STYLE = "non-global";
