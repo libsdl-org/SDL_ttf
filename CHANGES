@@ -1,6 +1,4 @@
 2.0.11:
-Sam Lantinga - Tue Jan  3 01:36:33 EST 2012
- * The Mac OS X framework name changed to SDLttf, to meet Apple's requirements
 Sam Lantinga - Sat Dec 31 10:49:42 EST 2011
  * SDL_ttf is now under the zlib license
 Peter Kosyh - Mon Feb 28 14:57:03 PST 2011
