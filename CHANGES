@@ -5,6 +5,8 @@ Peter Kosyh - Mon Feb 28 14:57:03 PST 2011
  * Improved font glyph caching for non-latin languages
 Erik Snoek - Wed Jan 12 09:10:15 PST 2011
  * Added API to get kerning info: TTF_GetFontKerningSize()
+Sam Lantinga - Mon Jan 10 10:58:34 2011 -0800
+ * Added Android.mk to build on the Android platform
 
 2.0.10:
 Adam Strzelecki - Wed Oct 21 21:02:37 PDT 2009
