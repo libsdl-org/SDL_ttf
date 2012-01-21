@@ -1,3 +1,7 @@
+The source code to this library used with SDL_ttf can be found here:
+http://www.libsdl.org/projects/SDL_ttf/libs/
+---
+
                     The FreeType Project LICENSE
                     ----------------------------
 
