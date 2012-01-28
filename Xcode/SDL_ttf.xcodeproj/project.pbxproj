@@ -12,7 +12,7 @@
 		BE48FD5F07AFA17000BB41DA /* SDL_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1014BAEA010A4B677F000001 /* SDL_ttf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE48FD6207AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		BE48FD6B07AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
-		BE48FD8407AFA29000BB41DA /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FD8307AFA29000BB41DA /* SDL.framework */; };
+		BE48FD8407AFA29000BB41DA /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FD8307AFA29000BB41DA /* SDL2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +46,7 @@
 		BE48FD6707AFA17000BB41DA /* SDL_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD6E07AFA17000BB41DA /* libSDL_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD7207AFA17000BB41DA /* Create DMG */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Create DMG"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE48FD8307AFA29000BB41DA /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
+		BE48FD8307AFA29000BB41DA /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SDL_ttf.c; path = ../SDL_ttf.c; sourceTree = SOURCE_ROOT; };
 		F59C710300D5CB5801000001 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		F59C710400D5CB5801000001 /* Welcome.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Welcome.txt; sourceTree = "<group>"; };
@@ -58,7 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE48FD8407AFA29000BB41DA /* SDL.framework in Frameworks */,
+				BE48FD8407AFA29000BB41DA /* SDL2.framework in Frameworks */,
 				AA9EE79914B2C589008773C0 /* FreeType.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -132,7 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				AA9EE79814B2C589008773C0 /* FreeType.framework */,
-				BE48FD8307AFA29000BB41DA /* SDL.framework */,
+				BE48FD8307AFA29000BB41DA /* SDL2.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -303,7 +303,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $SYMROOT/$CONFIGURATION/SDL_ttf.framework\nif ! [ -L Frameworks ]; then\nln -s Versions/Current/Frameworks Frameworks\nfi";
+			shellScript = "cd $SYMROOT/$CONFIGURATION/$FULL_PRODUCT_NAME\nif ! [ -L Frameworks ]; then\n    rm -f Frameworks\n    ln -s Versions/Current/Frameworks Frameworks\nfi";
 		};
 		AA9EE79C14B2C5D0008773C0 /* Convert SDL includes to SDL Framework includes */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -317,7 +317,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $SYMROOT/$CONFIGURATION/SDL_ttf.framework/Versions/Current/Headers\nsed 's,#include \"\\(.*\\)\",#include <SDL/\\1>,' <SDL_ttf.h >SDL_ttf.h.new\nmv SDL_ttf.h.new SDL_ttf.h";
+			shellScript = "cd $SYMROOT/$CONFIGURATION/$PUBLIC_HEADERS_FOLDER_PATH\nHEADER=SDL_ttf.h\nsed 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' <$HEADER >$HEADER.new\nmv $HEADER.new $HEADER";
 		};
 		BE48FD7107AFA17000BB41DA /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -326,7 +326,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# clean up the framework, remove headers, extra files\nmkdir -p build/dmg-tmp\n/Developer/Tools/CpMac -r $TARGET_BUILD_DIR/SDL_ttf.framework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname SDL_ttf -srcfolder build/dmg-tmp build/SDL_ttf.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n\n# compress it???\n#(cd build; gnutar -zcvf SDL_ttf.dmg.tar.gz SDL_ttf.dmg)";
+			shellScript = "# clean up the framework, remove headers, extra files\nPRODUCT_NAME=SDL2_ttf\nmkdir -p build/dmg-tmp\n/Developer/Tools/CpMac -r $TARGET_BUILD_DIR/$PRODUCT_NAME.framework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname $PRODUCT_NAME -srcfolder build/dmg-tmp build/$PRODUCT_NAME.dmg\n\n# clean up\nrm -rf build/dmg-tmp";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -463,12 +463,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS_QUOTED)",
-					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
-					/Library/Frameworks/SDL.framework/Headers,
+					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
+					/Library/Frameworks/SDL2.framework/Headers,
 				);
 				HEADER_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks/FreeType.framework/Headers\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				PRODUCT_NAME = SDL_ttf;
+				PRODUCT_NAME = SDL2_ttf;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -488,12 +488,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS_QUOTED)",
-					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
-					/Library/Frameworks/SDL.framework/Headers,
+					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
+					/Library/Frameworks/SDL2.framework/Headers,
 				);
 				HEADER_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks/FreeType.framework/Headers\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				PRODUCT_NAME = SDL_ttf;
+				PRODUCT_NAME = SDL2_ttf;
 				SDKROOT = macosx;
 				SEPARATE_STRIP = YES;
 				STRIP_STYLE = "non-global";
