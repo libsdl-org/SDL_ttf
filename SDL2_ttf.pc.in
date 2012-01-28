@@ -3,10 +3,10 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: SDL_ttf
+Name: SDL2_ttf
 Description: ttf library for Simple DirectMedia Layer with FreeType 2 support
 Version: @VERSION@
-Requires: sdl >= @SDL_VERSION@
-Libs: -L${libdir} -lSDL_ttf
-Cflags: -I${includedir}/SDL
+Requires: sdl2 >= @SDL_VERSION@
+Libs: -L${libdir} -lSDL2_ttf
+Cflags: -I${includedir}/SDL2
 

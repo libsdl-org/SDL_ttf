@@ -1318,7 +1318,7 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	}
 
 	/* Create the target surface */
-	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0);
+	textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0);
 	if( textbuf == NULL ) {
 		return NULL;
 	}
@@ -1335,7 +1335,7 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	palette->colors[1].r = fg.r;
 	palette->colors[1].g = fg.g;
 	palette->colors[1].b = fg.b;
-	SDL_SetColorKey( textbuf, SDL_SRCCOLORKEY, 0 );
+	SDL_SetColorKey( textbuf, SDL_TRUE, 0 );
 
 	/* check kerning */
 	use_kerning = FT_HAS_KERNING( font->face ) && font->kerning;
@@ -1471,7 +1471,7 @@ SDL_Surface *TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
 	palette->colors[1].r = fg.r;
 	palette->colors[1].g = fg.g;
 	palette->colors[1].b = fg.b;
-	SDL_SetColorKey(textbuf, SDL_SRCCOLORKEY, 0);
+	SDL_SetColorKey(textbuf, SDL_TRUE, 0);
 
 	/* Copy the character from the pixmap */
 	src = glyph->bitmap.buffer;
@@ -1584,7 +1584,7 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 	}
 
 	/* Create the target surface */
-	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0);
+	textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 8, 0, 0, 0, 0);
 	if( textbuf == NULL ) {
 		return NULL;
 	}
@@ -1852,7 +1852,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	}
 
 	/* Create the target surface */
-	textbuf = SDL_AllocSurface(SDL_SWSURFACE, width, height, 32,
+	textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
 	                           0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 	if ( textbuf == NULL ) {
 		return(NULL);
