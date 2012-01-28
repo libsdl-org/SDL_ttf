@@ -16,8 +16,6 @@ EXTRA_DIST =			\
 	VisualC			\
 	Xcode			\
 	Xcode-iOS		\
-	MPWmake.sea.bin		\
-	Watcom-Win32.zip	\
 	SDL_ttf.spec		\
 	SDL_ttf.spec.in		\
 	gcc-fat.sh		\
