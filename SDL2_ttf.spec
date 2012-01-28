@@ -1,5 +1,5 @@
-%define name @PACKAGE@
-%define version @VERSION@
+%define name SDL2_ttf
+%define version 2.0.12
 %define release 1
 
 Summary: Simple DirectMedia Layer - Sample TrueType Font Library
@@ -12,7 +12,7 @@ Group: System Environment/Libraries
 BuildRoot: /var/tmp/%{name}-buildroot
 Prefix: %{_prefix}
 Packager: Hakan Tandogan <hakan@iconsult.com>
-#BuildRequires: SDL-devel
+#BuildRequires: SDL2-devel
 #BuildRequires: freetype-devel
 
 %description
@@ -23,7 +23,7 @@ applications.
 Summary: Libraries, includes and more to develop SDL applications.
 Group: Development/Libraries
 Requires: %{name}
-Requires: SDL-devel
+Requires: SDL2-devel
 
 %description devel
 This library allows you to use TrueType fonts to render text in SDL
@@ -55,7 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/lib/lib*.a
 %{prefix}/lib/lib*.la
 %{prefix}/lib/lib*.so
-%{prefix}/include/SDL/
+%{prefix}/include/*/
 %{prefix}/lib/pkgconfig/*.pc
 
 %changelog

@@ -40,9 +40,9 @@ host_triplet = @host@
 noinst_PROGRAMS = showfont$(EXEEXT) glfont$(EXEEXT)
 subdir = .
 DIST_COMMON = README $(am__configure_deps) \
-	$(libSDL_ttfinclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/SDL_ttf.pc.in \
-	$(srcdir)/SDL_ttf.spec.in $(top_srcdir)/configure COPYING \
+	$(libSDL2_ttfinclude_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/SDL2_ttf.pc.in \
+	$(srcdir)/SDL2_ttf.spec.in $(top_srcdir)/configure COPYING \
 	config.guess config.sub depcomp install-sh ltmain.sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude/libtool.m4 \
@@ -50,14 +50,14 @@ am__aclocal_m4_deps = $(top_srcdir)/acinclude/libtool.m4 \
 	$(top_srcdir)/acinclude/ltsugar.m4 \
 	$(top_srcdir)/acinclude/ltversion.m4 \
 	$(top_srcdir)/acinclude/lt~obsolete.m4 \
-	$(top_srcdir)/acinclude/pkg.m4 $(top_srcdir)/acinclude/sdl.m4 \
+	$(top_srcdir)/acinclude/pkg.m4 $(top_srcdir)/acinclude/sdl2.m4 \
 	$(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
-CONFIG_CLEAN_FILES = SDL_ttf.spec SDL_ttf.pc
+CONFIG_CLEAN_FILES = SDL2_ttf.spec SDL2_ttf.pc
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -65,22 +65,22 @@ am__vpath_adj = case $$p in \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
-	"$(DESTDIR)$(libSDL_ttfincludedir)"
+	"$(DESTDIR)$(libSDL2_ttfincludedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libSDL_ttf_la_LIBADD =
-am_libSDL_ttf_la_OBJECTS = SDL_ttf.lo
-libSDL_ttf_la_OBJECTS = $(am_libSDL_ttf_la_OBJECTS)
-libSDL_ttf_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+libSDL2_ttf_la_LIBADD =
+am_libSDL2_ttf_la_OBJECTS = SDL_ttf.lo
+libSDL2_ttf_la_OBJECTS = $(am_libSDL2_ttf_la_OBJECTS)
+libSDL2_ttf_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(libSDL_ttf_la_LDFLAGS) $(LDFLAGS) -o $@
+	$(libSDL2_ttf_la_LDFLAGS) $(LDFLAGS) -o $@
 PROGRAMS = $(noinst_PROGRAMS)
 glfont_SOURCES = glfont.c
 glfont_OBJECTS = glfont.$(OBJEXT)
-glfont_DEPENDENCIES = libSDL_ttf.la
+glfont_DEPENDENCIES = libSDL2_ttf.la
 showfont_SOURCES = showfont.c
 showfont_OBJECTS = showfont.$(OBJEXT)
-showfont_DEPENDENCIES = libSDL_ttf.la
+showfont_DEPENDENCIES = libSDL2_ttf.la
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -93,12 +93,12 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libSDL_ttf_la_SOURCES) glfont.c showfont.c
-DIST_SOURCES = $(libSDL_ttf_la_SOURCES) glfont.c showfont.c
+SOURCES = $(libSDL2_ttf_la_SOURCES) glfont.c showfont.c
+DIST_SOURCES = $(libSDL2_ttf_la_SOURCES) glfont.c showfont.c
 pkgconfigDATA_INSTALL = $(INSTALL_DATA)
 DATA = $(pkgconfig_DATA)
-libSDL_ttfincludeHEADERS_INSTALL = $(INSTALL_HEADER)
-HEADERS = $(libSDL_ttfinclude_HEADERS)
+libSDL2_ttfincludeHEADERS_INSTALL = $(INSTALL_HEADER)
+HEADERS = $(libSDL2_ttfinclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -247,12 +247,12 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-lib_LTLIBRARIES = libSDL_ttf.la
-libSDL_ttfincludedir = $(includedir)/SDL
-libSDL_ttfinclude_HEADERS = \
+lib_LTLIBRARIES = libSDL2_ttf.la
+libSDL2_ttfincludedir = $(includedir)/SDL2
+libSDL2_ttfinclude_HEADERS = \
 	SDL_ttf.h
 
-libSDL_ttf_la_SOURCES = \
+libSDL2_ttf_la_SOURCES = \
 	SDL_ttf.c
 
 EXTRA_DIST = \
@@ -262,28 +262,26 @@ EXTRA_DIST = \
 	VisualC			\
 	Xcode			\
 	Xcode-iOS		\
-	MPWmake.sea.bin		\
-	Watcom-Win32.zip	\
-	SDL_ttf.spec		\
-	SDL_ttf.spec.in		\
+	SDL2_ttf.spec		\
+	SDL2_ttf.spec.in		\
 	gcc-fat.sh		\
 	autogen.sh
 
-@USE_VERSION_RC_FALSE@libSDL_ttf_la_LDFLAGS = \
+@USE_VERSION_RC_FALSE@libSDL2_ttf_la_LDFLAGS = \
 @USE_VERSION_RC_FALSE@	-no-undefined		\
 @USE_VERSION_RC_FALSE@	-release $(LT_RELEASE)	\
 @USE_VERSION_RC_FALSE@	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
-@USE_VERSION_RC_TRUE@libSDL_ttf_la_LDFLAGS = \
+@USE_VERSION_RC_TRUE@libSDL2_ttf_la_LDFLAGS = \
 @USE_VERSION_RC_TRUE@	-no-undefined		\
 @USE_VERSION_RC_TRUE@	-release $(LT_RELEASE)	\
 @USE_VERSION_RC_TRUE@	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -Wl,version.o
 
-@USE_VERSION_RC_TRUE@libSDL_ttf_la_DEPENDENCIES = version.o
+@USE_VERSION_RC_TRUE@libSDL2_ttf_la_DEPENDENCIES = version.o
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = SDL_ttf.pc
-showfont_LDADD = libSDL_ttf.la
-glfont_LDADD = libSDL_ttf.la @GL_LIBS@ @MATHLIB@
+pkgconfig_DATA = SDL2_ttf.pc
+showfont_LDADD = libSDL2_ttf.la
+glfont_LDADD = libSDL2_ttf.la @GL_LIBS@ @MATHLIB@
 all: all-am
 
 .SUFFIXES:
@@ -321,9 +319,9 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(srcdir) && $(AUTOCONF)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
-SDL_ttf.spec: $(top_builddir)/config.status $(srcdir)/SDL_ttf.spec.in
+SDL2_ttf.spec: $(top_builddir)/config.status $(srcdir)/SDL2_ttf.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-SDL_ttf.pc: $(top_builddir)/config.status $(srcdir)/SDL_ttf.pc.in
+SDL2_ttf.pc: $(top_builddir)/config.status $(srcdir)/SDL2_ttf.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -352,8 +350,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libSDL_ttf.la: $(libSDL_ttf_la_OBJECTS) $(libSDL_ttf_la_DEPENDENCIES) 
-	$(libSDL_ttf_la_LINK) -rpath $(libdir) $(libSDL_ttf_la_OBJECTS) $(libSDL_ttf_la_LIBADD) $(LIBS)
+libSDL2_ttf.la: $(libSDL2_ttf_la_OBJECTS) $(libSDL2_ttf_la_DEPENDENCIES) 
+	$(libSDL2_ttf_la_LINK) -rpath $(libdir) $(libSDL2_ttf_la_OBJECTS) $(libSDL2_ttf_la_LIBADD) $(LIBS)
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; for p in $$list; do \
@@ -424,22 +422,22 @@ uninstall-pkgconfigDATA:
 	  echo " rm -f '$(DESTDIR)$(pkgconfigdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(pkgconfigdir)/$$f"; \
 	done
-install-libSDL_ttfincludeHEADERS: $(libSDL_ttfinclude_HEADERS)
+install-libSDL2_ttfincludeHEADERS: $(libSDL2_ttfinclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(libSDL_ttfincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libSDL_ttfincludedir)"
-	@list='$(libSDL_ttfinclude_HEADERS)'; for p in $$list; do \
+	test -z "$(libSDL2_ttfincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libSDL2_ttfincludedir)"
+	@list='$(libSDL2_ttfinclude_HEADERS)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f=$(am__strip_dir) \
-	  echo " $(libSDL_ttfincludeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(libSDL_ttfincludedir)/$$f'"; \
-	  $(libSDL_ttfincludeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(libSDL_ttfincludedir)/$$f"; \
+	  echo " $(libSDL2_ttfincludeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(libSDL2_ttfincludedir)/$$f'"; \
+	  $(libSDL2_ttfincludeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(libSDL2_ttfincludedir)/$$f"; \
 	done
 
-uninstall-libSDL_ttfincludeHEADERS:
+uninstall-libSDL2_ttfincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libSDL_ttfinclude_HEADERS)'; for p in $$list; do \
+	@list='$(libSDL2_ttfinclude_HEADERS)'; for p in $$list; do \
 	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(libSDL_ttfincludedir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(libSDL_ttfincludedir)/$$f"; \
+	  echo " rm -f '$(DESTDIR)$(libSDL2_ttfincludedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(libSDL2_ttfincludedir)/$$f"; \
 	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
@@ -619,7 +617,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(libSDL_ttfincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(libSDL2_ttfincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -668,7 +666,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libSDL_ttfincludeHEADERS \
+install-data-am: install-libSDL2_ttfincludeHEADERS \
 	install-pkgconfigDATA
 
 install-dvi: install-dvi-am
@@ -708,7 +706,7 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-libLTLIBRARIES \
-	uninstall-libSDL_ttfincludeHEADERS uninstall-pkgconfigDATA
+	uninstall-libSDL2_ttfincludeHEADERS uninstall-pkgconfigDATA
 
 .MAKE: install-am install-strip
 
@@ -722,13 +720,13 @@ uninstall-am: uninstall-libLTLIBRARIES \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
 	install-info install-info-am install-libLTLIBRARIES \
-	install-libSDL_ttfincludeHEADERS install-man install-pdf \
+	install-libSDL2_ttfincludeHEADERS install-man install-pdf \
 	install-pdf-am install-pkgconfigDATA install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-libLTLIBRARIES uninstall-libSDL_ttfincludeHEADERS \
+	uninstall-libLTLIBRARIES uninstall-libSDL2_ttfincludeHEADERS \
 	uninstall-pkgconfigDATA
 
 

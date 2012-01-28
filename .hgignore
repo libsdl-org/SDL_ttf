@@ -7,5 +7,10 @@ Makefile
 libtool
 .deps
 .libs
-SDL_ttf.pc
-SDL_ttf.spec
+*.lo
+*.o
+*.la
+*.lai
+SDL2_ttf.pc
+glfont
+showfont
