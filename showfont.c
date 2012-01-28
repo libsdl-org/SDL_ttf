@@ -52,7 +52,7 @@ static void draw_scene(SDL_Renderer *renderer, Scene *scene)
 {
 	/* Clear the background to background color */
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_RenderFillRect(renderer, NULL);
+    SDL_RenderClear(renderer);
 
     SDL_RenderCopy(renderer, scene->caption, NULL, &scene->captionRect);
     SDL_RenderCopy(renderer, scene->message, NULL, &scene->messageRect);
