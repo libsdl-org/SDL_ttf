@@ -99,6 +99,7 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 	SDL_Surface *image;
 	SDL_Rect area;
 	Uint8  saved_alpha;
+    SDL_BlendMode saved_mode;
 
 	/* Use the surface width and height expanded to powers of 2 */
 	w = power_of_two(surface->w);
@@ -131,6 +132,8 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 	/* Save the alpha blending attributes */
 	SDL_GetSurfaceAlphaMod(surface, &saved_alpha);
 	SDL_SetSurfaceAlphaMod(surface, 0xFF);
+    SDL_GetSurfaceBlendMode(surface, &saved_mode);
+    SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE);
 
 	/* Copy the surface into the GL texture image */
 	area.x = 0;
@@ -141,6 +144,7 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 
 	/* Restore the alpha blending attributes */
 	SDL_SetSurfaceAlphaMod(surface, saved_alpha);
+    SDL_SetSurfaceBlendMode(surface, saved_mode);
 
 	/* Create an OpenGL texture for the image */
 	glGenTextures(1, &texture);
