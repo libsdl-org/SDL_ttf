@@ -381,6 +381,9 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 
 	if ( ! TTF_initialized ) {
 		TTF_SetError( "Library not initialized" );
+		if ( freesrc ) {
+			SDL_RWclose( src );
+		}
 		return NULL;
 	}
 
@@ -394,6 +397,9 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	font = (TTF_Font*) malloc(sizeof *font);
 	if ( font == NULL ) {
 		TTF_SetError( "Out of memory" );
+		if ( freesrc ) {
+			SDL_RWclose( src );
+		}
 		return NULL;
 	}
 	memset(font, 0, sizeof(*font));
