@@ -391,6 +391,9 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	position = SDL_RWtell(src);
 	if ( position < 0 ) {
 		TTF_SetError( "Can't seek in stream" );
+		if ( freesrc ) {
+			SDL_RWclose( src );
+		}
 		return NULL;
 	}
 
