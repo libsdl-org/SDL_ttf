@@ -381,9 +381,14 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 
 	if ( ! TTF_initialized ) {
 		TTF_SetError( "Library not initialized" );
-		if ( freesrc ) {
+		if ( src && freesrc ) {
 			SDL_RWclose( src );
 		}
+		return NULL;
+	}
+
+	if ( ! src ) {
+		TTF_SetError( "Passed a NULL font source" );
 		return NULL;
 	}
 
