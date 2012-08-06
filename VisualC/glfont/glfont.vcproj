@@ -72,7 +72,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib SDL.lib SDLmain.lib"
+				AdditionalDependencies="opengl32.lib SDL2.lib SDL2main.lib"
 				ProgramDatabaseFile=".\Release/glfont.pdb"
 				SubSystem="2"
 				TargetMachine="1"
@@ -239,7 +239,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib SDL.lib SDLmain.lib"
+				AdditionalDependencies="opengl32.lib SDL2.lib SDL2main.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/glfont.pdb"
 				SubSystem="2"

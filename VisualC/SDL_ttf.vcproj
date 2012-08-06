@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="SDL_ttf"
+	Name="SDL2_ttf"
 	ProjectGUID="{DDDBD07D-DC76-4AF6-8D02-3E2DEB6EE255}"
 	RootNamespace="SDL_ttf"
 	TargetFrameworkVersion="131072"
@@ -73,7 +73,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib libfreetype-6.lib"
+				AdditionalDependencies="SDL2.lib libfreetype-6.lib"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)\external\lib\x86&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/SDL_ttf.pdb"
@@ -246,7 +246,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib libfreetype-6.lib"
+				AdditionalDependencies="SDL2.lib libfreetype-6.lib"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)\external\lib\x86&quot;"
 				ProgramDatabaseFile=".\Release/SDL_ttf.pdb"
 				SubSystem="2"
