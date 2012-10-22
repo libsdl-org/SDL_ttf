@@ -1973,6 +1973,298 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	return(textbuf);
 }
 
+
+/* Convert the Latin-1 text to UNICODE and render it
+ */
+SDL_Surface *TTF_RenderText_Blended_Wrapped(TTF_Font *font,
+                                    const char *text, SDL_Color fg, Uint32 wrapLength)
+{
+	SDL_Surface *textbuf;
+	Uint16 *unicode_text;
+	int unicode_len;
+    
+	/* Copy the Latin-1 text to a UNICODE text buffer */
+	unicode_len = strlen(text);
+	unicode_text = (Uint16 *)ALLOCA((1+unicode_len+1)*(sizeof *unicode_text));
+	if ( unicode_text == NULL ) {
+		TTF_SetError("Out of memory");
+		return(NULL);
+	}
+	*unicode_text = UNICODE_BOM_NATIVE;
+	LATIN1_to_UNICODE(unicode_text+1, text, unicode_len);
+    
+	/* Render the new text */
+	textbuf = TTF_RenderUNICODE_Blended_Wrapped(font, unicode_text, text, fg, 0, wrapLength);
+    
+	/* Free the text buffer and return */
+	FREEA(unicode_text);
+	return(textbuf);
+}
+
+/* Convert the UTF-8 text to UNICODE and render it
+ */
+SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
+                                    const char *text, SDL_Color fg, Uint32 wrapLength)
+{
+	SDL_Surface *textbuf;
+	Uint16 *unicode_text;
+	int unicode_len;
+    
+	/* Copy the UTF-8 text to a UNICODE text buffer */
+	unicode_len = strlen(text);
+	unicode_text = (Uint16 *)ALLOCA((1+unicode_len+1)*(sizeof *unicode_text));
+	if ( unicode_text == NULL ) {
+		TTF_SetError("Out of memory");
+		return(NULL);
+	}
+	*unicode_text = UNICODE_BOM_NATIVE;
+	UTF8_to_UNICODE(unicode_text+1, text, unicode_len);
+    
+	/* Render the new text */
+	textbuf = TTF_RenderUNICODE_Blended_Wrapped(font, unicode_text, text, fg, 1, wrapLength);
+    
+	/* Free the text buffer and return */
+	FREEA(unicode_text);
+	return(textbuf);
+}
+
+SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_text, const char *text,
+                                               SDL_Color fg, Uint8 isUTF8, Uint32 wrapLength)
+{
+	int xstart;
+	int width, height;
+	SDL_Surface *textbuf;
+	Uint32 alpha;
+	Uint32 pixel;
+	const Uint16 *ch;
+	Uint8 *src;
+	Uint32 *dst;
+	Uint32 *dst_check;
+	int swapped;
+	int row, col;
+	c_glyph *glyph;
+	FT_Error error;
+	FT_Long use_kerning;
+	FT_UInt prev_index = 0;
+    const int lineSpace = 2;
+    
+    // Minimum to wrap text
+    static const int minWrapLength = 100;
+    
+	/* Get the dimensions of the text surface */
+	if ( (TTF_SizeUNICODE(font, unicode_text, &width, &height) < 0) || !width ) {
+		TTF_SetError("Text has zero width");
+		return(NULL);
+	}
+    
+    int numLines = 1;
+    char **strLines = NULL;
+    if (wrapLength > minWrapLength)
+    {
+        numLines = (width % wrapLength) ? 1 : 0;
+        numLines += width / wrapLength;
+    
+    
+        if (numLines > 1)
+        {
+            // buffer lines for caes with long words
+            numLines *= 1.5f;
+            
+            const char *wrapDelims = " ";
+            Uint32 str_len = SDL_strlen(text);
+            
+            strLines = (char**)ALLOCA(numLines);
+            if ( strLines == NULL ) {
+                TTF_SetError("Out of memory");
+                return(NULL);
+            }
+            
+            for (int i = 0; i < numLines; i++)
+            {
+                strLines[i] = (char*)ALLOCA(str_len+1);
+                if ( strLines[i] == NULL ) {
+                    TTF_SetError("Out of memory");
+                    return(NULL);
+                }
+                strLines[i][0] = '\0';
+            }
+        
+            
+            char *tok = (char*)ALLOCA(str_len+1);
+            if ( tok == NULL ) {
+                TTF_SetError("Out of memory");
+                return(NULL);
+            }
+            
+            int spaceWidth, w, h;
+            int line = 0, curLen = 0, curStrLen = 0;
+            SDL_strlcpy(tok, text, str_len+1);
+            tok = strtok(tok, wrapDelims);
+            TTF_SizeUTF8(font, " ", &spaceWidth, &h);
+            
+            while (tok)
+            {
+                TTF_SizeUTF8(font, tok, &w, &h);
+                if (w + curLen > wrapLength)
+                {
+                    strLines[line][curStrLen] = '\0';
+                    curStrLen = curLen = 0;
+                    line++;
+                }
+                SDL_strlcpy(strLines[line] + curStrLen, tok, str_len);
+                
+                curLen += w + spaceWidth;
+                curStrLen += strlen(tok);
+                strLines[line][curStrLen++] = ' ';
+                
+                tok = strtok(NULL, wrapDelims);
+            }
+            FREEA(tok);
+        }
+    }
+    
+	/* Create the target surface */
+    if (numLines > 1)
+    {
+        height += lineSpace;
+    }
+	textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE, (numLines > 1)?wrapLength:width, height * numLines, 32,
+                                   0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+	if ( textbuf == NULL ) {
+		return(NULL);
+	}
+    
+    int rowSize = textbuf->pitch/4 * height;
+    
+	/* Adding bound checking to avoid all kinds of memory corruption errors
+     that may occur. */
+	dst_check = (Uint32*)textbuf->pixels + textbuf->pitch/4 * textbuf->h;
+    
+	/* check kerning */
+	use_kerning = FT_HAS_KERNING( font->face ) && font->kerning;
+	
+	/* Load and render each character */
+	swapped = TTF_byteswapped;
+	pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
+	SDL_FillRect(textbuf, NULL, pixel);	/* Initialize with fg and 0 alpha */
+    
+    
+    for(int line = 0; line < numLines; line++)
+    {
+        xstart = 0;
+        
+        if (strLines)
+        {
+            if (strlen(strLines[line]) == 0)
+                break;
+                
+            *unicode_text = UNICODE_BOM_NATIVE;
+            if (isUTF8)
+                UTF8_to_UNICODE(unicode_text+1, strLines[line], strlen(strLines[line]));
+            else
+                LATIN1_to_UNICODE(unicode_text+1, strLines[line], strlen(strLines[line]));
+        }
+        
+        
+        for ( ch=unicode_text; *ch; ++ch ) {
+            Uint16 c = *ch;
+            if ( c == UNICODE_BOM_NATIVE ) {
+                swapped = 0;
+                if ( unicode_text == ch ) {
+                    ++unicode_text;
+                }
+                continue;
+            }
+            if ( c == UNICODE_BOM_SWAPPED ) {
+                swapped = 1;
+                if ( unicode_text == ch ) {
+                    ++unicode_text;
+                }
+                continue;
+            }
+            if ( swapped ) {
+                c = SDL_Swap16(c);
+            }
+            error = Find_Glyph(font, c, CACHED_METRICS|CACHED_PIXMAP);
+            if( error ) {
+                TTF_SetFTError("Couldn't find glyph", error);
+                SDL_FreeSurface( textbuf );
+                return NULL;
+            }
+            glyph = font->current;
+            /* Ensure the width of the pixmap is correct. On some cases,
+             * freetype may report a larger pixmap than possible.*/
+            width = glyph->pixmap.width;
+            if (font->outline <= 0 && width > glyph->maxx - glyph->minx) {
+                width = glyph->maxx - glyph->minx;
+            }
+            /* do kerning, if possible AC-Patch */
+            if ( use_kerning && prev_index && glyph->index ) {
+                FT_Vector delta;
+                FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta );
+                xstart += delta.x >> 6;
+            }
+            
+            /* Compensate for the wrap around bug with negative minx's */
+            if ( (ch == unicode_text) && (glyph->minx < 0) ) {
+                xstart -= glyph->minx;
+            }
+            
+            for ( row = 0; row < glyph->pixmap.rows; ++row ) {
+                /* Make sure we don't go either over, or under the
+                 * limit */
+                if ( row+glyph->yoffset < 0 ) {
+                    continue;
+                }
+                if ( row+glyph->yoffset >= textbuf->h ) {
+                    continue;
+                }
+                dst =  ((Uint32*)textbuf->pixels + rowSize * line) +
+                (row+glyph->yoffset) * textbuf->pitch/4 +
+                xstart + glyph->minx;
+                
+                /* Added code to adjust src pointer for pixmaps to
+                 * account for pitch.
+                 * */
+                src = (Uint8*) (glyph->pixmap.buffer + glyph->pixmap.pitch * row);
+                for ( col = width; col>0 && dst < dst_check; --col) {
+                    alpha = *src++;
+                    *dst++ |= pixel | (alpha << 24);
+                }
+            }
+            
+            xstart += glyph->advance;
+            if ( TTF_HANDLE_STYLE_BOLD(font) ) {
+                xstart += font->glyph_overhang;
+            }
+            prev_index = glyph->index;
+        }
+        
+        /* Handle the underline style *
+        if( TTF_HANDLE_STYLE_UNDERLINE(font) ) {
+            row = TTF_underline_top_row(font);
+            TTF_drawLine_Blended(font, textbuf, row, pixel);
+        }
+        
+        /* Handle the strikethrough style *
+        if( TTF_HANDLE_STYLE_STRIKETHROUGH(font) ) {
+            row = TTF_strikethrough_top_row(font);
+            TTF_drawLine_Blended(font, textbuf, row, pixel);
+        }*/
+    }
+    
+    if (strLines)
+    {
+        for (int i = 0; i < numLines; i++)
+        {
+            FREEA(strLines[i]);
+        }
+        FREEA(strLines);
+    }
+    
+	return(textbuf);
+}
+
 SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 {
 	SDL_Surface *textbuf;
