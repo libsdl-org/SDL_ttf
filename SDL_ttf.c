@@ -2119,6 +2119,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
                 
                 tok = strtok(NULL, wrapDelims);
             }
+            strLines[line][curStrLen] = '\0';
             FREEA(tok);
         }
     }
