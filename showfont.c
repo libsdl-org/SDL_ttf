@@ -275,7 +275,6 @@ int main(int argc, char *argv[])
 	    case RENDER_UNICODE:
 		{
 			Uint16 unicode_text[BUFSIZ];
-			int index;
 #ifdef HAVE_ICONV
 			/* Use iconv to convert the message into utf-16.
 			 * "char" and "" are aliases for the local 8-bit encoding */
@@ -285,7 +284,6 @@ int main(int argc, char *argv[])
 			size_t from_sz = strlen(message) + 1;
 			size_t to_sz = sizeof(unicode_text);
 			size_t res;
-			int i;
 
 			if ((cd = iconv_open("UTF-16", "char")) == (iconv_t)-1
 			    && (cd = iconv_open("UTF-16", "")) == (iconv_t)-1) {
@@ -301,6 +299,7 @@ int main(int argc, char *argv[])
 
 			iconv_close(cd);
 #else
+			int index;
 			/* Convert the message from ascii into utf-16.
 			 * This is unreliable as a test because it always
 			 * gives the local ordering. */
