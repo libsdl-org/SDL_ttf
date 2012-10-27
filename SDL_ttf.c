@@ -2056,9 +2056,6 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
 	int line, numLines, rowSize;
 	char **strLines;
 
-	/* Minimum to wrap text */
-	static const int minWrapLength = 100;
-
 	/* Get the dimensions of the text surface */
 	if ( (TTF_SizeUNICODE(font, unicode_text, &width, &height) < 0) || !width ) {
 		TTF_SetError("Text has zero width");
@@ -2067,7 +2064,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
 
 	numLines = 1;
 	strLines = NULL;
-	if ( wrapLength > minWrapLength ) {
+	if ( wrapLength > 0 ) {
 		numLines = (width % wrapLength) ? 1 : 0;
 		numLines += width / wrapLength;
 
@@ -2075,13 +2072,13 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
 			const char *wrapDelims = " ";
 			int spaceWidth, w, h;
 			int line = 0, curLen = 0, curStrLen = 0;
-			char *tok;
+			char *temp, *spot, *tok;
 			Uint32 str_len = SDL_strlen(text);
 
 			/* buffer lines for caes with long words */
 			numLines *= 1.5f;
 
-			strLines = (char**)ALLOCA(numLines);
+			strLines = (char**)ALLOCA(numLines*sizeof(char*));
 			if ( strLines == NULL ) {
 				TTF_SetError("Out of memory");
 				return(NULL);
@@ -2096,42 +2093,39 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
 				strLines[i][0] = '\0';
 			}
 
-			tok = (char*)ALLOCA(str_len+1);
-			if ( tok == NULL ) {
+			temp = (char*)ALLOCA(str_len+1);
+			if ( temp == NULL ) {
 				TTF_SetError("Out of memory");
 				return(NULL);
 			}
 
-			SDL_strlcpy(tok, text, str_len+1);
-			tok = strtok(tok, wrapDelims);
-			TTF_SizeUTF8(font, " ", &spaceWidth, &h);
-
-			while ( tok ) {
+			SDL_strlcpy(temp, text, str_len+1);
+			spot = temp;
+			while ( (tok = strsep(&spot, wrapDelims)) != NULL ) {
 				TTF_SizeUTF8(font, tok, &w, &h);
-				if ( w + curLen > wrapLength ) {
-					strLines[line][curStrLen] = '\0';
+				if ( curLen > 0 && w + curLen > wrapLength ) {
 					curStrLen = curLen = 0;
 					line++;
 				}
-				SDL_strlcpy(strLines[line] + curStrLen, tok, str_len);
+				if (curStrLen > 0) {
+					SDL_strlcat(strLines[line], " ", str_len+1);
+				}
+				SDL_strlcat(strLines[line] + curStrLen, tok, str_len+1);
 
 				curLen += w + spaceWidth;
 				curStrLen += SDL_strlen(tok);
-				strLines[line][curStrLen++] = ' ';
-
-				tok = strtok(NULL, wrapDelims);
 			}
-			strLines[line][curStrLen] = '\0';
-			FREEA(tok);
+			FREEA(temp);
+
+			numLines = line + 1;
 		}
 	}
 
 	/* Create the target surface */
-	if ( numLines > 1 ) {
-		height += lineSpace;
-	}
-	textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE, (numLines > 1)?wrapLength:width, height * numLines, 32,
-				       0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+	textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE,
+			(numLines > 1) ? wrapLength : width,
+			height * numLines + (lineSpace * (numLines - 1)),
+			32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 	if ( textbuf == NULL ) {
 		return(NULL);
 	}
@@ -2154,9 +2148,6 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
 		xstart = 0;
 
 		if ( strLines ) {
-			if ( SDL_strlen(strLines[line]) == 0 )
-				break;
-
 			*unicode_text = UNICODE_BOM_NATIVE;
 			if ( isUTF8 ) {
 				UTF8_to_UNICODE(unicode_text+1, strLines[line], SDL_strlen(strLines[line]));
