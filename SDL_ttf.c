@@ -2034,6 +2034,17 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
 	return(textbuf);
 }
 
+static SDL_bool CharacterIsDelimiter(char c, const char *delimiters)
+{
+	while (*delimiters) {
+		if (c == *delimiters) {
+			return SDL_TRUE;
+		}
+		++delimiters;
+	}
+	return SDL_FALSE;
+}
+
 SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_text, const char *text,
                                                SDL_Color fg, Uint8 isUTF8, Uint32 wrapLength)
 {
@@ -2054,7 +2065,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
 	FT_UInt prev_index = 0;
 	const int lineSpace = 2;
 	int line, numLines, rowSize;
-	char **strLines;
+	char *str, **strLines;
 
 	/* Get the dimensions of the text surface */
 	if ( (TTF_SizeUNICODE(font, unicode_text, &width, &height) < 0) || !width ) {
@@ -2063,16 +2074,18 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
 	}
 
 	numLines = 1;
+	str = NULL;
 	strLines = NULL;
-	if ( wrapLength > 0 ) {
+	if ( wrapLength > 0 && *text ) {
 		numLines = (width % wrapLength) ? 1 : 0;
 		numLines += width / wrapLength;
 
 		if ( numLines > 1 ) {
-			const char *wrapDelims = " ";
-			int spaceWidth, w, h;
-			int line = 0, curLen = 0, curStrLen = 0;
-			char *temp, *spot, *tok;
+			const char *wrapDelims = " \t\r\n";
+			int w, h;
+			int line = 0;
+			char *spot, *tok, *next_tok, *end;
+			char delim;
 			Uint32 str_len = SDL_strlen(text);
 
 			/* buffer lines for caes with long words */
@@ -2083,41 +2096,53 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
 				TTF_SetError("Out of memory");
 				return(NULL);
 			}
+			numLines = 0;
 
-			for ( i = 0; i < numLines; i++ ) {
-				strLines[i] = (char*)ALLOCA(str_len+1);
-				if ( strLines[i] == NULL ) {
-					TTF_SetError("Out of memory");
-					return(NULL);
-				}
-				strLines[i][0] = '\0';
-			}
-
-			temp = (char*)ALLOCA(str_len+1);
-			if ( temp == NULL ) {
+			str = (char*)ALLOCA(str_len+1);
+			if ( str == NULL ) {
 				TTF_SetError("Out of memory");
 				return(NULL);
 			}
 
-			SDL_strlcpy(temp, text, str_len+1);
-			spot = temp;
-			while ( (tok = strsep(&spot, wrapDelims)) != NULL ) {
-				TTF_SizeUTF8(font, tok, &w, &h);
-				if ( curLen > 0 && w + curLen > wrapLength ) {
-					curStrLen = curLen = 0;
-					line++;
-				}
-				if (curStrLen > 0) {
-					SDL_strlcat(strLines[line], " ", str_len+1);
-				}
-				SDL_strlcat(strLines[line] + curStrLen, tok, str_len+1);
+			SDL_strlcpy(str, text, str_len+1);
+			tok = str;
+			end = str + str_len;
+			do {
+				strLines[numLines++] = tok;
+				spot = end;
+				next_tok = end;
 
-				curLen += w + spaceWidth;
-				curStrLen += SDL_strlen(tok);
-			}
-			FREEA(temp);
+				/* Get the longest string that will fit in the desired space */
+				for ( ; ; ) {
+					/* Strip trailing whitespace */
+					while ( spot > tok &&
+							CharacterIsDelimiter(spot[-1], wrapDelims) ) {
+						--spot;
+					}
+					if ( spot == tok ) {
+						break;
+					}
+					delim = *spot;
+					*spot = '\0';
 
-			numLines = line + 1;
+					TTF_SizeUTF8(font, tok, &w, &h);
+					if (w <= wrapLength) {
+						break;
+					} else {
+						/* Back up and try again... */
+						*spot = delim;
+					}
+
+					while ( spot > tok &&
+					        !CharacterIsDelimiter(spot[-1], wrapDelims) ) {
+						--spot;
+					}
+					if ( spot > tok ) {
+						next_tok = spot;
+					}
+				}
+				tok = next_tok;
+			} while (tok < end);
 		}
 	}
 
