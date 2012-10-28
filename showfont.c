@@ -25,10 +25,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef HAVE_ICONV
-#include <iconv.h>
-#endif
-
 #include "SDL.h"
 #include "SDL_ttf.h"
 
@@ -274,41 +270,7 @@ int main(int argc, char *argv[])
 
 	    case RENDER_UNICODE:
 		{
-			Uint16 unicode_text[BUFSIZ];
-#ifdef HAVE_ICONV
-			/* Use iconv to convert the message into utf-16.
-			 * "char" and "" are aliases for the local 8-bit encoding */
-			iconv_t cd;
-			/*ICONV_CONST*/ char *from_str = message;
-			char *to_str = (char*)unicode_text;
-			size_t from_sz = strlen(message) + 1;
-			size_t to_sz = sizeof(unicode_text);
-			size_t res;
-
-			if ((cd = iconv_open("UTF-16", "char")) == (iconv_t)-1
-			    && (cd = iconv_open("UTF-16", "")) == (iconv_t)-1) {
-				perror("Couldn't open iconv");
-				exit(1);
-			}
-
-			res = iconv(cd, &from_str, &from_sz, &to_str, &to_sz);
-			if (res == -1) {
-				perror("Couldn't use iconv");
-				exit(1);
-			}
-
-			iconv_close(cd);
-#else
-			int index;
-			/* Convert the message from ascii into utf-16.
-			 * This is unreliable as a test because it always
-			 * gives the local ordering. */
-			for (index = 0; message[index]; index++) {
-				unicode_text[index] = message[index];
-			}
-			unicode_text[index] = 0;
-#endif
-
+			Uint16 *unicode_text = SDL_iconv_utf8_ucs2(message);
 			if ( rendersolid ) {
 				text = TTF_RenderUNICODE_Solid(font,
 					unicode_text, *forecol);
@@ -316,6 +278,7 @@ int main(int argc, char *argv[])
 				text = TTF_RenderUNICODE_Shaded(font,
 					unicode_text, *forecol, *backcol);
 			}
+			SDL_free(unicode_text);
 		}
 		break;
 	    default:
