@@ -2101,6 +2101,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
 			str = (char*)ALLOCA(str_len+1);
 			if ( str == NULL ) {
 				TTF_SetError("Out of memory");
+				FREEA(strLines);
 				return(NULL);
 			}
 
@@ -2271,10 +2272,8 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, Uint16* unicode_t
 	}
 
 	if ( strLines ) {
-		for (i = 0; i < numLines; i++) {
-			FREEA(strLines[i]);
-		}
 		FREEA(strLines);
+		FREEA(str);
 	}
 
 	return(textbuf);
