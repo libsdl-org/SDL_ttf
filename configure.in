@@ -65,10 +65,6 @@ case "$host" in
 esac
 
 
-dnl Check for iconv (character conversion library; see iconv.m4)
-dnl This isn't available on many systems
-dnl AM_ICONV
-
 case "$host" in
     *-*-beos*)
         ac_default_prefix=/boot/develop/tools/gnupro
