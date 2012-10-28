@@ -43,7 +43,7 @@
 		1014BAEA010A4B677F000001 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../SDL_ttf.h; sourceTree = SOURCE_ROOT; };
 		AA9EE79814B2C589008773C0 /* FreeType.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FreeType.framework; path = Frameworks/FreeType.framework; sourceTree = "<group>"; };
 		BE48FD6607AFA17000BB41DA /* Info-Framework__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Framework__Upgraded_.plist"; sourceTree = "<group>"; };
-		BE48FD6707AFA17000BB41DA /* SDL_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SDL_ttf.framework; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD6E07AFA17000BB41DA /* libSDL_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libSDL_ttf.a; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD7207AFA17000BB41DA /* Create DMG */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Create DMG"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD8307AFA29000BB41DA /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
@@ -85,7 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				089C1665FE841158C02AAC07 /* Resources */,
-				BE48FD6707AFA17000BB41DA /* SDL_ttf.framework */,
+				BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */,
 				BE48FD6E07AFA17000BB41DA /* libSDL_ttf.a */,
 				BE48FD7207AFA17000BB41DA /* Create DMG */,
 			);
@@ -197,7 +197,7 @@
 			name = Framework;
 			productInstallPath = "@executable_path/../Frameworks";
 			productName = SDL_ttf;
-			productReference = BE48FD6707AFA17000BB41DA /* SDL_ttf.framework */;
+			productReference = BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		BE48FD6807AFA17000BB41DA /* Static Library */ = {
@@ -365,7 +365,7 @@
 				DYLIB_CURRENT_VERSION = 11.1;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Info-Framework__Upgraded_.plist";
-				INSTALL_PATH = "@rpath";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				OTHER_CFLAGS = "";
 				WRAPPER_EXTENSION = framework;
@@ -379,7 +379,7 @@
 				DYLIB_CURRENT_VERSION = 11.1;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Info-Framework__Upgraded_.plist";
-				INSTALL_PATH = "@rpath";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				OTHER_CFLAGS = "";
 				WRAPPER_EXTENSION = framework;
@@ -395,6 +395,7 @@
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
 				REZ_EXECUTABLE = YES;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -407,6 +408,7 @@
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
 				REZ_EXECUTABLE = YES;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
