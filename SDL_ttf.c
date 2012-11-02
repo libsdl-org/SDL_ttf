@@ -483,8 +483,8 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 			ptsize = font->face->num_fixed_sizes - 1;
 		font->font_size_family = ptsize;
 		error = FT_Set_Pixel_Sizes( face,
-				face->available_sizes[ptsize].height,
-				face->available_sizes[ptsize].width );
+				face->available_sizes[ptsize].width,
+				face->available_sizes[ptsize].height );
 		if ( error ) {
 			TTF_SetFTError( "Couldn't set font size", error );
 			TTF_CloseFont( font );
