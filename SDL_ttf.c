@@ -423,9 +423,7 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	stream->read = RWread;
 	stream->descriptor.pointer = src;
 	stream->pos = (unsigned long)position;
-	SDL_RWseek(src, 0, RW_SEEK_END);
-	stream->size = (unsigned long)(SDL_RWtell(src) - position);
-	SDL_RWseek(src, position, RW_SEEK_SET);
+	stream->size = (unsigned long)(SDL_RWsize(src) - position);
 
 	font->args.flags = FT_OPEN_STREAM;
 	font->args.stream = stream;
