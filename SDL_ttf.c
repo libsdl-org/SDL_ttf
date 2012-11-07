@@ -1908,74 +1908,80 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
 	str = NULL;
 	strLines = NULL;
 	if ( wrapLength > 0 && *text ) {
-		numLines = (width % wrapLength) ? 1 : 0;
-		numLines += width / wrapLength;
+		const char *wrapDelims = " \t\r\n";
+		int w, h;
+		int line = 0;
+		char *spot, *tok, *next_tok, *end;
+		char delim;
+		Uint32 str_len = SDL_strlen(text);
 
-		if ( numLines > 1 ) {
-			const char *wrapDelims = " \t\r\n";
-			int w, h;
-			int line = 0;
-			char *spot, *tok, *next_tok, *end;
-			char delim;
-			Uint32 str_len = SDL_strlen(text);
+		numLines = 0;
 
-			/* buffer lines for caes with long words */
-			numLines *= 1.5f;
-
-			strLines = SDL_stack_alloc(char*, numLines);
-			if ( strLines == NULL ) {
-				TTF_SetError("Out of memory");
-				return(NULL);
-			}
-			numLines = 0;
-
-			str = SDL_stack_alloc(char, str_len+1);
-			if ( str == NULL ) {
-				TTF_SetError("Out of memory");
-				SDL_stack_free(strLines);
-				return(NULL);
-			}
-
-			SDL_strlcpy(str, text, str_len+1);
-			tok = str;
-			end = str + str_len;
-			do {
-				strLines[numLines++] = tok;
-				spot = end;
-				next_tok = end;
-
-				/* Get the longest string that will fit in the desired space */
-				for ( ; ; ) {
-					/* Strip trailing whitespace */
-					while ( spot > tok &&
-							CharacterIsDelimiter(spot[-1], wrapDelims) ) {
-						--spot;
-					}
-					if ( spot == tok ) {
-						break;
-					}
-					delim = *spot;
-					*spot = '\0';
-
-					TTF_SizeUTF8(font, tok, &w, &h);
-					if (w <= wrapLength) {
-						break;
-					} else {
-						/* Back up and try again... */
-						*spot = delim;
-					}
-
-					while ( spot > tok &&
-					        !CharacterIsDelimiter(spot[-1], wrapDelims) ) {
-						--spot;
-					}
-					if ( spot > tok ) {
-						next_tok = spot;
-					}
-				}
-				tok = next_tok;
-			} while (tok < end);
+		str = SDL_stack_alloc(char, str_len+1);
+		if ( str == NULL ) {
+			TTF_SetError("Out of memory");
+			return(NULL);
 		}
+
+		SDL_strlcpy(str, text, str_len+1);
+		tok = str;
+		end = str + str_len;
+		do {
+			strLines = (char **)SDL_realloc(strLines, (numLines+1)*sizeof(*strLines));
+			if (!strLines) {
+				TTF_SetError("Out of memory");
+				return(NULL);
+			}
+			strLines[numLines++] = tok;
+
+			/* Look for the end of the line */
+			if ((spot = SDL_strchr(tok, '\r')) != NULL ||
+			    (spot = SDL_strchr(tok, '\n')) != NULL) {
+				if (*spot == '\r') {
+					++spot;
+				}
+				if (*spot == '\n') {
+					++spot;
+				}
+			} else {
+				spot = end;
+			}
+			next_tok = spot;
+
+			/* Get the longest string that will fit in the desired space */
+			for ( ; ; ) {
+				/* Strip trailing whitespace */
+				while ( spot > tok &&
+						CharacterIsDelimiter(spot[-1], wrapDelims) ) {
+					--spot;
+				}
+				if ( spot == tok ) {
+                    if (CharacterIsDelimiter(*spot, wrapDelims)) {
+                        *spot = '\0';
+                    }
+					break;
+				}
+				delim = *spot;
+				*spot = '\0';
+
+				TTF_SizeUTF8(font, tok, &w, &h);
+				if (w <= wrapLength) {
+					break;
+				} else {
+					/* Back up and try again... */
+					*spot = delim;
+				}
+
+				while ( spot > tok &&
+						!CharacterIsDelimiter(spot[-1], wrapDelims) ) {
+					--spot;
+				}
+				if ( spot > tok ) {
+					next_tok = spot;
+				}
+			}
+			tok = next_tok;
+		} while (tok < end);
 	}
 
 	/* Create the target surface */
@@ -1984,6 +1990,10 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
 			height * numLines + (lineSpace * (numLines - 1)),
 			32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 	if ( textbuf == NULL ) {
+		if ( strLines ) {
+			SDL_free(strLines);
+			SDL_stack_free(str);
+		}
 		return(NULL);
 	}
 
@@ -2085,10 +2095,9 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
 	}
 
 	if ( strLines ) {
-		SDL_stack_free(strLines);
+		SDL_free(strLines);
 		SDL_stack_free(str);
 	}
-
 	return(textbuf);
 }
 
