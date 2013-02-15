@@ -1,6 +1,6 @@
 /*
   showfont:  An example of using the SDL_ttf library with 2D graphics.
-  Copyright (C) 2001-2012 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 2001-2013 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
