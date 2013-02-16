@@ -1,0 +1,3 @@
+usr/include/SDL2
+usr/lib/*/libSDL2_ttf.a
+usr/lib/*/libSDL2_ttf.so
