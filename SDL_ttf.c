@@ -620,7 +620,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 		if ( FT_IS_SCALABLE( face ) ) {
 			/* Get the bounding box */
 			cached->minx = FT_FLOOR(metrics->horiBearingX);
-			cached->maxx = cached->minx + FT_CEIL(metrics->width);
+			cached->maxx = FT_CEIL(metrics->horiBearingX + metrics->width);
 			cached->maxy = FT_FLOOR(metrics->horiBearingY);
 			cached->miny = cached->maxy - FT_CEIL(metrics->height);
 			cached->yoffset = font->ascent - cached->maxy;
@@ -633,7 +633,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 			 * assumptions about non-scalable formats.
 			 * */
 			cached->minx = FT_FLOOR(metrics->horiBearingX);
-			cached->maxx = cached->minx + FT_CEIL(metrics->horiAdvance);
+			cached->maxx = FT_CEIL(metrics->horiBearingX + metrics->width);
 			cached->maxy = FT_FLOOR(metrics->horiBearingY);
 			cached->miny = cached->maxy - FT_CEIL(face->available_sizes[font->font_size_family].height);
 			cached->yoffset = 0;
