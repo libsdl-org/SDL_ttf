@@ -11,6 +11,7 @@ libSDL2_ttf_la_SOURCES =		\
 
 EXTRA_DIST =			\
 	Android.mk		\
+	debian			\
 	CHANGES			\
 	version.rc		\
 	VisualC			\
