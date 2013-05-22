@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
         scene.caption = SDL_CreateTextureFromSurface(renderer, text);
         SDL_FreeSurface(text);
     }
-    
+
     /* Render and center the message */
     if ( argc > 2 ) {
         message = argv[2];
@@ -317,7 +317,7 @@ int main(int argc, char *argv[])
                 scene.messageRect.h = text->h;
                 draw_scene(renderer, &scene);
                 break;
-                
+
             case SDL_KEYDOWN:
             case SDL_QUIT:
                 done = 1;

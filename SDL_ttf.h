@@ -21,7 +21,7 @@
 
 /* This library is a wrapper around the excellent FreeType 2.0 library,
    available at:
-	http://www.freetype.org/
+    http://www.freetype.org/
 */
 
 #ifndef _SDL_TTF_H
@@ -37,25 +37,25 @@ extern "C" {
 
 /* Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
 */
-#define SDL_TTF_MAJOR_VERSION	2
-#define SDL_TTF_MINOR_VERSION	0
-#define SDL_TTF_PATCHLEVEL	12
+#define SDL_TTF_MAJOR_VERSION   2
+#define SDL_TTF_MINOR_VERSION   0
+#define SDL_TTF_PATCHLEVEL      12
 
 /* This macro can be used to fill a version structure with the compile-time
  * version of the SDL_ttf library.
  */
-#define SDL_TTF_VERSION(X)						\
-{									\
-	(X)->major = SDL_TTF_MAJOR_VERSION;				\
-	(X)->minor = SDL_TTF_MINOR_VERSION;				\
-	(X)->patch = SDL_TTF_PATCHLEVEL;				\
+#define SDL_TTF_VERSION(X)                          \
+{                                                   \
+    (X)->major = SDL_TTF_MAJOR_VERSION;             \
+    (X)->minor = SDL_TTF_MINOR_VERSION;             \
+    (X)->patch = SDL_TTF_PATCHLEVEL;                \
 }
 
 /* Backwards compatibility */
-#define TTF_MAJOR_VERSION	SDL_TTF_MAJOR_VERSION
-#define TTF_MINOR_VERSION	SDL_TTF_MINOR_VERSION
-#define TTF_PATCHLEVEL		SDL_TTF_PATCHLEVEL
-#define TTF_VERSION(X)		SDL_TTF_VERSION(X)
+#define TTF_MAJOR_VERSION   SDL_TTF_MAJOR_VERSION
+#define TTF_MINOR_VERSION   SDL_TTF_MINOR_VERSION
+#define TTF_PATCHLEVEL      SDL_TTF_PATCHLEVEL
+#define TTF_VERSION(X)      SDL_TTF_VERSION(X)
 
 /* This function gets the version of the dynamically linked SDL_ttf library.
    it should NOT be used to fill a version structure, instead you should
@@ -64,8 +64,8 @@ extern "C" {
 extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
 
 /* ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark) */
-#define UNICODE_BOM_NATIVE	0xFEFF
-#define UNICODE_BOM_SWAPPED	0xFFFE
+#define UNICODE_BOM_NATIVE  0xFEFF
+#define UNICODE_BOM_SWAPPED 0xFFFE
 
 /* This function tells the library whether UNICODE text is generally
    byteswapped.  A UNICODE BOM character in a string will override
@@ -89,11 +89,11 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontRW(SDL_RWops *src, int freesrc, i
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long index);
 
 /* Set and retrieve the font style */
-#define TTF_STYLE_NORMAL	0x00
-#define TTF_STYLE_BOLD		0x01
-#define TTF_STYLE_ITALIC	0x02
-#define TTF_STYLE_UNDERLINE	0x04
-#define TTF_STYLE_STRIKETHROUGH	0x08
+#define TTF_STYLE_NORMAL        0x00
+#define TTF_STYLE_BOLD          0x01
+#define TTF_STYLE_ITALIC        0x02
+#define TTF_STYLE_UNDERLINE     0x04
+#define TTF_STYLE_STRIKETHROUGH 0x08
 extern DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
 extern DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
 extern DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
@@ -143,7 +143,7 @@ extern DECLSPEC int SDLCALL TTF_GlyphIsProvided(const TTF_Font *font, Uint16 ch)
     http://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
  */
 extern DECLSPEC int SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
-				     int *minx, int *maxx,
+                     int *minx, int *maxx,
                                      int *miny, int *maxy, int *advance);
 
 /* Get the dimensions of a rendered string of text */
@@ -158,11 +158,11 @@ extern DECLSPEC int SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, 
    This function returns the new surface, or NULL if there was an error.
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font,
-				const char *text, SDL_Color fg);
+                const char *text, SDL_Color fg);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid(TTF_Font *font,
-				const char *text, SDL_Color fg);
+                const char *text, SDL_Color fg);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid(TTF_Font *font,
-				const Uint16 *text, SDL_Color fg);
+                const Uint16 *text, SDL_Color fg);
 
 /* Create an 8-bit palettized surface and render the given glyph at
    fast quality with the given font and color.  The 0 pixel is the
@@ -172,7 +172,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid(TTF_Font *font,
    This function returns the new surface, or NULL if there was an error.
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font,
-					Uint16 ch, SDL_Color fg);
+                    Uint16 ch, SDL_Color fg);
 
 /* Create an 8-bit palettized surface and render the given text at
    high quality with the given font and colors.  The 0 pixel is background,
@@ -180,11 +180,11 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font,
    This function returns the new surface, or NULL if there was an error.
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font,
-				const char *text, SDL_Color fg, SDL_Color bg);
+                const char *text, SDL_Color fg, SDL_Color bg);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded(TTF_Font *font,
-				const char *text, SDL_Color fg, SDL_Color bg);
+                const char *text, SDL_Color fg, SDL_Color bg);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded(TTF_Font *font,
-				const Uint16 *text, SDL_Color fg, SDL_Color bg);
+                const Uint16 *text, SDL_Color fg, SDL_Color bg);
 
 /* Create an 8-bit palettized surface and render the given glyph at
    high quality with the given font and colors.  The 0 pixel is background,
@@ -194,20 +194,20 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded(TTF_Font *font,
    This function returns the new surface, or NULL if there was an error.
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
-				Uint16 ch, SDL_Color fg, SDL_Color bg);
+                Uint16 ch, SDL_Color fg, SDL_Color bg);
 
 /* Create a 32-bit ARGB surface and render the given text at high quality,
    using alpha blending to dither the font with the given color.
    This function returns the new surface, or NULL if there was an error.
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
-				const char *text, SDL_Color fg);
+                const char *text, SDL_Color fg);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended(TTF_Font *font,
-				const char *text, SDL_Color fg);
+                const char *text, SDL_Color fg);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended(TTF_Font *font,
-				const Uint16 *text, SDL_Color fg);
-    
-    
+                const Uint16 *text, SDL_Color fg);
+
+
 /* Create a 32-bit ARGB surface and render the given text at high quality,
    using alpha blending to dither the font with the given color.
    Text is wrapped to multiple lines on line endings and on word boundaries
@@ -215,11 +215,11 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended(TTF_Font *font,
    This function returns the new surface, or NULL if there was an error.
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Font *font,
-				const char *text, SDL_Color fg, Uint32 wrapLength);
+                const char *text, SDL_Color fg, Uint32 wrapLength);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
-				const char *text, SDL_Color fg, Uint32 wrapLength);
+                const char *text, SDL_Color fg, Uint32 wrapLength);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font,
-				const Uint16 *text, SDL_Color fg, Uint32 wrapLength);
+                const Uint16 *text, SDL_Color fg, Uint32 wrapLength);
 
 /* Create a 32-bit ARGB surface and render the given glyph at high quality,
    using alpha blending to dither the font with the given color.
@@ -228,15 +228,15 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended_Wrapped(TTF_Font
    This function returns the new surface, or NULL if there was an error.
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font,
-						Uint16 ch, SDL_Color fg);
+                        Uint16 ch, SDL_Color fg);
 
 /* For compatibility with previous versions, here are the old functions */
-#define TTF_RenderText(font, text, fg, bg)	\
-	TTF_RenderText_Shaded(font, text, fg, bg)
-#define TTF_RenderUTF8(font, text, fg, bg)	\
-	TTF_RenderUTF8_Shaded(font, text, fg, bg)
-#define TTF_RenderUNICODE(font, text, fg, bg)	\
-	TTF_RenderUNICODE_Shaded(font, text, fg, bg)
+#define TTF_RenderText(font, text, fg, bg)  \
+    TTF_RenderText_Shaded(font, text, fg, bg)
+#define TTF_RenderUTF8(font, text, fg, bg)  \
+    TTF_RenderUTF8_Shaded(font, text, fg, bg)
+#define TTF_RenderUNICODE(font, text, fg, bg)   \
+    TTF_RenderUNICODE_Shaded(font, text, fg, bg)
 
 /* Close an opened font file */
 extern DECLSPEC void SDLCALL TTF_CloseFont(TTF_Font *font);
@@ -251,8 +251,8 @@ extern DECLSPEC int SDLCALL TTF_WasInit(void);
 extern DECLSPEC int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int index);
 
 /* We'll use SDL for reporting errors */
-#define TTF_SetError	SDL_SetError
-#define TTF_GetError	SDL_GetError
+#define TTF_SetError    SDL_SetError
+#define TTF_GetError    SDL_GetError
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
