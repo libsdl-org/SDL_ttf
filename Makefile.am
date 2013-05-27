@@ -20,7 +20,7 @@ EXTRA_DIST =			\
 	SDL2_ttf.spec.in		\
 	gcc-fat.sh		\
 	autogen.sh			\
-	*.txt
+	$(srcdir)/*.txt
 
 if USE_VERSION_RC
 libSDL2_ttf_la_LDFLAGS = 	\
