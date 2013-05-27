@@ -12,7 +12,6 @@ libSDL2_ttf_la_SOURCES =		\
 EXTRA_DIST =			\
 	Android.mk		\
 	debian			\
-	CHANGES			\
 	version.rc		\
 	VisualC			\
 	Xcode			\
@@ -20,7 +19,8 @@ EXTRA_DIST =			\
 	SDL2_ttf.spec		\
 	SDL2_ttf.spec.in		\
 	gcc-fat.sh		\
-	autogen.sh
+	autogen.sh			\
+	*.txt
 
 if USE_VERSION_RC
 libSDL2_ttf_la_LDFLAGS = 	\
