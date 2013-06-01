@@ -5,13 +5,13 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>SDL_ttf</string>
+	<string>SDL2_ttf</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.libsdl.SDL-ttf</string>
+	<string>org.libsdl.SDL2-ttf</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>SDL_ttf</string>
+	<string>SDL2_ttf</string>
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
