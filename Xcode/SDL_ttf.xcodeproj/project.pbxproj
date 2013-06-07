@@ -21,7 +21,7 @@
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BE48FD5D07AFA17000BB41DA;
-			remoteInfo = "Framework";
+			remoteInfo = Framework;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -361,8 +361,8 @@
 		00B7E1EA097E26C600826121 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 11.1;
+				DYLIB_COMPATIBILITY_VERSION = 11;
+				DYLIB_CURRENT_VERSION = 11.2;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Info-Framework.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -375,8 +375,8 @@
 		00B7E1EB097E26C600826121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 11.1;
+				DYLIB_COMPATIBILITY_VERSION = 11;
+				DYLIB_CURRENT_VERSION = 11.2;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Info-Framework.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
