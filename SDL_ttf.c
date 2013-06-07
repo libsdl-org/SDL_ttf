@@ -363,7 +363,7 @@ static unsigned long RWread(
     if ( count == 0 ) {
         return 0;
     }
-    return SDL_RWread( src, buffer, 1, (int)count );
+    return (unsigned long)SDL_RWread( src, buffer, 1, (int)count );
 }
 
 TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long index )
@@ -374,7 +374,8 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
     FT_Fixed scale;
     FT_Stream stream;
     FT_CharMap found;
-    int position, i;
+    Sint64 position;
+    int i;
 
     if ( ! TTF_initialized ) {
         TTF_SetError( "Library not initialized" );
@@ -1186,7 +1187,6 @@ int TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h)
 int TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h)
 {
     int status;
-    const Uint16 *ch;
     int x, z;
     int minx, maxx;
     int miny, maxy;
@@ -1710,7 +1710,6 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
     SDL_Surface *textbuf;
     Uint32 alpha;
     Uint32 pixel;
-    const Uint16 *ch;
     Uint8 *src;
     Uint32 *dst;
     Uint32 *dst_check;
@@ -1878,7 +1877,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
                                     const char *text, SDL_Color fg, Uint32 wrapLength)
 {
     SDL_bool first;
-    int i, xstart;
+    int xstart;
     int width, height;
     SDL_Surface *textbuf;
     Uint32 alpha;
@@ -1913,7 +1912,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
         int line = 0;
         char *spot, *tok, *next_tok, *end;
         char delim;
-        Uint32 str_len = SDL_strlen(text);
+        size_t str_len = SDL_strlen(text);
 
         numLines = 0;
 
@@ -1965,7 +1964,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
                 *spot = '\0';
 
                 TTF_SizeUTF8(font, tok, &w, &h);
-                if (w <= wrapLength) {
+                if ((Uint32)w <= wrapLength) {
                     break;
                 } else {
                     /* Back up and try again... */
