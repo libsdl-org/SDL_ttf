@@ -1,6 +1,6 @@
 2.0.12:
-Sam Lantinga - Sat Jun  1 13:56:12 PDT 2013
- * Updated for SDL 2.0
+Sam Lantinga - Sat Jun  1 19:11:26 PDT 2013
+ * Updated for SDL 2.0 release
 
 2.0.11:
 Sam Lantinga - Sat Dec 31 10:49:42 EST 2011
