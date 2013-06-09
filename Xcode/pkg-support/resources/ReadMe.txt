@@ -4,6 +4,8 @@ The source code is available from: http://www.libsdl.org/projects/SDL_ttf
 
 This library is distributed under the terms of the zlib license: http://www.zlib.net/zlib_license.html
 
+Portions of this software are copyright © 2013 The FreeType Project (www.freetype.org).  All rights reserved.
+
 This packages contains the SDL2_ttf.framework for OS X. Conforming with Apple guidelines, this framework contains both the SDL runtime component and development header files.
 
 Requirements:
