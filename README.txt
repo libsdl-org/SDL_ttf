@@ -19,5 +19,7 @@ though, and may suit your purposes.
 
 This library is under the zlib license, see the file "COPYING" for details.
 
+Portions of this software are copyright © 2013 The FreeType Project (www.freetype.org).  All rights reserved.
+
 Enjoy!
 	-Sam Lantinga <slouken@libsdl.org>		(6/20/2001)
