@@ -951,9 +951,9 @@ static void LATIN1_to_UTF8(const char *src, Uint8 *dst)
 {
     while (*src) {
         Uint8 ch = *(Uint8*)src++;
-                if (ch <= 0x7F) {
+        if (ch <= 0x7F) {
             *dst++ = ch;
-                } else {
+        } else {
             *dst++ = 0xC0 | ((ch >> 6) & 0x1F);
             *dst++ = 0x80 | (ch & 0x3F);
         }
@@ -979,9 +979,9 @@ static void UCS2_to_UTF8(const Uint16 *src, Uint8 *dst)
         if (swapped) {
             ch = SDL_Swap16(ch);
         }
-                if (ch <= 0x7F) {
+        if (ch <= 0x7F) {
             *dst++ = (Uint8) ch;
-                } else if (ch <= 0x7FF) {
+        } else if (ch <= 0x7FF) {
             *dst++ = 0xC0 | (Uint8) ((ch >> 6) & 0x1F);
             *dst++ = 0x80 | (Uint8) (ch & 0x3F);
         } else {
@@ -1068,7 +1068,14 @@ static Uint32 UTF8_getch(const char **src, size_t *srclen)
     if (left > 0) {
         underflow = SDL_TRUE;
     }
-    if (overlong || underflow ||
+    /* Technically overlong sequences are invalid and should not be interpreted.
+       However, it doesn't cause a security risk here and I don't see any harm in
+       displaying them. The application is responsible for any other side effects
+       of allowing overlong sequences (e.g. string compares failing, etc.)
+       See bug 1931 for sample input that triggers this.
+    */
+    /*if (overlong) return UNKNOWN_UNICODE;*/
+    if (underflow ||
         (ch >= 0xD800 && ch <= 0xDFFF) ||
         (ch == 0xFFFE || ch == 0xFFFF) || ch > 0x10FFFF) {
         ch = UNKNOWN_UNICODE;
