@@ -17,7 +17,7 @@ redistributable in their special executable installer form (May 1998).
 There are plenty of freeware and shareware fonts available on the Internet
 though, and may suit your purposes.
 
-This library is under the zlib license, see the file "COPYING" for details.
+This library is under the zlib license, see the file "COPYING.txt" for details.
 
 Portions of this software are copyright © 2013 The FreeType Project (www.freetype.org).  All rights reserved.
 
