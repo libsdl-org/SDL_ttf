@@ -1,4 +1,4 @@
-libsdl2-ttf (2.0.11) unstable; urgency=low
+libsdl2-ttf (2.0.12) unstable; urgency=low
 
   * sdl-ttf for SDL2. Initial release.
 
