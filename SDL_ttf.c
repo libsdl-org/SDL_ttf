@@ -1008,7 +1008,7 @@ static Uint32 UTF8_getch(const char **src, size_t *srclen)
     }
     if (p[0] >= 0xFC) {
         if ((p[0] & 0xFE) == 0xFC) {
-            if (p[0] == 0xFC) {
+            if (p[0] == 0xFC && (p[1] & 0xFC) == 0x80) {
                 overlong = SDL_TRUE;
             }
             ch = (Uint32) (p[0] & 0x01);
@@ -1016,7 +1016,7 @@ static Uint32 UTF8_getch(const char **src, size_t *srclen)
         }
     } else if (p[0] >= 0xF8) {
         if ((p[0] & 0xFC) == 0xF8) {
-            if (p[0] == 0xF8) {
+            if (p[0] == 0xF8 && (p[1] & 0xF8) == 0x80) {
                 overlong = SDL_TRUE;
             }
             ch = (Uint32) (p[0] & 0x03);
@@ -1024,7 +1024,7 @@ static Uint32 UTF8_getch(const char **src, size_t *srclen)
         }
     } else if (p[0] >= 0xF0) {
         if ((p[0] & 0xF8) == 0xF0) {
-            if (p[0] == 0xF0) {
+            if (p[0] == 0xF0 && (p[1] & 0xF0) == 0x80) {
                 overlong = SDL_TRUE;
             }
             ch = (Uint32) (p[0] & 0x07);
@@ -1032,7 +1032,7 @@ static Uint32 UTF8_getch(const char **src, size_t *srclen)
         }
     } else if (p[0] >= 0xE0) {
         if ((p[0] & 0xF0) == 0xE0) {
-            if (p[0] == 0xE0) {
+            if (p[0] == 0xE0 && (p[1] & 0xE0) == 0x80) {
                 overlong = SDL_TRUE;
             }
             ch = (Uint32) (p[0] & 0x0F);
