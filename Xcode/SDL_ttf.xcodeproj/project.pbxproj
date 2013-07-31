@@ -188,6 +188,7 @@
 				AA9EE79714B2C55E008773C0 /* Copy Fframeworks */,
 				AA9EE79B14B2C59B008773C0 /* Create Frameworks symlink */,
 				AA9EE79C14B2C5D0008773C0 /* Convert SDL includes to SDL Framework includes */,
+				AA5C3FE017A8CBCF00D6C8A1 /* Sign Frameworks */,
 			);
 			buildRules = (
 			);
@@ -291,6 +292,20 @@
 /* End PBXRezBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		AA5C3FE017A8CBCF00D6C8A1 /* Sign Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Sign Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$USER\" = \"slouken\" ]; then\n    CODE_SIGN_IDENTITY=\"Mac Developer: Sam Lantinga (84TP7N5TA4)\" pkg-support/codesign-frameworks.sh || exit 1\nfi";
+		};
 		AA9EE79B14B2C59B008773C0 /* Create Frameworks symlink */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
