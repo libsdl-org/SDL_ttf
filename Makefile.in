@@ -55,6 +55,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@USE_VERSION_RC_FALSE@libSDL2_ttf_la_DEPENDENCIES =
 noinst_PROGRAMS = showfont$(EXEEXT) glfont$(EXEEXT)
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
@@ -107,7 +108,6 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
 	"$(DESTDIR)$(libSDL2_ttfincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libSDL2_ttf_la_LIBADD =
 am_libSDL2_ttf_la_OBJECTS = SDL_ttf.lo
 libSDL2_ttf_la_OBJECTS = $(am_libSDL2_ttf_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -377,6 +377,7 @@ EXTRA_DIST = \
 @USE_VERSION_RC_TRUE@	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -Wl,version.o
 
 @USE_VERSION_RC_TRUE@libSDL2_ttf_la_DEPENDENCIES = version.o
+libSDL2_ttf_la_LIBADD = @MATHLIB@
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = SDL2_ttf.pc
 showfont_LDADD = libSDL2_ttf.la
