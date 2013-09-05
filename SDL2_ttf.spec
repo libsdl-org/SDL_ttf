@@ -47,7 +47,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc README CHANGES COPYING
+%doc README.txt CHANGES.txt COPYING.txt
 %{prefix}/lib/lib*.so.*
 
 %files devel
