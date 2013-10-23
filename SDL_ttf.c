@@ -135,7 +135,7 @@ static int TTF_byteswapped = 0;
 /* Gets the top row of the underline. The outline
    is taken into account.
 */
-static __inline__ int TTF_underline_top_row(TTF_Font *font)
+static int TTF_underline_top_row(TTF_Font *font)
 {
     /* With outline, the underline_offset is underline_offset+outline. */
     /* So, we don't have to remove the top part of the outline height. */
@@ -147,7 +147,7 @@ static __inline__ int TTF_underline_top_row(TTF_Font *font)
    Need to update row according to height difference between font and glyph:
    font_value - font->ascent + glyph->maxy
 */
-static __inline__ int TTF_Glyph_underline_top_row(TTF_Font *font, c_glyph *glyph)
+static int TTF_Glyph_underline_top_row(TTF_Font *font, c_glyph *glyph)
 {
     return glyph->maxy - font->underline_offset - 1;
 }
@@ -155,7 +155,7 @@ static __inline__ int TTF_Glyph_underline_top_row(TTF_Font *font, c_glyph *glyph
 /* Gets the bottom row of the underline. The outline
    is taken into account.
 */
-static __inline__ int TTF_underline_bottom_row(TTF_Font *font)
+static int TTF_underline_bottom_row(TTF_Font *font)
 {
     int row = TTF_underline_top_row(font) + font->underline_height;
     if ( font->outline  > 0 ) {
@@ -171,7 +171,7 @@ static __inline__ int TTF_underline_bottom_row(TTF_Font *font)
    Need to update row according to height difference between font and glyph:
    font_value - font->ascent + glyph->maxy
 */
-static __inline__ int TTF_Glyph_underline_bottom_row(TTF_Font *font, c_glyph *glyph)
+static int TTF_Glyph_underline_bottom_row(TTF_Font *font, c_glyph *glyph)
 {
     return TTF_underline_bottom_row(font) - font->ascent + glyph->maxy;
 }
@@ -179,7 +179,7 @@ static __inline__ int TTF_Glyph_underline_bottom_row(TTF_Font *font, c_glyph *gl
 /* Gets the top row of the strikethrough. The outline
    is taken into account.
 */
-static __inline__ int TTF_strikethrough_top_row(TTF_Font *font)
+static int TTF_strikethrough_top_row(TTF_Font *font)
 {
     /* With outline, the first text row is 'outline'. */
     /* So, we don't have to remove the top part of the outline height. */
@@ -191,7 +191,7 @@ static __inline__ int TTF_strikethrough_top_row(TTF_Font *font)
    Need to update row according to height difference between font and glyph:
    font_value - font->ascent + glyph->maxy
 */
-static __inline__ int TTF_Glyph_strikethrough_top_row(TTF_Font *font, c_glyph *glyph)
+static int TTF_Glyph_strikethrough_top_row(TTF_Font *font, c_glyph *glyph)
 {
     return TTF_strikethrough_top_row(font) - font->ascent + glyph->maxy;
 }
@@ -937,7 +937,7 @@ void TTF_CloseFont( TTF_Font* font )
 }
 
 /* Gets the number of bytes used by a null terminated UCS2 string */
-static __inline__ size_t UCS2_len(const Uint16 *text)
+static size_t UCS2_len(const Uint16 *text)
 {
     size_t count = 0;
     while (*text++) {
