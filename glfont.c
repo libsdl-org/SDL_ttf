@@ -382,7 +382,7 @@ int main(int argc, char *argv[])
     y = (HEIGHT - text->h)/2;
     w = text->w;
     h = text->h;
-    printf("Font is generally %d big, and string is %hd big\n",
+    printf("Font is generally %d big, and string is %d big\n",
                         TTF_FontHeight(font), text->h);
 
     /* Convert the text into an OpenGL texture */
