@@ -2201,9 +2201,38 @@ int TTF_WasInit( void )
     return TTF_initialized;
 }
 
-int TTF_GetFontKerningSize(TTF_Font* font, int prev_index, int index)
+int TTF_GetFontKerningSize(TTF_Font *font, Uint16 previous_ch, Uint16 ch)
 {
+    int error;
+    int glyph_index, prev_index;
     FT_Vector delta;
-    FT_Get_Kerning( font->face, prev_index, index, ft_kerning_default, &delta );
+
+    if (ch == UNICODE_BOM_NATIVE || ch == UNICODE_BOM_SWAPPED) {
+        return 0;
+    }
+
+    if (previous_ch == UNICODE_BOM_NATIVE || previous_ch == UNICODE_BOM_SWAPPED) {
+        return 0;
+    }
+
+    error = Find_Glyph(font, ch, CACHED_METRICS);
+    if (error) {
+        TTF_SetFTError("Couldn't find glyph", error);
+        return -1;
+    }
+    glyph_index = font->current->index;
+
+    error = Find_Glyph(font, previous_ch, CACHED_METRICS);
+    if (error) {
+        TTF_SetFTError("Couldn't find glyph", error);
+        return -1;
+    }
+    prev_index = font->current->index;
+
+    error = FT_Get_Kerning(font->face, prev_index, glyph_index, ft_kerning_default, &delta);
+    if (error) {
+        TTF_SetFTError("Couldn't get glyph kerning", error);
+        return -1;
+    }
     return (delta.x >> 6);
 }
