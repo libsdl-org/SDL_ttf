@@ -1,3 +1,7 @@
+2.0.13:
+Sam Lantinga - Sun Jun 15 18:21:04 PDT 2014
+ * TTF_GetFontKerningSize() gets kerning between two characters, not two glyph indices
+
 2.0.12:
 Sam Lantinga - Sat Jun  1 19:11:26 PDT 2013
  * Updated for SDL 2.0 release
