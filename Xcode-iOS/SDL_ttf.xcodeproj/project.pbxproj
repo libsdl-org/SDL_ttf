@@ -45,7 +45,6 @@
 		AA8087B81764FADC00F24AFF /* raster.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087B71764FADC00F24AFF /* raster.c */; };
 		AA8087BA1764FAE700F24AFF /* sfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087B91764FAE700F24AFF /* sfnt.c */; };
 		AA8087BC1764FAF600F24AFF /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087BB1764FAF600F24AFF /* smooth.c */; };
-		AA8087BE1764FB0600F24AFF /* apinames.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087BD1764FB0600F24AFF /* apinames.c */; };
 		AA8087C01764FB1500F24AFF /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087BF1764FB1500F24AFF /* truetype.c */; };
 		AA8087C21764FB2300F24AFF /* type1.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087C11764FB2300F24AFF /* type1.c */; };
 		AA8087C41764FB2D00F24AFF /* type42.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087C31764FB2D00F24AFF /* type42.c */; };
@@ -93,7 +92,6 @@
 		AA8087B71764FADC00F24AFF /* raster.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = raster.c; path = src/raster/raster.c; sourceTree = "<group>"; };
 		AA8087B91764FAE700F24AFF /* sfnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sfnt.c; path = src/sfnt/sfnt.c; sourceTree = "<group>"; };
 		AA8087BB1764FAF600F24AFF /* smooth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = smooth.c; path = src/smooth/smooth.c; sourceTree = "<group>"; };
-		AA8087BD1764FB0600F24AFF /* apinames.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = apinames.c; path = src/tools/apinames.c; sourceTree = "<group>"; };
 		AA8087BF1764FB1500F24AFF /* truetype.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = truetype.c; path = src/truetype/truetype.c; sourceTree = "<group>"; };
 		AA8087C11764FB2300F24AFF /* type1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type1.c; path = src/type1/type1.c; sourceTree = "<group>"; };
 		AA8087C31764FB2D00F24AFF /* type42.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type42.c; path = src/type42/type42.c; sourceTree = "<group>"; };
@@ -159,7 +157,6 @@
 		AA8084201764F83C00F24AFF /* freetype */ = {
 			isa = PBXGroup;
 			children = (
-				AA8087BD1764FB0600F24AFF /* apinames.c */,
 				AA8087711764F92F00F24AFF /* autofit.c */,
 				AA80879F1764F9DF00F24AFF /* bdf.c */,
 				AA8087A51764FA1D00F24AFF /* cff.c */,
@@ -321,7 +318,6 @@
 				AA8087B81764FADC00F24AFF /* raster.c in Sources */,
 				AA8087BA1764FAE700F24AFF /* sfnt.c in Sources */,
 				AA8087BC1764FAF600F24AFF /* smooth.c in Sources */,
-				AA8087BE1764FB0600F24AFF /* apinames.c in Sources */,
 				AA8087C01764FB1500F24AFF /* truetype.c in Sources */,
 				AA8087C21764FB2300F24AFF /* type1.c in Sources */,
 				AA8087C41764FB2D00F24AFF /* type42.c in Sources */,
