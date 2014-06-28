@@ -1576,7 +1576,7 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
 
     /* Load and render each character */
     textlen = SDL_strlen(text);
-    first = SDL_FALSE;
+    first = SDL_TRUE;
     xstart = 0;
     while ( textlen > 0 ) {
         Uint16 c = UTF8_getch(&text, &textlen);
