@@ -35,7 +35,9 @@
     <ClInclude Include="..\..\external\freetype-2.4.12\include\ft2build.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\autofit\autofit.c" />
+    <ClCompile Include="..\..\external\freetype-2.4.12\src\autofit\autofit.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">MinSpace</Optimization>
+    </ClCompile>
     <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftbase.c" />
     <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftbbox.c" />
     <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftbitmap.c" />
