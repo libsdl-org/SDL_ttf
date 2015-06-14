@@ -1,11 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL2_ttf", "SDL_ttf_VS2013.vcxproj", "{DDDBD07D-DC76-4AF6-8D02-3E2DEB6EE255}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL2_ttf", "SDL_ttf.vcxproj", "{DDDBD07D-DC76-4AF6-8D02-3E2DEB6EE255}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "showfont", "showfont\showfont_VS2013.vcxproj", "{7B1F60CD-2A09-4514-937C-D9DD044428FB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "showfont", "showfont\showfont.vcxproj", "{7B1F60CD-2A09-4514-937C-D9DD044428FB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfont", "glfont\glfont_VS2013.vcxproj", "{3BEF6A23-3BB6-4400-9421-D055B36466DC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfont", "glfont\glfont.vcxproj", "{3BEF6A23-3BB6-4400-9421-D055B36466DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
