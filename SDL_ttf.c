@@ -231,7 +231,7 @@ static void TTF_drawLine_Solid(const TTF_Font *font, const SDL_Surface *textbuf,
     /* Draw line */
     for ( line=height; line>0 && dst < dst_check; --line ) {
         /* 1 because 0 is the bg color */
-        memset( dst, 1, textbuf->w );
+        SDL_memset( dst, 1, textbuf->w );
         dst += textbuf->pitch;
     }
 }
@@ -251,7 +251,7 @@ static void TTF_drawLine_Shaded(const TTF_Font *font, const SDL_Surface *textbuf
 
     /* Draw line */
     for ( line=height; line>0 && dst < dst_check; --line ) {
-        memset( dst, NUM_GRAYS - 1, textbuf->w );
+        SDL_memset( dst, NUM_GRAYS - 1, textbuf->w );
         dst += textbuf->pitch;
     }
 }
@@ -399,7 +399,7 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
         return NULL;
     }
 
-    font = (TTF_Font*) malloc(sizeof *font);
+    font = (TTF_Font*)SDL_malloc(sizeof *font);
     if ( font == NULL ) {
         TTF_SetError( "Out of memory" );
         if ( freesrc ) {
@@ -407,18 +407,18 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
         }
         return NULL;
     }
-    memset(font, 0, sizeof(*font));
+    SDL_memset(font, 0, sizeof(*font));
 
     font->src = src;
     font->freesrc = freesrc;
 
-    stream = (FT_Stream)malloc(sizeof(*stream));
+    stream = (FT_Stream)SDL_malloc(sizeof(*stream));
     if ( stream == NULL ) {
         TTF_SetError( "Out of memory" );
         TTF_CloseFont( font );
         return NULL;
     }
-    memset(stream, 0, sizeof(*stream));
+    SDL_memset(stream, 0, sizeof(*stream));
 
     stream->read = RWread;
     stream->descriptor.pointer = src;
@@ -558,11 +558,11 @@ static void Flush_Glyph( c_glyph* glyph )
     glyph->stored = 0;
     glyph->index = 0;
     if ( glyph->bitmap.buffer ) {
-        free( glyph->bitmap.buffer );
+        SDL_free( glyph->bitmap.buffer );
         glyph->bitmap.buffer = 0;
     }
     if ( glyph->pixmap.buffer ) {
-        free( glyph->pixmap.buffer );
+        SDL_free( glyph->pixmap.buffer );
         glyph->pixmap.buffer = 0;
     }
     glyph->cached = 0;
@@ -639,7 +639,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
             cached->maxx += font->glyph_overhang;
         }
         if ( TTF_HANDLE_STYLE_ITALIC(font) ) {
-            cached->maxx += (int)ceil(font->glyph_italics);
+            cached->maxx += (int)SDL_ceil(font->glyph_italics);
         }
         cached->stored |= CACHED_METRICS;
     }
@@ -696,7 +696,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
         } else {
             dst = &cached->pixmap;
         }
-        memcpy( dst, src, sizeof( *dst ) );
+        SDL_memcpy( dst, src, sizeof( *dst ) );
 
         /* FT_Render_Glyph() and .fon fonts always generate a
          * two-color (black and white) glyphslot surface, even
@@ -723,17 +723,17 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
             dst->width += bump;
         }
         if ( TTF_HANDLE_STYLE_ITALIC(font) ) {
-            int bump = (int)ceil(font->glyph_italics);
+            int bump = (int)SDL_ceil(font->glyph_italics);
             dst->pitch += bump;
             dst->width += bump;
         }
 
         if (dst->rows != 0) {
-            dst->buffer = (unsigned char *)malloc( dst->pitch * dst->rows );
+            dst->buffer = (unsigned char *)SDL_malloc( dst->pitch * dst->rows );
             if ( !dst->buffer ) {
                 return FT_Err_Out_Of_Memory;
             }
-            memset( dst->buffer, 0, dst->pitch * dst->rows );
+            SDL_memset( dst->buffer, 0, dst->pitch * dst->rows );
 
             for ( i = 0; i < src->rows; i++ ) {
                 int soffset = i * src->pitch;
@@ -843,7 +843,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
                         }
                     }
                 } else {
-                    memcpy(dst->buffer+doffset,
+                    SDL_memcpy(dst->buffer+doffset,
                            src->buffer+soffset, src->pitch);
                 }
             }
@@ -920,12 +920,12 @@ void TTF_CloseFont( TTF_Font* font )
             FT_Done_Face( font->face );
         }
         if ( font->args.stream ) {
-            free( font->args.stream );
+            SDL_free( font->args.stream );
         }
         if ( font->freesrc ) {
             SDL_RWclose( font->src );
         }
-        free( font );
+        SDL_free( font );
     }
 }
 
