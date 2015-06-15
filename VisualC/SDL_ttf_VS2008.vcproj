@@ -73,7 +73,6 @@
 				AdditionalLibraryDirectories="external\lib\x86"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -152,7 +151,6 @@
 				AdditionalLibraryDirectories="external\lib\x64"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -228,7 +226,6 @@
 				AdditionalDependencies="SDL2.lib libfreetype-6.lib"
 				AdditionalLibraryDirectories="external\lib\x86"
 				SubSystem="2"
-				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -304,7 +301,6 @@
 				AdditionalDependencies="SDL2.lib libfreetype-6.lib"
 				AdditionalLibraryDirectories="external\lib\x64"
 				SubSystem="2"
-				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
