@@ -11,6 +11,9 @@ libtool
 *.o
 *.la
 *.lai
+.DS_Store
+xcuserdata
+*.xcworkspace
 SDL2_ttf.pc
 glfont
 showfont
