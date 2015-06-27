@@ -32,7 +32,6 @@
 		AA80879E1764F9C500F24AFF /* ftxf86.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087881764F9C500F24AFF /* ftxf86.c */; };
 		AA8087A01764F9DF00F24AFF /* bdf.c in Sources */ = {isa = PBXBuildFile; fileRef = AA80879F1764F9DF00F24AFF /* bdf.c */; };
 		AA8087A21764F9F600F24AFF /* ftbzip2.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A11764F9F600F24AFF /* ftbzip2.c */; };
-		AA8087A41764FA0A00F24AFF /* ftccache.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A31764FA0A00F24AFF /* ftccache.c */; };
 		AA8087A61764FA1D00F24AFF /* cff.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A51764FA1D00F24AFF /* cff.c */; };
 		AA8087A81764FA3300F24AFF /* type1cid.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A71764FA3300F24AFF /* type1cid.c */; };
 		AA8087AA1764FA4700F24AFF /* ftgzip.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A91764FA4700F24AFF /* ftgzip.c */; };
@@ -79,7 +78,6 @@
 		AA8087881764F9C500F24AFF /* ftxf86.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftxf86.c; path = src/base/ftxf86.c; sourceTree = "<group>"; };
 		AA80879F1764F9DF00F24AFF /* bdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bdf.c; path = src/bdf/bdf.c; sourceTree = "<group>"; };
 		AA8087A11764F9F600F24AFF /* ftbzip2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbzip2.c; path = src/bzip2/ftbzip2.c; sourceTree = "<group>"; };
-		AA8087A31764FA0A00F24AFF /* ftccache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftccache.c; path = src/cache/ftccache.c; sourceTree = "<group>"; };
 		AA8087A51764FA1D00F24AFF /* cff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cff.c; path = src/cff/cff.c; sourceTree = "<group>"; };
 		AA8087A71764FA3300F24AFF /* type1cid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type1cid.c; path = src/cid/type1cid.c; sourceTree = "<group>"; };
 		AA8087A91764FA4700F24AFF /* ftgzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftgzip.c; path = src/gzip/ftgzip.c; sourceTree = "<group>"; };
@@ -165,7 +163,6 @@
 				AA8087751764F9C500F24AFF /* ftbdf.c */,
 				AA8087761764F9C500F24AFF /* ftbitmap.c */,
 				AA8087A11764F9F600F24AFF /* ftbzip2.c */,
-				AA8087A31764FA0A00F24AFF /* ftccache.c */,
 				AA8087771764F9C500F24AFF /* ftcid.c */,
 				AA8087781764F9C500F24AFF /* ftdebug.c */,
 				AA8087791764F9C500F24AFF /* ftfstype.c */,
@@ -305,7 +302,6 @@
 				AA80879E1764F9C500F24AFF /* ftxf86.c in Sources */,
 				AA8087A01764F9DF00F24AFF /* bdf.c in Sources */,
 				AA8087A21764F9F600F24AFF /* ftbzip2.c in Sources */,
-				AA8087A41764FA0A00F24AFF /* ftccache.c in Sources */,
 				AA8087A61764FA1D00F24AFF /* cff.c in Sources */,
 				AA8087A81764FA3300F24AFF /* type1cid.c in Sources */,
 				AA8087AA1764FA4700F24AFF /* ftgzip.c in Sources */,
