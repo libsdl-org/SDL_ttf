@@ -363,7 +363,7 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 11;
-				DYLIB_CURRENT_VERSION = 11.2;
+				DYLIB_CURRENT_VERSION = 11.3.0;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Info-Framework.plist";
 				INSTALL_PATH = "@rpath";
@@ -378,7 +378,7 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 11;
-				DYLIB_CURRENT_VERSION = 11.2;
+				DYLIB_CURRENT_VERSION = 11.3.0;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Info-Framework.plist";
 				INSTALL_PATH = "@rpath";

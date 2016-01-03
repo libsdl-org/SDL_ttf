@@ -1,6 +1,12 @@
 2.0.13:
+Sylvain - Sat Jun 28 11:42:42 2014
+ * Fixed bug rendering text starting with a glyph with negative starting offset
+beuc - Sun Jun 15 18:27:28 2014
+ * Fixed regression loading non-scalable fonts
 Sam Lantinga - Sun Jun 15 18:21:04 PDT 2014
  * TTF_GetFontKerningSize() gets kerning between two characters, not two glyph indices
+David Ludwig - Sun Apr 13 22:28:26 2014
+ * Added support for building for Windows RT and Windows Phone
 
 2.0.12:
 Sam Lantinga - Sat Jun  1 19:11:26 PDT 2013
