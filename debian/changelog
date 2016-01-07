@@ -1,3 +1,9 @@
+libsdl2-ttf (2.0.13) UNRELEASED; urgency=medium
+
+  * Updated to version 2.0.13
+
+ -- Sam Lantinga <slouken@libsdl.org>  Thu, 07 Jan 2016 12:34:06 -0800
+
 libsdl2-ttf (2.0.12) unstable; urgency=low
 
   * sdl-ttf for SDL2. Initial release.
