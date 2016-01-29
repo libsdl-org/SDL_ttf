@@ -1,3 +1,7 @@
+2.0.14:
+Ryan Gordon - Fri Jan 29 12:53:29 PST 2016
+ * Deprecated TTF_GetFontKerningSize() which takes font glyph indices and added TTF_GetFontKerningSizeGlyphs() which takes characters
+
 2.0.13:
 Sylvain - Sat Jun 28 11:42:42 2014
  * Fixed bug rendering text starting with a glyph with negative starting offset
