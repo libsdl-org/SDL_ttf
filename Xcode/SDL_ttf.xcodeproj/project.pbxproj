@@ -362,8 +362,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				DYLIB_COMPATIBILITY_VERSION = 11;
-				DYLIB_CURRENT_VERSION = 11.3.0;
+				DYLIB_COMPATIBILITY_VERSION = 15;
+				DYLIB_CURRENT_VERSION = 15.0.0;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Info-Framework.plist";
 				INSTALL_PATH = "@rpath";
@@ -377,8 +377,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				DYLIB_COMPATIBILITY_VERSION = 11;
-				DYLIB_CURRENT_VERSION = 11.3.0;
+				DYLIB_COMPATIBILITY_VERSION = 15;
+				DYLIB_CURRENT_VERSION = 15.0.0;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Info-Framework.plist";
 				INSTALL_PATH = "@rpath";
