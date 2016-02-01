@@ -61,6 +61,11 @@ extern "C" {
 #define TTF_PATCHLEVEL      SDL_TTF_PATCHLEVEL
 #define TTF_VERSION(X)      SDL_TTF_VERSION(X)
 
+/* Make sure this is defined (only available in newer SDL versions) */
+#ifndef SDL_DEPRECATED
+#define SDL_DEPRECATED
+#endif
+
 /* This function gets the version of the dynamically linked SDL_ttf library.
    it should NOT be used to fill a version structure, instead you should
    use the SDL_TTF_VERSION() macro.
