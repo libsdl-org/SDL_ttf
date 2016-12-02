@@ -28,8 +28,8 @@
    Unicode is hard, we learn as we go, and we apologize for adding to the
    confusion. */
 
-#ifndef _SDL_TTF_H
-#define _SDL_TTF_H
+#ifndef SDL_TTF_H_
+#define SDL_TTF_H_
 
 #include "SDL.h"
 #include "begin_code.h"
@@ -277,4 +277,4 @@ extern DECLSPEC int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_TTF_H */
+#endif /* SDL_TTF_H_ */
