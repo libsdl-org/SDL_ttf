@@ -89,7 +89,7 @@ static int power_of_two(int input)
 {
     int value = 1;
 
-    while ( value < input ) {
+    while (value < input) {
         value <<= 1;
     }
     return value;
@@ -127,8 +127,8 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
             0x0000FF00,
             0x000000FF
 #endif
-               );
-    if ( image == NULL ) {
+            );
+    if (image == NULL) {
         return 0;
     }
 
@@ -227,28 +227,28 @@ int main(int argc, char *argv[])
     /* Default is black and white */
     forecol = &black;
     backcol = &white;
-    for ( i=1; argv[i] && argv[i][0] == '-'; ++i ) {
-        if ( strcmp(argv[i], "-utf8") == 0 ) {
+    for (i=1; argv[i] && argv[i][0] == '-'; ++i) {
+        if (strcmp(argv[i], "-utf8") == 0) {
             rendertype = RENDER_UTF8;
         } else
-        if ( strcmp(argv[i], "-unicode") == 0 ) {
+        if (strcmp(argv[i], "-unicode") == 0) {
             rendertype = RENDER_UNICODE;
         } else
-        if ( strcmp(argv[i], "-b") == 0 ) {
+        if (strcmp(argv[i], "-b") == 0) {
             renderstyle |= TTF_STYLE_BOLD;
         } else
-        if ( strcmp(argv[i], "-i") == 0 ) {
+        if (strcmp(argv[i], "-i") == 0) {
             renderstyle |= TTF_STYLE_ITALIC;
         } else
-        if ( strcmp(argv[i], "-u") == 0 ) {
+        if (strcmp(argv[i], "-u") == 0) {
             renderstyle |= TTF_STYLE_UNDERLINE;
         } else
-        if ( strcmp(argv[i], "-dump") == 0 ) {
+        if (strcmp(argv[i], "-dump") == 0) {
             dump = 1;
         } else
-        if ( strcmp(argv[i], "-fgcol") == 0 ) {
+        if (strcmp(argv[i], "-fgcol") == 0) {
             int r, g, b;
-            if ( sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3 ) {
+            if (sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3) {
                 fprintf(stderr, Usage, argv0);
                 return(1);
             }
@@ -256,9 +256,9 @@ int main(int argc, char *argv[])
             forecol->g = (Uint8)g;
             forecol->b = (Uint8)b;
         } else
-        if ( strcmp(argv[i], "-bgcol") == 0 ) {
+        if (strcmp(argv[i], "-bgcol") == 0) {
             int r, g, b;
-            if ( sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3 ) {
+            if (sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3) {
                 fprintf(stderr, Usage, argv0);
                 return(1);
             }
@@ -274,13 +274,13 @@ int main(int argc, char *argv[])
     argc -= i;
 
     /* Check usage */
-    if ( ! argv[0] ) {
+    if (!argv[0]) {
         fprintf(stderr, Usage, argv0);
         return(1);
     }
 
     /* Initialize the TTF library */
-    if ( TTF_Init() < 0 ) {
+    if (TTF_Init() < 0) {
         fprintf(stderr, "Couldn't initialize TTF: %s\n",SDL_GetError());
         SDL_Quit();
         return(2);
@@ -288,33 +288,33 @@ int main(int argc, char *argv[])
 
     /* Open the font file with the requested point size */
     ptsize = 0;
-    if ( argc > 1 ) {
+    if (argc > 1) {
         ptsize = atoi(argv[1]);
     }
-    if ( ptsize == 0 ) {
+    if (ptsize == 0) {
         i = 2;
         ptsize = DEFAULT_PTSIZE;
     } else {
         i = 3;
     }
     font = TTF_OpenFont(argv[0], ptsize);
-    if ( font == NULL ) {
+    if (font == NULL) {
         fprintf(stderr, "Couldn't load %d pt font from %s: %s\n",
                     ptsize, argv[0], SDL_GetError());
         cleanup(2);
     }
     TTF_SetFontStyle(font, renderstyle);
 
-    if( dump ) {
-        for( i = 48; i < 123; i++ ) {
+    if(dump) {
+        for(i = 48; i < 123; i++) {
             SDL_Surface* glyph = NULL;
 
-            glyph = TTF_RenderGlyph_Shaded( font, i, *forecol, *backcol );
+            glyph = TTF_RenderGlyph_Shaded(font, i, *forecol, *backcol);
 
-            if( glyph ) {
+            if(glyph) {
                 char outname[64];
-                sprintf( outname, "glyph-%d.bmp", i );
-                SDL_SaveBMP( glyph, outname );
+                sprintf(outname, "glyph-%d.bmp", i);
+                SDL_SaveBMP(glyph, outname);
             }
 
         }
@@ -326,19 +326,19 @@ int main(int argc, char *argv[])
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
-    if ( window == NULL ) {
+    if (window == NULL) {
         fprintf(stderr, "Couldn't create window: %s\n", SDL_GetError());
         cleanup(2);
     }
 
     context = SDL_GL_CreateContext(window);
-    if ( context == NULL ) {
+    if (context == NULL) {
         fprintf(stderr, "Couldn't create OpenGL context: %s\n", SDL_GetError());
         cleanup(2);
     }
 
     /* Render and center the message */
-    if ( argc > 2 ) {
+    if (argc > 2) {
         message = argv[2];
     } else {
         message = DEFAULT_TEXT;
@@ -359,7 +359,7 @@ int main(int argc, char *argv[])
              */
             Uint16 unicode_text[BUFSIZ];
             int index;
-            for ( index = 0; (message[0] || message[1]); ++index ) {
+            for (index = 0; (message[0] || message[1]); ++index) {
                 unicode_text[index]  = ((Uint8 *)message)[0];
                 unicode_text[index] <<= 8;
                 unicode_text[index] |= ((Uint8 *)message)[1];
@@ -373,7 +373,7 @@ int main(int argc, char *argv[])
         text = NULL; /* This shouldn't happen */
         break;
     }
-    if ( text == NULL ) {
+    if (text == NULL) {
         fprintf(stderr, "Couldn't render text: %s\n", SDL_GetError());
         TTF_CloseFont(font);
         cleanup(2);
@@ -388,7 +388,7 @@ int main(int argc, char *argv[])
     /* Convert the text into an OpenGL texture */
     glGetError();
     texture = SDL_GL_LoadTexture(text, texcoord);
-    if ( (gl_error = glGetError()) != GL_NO_ERROR ) {
+    if ((gl_error = glGetError()) != GL_NO_ERROR) {
         /* If this failed, the text may exceed texture size limits */
         printf("Warning: Couldn't create texture: 0x%x\n", gl_error);
     }
@@ -403,14 +403,14 @@ int main(int argc, char *argv[])
     SDL_FreeSurface(text);
 
     /* Initialize the GL state */
-    glViewport( 0, 0, WIDTH, HEIGHT );
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity( );
+    glViewport(0, 0, WIDTH, HEIGHT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
 
-    glOrtho( -2.0, 2.0, -2.0, 2.0, -20.0, 20.0 );
+    glOrtho(-2.0, 2.0, -2.0, 2.0, -20.0, 20.0);
 
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity( );
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
     glEnable(GL_DEPTH_TEST);
 
@@ -420,8 +420,8 @@ int main(int argc, char *argv[])
 
     /* Wait for a keystroke, and blit text on mouse press */
     done = 0;
-    while ( ! done ) {
-        while ( SDL_PollEvent(&event) ) {
+    while (!done) {
+        while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_MOUSEMOTION:
                 x = event.motion.x - w/2;
@@ -442,7 +442,7 @@ int main(int argc, char *argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         /* Draw the spinning cube */
-        glBegin( GL_QUADS );
+        glBegin(GL_QUADS);
 
             glColor3fv(color[0]);
             glVertex3fv(cube[0]);
@@ -497,7 +497,8 @@ int main(int argc, char *argv[])
             glVertex3fv(cube[2]);
             glColor3fv(color[7]);
             glVertex3fv(cube[7]);
-        glEnd( );
+
+        glEnd();
 
         /* Rotate the cube */
         glMatrixMode(GL_MODELVIEW);
@@ -507,8 +508,8 @@ int main(int argc, char *argv[])
         SDL_GL_Enter2DMode(WIDTH, HEIGHT);
         glBindTexture(GL_TEXTURE_2D, texture);
         glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(texMinX, texMinY); glVertex2i(x,   y  );
-        glTexCoord2f(texMaxX, texMinY); glVertex2i(x+w, y  );
+        glTexCoord2f(texMinX, texMinY); glVertex2i(x,   y);
+        glTexCoord2f(texMaxX, texMinY); glVertex2i(x+w, y);
         glTexCoord2f(texMinX, texMaxY); glVertex2i(x,   y+h);
         glTexCoord2f(texMaxX, texMaxY); glVertex2i(x+w, y+h);
         glEnd();
@@ -534,3 +535,5 @@ int main(int argc, char *argv[])
 }
 
 #endif /* HAVE_OPENGL */
+
+/* vi: set ts=4 sw=4 expandtab: */
