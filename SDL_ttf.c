@@ -60,7 +60,7 @@ typedef struct cached_glyph {
     int maxy;
     int yoffset;
     int advance;
-    Uint16 cached;
+    Uint32 cached;
 } c_glyph;
 
 /* The structure used to hold internal font information */
@@ -158,7 +158,7 @@ static int TTF_Glyph_underline_top_row(TTF_Font *font, c_glyph *glyph)
 static int TTF_underline_bottom_row(TTF_Font *font)
 {
     int row = TTF_underline_top_row(font) + font->underline_height;
-    if (font->outline  > 0) {
+    if (font->outline > 0) {
         /* Add underline_offset outline offset and */
         /* the bottom part of the outline. */
         row += font->outline * 2;
@@ -438,16 +438,33 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
 
     /* Set charmap for loaded font */
     found = 0;
-    for (i = 0; i < face->num_charmaps; i++) {
-        FT_CharMap charmap = face->charmaps[i];
-        if ((charmap->platform_id == 3 && charmap->encoding_id == 1) /* Windows Unicode */
-         || (charmap->platform_id == 3 && charmap->encoding_id == 0) /* Windows Symbol */
-         || (charmap->platform_id == 2 && charmap->encoding_id == 1) /* ISO Unicode */
-         || (charmap->platform_id == 0)) { /* Apple Unicode */
-            found = charmap;
-            break;
-        }
-    }
+#if 0 /* Font debug code */
+	for (i = 0; i < face->num_charmaps; i++) {
+		FT_CharMap charmap = face->charmaps[i];
+		printf("Found charmap: platform id %d, encoding id %d\n", charmap->platform_id, charmap->encoding_id);
+	}
+#endif
+    if (!found) {
+        for (i = 0; i < face->num_charmaps; i++) {
+            FT_CharMap charmap = face->charmaps[i];
+			if (charmap->platform_id == 3 && charmap->encoding_id == 10) { /* UCS-4 Unicode */
+				found = charmap;
+				break;
+			}
+		}
+	}
+    if (!found) {
+		for (i = 0; i < face->num_charmaps; i++) {
+			FT_CharMap charmap = face->charmaps[i];
+			if ((charmap->platform_id == 3 && charmap->encoding_id == 1) /* Windows Unicode */
+			 || (charmap->platform_id == 3 && charmap->encoding_id == 0) /* Windows Symbol */
+			 || (charmap->platform_id == 2 && charmap->encoding_id == 1) /* ISO Unicode */
+			 || (charmap->platform_id == 0)) { /* Apple Unicode */
+				found = charmap;
+				break;
+			}
+		}
+	}
     if (found) {
         /* If this fails, continue using the default charmap */
         FT_Set_Charmap(face, found);
@@ -581,7 +598,7 @@ static void Flush_Cache(TTF_Font* font)
     }
 }
 
-static FT_Error Load_Glyph(TTF_Font* font, Uint16 ch, c_glyph* cached, int want)
+static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
 {
     FT_Face face;
     FT_Error error;
@@ -895,7 +912,7 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint16 ch, c_glyph* cached, int want)
     return 0;
 }
 
-static FT_Error Find_Glyph(TTF_Font* font, Uint16 ch, int want)
+static FT_Error Find_Glyph(TTF_Font* font, Uint32 ch, int want)
 {
     int retval = 0;
     int hsize = sizeof(font->cache) / sizeof(font->cache[0]);
@@ -1208,7 +1225,7 @@ int TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h)
     use_kerning = FT_HAS_KERNING(font->face) && font->kerning;
 
     /* Init outline handling */
-    if (font->outline  > 0) {
+    if (font->outline > 0) {
         outline_delta = font->outline * 2;
     }
 
@@ -1216,7 +1233,7 @@ int TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h)
     textlen = SDL_strlen(text);
     x= 0;
     while (textlen > 0) {
-        Uint16 c = UTF8_getch(&text, &textlen);
+        Uint32 c = UTF8_getch(&text, &textlen);
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
         }
@@ -1397,7 +1414,7 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
     first = SDL_TRUE;
     xstart = 0;
     while (textlen > 0) {
-        Uint16 c = UTF8_getch(&text, &textlen);
+        Uint32 c = UTF8_getch(&text, &textlen);
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
         }
@@ -1579,7 +1596,7 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
     first = SDL_TRUE;
     xstart = 0;
     while (textlen > 0) {
-        Uint16 c = UTF8_getch(&text, &textlen);
+        Uint32 c = UTF8_getch(&text, &textlen);
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
         }
@@ -1749,7 +1766,7 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
     pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
     SDL_FillRect(textbuf, NULL, pixel); /* Initialize with fg and 0 alpha */
     while (textlen > 0) {
-        Uint16 c = UTF8_getch(&text, &textlen);
+        Uint32 c = UTF8_getch(&text, &textlen);
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
         }
@@ -2017,7 +2034,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
         first = SDL_TRUE;
         xstart = 0;
         while (textlen > 0) {
-            Uint16 c = UTF8_getch(&text, &textlen);
+            Uint32 c = UTF8_getch(&text, &textlen);
             if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
                 continue;
             }
