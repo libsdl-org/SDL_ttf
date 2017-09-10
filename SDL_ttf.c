@@ -1931,7 +1931,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     FT_UInt prev_index = 0;
     const int lineSpace = 2;
     int line, numLines, rowSize;
-    char *str, **strLines;
+    char *str, **strLines, **newLines;
     size_t textlen;
 
     TTF_CHECKPOINTER(text, NULL);
@@ -1964,11 +1964,14 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
         tok = str;
         end = str + str_len;
         do {
-            strLines = (char **)SDL_realloc(strLines, (numLines+1)*sizeof(*strLines));
-            if (!strLines) {
+            newLines = (char **)SDL_realloc(strLines, (numLines+1)*sizeof(*strLines));
+            if (!newLines) {
                 TTF_SetError("Out of memory");
+                SDL_free(strLines);
+                SDL_stack_free(str);
                 return(NULL);
             }
+            strLines = newLines;
             strLines[numLines++] = tok;
 
             /* Look for the end of the line */
@@ -2064,6 +2067,10 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
             if (error) {
                 TTF_SetFTError("Couldn't find glyph", error);
                 SDL_FreeSurface(textbuf);
+                if (strLines) {
+                    SDL_free(strLines);
+                    SDL_stack_free(str);
+                }
                 return NULL;
             }
             glyph = font->current;
