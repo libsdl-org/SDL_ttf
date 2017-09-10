@@ -1,3 +1,7 @@
+2.0.15:
+Sam Lantinga - Sat Sep  9 22:21:55 PDT 2017
+ * Added support for characters greater than 0xFFFF (e.g. emoji) in the UTF-8 APIs
+
 2.0.14:
 Ryan Gordon - Fri Jan 29 12:53:29 PST 2016
  * Deprecated TTF_GetFontKerningSize() which takes font glyph indices and added TTF_GetFontKerningSizeGlyphs() which takes characters
