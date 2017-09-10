@@ -946,14 +946,36 @@ void TTF_CloseFont(TTF_Font* font)
     }
 }
 
-/* Gets the number of bytes used by a null terminated UCS2 string */
-static size_t UCS2_len(const Uint16 *text)
+/* Gets the number of bytes needed to convert a Latin-1 string to UTF-8 */
+static size_t LATIN1_to_UTF8_len(const char *text)
 {
-    size_t count = 0;
-    while (*text++) {
-        ++count;
+    size_t bytes = 1;
+    while (*text) {
+        Uint8 ch = *(Uint8*)text++;
+        if (ch <= 0x7F) {
+            bytes += 1;
+        } else {
+            bytes += 2;
+        }
     }
-    return count * sizeof(*text);
+    return bytes;
+}
+
+/* Gets the number of bytes needed to convert a UCS2 string to UTF-8 */
+static size_t UCS2_to_UTF8_len(const Uint16 *text)
+{
+    size_t bytes = 1;
+    while (*text) {
+        Uint16 ch = *text++;
+        if (ch <= 0x7F) {
+            bytes += 1;
+        } else if (ch <= 0x7FF) {
+            bytes += 2;
+        } else {
+            bytes += 3;
+        }
+    }
+    return bytes;
 }
 
 /* Convert a Latin-1 string to a UTF-8 string */
@@ -977,7 +999,7 @@ static void UCS2_to_UTF8(const Uint16 *src, Uint8 *dst)
     int swapped = TTF_byteswapped;
 
     while (*src) {
-        Uint16 ch = *(Uint16*)src++;
+        Uint16 ch = *src++;
         if (ch == UNICODE_BOM_NATIVE) {
             swapped = 0;
             continue;
@@ -1190,7 +1212,7 @@ int TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h)
 
     TTF_CHECKPOINTER(text, -1);
 
-    utf8 = SDL_stack_alloc(Uint8, SDL_strlen(text)*2+1);
+    utf8 = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
     if (utf8) {
         LATIN1_to_UTF8(text, utf8);
         status = TTF_SizeUTF8(font, (char *)utf8, w, h);
@@ -1327,7 +1349,7 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 
     TTF_CHECKPOINTER(text, -1);
 
-    utf8 = SDL_stack_alloc(Uint8, UCS2_len(text)*3+1);
+    utf8 = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text));
     if (utf8) {
         UCS2_to_UTF8(text, utf8);
         status = TTF_SizeUTF8(font, (char *)utf8, w, h);
@@ -1346,7 +1368,7 @@ SDL_Surface *TTF_RenderText_Solid(TTF_Font *font,
 
     TTF_CHECKPOINTER(text, NULL);
 
-    utf8 = SDL_stack_alloc(Uint8, SDL_strlen(text)*2+1);
+    utf8 = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
     if (utf8) {
         LATIN1_to_UTF8(text, utf8);
         surface = TTF_RenderUTF8_Solid(font, (char *)utf8, fg);
@@ -1493,7 +1515,7 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 
     TTF_CHECKPOINTER(text, NULL);
 
-    utf8 = SDL_stack_alloc(Uint8, UCS2_len(text)*3+1);
+    utf8 = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text));
     if (utf8) {
         UCS2_to_UTF8(text, utf8);
         surface = TTF_RenderUTF8_Solid(font, (char *)utf8, fg);
@@ -1521,7 +1543,7 @@ SDL_Surface *TTF_RenderText_Shaded(TTF_Font *font,
 
     TTF_CHECKPOINTER(text, NULL);
 
-    utf8 = SDL_stack_alloc(Uint8, SDL_strlen(text)*2+1);
+    utf8 = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
     if (utf8) {
         LATIN1_to_UTF8(text, utf8);
         surface = TTF_RenderUTF8_Shaded(font, (char *)utf8, fg, bg);
@@ -1676,7 +1698,7 @@ SDL_Surface* TTF_RenderUNICODE_Shaded(TTF_Font* font,
 
     TTF_CHECKPOINTER(text, NULL);
 
-    utf8 = SDL_stack_alloc(Uint8, UCS2_len(text)*3+1);
+    utf8 = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text));
     if (utf8) {
         UCS2_to_UTF8(text, utf8);
         surface = TTF_RenderUTF8_Shaded(font, (char *)utf8, fg, bg);
@@ -1707,7 +1729,7 @@ SDL_Surface *TTF_RenderText_Blended(TTF_Font *font,
 
     TTF_CHECKPOINTER(text, NULL);
 
-    utf8 = SDL_stack_alloc(Uint8, SDL_strlen(text)*2+1);
+    utf8 = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
     if (utf8) {
         LATIN1_to_UTF8(text, utf8);
         surface = TTF_RenderUTF8_Blended(font, (char *)utf8, fg);
@@ -1849,7 +1871,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 
     TTF_CHECKPOINTER(text, NULL);
 
-    utf8 = SDL_stack_alloc(Uint8, UCS2_len(text)*3+1);
+    utf8 = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text));
     if (utf8) {
         UCS2_to_UTF8(text, utf8);
         surface = TTF_RenderUTF8_Blended(font, (char *)utf8, fg);
@@ -1868,7 +1890,7 @@ SDL_Surface *TTF_RenderText_Blended_Wrapped(TTF_Font *font, const char *text, SD
 
     TTF_CHECKPOINTER(text, NULL);
 
-    utf8 = SDL_stack_alloc(Uint8, SDL_strlen(text)*2+1);
+    utf8 = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
     if (utf8) {
         LATIN1_to_UTF8(text, utf8);
         surface = TTF_RenderUTF8_Blended_Wrapped(font, (char *)utf8, fg, wrapLength);
@@ -2125,7 +2147,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, const Uint16* tex
 
     TTF_CHECKPOINTER(text, NULL);
 
-    utf8 = SDL_stack_alloc(Uint8, UCS2_len(text)*3+1);
+    utf8 = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text));
     if (utf8) {
         UCS2_to_UTF8(text, utf8);
         surface = TTF_RenderUTF8_Blended_Wrapped(font, (char *)utf8, fg, wrapLength);
