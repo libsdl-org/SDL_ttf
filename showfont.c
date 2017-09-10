@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
 
             if( glyph ) {
                 char outname[64];
-                sprintf( outname, "glyph-%d.bmp", i );
+                SDL_snprintf( outname, sizeof(outname), "glyph-%d.bmp", i );
                 SDL_SaveBMP( glyph, outname );
             }
 
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
     }
 
     /* Show which font file we're looking at */
-    sprintf(string, "Font file: %s", argv[0]);  /* possible overflow */
+    SDL_snprintf(string, sizeof(string), "Font file: %s", argv[0]);  /* possible overflow */
     if ( rendersolid ) {
         text = TTF_RenderText_Solid(font, string, *forecol);
     } else {
