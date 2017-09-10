@@ -1426,6 +1426,7 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
     palette->colors[1].r = fg.r;
     palette->colors[1].g = fg.g;
     palette->colors[1].b = fg.b;
+    palette->colors[1].a = fg.a ? fg.a : SDL_ALPHA_OPAQUE;
     SDL_SetColorKey(textbuf, SDL_TRUE, 0);
 
     /* check kerning */
@@ -1569,6 +1570,7 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
     int rdiff;
     int gdiff;
     int bdiff;
+    int adiff;
     Uint8* src;
     Uint8* dst;
     Uint8* dst_check;
@@ -1598,16 +1600,29 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
        that may occur. */
     dst_check = (Uint8*)textbuf->pixels + textbuf->pitch * textbuf->h;
 
+    /* Support alpha blending */
+    if (!fg.a) {
+        fg.a = SDL_ALPHA_OPAQUE;
+    }
+    if (!bg.a) {
+        bg.a = SDL_ALPHA_OPAQUE;
+    }
+    if (fg.a != SDL_ALPHA_OPAQUE || bg.a != SDL_ALPHA_OPAQUE) {
+        SDL_SetSurfaceBlendMode(textbuf, SDL_BLENDMODE_BLEND);
+    }
+
     /* Fill the palette with NUM_GRAYS levels of shading from bg to fg */
     palette = textbuf->format->palette;
     rdiff = fg.r - bg.r;
     gdiff = fg.g - bg.g;
     bdiff = fg.b - bg.b;
+    adiff = fg.a - bg.a;
 
     for (index = 0; index < NUM_GRAYS; ++index) {
         palette->colors[index].r = bg.r + (index*rdiff) / (NUM_GRAYS-1);
         palette->colors[index].g = bg.g + (index*gdiff) / (NUM_GRAYS-1);
         palette->colors[index].b = bg.b + (index*bdiff) / (NUM_GRAYS-1);
+        palette->colors[index].a = bg.a + (index*adiff) / (NUM_GRAYS-1);
     }
 
     /* check kerning */
@@ -1744,10 +1759,12 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
                 const char *text, SDL_Color fg)
 {
     SDL_bool first;
+    int i;
     int xstart;
     int width, height;
     SDL_Surface *textbuf;
-    Uint32 alpha;
+    Uint8 alpha;
+    Uint8 alpha_table[256];
     Uint32 pixel;
     Uint8 *src;
     Uint32 *dst;
@@ -1780,6 +1797,21 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
 
     /* check kerning */
     use_kerning = FT_HAS_KERNING(font->face) && font->kerning;
+
+    /* Support alpha blending */
+    if (!fg.a) {
+        fg.a = SDL_ALPHA_OPAQUE;
+    }
+    if (fg.a == SDL_ALPHA_OPAQUE) {
+        for (i = 0; i < SDL_arraysize(alpha_table); ++i) {
+            alpha_table[i] = (Uint8)i;
+        }
+    } else {
+        for (i = 0; i < SDL_arraysize(alpha_table); ++i) {
+            alpha_table[i] = (Uint8)(i * fg.a / 255);
+        }
+        SDL_SetSurfaceBlendMode(textbuf, SDL_BLENDMODE_BLEND);
+    }
 
     /* Load and render each character */
     textlen = SDL_strlen(text);
@@ -1838,7 +1870,7 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
             src = (Uint8*) (glyph->pixmap.buffer + glyph->pixmap.pitch * row);
             for (col = width; col>0 && dst < dst_check; --col) {
                 alpha = *src++;
-                *dst++ |= pixel | (alpha << 24);
+                *dst++ |= pixel | ((Uint32)alpha_table[alpha] << 24);
             }
         }
 
@@ -1852,13 +1884,13 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
     /* Handle the underline style */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
         row = TTF_underline_top_row(font);
-        TTF_drawLine_Blended(font, textbuf, row, pixel);
+        TTF_drawLine_Blended(font, textbuf, row, pixel | (Uint32)fg.a << 24);
     }
 
     /* Handle the strikethrough style */
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
         row = TTF_strikethrough_top_row(font);
-        TTF_drawLine_Blended(font, textbuf, row, pixel);
+        TTF_drawLine_Blended(font, textbuf, row, pixel | (Uint32)fg.a << 24);
     }
     return(textbuf);
 }
@@ -1916,10 +1948,12 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
                                     const char *text, SDL_Color fg, Uint32 wrapLength)
 {
     SDL_bool first;
+    int i;
     int xstart;
     int width, height;
     SDL_Surface *textbuf;
-    Uint32 alpha;
+    Uint8 alpha;
+    Uint8 alpha_table[256];
     Uint32 pixel;
     Uint8 *src;
     Uint32 *dst;
@@ -2046,6 +2080,21 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     /* check kerning */
     use_kerning = FT_HAS_KERNING(font->face) && font->kerning;
 
+    /* Support alpha blending */
+    if (!fg.a) {
+        fg.a = SDL_ALPHA_OPAQUE;
+    }
+    if (fg.a == SDL_ALPHA_OPAQUE) {
+        for (i = 0; i < SDL_arraysize(alpha_table); ++i) {
+            alpha_table[i] = (Uint8)i;
+        }
+    } else {
+        for (i = 0; i < SDL_arraysize(alpha_table); ++i) {
+            alpha_table[i] = (Uint8)(i * fg.a / 255);
+        }
+        SDL_SetSurfaceBlendMode(textbuf, SDL_BLENDMODE_BLEND);
+    }
+
     /* Load and render each character */
     pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
     SDL_FillRect(textbuf, NULL, pixel); /* Initialize with fg and 0 alpha */
@@ -2112,7 +2161,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
                 src = (Uint8*) (glyph->pixmap.buffer + glyph->pixmap.pitch * row);
                 for (col = width; col>0 && dst < dst_check; --col) {
                     alpha = *src++;
-                    *dst++ |= pixel | (alpha << 24);
+                    *dst++ |= pixel | ((Uint32)alpha_table[alpha] << 24);
                 }
             }
 
@@ -2126,14 +2175,14 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
         /* Handle the underline style *
         if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
             row = TTF_underline_top_row(font);
-            TTF_drawLine_Blended(font, textbuf, row, pixel);
+            TTF_drawLine_Blended(font, textbuf, row, pixel | (Uint32)fg.a << 24);
         }
         */
 
         /* Handle the strikethrough style *
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
             row = TTF_strikethrough_top_row(font);
-            TTF_drawLine_Blended(font, textbuf, row, pixel);
+            TTF_drawLine_Blended(font, textbuf, row, pixel | (Uint32)fg.a << 24);
         }
         */
     }
