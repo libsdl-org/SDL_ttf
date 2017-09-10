@@ -1382,7 +1382,6 @@ SDL_Surface *TTF_RenderText_Solid(TTF_Font *font,
 SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
                 const char *text, SDL_Color fg)
 {
-    SDL_bool first;
     int xstart;
     int width;
     int height;
@@ -1434,7 +1433,6 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
 
     /* Load and render each character */
     textlen = SDL_strlen(text);
-    first = SDL_TRUE;
     xstart = 0;
     while (textlen > 0) {
         Uint32 c = UTF8_getch(&text, &textlen);
@@ -1462,27 +1460,23 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
             FT_Get_Kerning(font->face, prev_index, glyph->index, ft_kerning_default, &delta);
             xstart += delta.x >> 6;
         }
-        /* Compensate for wrap around bug with negative minx's */
-        if (first && (glyph->minx < 0)) {
-            xstart -= glyph->minx;
-        }
-        first = SDL_FALSE;
 
         for (row = 0; row < current->rows; ++row) {
-            /* Make sure we don't go either over, or under the
-             * limit */
-            if (row+glyph->yoffset < 0) {
+            /* Make sure we don't go either over, or under the limit */
+            if ((xstart + glyph->minx) < 0) {
+                xstart -= (xstart + glyph->minx);
+            }
+            if ((row + glyph->yoffset) < 0) {
                 continue;
             }
-            if (row+glyph->yoffset >= textbuf->h) {
+            if ((row + glyph->yoffset) >= textbuf->h) {
                 continue;
             }
-            dst = (Uint8*) textbuf->pixels +
+            dst = (Uint8 *)textbuf->pixels +
                 (row+glyph->yoffset) * textbuf->pitch +
                 xstart + glyph->minx;
             src = current->buffer + row * current->pitch;
-
-            for (col=width; col>0 && dst < dst_check; --col) {
+            for (col = width; col > 0 && dst < dst_check; --col) {
                 *dst++ |= *src++;
             }
         }
@@ -1560,7 +1554,6 @@ SDL_Surface *TTF_RenderText_Shaded(TTF_Font *font,
 SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
                 const char *text, SDL_Color fg, SDL_Color bg)
 {
-    SDL_bool first;
     int xstart;
     int width;
     int height;
@@ -1630,7 +1623,6 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
 
     /* Load and render each character */
     textlen = SDL_strlen(text);
-    first = SDL_TRUE;
     xstart = 0;
     while (textlen > 0) {
         Uint32 c = UTF8_getch(&text, &textlen);
@@ -1657,27 +1649,24 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
             FT_Get_Kerning(font->face, prev_index, glyph->index, ft_kerning_default, &delta);
             xstart += delta.x >> 6;
         }
-        /* Compensate for the wrap around with negative minx's */
-        if (first && (glyph->minx < 0)) {
-            xstart -= glyph->minx;
-        }
-        first = SDL_FALSE;
 
         current = &glyph->pixmap;
         for (row = 0; row < current->rows; ++row) {
-            /* Make sure we don't go either over, or under the
-             * limit */
-            if (row+glyph->yoffset < 0) {
+            /* Make sure we don't go either over, or under the limit */
+            if ((xstart + glyph->minx) < 0) {
+                xstart -= (xstart + glyph->minx);
+            }
+            if ((row + glyph->yoffset) < 0) {
                 continue;
             }
-            if (row+glyph->yoffset >= textbuf->h) {
+            if ((row + glyph->yoffset) >= textbuf->h) {
                 continue;
             }
-            dst = (Uint8*) textbuf->pixels +
+            dst = (Uint8 *)textbuf->pixels +
                 (row+glyph->yoffset) * textbuf->pitch +
                 xstart + glyph->minx;
             src = current->buffer + row * current->pitch;
-            for (col=width; col>0 && dst < dst_check; --col) {
+            for (col = width; col > 0 && dst < dst_check; --col) {
                 *dst++ |= *src++;
             }
         }
@@ -1758,7 +1747,6 @@ SDL_Surface *TTF_RenderText_Blended(TTF_Font *font,
 SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
                 const char *text, SDL_Color fg)
 {
-    SDL_bool first;
     int i;
     int xstart;
     int width, height;
@@ -1815,7 +1803,6 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
 
     /* Load and render each character */
     textlen = SDL_strlen(text);
-    first = SDL_TRUE;
     xstart = 0;
     pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
     SDL_FillRect(textbuf, NULL, pixel); /* Initialize with fg and 0 alpha */
@@ -1845,30 +1832,22 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
             xstart += delta.x >> 6;
         }
 
-        /* Compensate for the wrap around bug with negative minx's */
-        if (first && (glyph->minx < 0)) {
-            xstart -= glyph->minx;
-        }
-        first = SDL_FALSE;
-
         for (row = 0; row < glyph->pixmap.rows; ++row) {
-            /* Make sure we don't go either over, or under the
-             * limit */
-            if (row+glyph->yoffset < 0) {
+            /* Make sure we don't go either over, or under the limit */
+            if ((xstart + glyph->minx) < 0) {
+                xstart -= (xstart + glyph->minx);
+            }
+            if ((row + glyph->yoffset) < 0) {
                 continue;
             }
-            if (row+glyph->yoffset >= textbuf->h) {
+            if ((row + glyph->yoffset) >= textbuf->h) {
                 continue;
             }
-            dst = (Uint32*) textbuf->pixels +
+            dst = (Uint32 *)textbuf->pixels +
                 (row+glyph->yoffset) * textbuf->pitch/4 +
                 xstart + glyph->minx;
-
-            /* Added code to adjust src pointer for pixmaps to
-             * account for pitch.
-             * */
-            src = (Uint8*) (glyph->pixmap.buffer + glyph->pixmap.pitch * row);
-            for (col = width; col>0 && dst < dst_check; --col) {
+            src = (Uint8*)glyph->pixmap.buffer + row * glyph->pixmap.pitch;
+            for (col = width; col > 0 && dst < dst_check; --col) {
                 alpha = *src++;
                 *dst++ |= pixel | ((Uint32)alpha_table[alpha] << 24);
             }
@@ -1950,7 +1929,6 @@ static SDL_bool CharacterIsDelimiter(char c, const char *delimiters)
 SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
                                     const char *text, SDL_Color fg, Uint32 wrapLength)
 {
-    SDL_bool first;
     int i;
     int xstart;
     int width, height;
@@ -2117,7 +2095,6 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
             text = strLines[line];
         }
         textlen = SDL_strlen(text);
-        first = SDL_TRUE;
         xstart = 0;
         while (textlen > 0) {
             Uint32 c = UTF8_getch(&text, &textlen);
@@ -2149,30 +2126,22 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
                 xstart += delta.x >> 6;
             }
 
-            /* Compensate for the wrap around bug with negative minx's */
-            if (first && (glyph->minx < 0)) {
-                xstart -= glyph->minx;
-            }
-            first = SDL_FALSE;
-
             for (row = 0; row < glyph->pixmap.rows; ++row) {
-                /* Make sure we don't go either over, or under the
-                 * limit */
-                if (row+glyph->yoffset < 0) {
+                /* Make sure we don't go either over, or under the limit */
+                if ((xstart + glyph->minx) < 0) {
+                    xstart -= (xstart + glyph->minx);
+                }
+                if ((row + glyph->yoffset) < 0) {
                     continue;
                 }
-                if (row+glyph->yoffset >= textbuf->h) {
+                if ((row + glyph->yoffset) >= textbuf->h) {
                     continue;
                 }
-                dst =  ((Uint32*)textbuf->pixels + rowSize * line) +
-                (row+glyph->yoffset) * textbuf->pitch/4 +
-                xstart + glyph->minx;
-
-                /* Added code to adjust src pointer for pixmaps to
-                 * account for pitch.
-                 * */
-                src = (Uint8*) (glyph->pixmap.buffer + glyph->pixmap.pitch * row);
-                for (col = width; col>0 && dst < dst_check; --col) {
+                dst = ((Uint32*)textbuf->pixels + rowSize * line) +
+                        (row+glyph->yoffset) * textbuf->pitch/4 +
+                        xstart + glyph->minx;
+                src = (Uint8*)glyph->pixmap.buffer + row * glyph->pixmap.pitch;
+                for (col = width; col > 0 && dst < dst_check; --col) {
                     alpha = *src++;
                     *dst++ |= pixel | ((Uint32)alpha_table[alpha] << 24);
                 }
