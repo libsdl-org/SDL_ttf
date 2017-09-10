@@ -1948,7 +1948,6 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     if (wrapLength > 0 && *text) {
         const char *wrapDelims = " \t\r\n";
         int w, h;
-        int line = 0;
         char *spot, *tok, *next_tok, *end;
         char delim;
         size_t str_len = SDL_strlen(text);
