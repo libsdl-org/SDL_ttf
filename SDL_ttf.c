@@ -1944,6 +1944,9 @@ static SDL_bool CharacterIsDelimiter(char c, const char *delimiters)
     return SDL_FALSE;
 }
 
+/* Don't define this until we have a release where we can change font rendering
+#define TTF_USE_LINESKIP
+ */
 SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
                                     const char *text, SDL_Color fg, Uint32 wrapLength)
 {
@@ -1963,7 +1966,9 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     FT_Error error;
     FT_Long use_kerning;
     FT_UInt prev_index = 0;
+#ifndef TTF_USE_LINESKIP
     const int lineSpace = 2;
+#endif
     int line, numLines, rowSize;
     char *str, **strLines, **newLines;
     size_t textlen;
@@ -2061,7 +2066,11 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     /* Create the target surface */
     textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE,
             (numLines > 1) ? wrapLength : width,
+#ifdef TTF_USE_LINESKIP
+            height * TTF_FontLineSkip(font),
+#else
             height * numLines + (lineSpace * (numLines - 1)),
+#endif
             32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
     if (textbuf == NULL) {
         if (strLines) {
@@ -2071,7 +2080,11 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
         return(NULL);
     }
 
+#ifdef TTF_USE_LINESKIP
+    rowSize = textbuf->pitch/4 * TTF_FontLineSkip(font);
+#else
     rowSize = textbuf->pitch/4 * height;
+#endif
 
     /* Adding bound checking to avoid all kinds of memory corruption errors
      that may occur. */
