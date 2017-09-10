@@ -278,3 +278,5 @@ extern DECLSPEC int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous
 #include "close_code.h"
 
 #endif /* SDL_TTF_H_ */
+
+/* vi: set ts=4 sw=4 expandtab: */
