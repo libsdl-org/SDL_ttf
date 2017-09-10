@@ -439,32 +439,32 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
     /* Set charmap for loaded font */
     found = 0;
 #if 0 /* Font debug code */
-	for (i = 0; i < face->num_charmaps; i++) {
-		FT_CharMap charmap = face->charmaps[i];
-		printf("Found charmap: platform id %d, encoding id %d\n", charmap->platform_id, charmap->encoding_id);
-	}
+    for (i = 0; i < face->num_charmaps; i++) {
+        FT_CharMap charmap = face->charmaps[i];
+        printf("Found charmap: platform id %d, encoding id %d\n", charmap->platform_id, charmap->encoding_id);
+    }
 #endif
     if (!found) {
         for (i = 0; i < face->num_charmaps; i++) {
             FT_CharMap charmap = face->charmaps[i];
-			if (charmap->platform_id == 3 && charmap->encoding_id == 10) { /* UCS-4 Unicode */
-				found = charmap;
-				break;
-			}
-		}
-	}
+            if (charmap->platform_id == 3 && charmap->encoding_id == 10) { /* UCS-4 Unicode */
+                found = charmap;
+                break;
+            }
+        }
+    }
     if (!found) {
-		for (i = 0; i < face->num_charmaps; i++) {
-			FT_CharMap charmap = face->charmaps[i];
-			if ((charmap->platform_id == 3 && charmap->encoding_id == 1) /* Windows Unicode */
-			 || (charmap->platform_id == 3 && charmap->encoding_id == 0) /* Windows Symbol */
-			 || (charmap->platform_id == 2 && charmap->encoding_id == 1) /* ISO Unicode */
-			 || (charmap->platform_id == 0)) { /* Apple Unicode */
-				found = charmap;
-				break;
-			}
-		}
-	}
+        for (i = 0; i < face->num_charmaps; i++) {
+            FT_CharMap charmap = face->charmaps[i];
+            if ((charmap->platform_id == 3 && charmap->encoding_id == 1) /* Windows Unicode */
+             || (charmap->platform_id == 3 && charmap->encoding_id == 0) /* Windows Symbol */
+             || (charmap->platform_id == 2 && charmap->encoding_id == 1) /* ISO Unicode */
+             || (charmap->platform_id == 0)) { /* Apple Unicode */
+                found = charmap;
+                break;
+            }
+        }
+    }
     if (found) {
         /* If this fails, continue using the default charmap */
         FT_Set_Charmap(face, found);
