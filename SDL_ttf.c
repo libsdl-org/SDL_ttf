@@ -2045,7 +2045,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE,
             (numLines > 1) ? wrapLength : width,
 #ifdef TTF_USE_LINESKIP
-            height * TTF_FontLineSkip(font),
+            numLines * TTF_FontLineSkip(font),
 #else
             height * numLines + (lineSpace * (numLines - 1)),
 #endif
