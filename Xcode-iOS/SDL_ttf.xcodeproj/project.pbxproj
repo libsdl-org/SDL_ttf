@@ -6,7 +6,74 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		AA53152F1FE101AD0025C9BE /* All (iOS) */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = AA5315301FE101AD0025C9BE /* Build configuration list for PBXAggregateTarget "All (iOS)" */;
+			buildPhases = (
+				AA5315371FE101D30025C9BE /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "All (iOS)";
+			productName = "All (iOS)";
+		};
+		AA5315331FE101BF0025C9BE /* All (tvOS) */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = AA5315341FE101BF0025C9BE /* Build configuration list for PBXAggregateTarget "All (tvOS)" */;
+			buildPhases = (
+				AA5315381FE102180025C9BE /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "All (tvOS)";
+			productName = "All (tvOS)";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
+		AA5314FF1FE1016F0025C9BE /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
+		AA5315001FE1016F0025C9BE /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087711764F92F00F24AFF /* autofit.c */; };
+		AA5315011FE1016F0025C9BE /* ftbase.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087731764F9C500F24AFF /* ftbase.c */; };
+		AA5315021FE1016F0025C9BE /* ftbbox.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087741764F9C500F24AFF /* ftbbox.c */; };
+		AA5315031FE1016F0025C9BE /* ftbdf.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087751764F9C500F24AFF /* ftbdf.c */; };
+		AA5315041FE1016F0025C9BE /* ftbitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087761764F9C500F24AFF /* ftbitmap.c */; };
+		AA5315051FE1016F0025C9BE /* ftcid.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087771764F9C500F24AFF /* ftcid.c */; };
+		AA5315061FE1016F0025C9BE /* ftdebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087781764F9C500F24AFF /* ftdebug.c */; };
+		AA5315071FE1016F0025C9BE /* ftfstype.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087791764F9C500F24AFF /* ftfstype.c */; };
+		AA5315081FE1016F0025C9BE /* ftgasp.c in Sources */ = {isa = PBXBuildFile; fileRef = AA80877A1764F9C500F24AFF /* ftgasp.c */; };
+		AA5315091FE1016F0025C9BE /* ftglyph.c in Sources */ = {isa = PBXBuildFile; fileRef = AA80877B1764F9C500F24AFF /* ftglyph.c */; };
+		AA53150A1FE1016F0025C9BE /* ftgxval.c in Sources */ = {isa = PBXBuildFile; fileRef = AA80877C1764F9C500F24AFF /* ftgxval.c */; };
+		AA53150B1FE1016F0025C9BE /* ftinit.c in Sources */ = {isa = PBXBuildFile; fileRef = AA80877D1764F9C500F24AFF /* ftinit.c */; };
+		AA53150C1FE1016F0025C9BE /* ftlcdfil.c in Sources */ = {isa = PBXBuildFile; fileRef = AA80877E1764F9C500F24AFF /* ftlcdfil.c */; };
+		AA53150D1FE1016F0025C9BE /* ftmm.c in Sources */ = {isa = PBXBuildFile; fileRef = AA80877F1764F9C500F24AFF /* ftmm.c */; };
+		AA53150E1FE1016F0025C9BE /* ftotval.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087801764F9C500F24AFF /* ftotval.c */; };
+		AA53150F1FE1016F0025C9BE /* ftpatent.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087811764F9C500F24AFF /* ftpatent.c */; };
+		AA5315101FE1016F0025C9BE /* ftpfr.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087821764F9C500F24AFF /* ftpfr.c */; };
+		AA5315111FE1016F0025C9BE /* ftstroke.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087831764F9C500F24AFF /* ftstroke.c */; };
+		AA5315121FE1016F0025C9BE /* ftsynth.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087841764F9C500F24AFF /* ftsynth.c */; };
+		AA5315131FE1016F0025C9BE /* ftsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087851764F9C500F24AFF /* ftsystem.c */; };
+		AA5315141FE1016F0025C9BE /* fttype1.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087861764F9C500F24AFF /* fttype1.c */; };
+		AA5315151FE1016F0025C9BE /* ftwinfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087871764F9C500F24AFF /* ftwinfnt.c */; };
+		AA5315161FE1016F0025C9BE /* ftxf86.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087881764F9C500F24AFF /* ftxf86.c */; };
+		AA5315171FE1016F0025C9BE /* bdf.c in Sources */ = {isa = PBXBuildFile; fileRef = AA80879F1764F9DF00F24AFF /* bdf.c */; };
+		AA5315181FE1016F0025C9BE /* ftbzip2.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A11764F9F600F24AFF /* ftbzip2.c */; };
+		AA5315191FE1016F0025C9BE /* cff.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A51764FA1D00F24AFF /* cff.c */; };
+		AA53151A1FE1016F0025C9BE /* type1cid.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A71764FA3300F24AFF /* type1cid.c */; };
+		AA53151B1FE1016F0025C9BE /* ftgzip.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A91764FA4700F24AFF /* ftgzip.c */; };
+		AA53151C1FE1016F0025C9BE /* ftlzw.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087AB1764FA5A00F24AFF /* ftlzw.c */; };
+		AA53151D1FE1016F0025C9BE /* pcf.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087AD1764FA6A00F24AFF /* pcf.c */; };
+		AA53151E1FE1016F0025C9BE /* pfr.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087AF1764FA7700F24AFF /* pfr.c */; };
+		AA53151F1FE1016F0025C9BE /* psaux.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087B11764FA8900F24AFF /* psaux.c */; };
+		AA5315201FE1016F0025C9BE /* pshinter.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087B31764FAA600F24AFF /* pshinter.c */; };
+		AA5315211FE1016F0025C9BE /* psmodule.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087B51764FAB600F24AFF /* psmodule.c */; };
+		AA5315221FE1016F0025C9BE /* raster.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087B71764FADC00F24AFF /* raster.c */; };
+		AA5315231FE1016F0025C9BE /* sfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087B91764FAE700F24AFF /* sfnt.c */; };
+		AA5315241FE1016F0025C9BE /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087BB1764FAF600F24AFF /* smooth.c */; };
+		AA5315251FE1016F0025C9BE /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087BF1764FB1500F24AFF /* truetype.c */; };
+		AA5315261FE1016F0025C9BE /* type1.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087C11764FB2300F24AFF /* type1.c */; };
+		AA5315271FE1016F0025C9BE /* type42.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087C31764FB2D00F24AFF /* type42.c */; };
+		AA5315281FE1016F0025C9BE /* winfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087C51764FB3F00F24AFF /* winfnt.c */; };
 		AA8087721764F92F00F24AFF /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087711764F92F00F24AFF /* autofit.c */; };
 		AA8087891764F9C500F24AFF /* ftbase.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087731764F9C500F24AFF /* ftbase.c */; };
 		AA80878A1764F9C500F24AFF /* ftbbox.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087741764F9C500F24AFF /* ftbbox.c */; };
@@ -53,6 +120,7 @@
 
 /* Begin PBXFileReference section */
 		1014BAEA010A4B677F000001 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../SDL_ttf.h; sourceTree = SOURCE_ROOT; };
+		AA53152E1FE1016F0025C9BE /* libSDL2_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8087711764F92F00F24AFF /* autofit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = autofit.c; path = src/autofit/autofit.c; sourceTree = "<group>"; };
 		AA8087731764F9C500F24AFF /* ftbase.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbase.c; path = src/base/ftbase.c; sourceTree = "<group>"; };
 		AA8087741764F9C500F24AFF /* ftbbox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbbox.c; path = src/base/ftbbox.c; sourceTree = "<group>"; };
@@ -99,6 +167,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AA5315291FE1016F0025C9BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE48FD6C07AFA17000BB41DA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -122,6 +197,7 @@
 			children = (
 				089C1665FE841158C02AAC07 /* Resources */,
 				BE48FD6E07AFA17000BB41DA /* libSDL2_ttf.a */,
+				AA53152E1FE1016F0025C9BE /* libSDL2_ttf.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -204,6 +280,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		AA5314FD1FE1016F0025C9BE /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE48FD6907AFA17000BB41DA /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -214,9 +297,28 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		BE48FD6807AFA17000BB41DA /* Static Library */ = {
+		AA5314FC1FE1016F0025C9BE /* libSDL_ttf-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00B7E1ED097E26C600826121 /* Build configuration list for PBXNativeTarget "Static Library" */;
+			buildConfigurationList = AA53152B1FE1016F0025C9BE /* Build configuration list for PBXNativeTarget "libSDL_ttf-tvOS" */;
+			buildPhases = (
+				AA5314FD1FE1016F0025C9BE /* Headers */,
+				AA5314FE1FE1016F0025C9BE /* Sources */,
+				AA5315291FE1016F0025C9BE /* Frameworks */,
+				AA53152A1FE1016F0025C9BE /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "libSDL_ttf-tvOS";
+			productInstallPath = /usr/local/lib;
+			productName = "Static Library";
+			productReference = AA53152E1FE1016F0025C9BE /* libSDL2_ttf.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		BE48FD6807AFA17000BB41DA /* libSDL_ttf-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00B7E1ED097E26C600826121 /* Build configuration list for PBXNativeTarget "libSDL_ttf-iOS" */;
 			buildPhases = (
 				BE48FD6907AFA17000BB41DA /* Headers */,
 				BE48FD6A07AFA17000BB41DA /* Sources */,
@@ -227,7 +329,7 @@
 			);
 			dependencies = (
 			);
-			name = "Static Library";
+			name = "libSDL_ttf-iOS";
 			productInstallPath = /usr/local/lib;
 			productName = "Static Library";
 			productReference = BE48FD6E07AFA17000BB41DA /* libSDL2_ttf.a */;
@@ -240,6 +342,16 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0900;
+				TargetAttributes = {
+					AA53152F1FE101AD0025C9BE = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					AA5315331FE101BF0025C9BE = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 00B7E1F5097E26C600826121 /* Build configuration list for PBXProject "SDL_ttf" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -256,12 +368,22 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BE48FD6807AFA17000BB41DA /* Static Library */,
+				BE48FD6807AFA17000BB41DA /* libSDL_ttf-iOS */,
+				AA5314FC1FE1016F0025C9BE /* libSDL_ttf-tvOS */,
+				AA53152F1FE101AD0025C9BE /* All (iOS) */,
+				AA5315331FE101BF0025C9BE /* All (tvOS) */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXRezBuildPhase section */
+		AA53152A1FE1016F0025C9BE /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE48FD6D07AFA17000BB41DA /* Rez */ = {
 			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
@@ -271,7 +393,89 @@
 		};
 /* End PBXRezBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		AA5315371FE101D30025C9BE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+				output/iOS/debug/libSDL2_ttf.a,
+				output/iOS/release/libSDL2_ttf.a,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TARGET=libSDL_ttf-iOS\nOUTPUT=libSDL2_ttf.a\n\nxcodebuild -target \"$TARGET\" -configuration Debug -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"$TARGET\" -configuration Release -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"$TARGET\" ONLY_ACTIVE_ARCH=NO -configuration Debug -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"$TARGET\" ONLY_ACTIVE_ARCH=NO -configuration Release -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n# make output folders\nmkdir -p output/iOS/debug\nmkdir -p output/iOS/release\n\n# combine lib files for various platforms into one\necho \"Creating output/iOS/debug/$OUTPUT\"\nlipo -create \"${TARGET_BUILD_DIR}/../Debug-iphoneos/$OUTPUT\" \"${TARGET_BUILD_DIR}/../Debug-iphonesimulator/$OUTPUT\" -output \"output/iOS/debug/$OUTPUT\"\necho \"Creating output/iOS/release/$OUTPUT\"\nlipo -create \"${TARGET_BUILD_DIR}/../Release-iphoneos/$OUTPUT\" \"${TARGET_BUILD_DIR}/../Release-iphonesimulator/$OUTPUT\" -output \"output/iOS/release/$OUTPUT\"\n";
+		};
+		AA5315381FE102180025C9BE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+				output/tvOS/debug/libSDL2_ttf.a,
+				output/tvOS/release/libSDL2_ttf.a,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TARGET=libSDL_ttf-tvOS\nOUTPUT=libSDL2_ttf.a\n\nxcodebuild -target \"$TARGET\" -configuration Debug -sdk appletvsimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"$TARGET\" -configuration Release -sdk appletvsimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"$TARGET\" ONLY_ACTIVE_ARCH=NO -configuration Debug -sdk appletvos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"$TARGET\" ONLY_ACTIVE_ARCH=NO -configuration Release -sdk appletvos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n# make output folders\nmkdir -p output/tvOS/debug\nmkdir -p output/tvOS/release\n\n# combine lib files for various platforms into one\necho \"Creating output/tvOS/debug/$OUTPUT\"\nlipo -create \"${TARGET_BUILD_DIR}/../Debug-appletvos/$OUTPUT\" \"${TARGET_BUILD_DIR}/../Debug-appletvsimulator/$OUTPUT\" -output \"output/tvOS/debug/$OUTPUT\"\necho \"Creating output/tvOS/release/$OUTPUT\"\nlipo -create \"${TARGET_BUILD_DIR}/../Release-appletvos/$OUTPUT\" \"${TARGET_BUILD_DIR}/../Release-appletvsimulator/$OUTPUT\" -output \"output/tvOS/release/$OUTPUT\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		AA5314FE1FE1016F0025C9BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA5314FF1FE1016F0025C9BE /* SDL_ttf.c in Sources */,
+				AA5315001FE1016F0025C9BE /* autofit.c in Sources */,
+				AA5315011FE1016F0025C9BE /* ftbase.c in Sources */,
+				AA5315021FE1016F0025C9BE /* ftbbox.c in Sources */,
+				AA5315031FE1016F0025C9BE /* ftbdf.c in Sources */,
+				AA5315041FE1016F0025C9BE /* ftbitmap.c in Sources */,
+				AA5315051FE1016F0025C9BE /* ftcid.c in Sources */,
+				AA5315061FE1016F0025C9BE /* ftdebug.c in Sources */,
+				AA5315071FE1016F0025C9BE /* ftfstype.c in Sources */,
+				AA5315081FE1016F0025C9BE /* ftgasp.c in Sources */,
+				AA5315091FE1016F0025C9BE /* ftglyph.c in Sources */,
+				AA53150A1FE1016F0025C9BE /* ftgxval.c in Sources */,
+				AA53150B1FE1016F0025C9BE /* ftinit.c in Sources */,
+				AA53150C1FE1016F0025C9BE /* ftlcdfil.c in Sources */,
+				AA53150D1FE1016F0025C9BE /* ftmm.c in Sources */,
+				AA53150E1FE1016F0025C9BE /* ftotval.c in Sources */,
+				AA53150F1FE1016F0025C9BE /* ftpatent.c in Sources */,
+				AA5315101FE1016F0025C9BE /* ftpfr.c in Sources */,
+				AA5315111FE1016F0025C9BE /* ftstroke.c in Sources */,
+				AA5315121FE1016F0025C9BE /* ftsynth.c in Sources */,
+				AA5315131FE1016F0025C9BE /* ftsystem.c in Sources */,
+				AA5315141FE1016F0025C9BE /* fttype1.c in Sources */,
+				AA5315151FE1016F0025C9BE /* ftwinfnt.c in Sources */,
+				AA5315161FE1016F0025C9BE /* ftxf86.c in Sources */,
+				AA5315171FE1016F0025C9BE /* bdf.c in Sources */,
+				AA5315181FE1016F0025C9BE /* ftbzip2.c in Sources */,
+				AA5315191FE1016F0025C9BE /* cff.c in Sources */,
+				AA53151A1FE1016F0025C9BE /* type1cid.c in Sources */,
+				AA53151B1FE1016F0025C9BE /* ftgzip.c in Sources */,
+				AA53151C1FE1016F0025C9BE /* ftlzw.c in Sources */,
+				AA53151D1FE1016F0025C9BE /* pcf.c in Sources */,
+				AA53151E1FE1016F0025C9BE /* pfr.c in Sources */,
+				AA53151F1FE1016F0025C9BE /* psaux.c in Sources */,
+				AA5315201FE1016F0025C9BE /* pshinter.c in Sources */,
+				AA5315211FE1016F0025C9BE /* psmodule.c in Sources */,
+				AA5315221FE1016F0025C9BE /* raster.c in Sources */,
+				AA5315231FE1016F0025C9BE /* sfnt.c in Sources */,
+				AA5315241FE1016F0025C9BE /* smooth.c in Sources */,
+				AA5315251FE1016F0025C9BE /* truetype.c in Sources */,
+				AA5315261FE1016F0025C9BE /* type1.c in Sources */,
+				AA5315271FE1016F0025C9BE /* type42.c in Sources */,
+				AA5315281FE1016F0025C9BE /* winfnt.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE48FD6A07AFA17000BB41DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -330,7 +534,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 11;
 				DYLIB_CURRENT_VERSION = 11.3.0;
 				GCC_PREPROCESSOR_DEFINITIONS = FT2_BUILD_LIBRARY;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_STYLE = STATIC;
 				PRODUCT_NAME = SDL2_ttf;
 				SKIP_INSTALL = YES;
@@ -343,7 +546,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 11;
 				DYLIB_CURRENT_VERSION = 11.3.0;
 				GCC_PREPROCESSOR_DEFINITIONS = FT2_BUILD_LIBRARY;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_STYLE = STATIC;
 				PRODUCT_NAME = SDL2_ttf;
 				SKIP_INSTALL = YES;
@@ -386,10 +588,11 @@
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_1 = "\"$(SRCROOT)/../../SDL/include\"";
 				HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_2 = "\"$(SRCROOT)/../external/freetype-2.4.12/include\"";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -428,16 +631,73 @@
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_1 = "\"$(SRCROOT)/../../SDL/include\"";
 				HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_2 = "\"$(SRCROOT)/../external/freetype-2.4.12/include\"";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		AA53152C1FE1016F0025C9BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 11;
+				DYLIB_CURRENT_VERSION = 11.3.0;
+				GCC_PREPROCESSOR_DEFINITIONS = FT2_BUILD_LIBRARY;
+				LIBRARY_STYLE = STATIC;
+				PRODUCT_NAME = SDL2_ttf;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		AA53152D1FE1016F0025C9BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 11;
+				DYLIB_CURRENT_VERSION = 11.3.0;
+				GCC_PREPROCESSOR_DEFINITIONS = FT2_BUILD_LIBRARY;
+				LIBRARY_STYLE = STATIC;
+				PRODUCT_NAME = SDL2_ttf;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		AA5315311FE101AD0025C9BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AA5315321FE101AD0025C9BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		AA5315351FE101BF0025C9BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AA5315361FE101BF0025C9BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00B7E1ED097E26C600826121 /* Build configuration list for PBXNativeTarget "Static Library" */ = {
+		00B7E1ED097E26C600826121 /* Build configuration list for PBXNativeTarget "libSDL_ttf-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00B7E1EE097E26C600826121 /* Debug */,
@@ -451,6 +711,33 @@
 			buildConfigurations = (
 				00B7E1F6097E26C600826121 /* Debug */,
 				00B7E1F7097E26C600826121 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA53152B1FE1016F0025C9BE /* Build configuration list for PBXNativeTarget "libSDL_ttf-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA53152C1FE1016F0025C9BE /* Debug */,
+				AA53152D1FE1016F0025C9BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA5315301FE101AD0025C9BE /* Build configuration list for PBXAggregateTarget "All (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA5315311FE101AD0025C9BE /* Debug */,
+				AA5315321FE101AD0025C9BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA5315341FE101BF0025C9BE /* Build configuration list for PBXAggregateTarget "All (tvOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA5315351FE101BF0025C9BE /* Debug */,
+				AA5315361FE101BF0025C9BE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
