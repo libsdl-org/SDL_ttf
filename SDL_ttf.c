@@ -1523,9 +1523,11 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 
 SDL_Surface *TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
 {
-    Uint16 ucs2[2] = { ch, 0 };
+    Uint16 ucs2[2];
     Uint8 utf8[4];
 
+    ucs2[0] = ch;
+    ucs2[1] = 0;
     UCS2_to_UTF8(ucs2, utf8);
     return TTF_RenderUTF8_Solid(font, (char *)utf8, fg);
 }
@@ -1718,9 +1720,11 @@ SDL_Surface* TTF_RenderGlyph_Shaded(TTF_Font* font,
                      SDL_Color fg,
                      SDL_Color bg)
 {
-    Uint16 ucs2[2] = { ch, 0 };
+    Uint16 ucs2[2];
     Uint8 utf8[4];
 
+    ucs2[0] = ch;
+    ucs2[1] = 0;
     UCS2_to_UTF8(ucs2, utf8);
     return TTF_RenderUTF8_Shaded(font, (char *)utf8, fg, bg);
 }
@@ -2197,9 +2201,11 @@ SDL_Surface *TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, const Uint16* tex
 
 SDL_Surface *TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 {
-    Uint16 ucs2[2] = { ch, 0 };
+    Uint16 ucs2[2];
     Uint8 utf8[4];
 
+    ucs2[0] = ch;
+    ucs2[1] = 0;
     UCS2_to_UTF8(ucs2, utf8);
     return TTF_RenderUTF8_Blended(font, (char *)utf8, fg);
 }
