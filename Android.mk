@@ -1,15 +1,15 @@
 # Save the local path
-my_LOCAL_PATH := $(call my-dir)
+SDL_TTF_LOCAL_PATH := $(call my-dir)
 
 FREETYPE_LIBRARY_PATH := external/freetype-2.4.12
 
 # Build freetype library
 ifneq ($(FREETYPE_LIBRARY_PATH),)
-    include $(my_LOCAL_PATH)/$(FREETYPE_LIBRARY_PATH)/Android.mk
+    include $(SDL_TTF_LOCAL_PATH)/$(FREETYPE_LIBRARY_PATH)/Android.mk
 endif
 
 # Restore local path
-LOCAL_PATH := $(my_LOCAL_PATH)
+LOCAL_PATH := $(SDL_TTF_LOCAL_PATH)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := SDL2_ttf
