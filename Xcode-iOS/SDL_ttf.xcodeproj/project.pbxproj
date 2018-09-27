@@ -646,6 +646,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = FT2_BUILD_LIBRARY;
 				LIBRARY_STYLE = STATIC;
 				PRODUCT_NAME = SDL2_ttf;
+				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -658,6 +659,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = FT2_BUILD_LIBRARY;
 				LIBRARY_STYLE = STATIC;
 				PRODUCT_NAME = SDL2_ttf;
+				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
