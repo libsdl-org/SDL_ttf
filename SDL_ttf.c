@@ -1766,7 +1766,7 @@ SDL_Surface* TTF_RenderGlyph_Shaded( TTF_Font* font,
 	/* Copy the character from the pixmap */
 	src = glyph->pixmap.buffer;
 	dst = (Uint8*) textbuf->pixels;
-	for ( row = 0; row < glyph->bitmap.rows; ++row ) {
+	for ( row = 0; row < glyph->pixmap.rows; ++row ) {
 		memcpy( dst, src, glyph->pixmap.width );
 		src += glyph->pixmap.pitch;
 		dst += textbuf->pitch;
