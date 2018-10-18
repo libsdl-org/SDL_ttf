@@ -487,9 +487,9 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 			ptsize = font->face->num_fixed_sizes - 1;
 		font->font_size_family = ptsize;
 		error = FT_Set_Pixel_Sizes( face,
-				face->available_sizes[ptsize].height,
-				face->available_sizes[ptsize].width );
-	  	/* With non-scalale fonts, Freetype2 likes to fill many of the
+				face->available_sizes[ptsize].width,
+				face->available_sizes[ptsize].height );
+		/* With non-scalale fonts, Freetype2 likes to fill many of the
 		 * font metrics with the value of 0.  The size of the
 		 * non-scalable fonts must be determined differently
 		 * or sometimes cannot be determined.
