@@ -35,6 +35,7 @@ libSDL_ttf_la_LDFLAGS = 	\
 	-release $(LT_RELEASE)	\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 endif
+libSDL_ttf_la_LIBADD = @MATHLIB@
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = SDL_ttf.pc
