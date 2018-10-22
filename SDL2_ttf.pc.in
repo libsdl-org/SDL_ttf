@@ -9,4 +9,3 @@ Version: @VERSION@
 Requires: sdl2 >= @SDL_VERSION@
 Libs: -L${libdir} -lSDL2_ttf
 Cflags: -I${includedir}/SDL2
-
