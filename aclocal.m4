@@ -949,6 +949,7 @@ AC_SUBST([am__tar])
 AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
+m4_include([acinclude/freetype2.m4])
 m4_include([acinclude/libtool.m4])
 m4_include([acinclude/ltoptions.m4])
 m4_include([acinclude/ltsugar.m4])
