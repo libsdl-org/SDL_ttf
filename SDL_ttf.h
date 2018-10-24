@@ -62,13 +62,13 @@ extern "C" {
 #define TTF_VERSION(X)      SDL_TTF_VERSION(X)
 
 /**
- *  This is the version number macro for the current SDL_net version.
+ *  This is the version number macro for the current SDL_ttf version.
  */
 #define SDL_TTF_COMPILEDVERSION \
     SDL_VERSIONNUM(SDL_TTF_MAJOR_VERSION, SDL_TTF_MINOR_VERSION, SDL_TTF_PATCHLEVEL)
 
 /**
- *  This macro will evaluate to true if compiled with SDL_net at least X.Y.Z.
+ *  This macro will evaluate to true if compiled with SDL_ttf at least X.Y.Z.
  */
 #define SDL_TTF_VERSION_ATLEAST(X, Y, Z) \
     (SDL_TTF_COMPILEDVERSION >= SDL_VERSIONNUM(X, Y, Z))
