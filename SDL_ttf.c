@@ -134,6 +134,8 @@ static FT_Library library;
 static int TTF_initialized = 0;
 static int TTF_byteswapped = 0;
 
+static int TTF_SizeUNICODE_Internal(TTF_Font *font, const Uint16 *text,
+				    int *w, int *h, int *xstart);
 
 /* Gets the top row of the underline. The outline
    is taken into account.
@@ -477,7 +479,6 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 		font->lineskip = FT_CEIL(FT_MulFix(face->height, scale));
 		font->underline_offset = FT_FLOOR(FT_MulFix(face->underline_position, scale));
 		font->underline_height = FT_FLOOR(FT_MulFix(face->underline_thickness, scale));
-
 	} else {
 		/* Non-scalable font case.  ptsize determines which family
 		 * or series of fonts to grab from the non-scalable format.
@@ -637,7 +638,7 @@ static FT_Error Load_Glyph( TTF_Font* font, Uint16 ch, c_glyph* cached, int want
 			cached->yoffset = 0;
 			cached->advance = FT_CEIL(metrics->horiAdvance);
 		}
-		
+
 		/* Adjust for bold and italic text */
 		if( TTF_HANDLE_STYLE_BOLD(font) ) {
 			cached->maxx += font->glyph_overhang;
@@ -1081,7 +1082,7 @@ int TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h)
 	LATIN1_to_UNICODE(unicode_text+1, text, unicode_len);
 
 	/* Render the new text */
-	status = TTF_SizeUNICODE(font, unicode_text, w, h);
+	status = TTF_SizeUNICODE_Internal(font, unicode_text, w, h, NULL);
 
 	/* Free the text buffer and return */
 	FREEA(unicode_text);
@@ -1105,7 +1106,7 @@ int TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h)
 	UTF8_to_UNICODE(unicode_text+1, text, unicode_len);
 
 	/* Render the new text */
-	status = TTF_SizeUNICODE(font, unicode_text, w, h);
+	status = TTF_SizeUNICODE_Internal(font, unicode_text, w, h, NULL);
 
 	/* Free the text buffer and return */
 	FREEA(unicode_text);
@@ -1113,6 +1114,11 @@ int TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h)
 }
 
 int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
+{
+	return TTF_SizeUNICODE_Internal(font, text, w, h, NULL);
+}
+
+static int TTF_SizeUNICODE_Internal(TTF_Font *font, const Uint16 *text, int *w, int *h, int *xstart)
 {
 	int status;
 	const Uint16 *ch;
@@ -1224,6 +1230,12 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 		prev_index = glyph->index;
 	}
 
+	/* Initial x start position: often 0, except when a glyph would be written at
+	 * a negative position. In this case an offset is needed for the whole line.*/
+	if ( xstart ) {
+		*xstart = (minx < 0)? -minx : 0;
+	}
+
 	/* Fill the bounds rectangle */
 	if ( w ) {
 		/* Add outline extra width */
@@ -1323,7 +1335,7 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	FT_UInt prev_index = 0;
 
 	/* Get the dimensions of the text surface */
-	if( ( TTF_SizeUNICODE(font, text, &width, &height) < 0 ) || !width ) {
+	if( ( TTF_SizeUNICODE_Internal(font, text, &width, &height, &xstart) < 0 ) || !width ) {
 		TTF_SetError( "Text has zero width" );
 		return NULL;
 	}
@@ -1352,7 +1364,6 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 	use_kerning = FT_HAS_KERNING( font->face ) && font->kerning;
 	
 	/* Load and render each character */
-	xstart = 0;
 	swapped = TTF_byteswapped;
 	for( ch=text; *ch; ++ch ) {
 		Uint16 c = *ch;
@@ -1394,12 +1405,9 @@ SDL_Surface *TTF_RenderUNICODE_Solid(TTF_Font *font,
 			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta );
 			xstart += delta.x >> 6;
 		}
-		
+
 		for( row = 0; row < current->rows; ++row ) {
 			/* Make sure we don't go either over, or under the limit */
-			if ((xstart + glyph->minx) < 0) {
-				xstart -= (xstart + glyph->minx);
-			}
 			if ((row + glyph->yoffset) < 0) {
 				continue;
 			}
@@ -1587,7 +1595,7 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 	FT_UInt prev_index = 0;
 
 	/* Get the dimensions of the text surface */
-	if( ( TTF_SizeUNICODE(font, text, &width, &height) < 0 ) || !width ) {
+	if( ( TTF_SizeUNICODE_Internal(font, text, &width, &height, &xstart) < 0 ) || !width ) {
 		TTF_SetError("Text has zero width");
 		return NULL;
 	}
@@ -1618,7 +1626,6 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 	use_kerning = FT_HAS_KERNING( font->face ) && font->kerning;
 	
 	/* Load and render each character */
-	xstart = 0;
 	swapped = TTF_byteswapped;
 	for( ch = text; *ch; ++ch ) {
 		Uint16 c = *ch;
@@ -1659,13 +1666,10 @@ SDL_Surface* TTF_RenderUNICODE_Shaded( TTF_Font* font,
 			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta );
 			xstart += delta.x >> 6;
 		}
-		
+
 		current = &glyph->pixmap;
 		for( row = 0; row < current->rows; ++row ) {
 			/* Make sure we don't go either over, or under the limit */
-			if ((xstart + glyph->minx) < 0) {
-				xstart -= (xstart + glyph->minx);
-			}
 			if ((row + glyph->yoffset) < 0) {
 				continue;
 			}
@@ -1853,7 +1857,7 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	FT_UInt prev_index = 0;
 
 	/* Get the dimensions of the text surface */
-	if ( (TTF_SizeUNICODE(font, text, &width, &height) < 0) || !width ) {
+	if ( (TTF_SizeUNICODE_Internal(font, text, &width, &height, &xstart) < 0) || !width ) {
 		TTF_SetError("Text has zero width");
 		return(NULL);
 	}
@@ -1873,7 +1877,6 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 	use_kerning = FT_HAS_KERNING( font->face ) && font->kerning;
 	
 	/* Load and render each character */
-	xstart = 0;
 	swapped = TTF_byteswapped;
 	pixel = (fg.r<<16)|(fg.g<<8)|fg.b;
 	SDL_FillRect(textbuf, NULL, pixel);	/* Initialize with fg and 0 alpha */
@@ -1916,12 +1919,9 @@ SDL_Surface *TTF_RenderUNICODE_Blended(TTF_Font *font,
 			FT_Get_Kerning( font->face, prev_index, glyph->index, ft_kerning_default, &delta );
 			xstart += delta.x >> 6;
 		}
-		
+
 		for ( row = 0; row < glyph->pixmap.rows; ++row ) {
 			/* Make sure we don't go either over, or under the limit */
-			if ((xstart + glyph->minx) < 0) {
-				xstart -= (xstart + glyph->minx);
-			}
 			if ((row + glyph->yoffset) < 0) {
 				continue;
 			}
