@@ -55,7 +55,6 @@
 		AA5315131FE1016F0025C9BE /* ftsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087851764F9C500F24AFF /* ftsystem.c */; };
 		AA5315141FE1016F0025C9BE /* fttype1.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087861764F9C500F24AFF /* fttype1.c */; };
 		AA5315151FE1016F0025C9BE /* ftwinfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087871764F9C500F24AFF /* ftwinfnt.c */; };
-		AA5315161FE1016F0025C9BE /* ftxf86.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087881764F9C500F24AFF /* ftxf86.c */; };
 		AA5315171FE1016F0025C9BE /* bdf.c in Sources */ = {isa = PBXBuildFile; fileRef = AA80879F1764F9DF00F24AFF /* bdf.c */; };
 		AA5315181FE1016F0025C9BE /* ftbzip2.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A11764F9F600F24AFF /* ftbzip2.c */; };
 		AA5315191FE1016F0025C9BE /* cff.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A51764FA1D00F24AFF /* cff.c */; };
@@ -96,7 +95,6 @@
 		AA80879B1764F9C500F24AFF /* ftsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087851764F9C500F24AFF /* ftsystem.c */; };
 		AA80879C1764F9C500F24AFF /* fttype1.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087861764F9C500F24AFF /* fttype1.c */; };
 		AA80879D1764F9C500F24AFF /* ftwinfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087871764F9C500F24AFF /* ftwinfnt.c */; };
-		AA80879E1764F9C500F24AFF /* ftxf86.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087881764F9C500F24AFF /* ftxf86.c */; };
 		AA8087A01764F9DF00F24AFF /* bdf.c in Sources */ = {isa = PBXBuildFile; fileRef = AA80879F1764F9DF00F24AFF /* bdf.c */; };
 		AA8087A21764F9F600F24AFF /* ftbzip2.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A11764F9F600F24AFF /* ftbzip2.c */; };
 		AA8087A61764FA1D00F24AFF /* cff.c in Sources */ = {isa = PBXBuildFile; fileRef = AA8087A51764FA1D00F24AFF /* cff.c */; };
@@ -143,7 +141,6 @@
 		AA8087851764F9C500F24AFF /* ftsystem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftsystem.c; path = src/base/ftsystem.c; sourceTree = "<group>"; };
 		AA8087861764F9C500F24AFF /* fttype1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fttype1.c; path = src/base/fttype1.c; sourceTree = "<group>"; };
 		AA8087871764F9C500F24AFF /* ftwinfnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftwinfnt.c; path = src/base/ftwinfnt.c; sourceTree = "<group>"; };
-		AA8087881764F9C500F24AFF /* ftxf86.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftxf86.c; path = src/base/ftxf86.c; sourceTree = "<group>"; };
 		AA80879F1764F9DF00F24AFF /* bdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bdf.c; path = src/bdf/bdf.c; sourceTree = "<group>"; };
 		AA8087A11764F9F600F24AFF /* ftbzip2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbzip2.c; path = src/bzip2/ftbzip2.c; sourceTree = "<group>"; };
 		AA8087A51764FA1D00F24AFF /* cff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cff.c; path = src/cff/cff.c; sourceTree = "<group>"; };
@@ -258,7 +255,6 @@
 				AA8087851764F9C500F24AFF /* ftsystem.c */,
 				AA8087861764F9C500F24AFF /* fttype1.c */,
 				AA8087871764F9C500F24AFF /* ftwinfnt.c */,
-				AA8087881764F9C500F24AFF /* ftxf86.c */,
 				AA8087AD1764FA6A00F24AFF /* pcf.c */,
 				AA8087AF1764FA7700F24AFF /* pfr.c */,
 				AA8087B11764FA8900F24AFF /* psaux.c */,
@@ -274,7 +270,7 @@
 				AA8087C51764FB3F00F24AFF /* winfnt.c */,
 			);
 			name = freetype;
-			path = "../external/freetype-2.4.12";
+			path = "../external/freetype-2.9.1";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -454,7 +450,6 @@
 				AA5315131FE1016F0025C9BE /* ftsystem.c in Sources */,
 				AA5315141FE1016F0025C9BE /* fttype1.c in Sources */,
 				AA5315151FE1016F0025C9BE /* ftwinfnt.c in Sources */,
-				AA5315161FE1016F0025C9BE /* ftxf86.c in Sources */,
 				AA5315171FE1016F0025C9BE /* bdf.c in Sources */,
 				AA5315181FE1016F0025C9BE /* ftbzip2.c in Sources */,
 				AA5315191FE1016F0025C9BE /* cff.c in Sources */,
@@ -503,7 +498,6 @@
 				AA80879B1764F9C500F24AFF /* ftsystem.c in Sources */,
 				AA80879C1764F9C500F24AFF /* fttype1.c in Sources */,
 				AA80879D1764F9C500F24AFF /* ftwinfnt.c in Sources */,
-				AA80879E1764F9C500F24AFF /* ftxf86.c in Sources */,
 				AA8087A01764F9DF00F24AFF /* bdf.c in Sources */,
 				AA8087A21764F9F600F24AFF /* ftbzip2.c in Sources */,
 				AA8087A61764FA1D00F24AFF /* cff.c in Sources */,
@@ -587,7 +581,7 @@
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_2)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_1 = "\"$(SRCROOT)/../../SDL/include\"";
-				HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_2 = "\"$(SRCROOT)/../external/freetype-2.4.12/include\"";
+				HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_2 = "\"$(SRCROOT)/../external/freetype-2.9.1/include\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -630,7 +624,7 @@
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_2)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_1 = "\"$(SRCROOT)/../../SDL/include\"";
-				HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_2 = "\"$(SRCROOT)/../external/freetype-2.4.12/include\"";
+				HEADER_SEARCH_PATHS_QUOTED_FOR_PROJECT_2 = "\"$(SRCROOT)/../external/freetype-2.9.1/include\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
