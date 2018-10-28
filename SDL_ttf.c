@@ -654,6 +654,7 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
         /* Adjust for bold and italic text */
         if (TTF_HANDLE_STYLE_BOLD(font)) {
             cached->maxx += font->glyph_overhang;
+            cached->advance += font->glyph_overhang;
         }
         if (TTF_HANDLE_STYLE_ITALIC(font)) {
             cached->maxx += (int)SDL_ceil(font->glyph_italics);
@@ -1186,9 +1187,6 @@ int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
     }
     if (maxx) {
         *maxx = font->current->maxx;
-        if (TTF_HANDLE_STYLE_BOLD(font)) {
-            *maxx += font->glyph_overhang;
-        }
     }
     if (miny) {
         *miny = font->current->miny;
@@ -1198,9 +1196,6 @@ int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
     }
     if (advance) {
         *advance = font->current->advance;
-        if (TTF_HANDLE_STYLE_BOLD(font)) {
-            *advance += font->glyph_overhang;
-        }
     }
     return 0;
 }
@@ -1299,9 +1294,6 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
         z = x + glyph->minx;
         if (minx > z) {
             minx = z;
-        }
-        if (TTF_HANDLE_STYLE_BOLD(font)) {
-            x += font->glyph_overhang;
         }
         if (glyph->advance > glyph->maxx) {
             z = x + glyph->advance;
@@ -1495,9 +1487,6 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
         }
 
         xstart += glyph->advance;
-        if (TTF_HANDLE_STYLE_BOLD(font)) {
-            xstart += font->glyph_overhang;
-        }
         prev_index = glyph->index;
     }
 
@@ -1676,9 +1665,6 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
         }
 
         xstart += glyph->advance;
-        if (TTF_HANDLE_STYLE_BOLD(font)) {
-            xstart += font->glyph_overhang;
-        }
         prev_index = glyph->index;
     }
 
@@ -1849,9 +1835,6 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
         }
 
         xstart += glyph->advance;
-        if (TTF_HANDLE_STYLE_BOLD(font)) {
-            xstart += font->glyph_overhang;
-        }
         prev_index = glyph->index;
     }
 
@@ -2135,9 +2118,6 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
             }
 
             xstart += glyph->advance;
-            if (TTF_HANDLE_STYLE_BOLD(font)) {
-                xstart += font->glyph_overhang;
-            }
             prev_index = glyph->index;
         }
 
