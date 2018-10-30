@@ -196,7 +196,7 @@ static void TTF_drawLine_Shaded(const TTF_Font *font, const SDL_Surface *textbuf
 }
 
 /* Draw a blended line of underline_height */
-static void TTF_drawLine_Blended(const TTF_Font *font, const SDL_Surface *textbuf, const int row, const Uint32 color)
+static void TTF_drawLine_Blended(const TTF_Font *font, const SDL_Surface *textbuf, const int row, const int line_width, const Uint32 color)
 {
     int line;
     Uint32 *dst_check = (Uint32*)textbuf->pixels + textbuf->pitch/4 * textbuf->h;
@@ -209,7 +209,7 @@ static void TTF_drawLine_Blended(const TTF_Font *font, const SDL_Surface *textbu
 
     /* Draw line */
     for (line=height; line>0 && dst < dst_check; --line) {
-        for (col=0; col < textbuf->w; ++col) {
+        for (col=0; col < line_width; ++col) {
             dst[col] = pixel;
         }
         dst += textbuf->pitch/4;
@@ -1771,13 +1771,13 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
     /* Handle the underline style */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
         row = TTF_underline_top_row(font);
-        TTF_drawLine_Blended(font, textbuf, row + ystart, pixel | (Uint32)fg.a << 24);
+        TTF_drawLine_Blended(font, textbuf, row + ystart, textbuf->w, pixel | (Uint32)fg.a << 24);
     }
 
     /* Handle the strikethrough style */
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
         row = TTF_strikethrough_top_row(font);
-        TTF_drawLine_Blended(font, textbuf, row + ystart, pixel | (Uint32)fg.a << 24);
+        TTF_drawLine_Blended(font, textbuf, row + ystart, textbuf->w, pixel | (Uint32)fg.a << 24);
     }
     return(textbuf);
 }
@@ -2000,13 +2000,15 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     SDL_FillRect(textbuf, NULL, pixel); /* Initialize with fg and 0 alpha */
 
     for (line = 0; line < numLines; line++) {
+        int line_width = 0; /*  underline and strikethrough styles */
+
         if (strLines) {
             text = strLines[line];
         }
         textlen = SDL_strlen(text);
 
         /* Initialize xstart, ystart */
-        TTF_SizeUTF8_Internal(font, text, NULL, NULL, &xstart, &ystart);
+        TTF_SizeUTF8_Internal(font, text, &line_width, NULL, &xstart, &ystart);
         while (textlen > 0) {
             Uint32 c = UTF8_getch(&text, &textlen);
             if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
@@ -2053,19 +2055,17 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
             prev_index = glyph->index;
         }
 
-        /* Handle the underline style *
+        /* Handle the underline style */
         if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
             row = TTF_underline_top_row(font);
-            TTF_drawLine_Blended(font, textbuf, rowHeight * line + row + ystart, pixel | (Uint32)fg.a << 24);
+            TTF_drawLine_Blended(font, textbuf, rowHeight * line + row + ystart, SDL_min(line_width, textbuf->w), pixel | (Uint32)fg.a << 24);
         }
-        */
 
-        /* Handle the strikethrough style *
+        /* Handle the strikethrough style */
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
             row = TTF_strikethrough_top_row(font);
-            TTF_drawLine_Blended(font, textbuf, rowHeight * line + row + ystart, pixel | (Uint32)fg.a << 24);
+            TTF_drawLine_Blended(font, textbuf, rowHeight * line + row + ystart, SDL_min(line_width, textbuf->w), pixel | (Uint32)fg.a << 24);
         }
-        */
     }
 
     if (strLines) {
