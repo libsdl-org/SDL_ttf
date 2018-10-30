@@ -132,99 +132,35 @@ static int TTF_byteswapped = 0;
         return errval;                      \
     }
 
-/* Gets the top row of the underline. The outline
-   is taken into account.
-*/
+
+static int TTF_initFontMetrics(TTF_Font* font);
+
+/* Gets the top row of the underline. */
 static int TTF_underline_top_row(TTF_Font *font)
 {
-    /* With outline, the underline_offset is underline_offset+outline. */
-    /* So, we don't have to remove the top part of the outline height. */
     return font->ascent - font->underline_offset - 1;
 }
 
-#if 0
-/* Gets the top row of the underline. for a given glyph. The outline
-   is taken into account.
-   Need to update row according to height difference between font and glyph:
-   font_value - font->ascent + glyph->maxy
-*/
-static int TTF_Glyph_underline_top_row(TTF_Font *font, c_glyph *glyph)
-{
-    return glyph->maxy - font->underline_offset - 1;
-}
-#endif
-
-/* Gets the bottom row of the underline. The outline
-   is taken into account.
-*/
+/* Gets the bottom row of the underline. */
 static int TTF_underline_bottom_row(TTF_Font *font)
 {
     int row = TTF_underline_top_row(font) + font->underline_height;
-    if (font->outline > 0) {
-        /* Add underline_offset outline offset and */
-        /* the bottom part of the outline. */
-        row += font->outline * 2;
-    }
     return row;
 }
 
-#if 0
-/* Gets the bottom row of the underline. for a given glyph. The outline
-   is taken into account.
-   Need to update row according to height difference between font and glyph:
-   font_value - font->ascent + glyph->maxy
-*/
-static int TTF_Glyph_underline_bottom_row(TTF_Font *font, c_glyph *glyph)
-{
-    return TTF_underline_bottom_row(font) - font->ascent + glyph->maxy;
-}
-#endif
-
-/* Gets the top row of the strikethrough. The outline
-   is taken into account.
-*/
+/* Gets the top row of the strikethrough */
 static int TTF_strikethrough_top_row(TTF_Font *font)
 {
-    /* With outline, the first text row is 'outline'. */
-    /* So, we don't have to remove the top part of the outline height. */
     return font->height / 2;
 }
 
-#if 0
-/* Gets the top row of the strikethrough for a given glyph. The outline
-   is taken into account.
-   Need to update row according to height difference between font and glyph:
-   font_value - font->ascent + glyph->maxy
-*/
-static int TTF_Glyph_strikethrough_top_row(TTF_Font *font, c_glyph *glyph)
-{
-    return TTF_strikethrough_top_row(font) - font->ascent + glyph->maxy;
-}
-#endif
-
 static void TTF_initLineMectrics(const TTF_Font *font, const SDL_Surface *textbuf, const int row, Uint8 **pdst, int *pheight)
 {
-    Uint8 *dst;
-    int height;
-
-    dst = (Uint8 *)textbuf->pixels;
-    if (row > 0) {
-        dst += row * textbuf->pitch;
-    }
-
-    height = font->underline_height;
-    /* Take outline into account */
-    if (font->outline > 0) {
-        height += font->outline * 2;
-    }
-    *pdst = dst;
-    *pheight = height;
+    *pdst = (Uint8 *)textbuf->pixels + row * textbuf->pitch;
+    *pheight = font->underline_height;
 }
 
-/* Draw a solid line of underline_height (+ optional outline)
-   at the given row. The row value must take the
-   outline into account.
-*/
+/* Draw a solid line of underline_height at the given row. */
 static void TTF_drawLine_Solid(const TTF_Font *font, const SDL_Surface *textbuf, const int row)
 {
     int line;
@@ -242,10 +178,7 @@ static void TTF_drawLine_Solid(const TTF_Font *font, const SDL_Surface *textbuf,
     }
 }
 
-/* Draw a shaded line of underline_height (+ optional outline)
-   at the given row. The row value must take the
-   outline into account.
-*/
+/* Draw a shaded line of underline_height at the given row. */
 static void TTF_drawLine_Shaded(const TTF_Font *font, const SDL_Surface *textbuf, const int row)
 {
     int line;
@@ -262,10 +195,7 @@ static void TTF_drawLine_Shaded(const TTF_Font *font, const SDL_Surface *textbuf
     }
 }
 
-/* Draw a blended line of underline_height (+ optional outline)
-   at the given row. The row value must take the
-   outline into account.
-*/
+/* Draw a blended line of underline_height */
 static void TTF_drawLine_Blended(const TTF_Font *font, const SDL_Surface *textbuf, const int row, const Uint32 color)
 {
     int line;
@@ -374,7 +304,6 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
     TTF_Font* font;
     FT_Error error;
     FT_Face face;
-    FT_Fixed scale;
     FT_Stream stream;
     FT_CharMap found;
     Sint64 position;
@@ -474,6 +403,20 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
         FT_Set_Charmap(face, found);
     }
 
+    /* Set the default font style */
+    font->style = font->face_style;
+    font->outline = 0;
+    font->kerning = 1;
+
+    /* Initialize the font face style */
+    font->face_style = TTF_STYLE_NORMAL;
+    if (font->face->style_flags & FT_STYLE_FLAG_BOLD) {
+        font->face_style |= TTF_STYLE_BOLD;
+    }
+    if (font->face->style_flags & FT_STYLE_FLAG_ITALIC) {
+        font->face_style |= TTF_STYLE_ITALIC;
+    }
+
     /* Make sure that our font face is scalable (global metrics) */
     if (FT_IS_SCALABLE(face)) {
         /* Set the character size and use default DPI (72) */
@@ -483,16 +426,6 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
             TTF_CloseFont(font);
             return NULL;
         }
-
-        /* Get the scalable font metrics for this font */
-        scale = face->size->metrics.y_scale;
-        font->ascent  = FT_CEIL(FT_MulFix(face->ascender, scale));
-        font->descent = FT_CEIL(FT_MulFix(face->descender, scale));
-        font->height  = font->ascent - font->descent + /* baseline */ 1;
-        font->lineskip = FT_CEIL(FT_MulFix(face->height, scale));
-        font->underline_offset = FT_FLOOR(FT_MulFix(face->underline_position, scale));
-        font->underline_height = FT_FLOOR(FT_MulFix(face->underline_thickness, scale));
-
     } else {
         /* Non-scalable font case.  ptsize determines which family
          * or series of fonts to grab from the non-scalable format.
@@ -504,6 +437,34 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
         error = FT_Set_Pixel_Sizes(face,
                 face->available_sizes[ptsize].width,
                 face->available_sizes[ptsize].height);
+    }
+
+    if (TTF_initFontMetrics(font) < 0) {
+        return NULL;
+    }
+
+    return font;
+}
+
+/* Update font parameter depending on a style change */
+static int TTF_initFontMetrics(TTF_Font* font)
+{
+    FT_Face face = font->face;
+
+    /* Make sure that our font face is scalable (global metrics) */
+    if (FT_IS_SCALABLE(face)) {
+
+        /* Get the scalable font metrics for this font */
+        FT_Fixed scale = face->size->metrics.y_scale;
+        font->ascent  = FT_CEIL(FT_MulFix(face->ascender, scale));
+        font->descent = FT_CEIL(FT_MulFix(face->descender, scale));
+        font->height  = font->ascent - font->descent + /* baseline */ 1;
+        font->lineskip = FT_CEIL(FT_MulFix(face->height, scale));
+        font->underline_offset = FT_FLOOR(FT_MulFix(face->underline_position, scale));
+        font->underline_height = FT_FLOOR(FT_MulFix(face->underline_thickness, scale));
+
+    } else {
+        int ptsize = font->font_size_family;
 
         /* With non-scalale fonts, Freetype2 likes to fill many of the
          * font metrics with the value of 0.  The size of the
@@ -522,6 +483,14 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
         font->underline_height = 1;
     }
 
+    /* Adjust OutlineStyle */
+    if (font->outline > 0) {
+        int fo = font->outline;
+        font->underline_height += 2 * fo;
+        font->underline_offset += 2 * fo;
+        font->ascent += 2 * fo;
+    }
+
 #ifdef DEBUG_FONTS
     printf("Font metrics:\n");
     printf("\tascent = %d, descent = %d\n",
@@ -534,25 +503,12 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
         TTF_underline_top_row(font), TTF_strikethrough_top_row(font));
 #endif
 
-    /* Initialize the font face style */
-    font->face_style = TTF_STYLE_NORMAL;
-    if (font->face->style_flags & FT_STYLE_FLAG_BOLD) {
-        font->face_style |= TTF_STYLE_BOLD;
-    }
-    if (font->face->style_flags & FT_STYLE_FLAG_ITALIC) {
-        font->face_style |= TTF_STYLE_ITALIC;
-    }
-
-    /* Set the default font style */
-    font->style = font->face_style;
-    font->outline = 0;
-    font->kerning = 1;
     font->glyph_overhang = face->size->metrics.y_ppem / 10;
     /* x offset = cos(((90.0-12)/360)*2*M_PI), or 12 degree angle */
     font->glyph_italics = 0.207f;
     font->glyph_italics *= font->height;
 
-    return font;
+    return 0;
 }
 
 TTF_Font* TTF_OpenFontRW(SDL_RWops *src, int freesrc, int ptsize)
@@ -664,6 +620,18 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
             float tmp = SDL_ceilf(font->glyph_italics);
             cached->maxx += tmp;
         }
+
+        /* Adjust OutlineStyle */
+        if (font->outline > 0) {
+            int fo = font->outline;
+            /* we could have updated minx/miny by -fo, but that would shift the text left  */
+            cached->maxx += 2 * fo;
+            cached->maxy += 2 * fo;
+            if (FT_IS_SCALABLE(face)) {
+                cached->yoffset -= 2 * fo;
+            }
+        }
+
         cached->stored |= CACHED_METRICS;
     }
 
@@ -1235,18 +1203,12 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
     FT_Error error;
     FT_Long use_kerning;
     FT_UInt prev_index = 0;
-    int outline_delta = 0;
     size_t textlen;
 
     TTF_CHECKPOINTER(text, -1);
 
     /* check kerning */
     use_kerning = FT_HAS_KERNING(font->face) && font->kerning;
-
-    /* Init outline handling */
-    if (font->outline > 0) {
-        outline_delta = font->outline * 2;
-    }
 
     /* Load each character and sum it's bounding box */
     textlen = SDL_strlen(text);
@@ -1299,13 +1261,11 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
 
     /* Fill the bounds rectangle */
     if (w) {
-        /* Add outline extra width */
-        *w = (maxx - minx) + outline_delta;
+        *w = (maxx - minx);
     }
     if (h) {
         /* Some fonts descend below font height (FletcherGothicFLF) */
-        /* Add outline extra height */
-        *h = (font->ascent - miny) + outline_delta;
+        *h = (font->ascent - miny);
         if (*h < font->height) {
             *h = font->height;
         }
@@ -2165,7 +2125,8 @@ int TTF_GetFontStyle(const TTF_Font* font)
 
 void TTF_SetFontOutline(TTF_Font* font, int outline)
 {
-    font->outline = outline;
+    font->outline = SDL_max(0, outline);
+    TTF_initFontMetrics(font);
     Flush_Cache(font);
 }
 
