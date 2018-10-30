@@ -141,13 +141,6 @@ static int TTF_underline_top_row(TTF_Font *font)
     return font->ascent - font->underline_offset - 1;
 }
 
-/* Gets the bottom row of the underline. */
-static int TTF_underline_bottom_row(TTF_Font *font)
-{
-    int row = TTF_underline_top_row(font) + font->underline_height;
-    return row;
-}
-
 /* Gets the top row of the strikethrough */
 static int TTF_strikethrough_top_row(TTF_Font *font)
 {
@@ -489,6 +482,12 @@ static int TTF_initFontMetrics(TTF_Font* font)
         font->underline_height += 2 * fo;
         font->underline_offset += 2 * fo;
         font->ascent += 2 * fo;
+    }
+
+    /* Update height according to the needs of the underline style */
+    if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
+        int bottom_row = TTF_underline_top_row(font) + font->underline_height;
+        font->height = SDL_max(font->height, bottom_row);
     }
 
 #ifdef DEBUG_FONTS
@@ -1193,7 +1192,6 @@ int TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h)
 
 static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *h, int *xstart, int *ystart)
 {
-    int status = 0;
     int x = 0;
     int minx = 0, maxx = 0;
     int miny = 0, maxy = 0;
@@ -1265,22 +1263,12 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
     }
     if (h) {
         /* Some fonts descend below font height (FletcherGothicFLF) */
-        *h = (font->ascent - miny);
-        if (*h < font->height) {
-            *h = font->height;
-        }
-        /* Update height according to the needs of the underline style */
-        if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-            int bottom_row = TTF_underline_bottom_row(font);
-            if (*h < bottom_row) {
-                *h = bottom_row;
-            }
-        }
+        *h = SDL_max(font->height, font->ascent - miny);
 
         /* Take into account the padding for negative yoffset */
         *h += increase_height;
     }
-    return status;
+    return 0;
 }
 
 int TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h) {
@@ -2109,6 +2097,8 @@ void TTF_SetFontStyle(TTF_Font* font, int style)
 {
     int prev_style = font->style;
     font->style = style | font->face_style;
+
+    TTF_initFontMetrics(font);
 
     /* Flush the cache if the style has changed.
      * Ignore UNDERLINE which does not impact glyph drawning.
