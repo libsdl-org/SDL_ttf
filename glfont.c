@@ -40,11 +40,11 @@
 #define WIDTH   640
 #define HEIGHT  480
 
-static char *Usage =
+#define TTF_GLFONT_USAGE \
 "Usage: %s [-utf8|-unicode] [-b] [-i] [-u] [-fgcol r,g,b] [-bgcol r,g,b] \
-<font>.ttf [ptsize] [text]\n";
+<font>.ttf [ptsize] [text]\n"
 
-void SDL_GL_Enter2DMode(int width, int height)
+static void SDL_GL_Enter2DMode(int width, int height)
 {
     /* Note, there may be other things you need to change,
        depending on how you have your OpenGL state set up.
@@ -73,7 +73,7 @@ void SDL_GL_Enter2DMode(int width, int height)
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
-void SDL_GL_Leave2DMode()
+static void SDL_GL_Leave2DMode()
 {
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
@@ -95,7 +95,7 @@ static int power_of_two(int input)
     return value;
 }
 
-GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
+static GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 {
     GLuint texture;
     int w, h;
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
     SDL_Window *window;
     SDL_GLContext context;
     TTF_Font *font;
-    SDL_Surface *text;
+    SDL_Surface *text = NULL;
     int ptsize;
     int i, done;
     SDL_Color white = { 0xFF, 0xFF, 0xFF, 0 };
@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
         if (strcmp(argv[i], "-fgcol") == 0) {
             int r, g, b;
             if (sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3) {
-                fprintf(stderr, Usage, argv0);
+                fprintf(stderr, TTF_GLFONT_USAGE, argv0);
                 return(1);
             }
             forecol->r = (Uint8)r;
@@ -259,14 +259,14 @@ int main(int argc, char *argv[])
         if (strcmp(argv[i], "-bgcol") == 0) {
             int r, g, b;
             if (sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3) {
-                fprintf(stderr, Usage, argv0);
+                fprintf(stderr, TTF_GLFONT_USAGE, argv0);
                 return(1);
             }
             backcol->r = (Uint8)r;
             backcol->g = (Uint8)g;
             backcol->b = (Uint8)b;
         } else {
-            fprintf(stderr, Usage, argv0);
+            fprintf(stderr, TTF_GLFONT_USAGE, argv0);
             return(1);
         }
     }
@@ -275,7 +275,7 @@ int main(int argc, char *argv[])
 
     /* Check usage */
     if (!argv[0]) {
-        fprintf(stderr, Usage, argv0);
+        fprintf(stderr, TTF_GLFONT_USAGE, argv0);
         return(1);
     }
 
@@ -368,9 +368,6 @@ int main(int argc, char *argv[])
             text = TTF_RenderUNICODE_Blended(font,
                     unicode_text, *forecol);
         }
-        break;
-        default:
-        text = NULL; /* This shouldn't happen */
         break;
     }
     if (text == NULL) {

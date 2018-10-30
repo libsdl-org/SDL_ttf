@@ -30,12 +30,11 @@
 
 #define DEFAULT_PTSIZE  18
 #define DEFAULT_TEXT    "The quick brown fox jumped over the lazy dog"
-#define NUM_COLORS      256
 #define WIDTH   640
 #define HEIGHT  480
 
-static char *Usage =
-"Usage: %s [-solid] [-shaded] [-blended] [-utf8|-unicode] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n";
+#define TTF_SHOWFONT_USAGE \
+"Usage: %s [-solid] [-shaded] [-blended] [-utf8|-unicode] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
@@ -75,7 +74,7 @@ int main(int argc, char *argv[])
     SDL_Window *window;
     SDL_Renderer *renderer;
     TTF_Font *font;
-    SDL_Surface *text;
+    SDL_Surface *text = NULL;
     Scene scene;
     int ptsize;
     int i, done;
@@ -139,7 +138,7 @@ int main(int argc, char *argv[])
         } else
         if (strcmp(argv[i], "-outline") == 0) {
             if (sscanf (argv[++i], "%d", &outline) != 1) {
-                fprintf(stderr, Usage, argv0);
+                fprintf(stderr, TTF_SHOWFONT_USAGE, argv0);
                 return(1);
             }
         } else
@@ -161,7 +160,7 @@ int main(int argc, char *argv[])
         if (strcmp(argv[i], "-fgcol") == 0) {
             int r, g, b, a = 0xFF;
             if (sscanf (argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
-                fprintf(stderr, Usage, argv0);
+                fprintf(stderr, TTF_SHOWFONT_USAGE, argv0);
                 return(1);
             }
             forecol->r = (Uint8)r;
@@ -172,7 +171,7 @@ int main(int argc, char *argv[])
         if (strcmp(argv[i], "-bgcol") == 0) {
             int r, g, b, a = 0xFF;
             if (sscanf (argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
-                fprintf(stderr, Usage, argv0);
+                fprintf(stderr, TTF_SHOWFONT_USAGE, argv0);
                 return(1);
             }
             backcol->r = (Uint8)r;
@@ -180,7 +179,7 @@ int main(int argc, char *argv[])
             backcol->b = (Uint8)b;
             backcol->a = (Uint8)a;
         } else {
-            fprintf(stderr, Usage, argv0);
+            fprintf(stderr, TTF_SHOWFONT_USAGE, argv0);
             return(1);
         }
     }
@@ -189,7 +188,7 @@ int main(int argc, char *argv[])
 
     /* Check usage */
     if (!argv[0]) {
-        fprintf(stderr, Usage, argv0);
+        fprintf(stderr, TTF_SHOWFONT_USAGE, argv0);
         return(1);
     }
 
@@ -317,10 +316,6 @@ int main(int argc, char *argv[])
             }
             SDL_free(unicode_text);
         }
-        break;
-
-        default:
-        text = NULL; /* This shouldn't happen */
         break;
     }
     if (text == NULL) {
