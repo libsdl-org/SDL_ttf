@@ -617,8 +617,8 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
             cached->advance += font->glyph_overhang;
         }
         if (TTF_HANDLE_STYLE_ITALIC(font)) {
-            float tmp = SDL_ceilf(font->glyph_italics);
-            cached->maxx += tmp;
+            int bump = (int)SDL_ceilf(font->glyph_italics);
+            cached->maxx += bump;
         }
 
         /* Adjust OutlineStyle */
@@ -714,7 +714,7 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
             dst->width += bump;
         }
         if (TTF_HANDLE_STYLE_ITALIC(font)) {
-            float bump = SDL_ceilf(font->glyph_italics);
+            int bump = (int)SDL_ceilf(font->glyph_italics);
             dst->pitch += bump;
             dst->width += bump;
         }
