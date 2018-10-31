@@ -15,12 +15,13 @@ EXTRA_DIST =			\
 	external		\
 	version.rc		\
 	VisualC			\
+	VisualC-WinRT		\
 	Xcode			\
 	Xcode-iOS		\
 	SDL2_ttf.spec		\
-	SDL2_ttf.spec.in		\
+	SDL2_ttf.spec.in	\
 	gcc-fat.sh		\
-	autogen.sh			\
+	autogen.sh		\
 	$(srcdir)/*.txt
 
 if USE_VERSION_RC
