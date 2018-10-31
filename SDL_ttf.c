@@ -1226,6 +1226,8 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
         }
 
         minx = SDL_min(minx, x + glyph->minx);
+
+        maxx = SDL_max(maxx, x + glyph->advance);
         maxx = SDL_max(maxx, x + glyph->maxx);
 
         x += glyph->advance;
