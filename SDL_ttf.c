@@ -624,8 +624,8 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
         if (font->outline > 0) {
             int fo = font->outline;
             /* we could have updated minx/miny by -fo, but that would shift the text left  */
-            cached->maxx += 2 * fo;
-            cached->maxy += 2 * fo;
+            cached->maxx += 2.1f * fo;
+            cached->maxy += 2.1f * fo;
             if (FT_IS_SCALABLE(face)) {
                 cached->yoffset -= 2 * fo;
             }
@@ -1379,12 +1379,10 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
         }
         glyph = font->current;
         current = &glyph->bitmap;
-        /* Ensure the width of the pixmap is correct. On some cases,
-         * freetype may report a larger pixmap than possible.*/
-        width = current->width;
-        if (font->outline <= 0 && width > glyph->maxx - glyph->minx) {
-            width = glyph->maxx - glyph->minx;
-        }
+
+        /* Freetype may report a larger pixmap than expected */
+        width = SDL_min(current->width, glyph->maxx - glyph->minx);
+
         /* do kerning, if possible AC-Patch */
         if (use_kerning && prev_index && glyph->index) {
             FT_Vector delta;
@@ -1557,12 +1555,10 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
         }
         glyph = font->current;
         current = &glyph->pixmap;
-        /* Ensure the width of the pixmap is correct. On some cases,
-         * freetype may report a larger pixmap than possible.*/
-        width = current->width;
-        if (font->outline <= 0 && width > glyph->maxx - glyph->minx) {
-            width = glyph->maxx - glyph->minx;
-        }
+
+        /* Freetype may report a larger pixmap than expected */
+        width = SDL_min(current->width, glyph->maxx - glyph->minx);
+
         /* do kerning, if possible AC-Patch */
         if (use_kerning && prev_index && glyph->index) {
             FT_Vector delta;
@@ -1728,12 +1724,10 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
         }
         glyph = font->current;
         current = &glyph->pixmap;
-        /* Ensure the width of the pixmap is correct. On some cases,
-         * freetype may report a larger pixmap than possible.*/
-        width = current->width;
-        if (font->outline <= 0 && width > glyph->maxx - glyph->minx) {
-            width = glyph->maxx - glyph->minx;
-        }
+
+        /* Freetype may report a larger pixmap than expected */
+        width = SDL_min(current->width, glyph->maxx - glyph->minx);
+
         /* do kerning, if possible AC-Patch */
         if (use_kerning && prev_index && glyph->index) {
             FT_Vector delta;
@@ -2015,12 +2009,10 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
             }
             glyph = font->current;
             current = &glyph->pixmap;
-            /* Ensure the width of the pixmap is correct. On some cases,
-             * freetype may report a larger pixmap than possible.*/
-            width = current->width;
-            if (font->outline <= 0 && width > glyph->maxx - glyph->minx) {
-                width = glyph->maxx - glyph->minx;
-            }
+
+            /* Freetype may report a larger pixmap than expected */
+            width = SDL_min(current->width, glyph->maxx - glyph->minx);
+
             /* do kerning, if possible AC-Patch */
             if (use_kerning && prev_index && glyph->index) {
                 FT_Vector delta;
