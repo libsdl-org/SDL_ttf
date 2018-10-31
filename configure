@@ -12677,7 +12677,7 @@ fi
 CFLAGS="$CFLAGS $FT2_CFLAGS"
 LIBS="$LIBS $FT2_LIBS"
 
-SDL_VERSION=2.0.0
+SDL_VERSION=2.0.8
 
 
 # Check whether --with-sdl-prefix was given.
