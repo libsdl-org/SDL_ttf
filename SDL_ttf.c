@@ -81,6 +81,7 @@ struct _TTF_Font {
 
     /* Whether kerning is desired */
     int kerning;
+    int use_kerning;
 
     /* Extra width in glyph bounds for text styles */
     int glyph_overhang;
@@ -399,7 +400,7 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
     /* Set the default font style */
     font->style = font->face_style;
     font->outline = 0;
-    font->kerning = 1;
+    TTF_SetFontKerning(font, 1);
 
     /* Initialize the font face style */
     font->face_style = TTF_STYLE_NORMAL;
@@ -1123,6 +1124,7 @@ int TTF_GetFontKerning(const TTF_Font *font)
 void TTF_SetFontKerning(TTF_Font *font, int allowed)
 {
     font->kerning = allowed;
+    font->use_kerning = FT_HAS_KERNING(font->face) && font->kerning;
 }
 
 long TTF_FontFaces(const TTF_Font *font)
@@ -1204,14 +1206,10 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
     int miny = 0, maxy = 0;
     c_glyph *glyph;
     FT_Error error;
-    FT_Long use_kerning;
     FT_UInt prev_index = 0;
     size_t textlen;
 
     TTF_CHECKPOINTER(text, -1);
-
-    /* check kerning */
-    use_kerning = FT_HAS_KERNING(font->face) && font->kerning;
 
     /* Load each character and sum it's bounding box */
     textlen = SDL_strlen(text);
@@ -1229,7 +1227,7 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
         glyph = font->current;
 
         /* handle kerning */
-        if (use_kerning && prev_index && glyph->index) {
+        if (font->use_kerning && prev_index && glyph->index) {
             FT_Vector delta;
             FT_Get_Kerning(font->face, prev_index, glyph->index, ft_kerning_default, &delta);
             x += delta.x >> 6;
@@ -1324,7 +1322,6 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
     c_glyph *glyph;
     FT_Bitmap *current;
     FT_Error error;
-    FT_Long use_kerning;
     FT_UInt prev_index = 0;
     size_t textlen;
 
@@ -1353,9 +1350,6 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
     palette->colors[1].a = fg.a ? fg.a : SDL_ALPHA_OPAQUE;
     SDL_SetColorKey(textbuf, SDL_TRUE, 0);
 
-    /* check kerning */
-    use_kerning = FT_HAS_KERNING(font->face) && font->kerning;
-
     /* Load and render each character */
     textlen = SDL_strlen(text);
     while (textlen > 0) {
@@ -1373,8 +1367,8 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
         glyph = font->current;
         current = &glyph->bitmap;
 
-        /* do kerning, if possible AC-Patch */
-        if (use_kerning && prev_index && glyph->index) {
+        /* handle kerning */
+        if (font->use_kerning && prev_index && glyph->index) {
             FT_Vector delta;
             FT_Get_Kerning(font->face, prev_index, glyph->index, ft_kerning_default, &delta);
             xstart += delta.x >> 6;
@@ -1478,7 +1472,6 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
     c_glyph *glyph;
     FT_Bitmap *current;
     FT_Error error;
-    FT_Long use_kerning;
     FT_UInt prev_index = 0;
     size_t textlen;
 
@@ -1521,9 +1514,6 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
         palette->colors[index].a = bg.a + (index*adiff) / (NUM_GRAYS-1);
     }
 
-    /* check kerning */
-    use_kerning = FT_HAS_KERNING(font->face) && font->kerning;
-
     /* Load and render each character */
     textlen = SDL_strlen(text);
     while (textlen > 0) {
@@ -1541,8 +1531,8 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
         glyph = font->current;
         current = &glyph->pixmap;
 
-        /* do kerning, if possible AC-Patch */
-        if (use_kerning && prev_index && glyph->index) {
+        /* handle kerning */
+        if (font->use_kerning && prev_index && glyph->index) {
             FT_Vector delta;
             FT_Get_Kerning(font->face, prev_index, glyph->index, ft_kerning_default, &delta);
             xstart += delta.x >> 6;
@@ -1646,7 +1636,6 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
     c_glyph *glyph;
     FT_Bitmap *current;
     FT_Error error;
-    FT_Long use_kerning;
     FT_UInt prev_index = 0;
     size_t textlen;
 
@@ -1664,9 +1653,6 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
     if (textbuf == NULL) {
         return NULL;
     }
-
-    /* check kerning */
-    use_kerning = FT_HAS_KERNING(font->face) && font->kerning;
 
     /* Support alpha blending */
     if (!fg.a) {
@@ -1702,8 +1688,8 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
         glyph = font->current;
         current = &glyph->pixmap;
 
-        /* do kerning, if possible AC-Patch */
-        if (use_kerning && prev_index && glyph->index) {
+        /* handle kerning */
+        if (font->use_kerning && prev_index && glyph->index) {
             FT_Vector delta;
             FT_Get_Kerning(font->face, prev_index, glyph->index, ft_kerning_default, &delta);
             xstart += delta.x >> 6;
@@ -1806,7 +1792,6 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     c_glyph *glyph;
     FT_Bitmap *current;
     FT_Error error;
-    FT_Long use_kerning;
     int line, numLines, rowHeight;
     char *str, **strLines, **newLines;
     size_t textlen;
@@ -1920,9 +1905,6 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
         return NULL;
     }
 
-    /* check kerning */
-    use_kerning = FT_HAS_KERNING(font->face) && font->kerning;
-
     /* Support alpha blending */
     if (!fg.a) {
         fg.a = SDL_ALPHA_OPAQUE;
@@ -1972,8 +1954,8 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
             glyph = font->current;
             current = &glyph->pixmap;
 
-            /* do kerning, if possible AC-Patch */
-            if (use_kerning && prev_index && glyph->index) {
+            /* handle kerning */
+            if (font->use_kerning && prev_index && glyph->index) {
                 FT_Vector delta;
                 FT_Get_Kerning(font->face, prev_index, glyph->index, ft_kerning_default, &delta);
                 xstart += delta.x >> 6;
