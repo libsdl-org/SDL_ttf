@@ -1832,7 +1832,6 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     FT_Bitmap *current;
     FT_Error error;
     FT_Long use_kerning;
-    FT_UInt prev_index = 0;
 #ifndef TTF_USE_LINESKIP
     const int lineSpace = 2;
 #endif
@@ -1980,6 +1979,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     SDL_FillRect(textbuf, NULL, pixel); /* Initialize with fg and 0 alpha */
 
     for (line = 0; line < numLines; line++) {
+        FT_UInt prev_index = 0; /* clear kerning at beginning of line */
         int line_width = 0; /*  underline and strikethrough styles */
 
         if (strLines) {
@@ -2016,6 +2016,11 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
                 FT_Vector delta;
                 FT_Get_Kerning(font->face, prev_index, glyph->index, ft_kerning_default, &delta);
                 xstart += delta.x >> 6;
+            }
+
+            /* workaround: an unbreakable line doesn't render overlapped */
+            if (xstart + glyph->minx + width > textbuf->w) {
+                break;
             }
 
             for (row = 0; row < current->rows; ++row) {
