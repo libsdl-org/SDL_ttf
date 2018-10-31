@@ -706,14 +706,9 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
             dst->pitch *= 2;
         }
 
-        /* Adjust for bold and italic text */
+        /* Adjust for bold text */
         if (TTF_HANDLE_STYLE_BOLD(font)) {
             int bump = font->glyph_overhang;
-            dst->pitch += bump;
-            dst->width += bump;
-        }
-        if (TTF_HANDLE_STYLE_ITALIC(font)) {
-            int bump = (int)SDL_ceilf(font->glyph_italics);
             dst->pitch += bump;
             dst->width += bump;
         }
