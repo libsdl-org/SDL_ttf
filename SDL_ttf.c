@@ -91,6 +91,9 @@ struct _TTF_Font {
     int underline_offset;
     int underline_height;
 
+    int underline_top_row;
+    int strikethrough_top_row;
+
     /* Cache for style-transformed glyphs */
     c_glyph *current;
     c_glyph cache[257]; /* 257 is a prime */
@@ -136,74 +139,30 @@ static int TTF_byteswapped = 0;
 
 static int TTF_initFontMetrics(TTF_Font* font);
 
-/* Gets the top row of the underline. */
-static int TTF_underline_top_row(TTF_Font *font)
-{
-    return font->ascent - font->underline_offset - 1;
-}
-
-/* Gets the top row of the strikethrough */
-static int TTF_strikethrough_top_row(TTF_Font *font)
-{
-    return font->height / 2;
-}
-
-static void TTF_initLineMectrics(const TTF_Font *font, const SDL_Surface *textbuf, const int row, Uint8 **pdst, int *pheight)
-{
-    *pdst = (Uint8 *)textbuf->pixels + row * textbuf->pitch;
-    *pheight = font->underline_height;
-}
-
-/* Draw a solid line of underline_height at the given row. */
-static void TTF_drawLine_Solid(const TTF_Font *font, const SDL_Surface *textbuf, const int row)
+/* Draw a solid or shaded line of underline_height at the given row. */
+static void TTF_drawLine(const TTF_Font *font, const SDL_Surface *textbuf, int row, int color)
 {
     int line;
-    Uint8 *dst_check = (Uint8*)textbuf->pixels + textbuf->pitch * textbuf->h;
-    Uint8 *dst;
-    int height;
-
-    TTF_initLineMectrics(font, textbuf, row, &dst, &height);
+    Uint8 *dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch;
 
     /* Draw line */
-    for (line=height; line>0 && dst < dst_check; --line) {
-        /* 1 because 0 is the bg color */
-        SDL_memset(dst, 1, textbuf->w);
-        dst += textbuf->pitch;
-    }
-}
-
-/* Draw a shaded line of underline_height at the given row. */
-static void TTF_drawLine_Shaded(const TTF_Font *font, const SDL_Surface *textbuf, const int row)
-{
-    int line;
-    Uint8 *dst_check = (Uint8*)textbuf->pixels + textbuf->pitch * textbuf->h;
-    Uint8 *dst;
-    int height;
-
-    TTF_initLineMectrics(font, textbuf, row, &dst, &height);
-
-    /* Draw line */
-    for (line=height; line>0 && dst < dst_check; --line) {
-        SDL_memset(dst, NUM_GRAYS - 1, textbuf->w);
+    for (line = font->underline_height; line > 0; --line) {
+        SDL_memset(dst, color, textbuf->w);
         dst += textbuf->pitch;
     }
 }
 
 /* Draw a blended line of underline_height */
-static void TTF_drawLine_Blended(const TTF_Font *font, const SDL_Surface *textbuf, const int row, const int line_width, const Uint32 color)
+static void TTF_drawLine_Blended(const TTF_Font *font, const SDL_Surface *textbuf, int row, int line_width, Uint32 color)
 {
     int line;
-    Uint32 *dst_check = (Uint32*)textbuf->pixels + textbuf->pitch/4 * textbuf->h;
-    Uint32 *dst;
-    int height;
+    Uint32 *dst = (Uint32 *)textbuf->pixels + row * textbuf->pitch/4;
     int col;
     Uint32 pixel = color | 0xFF000000; /* Amask */
 
-    TTF_initLineMectrics(font, textbuf, row, (Uint8**) &dst, &height);
-
     /* Draw line */
-    for (line=height; line>0 && dst < dst_check; --line) {
-        for (col=0; col < line_width; ++col) {
+    for (line = font->underline_height; line > 0; --line) {
+        for (col = 0; col < line_width; ++col) {
             dst[col] = pixel;
         }
         dst += textbuf->pitch/4;
@@ -485,9 +444,17 @@ static int TTF_initFontMetrics(TTF_Font* font)
         font->ascent += 2 * fo;
     }
 
+    font->underline_top_row = font->ascent - font->underline_offset - 1;
+    font->strikethrough_top_row = font->height / 2;
+
     /* Update height according to the needs of the underline style */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-        int bottom_row = TTF_underline_top_row(font) + font->underline_height;
+        int bottom_row = font->underline_top_row + font->underline_height;
+        font->height = SDL_max(font->height, bottom_row);
+    }
+    /* Update height according to the needs of the strikethrough style */
+    if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
+        int bottom_row = font->strikethrough_top_row + font->underline_height;
         font->height = SDL_max(font->height, bottom_row);
     }
 
@@ -500,7 +467,7 @@ static int TTF_initFontMetrics(TTF_Font* font)
     printf("\tunderline_offset = %d, underline_height = %d\n",
         font->underline_offset, font->underline_height);
     printf("\tunderline_top_row = %d, strikethrough_top_row = %d\n",
-        TTF_underline_top_row(font), TTF_strikethrough_top_row(font));
+        font->underline_top_row, font->strikethrough_top_row);
 #endif
 
     font->glyph_overhang = face->size->metrics.y_ppem / 10;
@@ -554,7 +521,6 @@ static void Flush_Cache(TTF_Font* font)
         if (font->cache[i].cached) {
             Flush_Glyph(&font->cache[i]);
         }
-
     }
 }
 
@@ -880,11 +846,10 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
         {
             int width_max = SDL_max(cached->advance, cached->maxx - cached->minx);
             int rows_max  = SDL_max(font->height,    cached->maxy - cached->miny);
-        
+
             dst->width = SDL_min((int)dst->width, width_max);
             dst->rows  = SDL_min((int)dst->rows,  rows_max);
         }
-
     }
 
     /* We're done, mark this glyph cached */
@@ -1149,7 +1114,7 @@ char *TTF_FontFaceStyleName(const TTF_Font *font)
 
 int TTF_GlyphIsProvided(const TTF_Font *font, Uint16 ch)
 {
-  return FT_Get_Char_Index(font->face, ch);
+    return FT_Get_Char_Index(font->face, ch);
 }
 
 int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
@@ -1211,6 +1176,8 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
 
     TTF_CHECKPOINTER(text, -1);
 
+    maxy = font->height;
+
     /* Load each character and sum it's bounding box */
     textlen = SDL_strlen(text);
     while (textlen > 0) {
@@ -1235,7 +1202,6 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
 
         minx = SDL_min(minx, x + glyph->minx);
 
-        maxx = SDL_max(maxx, x + glyph->advance);
         maxx = SDL_max(maxx, x + glyph->maxx);
         maxx = SDL_max(maxx, x + glyph->advance);
 
@@ -1262,7 +1228,7 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
         *w = (maxx - minx);
     }
     if (h) {
-        *h = SDL_max(font->height, maxy - miny);
+        *h = (maxy - miny);
     }
     return 0;
 }
@@ -1390,14 +1356,14 @@ SDL_Surface *TTF_RenderUTF8_Solid(TTF_Font *font,
 
     /* Handle the underline style */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-        row = TTF_underline_top_row(font);
-        TTF_drawLine_Solid(font, textbuf, row + ystart);
+        int first_row = font->underline_top_row + ystart;
+        TTF_drawLine(font, textbuf, first_row, 1 /* 1 because 0 is the bg color */ );
     }
 
     /* Handle the strikethrough style */
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-        row = TTF_strikethrough_top_row(font);
-        TTF_drawLine_Solid(font, textbuf, row + ystart);
+        int first_row = font->strikethrough_top_row + ystart;
+        TTF_drawLine(font, textbuf, first_row, 1 /* 1 because 0 is the bg color */ );
     }
     return textbuf;
 }
@@ -1554,14 +1520,14 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
 
     /* Handle the underline style */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-        row = TTF_underline_top_row(font);
-        TTF_drawLine_Shaded(font, textbuf, row + ystart);
+        int first_row = font->underline_top_row + ystart;
+        TTF_drawLine(font, textbuf, first_row, NUM_GRAYS - 1);
     }
 
     /* Handle the strikethrough style */
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-        row = TTF_strikethrough_top_row(font);
-        TTF_drawLine_Shaded(font, textbuf, row + ystart);
+        int first_row = font->strikethrough_top_row + ystart;
+        TTF_drawLine(font, textbuf, first_row, NUM_GRAYS - 1);
     }
     return textbuf;
 }
@@ -1712,14 +1678,14 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
 
     /* Handle the underline style */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-        row = TTF_underline_top_row(font);
-        TTF_drawLine_Blended(font, textbuf, row + ystart, textbuf->w, pixel | (Uint32)fg.a << 24);
+        int first_row = font->underline_top_row + ystart;
+        TTF_drawLine_Blended(font, textbuf, first_row, textbuf->w, pixel | (Uint32)fg.a << 24);
     }
 
     /* Handle the strikethrough style */
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-        row = TTF_strikethrough_top_row(font);
-        TTF_drawLine_Blended(font, textbuf, row + ystart, textbuf->w, pixel | (Uint32)fg.a << 24);
+        int first_row = font->strikethrough_top_row + ystart;
+        TTF_drawLine_Blended(font, textbuf, first_row, textbuf->w, pixel | (Uint32)fg.a << 24);
     }
     return textbuf;
 }
@@ -1983,14 +1949,14 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
 
         /* Handle the underline style */
         if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-            row = TTF_underline_top_row(font);
-            TTF_drawLine_Blended(font, textbuf, rowHeight * line + row + ystart, SDL_min(line_width, textbuf->w), pixel | (Uint32)fg.a << 24);
+            int first_row = rowHeight * line + font->underline_top_row + ystart;
+            TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | (Uint32)fg.a << 24);
         }
 
         /* Handle the strikethrough style */
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-            row = TTF_strikethrough_top_row(font);
-            TTF_drawLine_Blended(font, textbuf, rowHeight * line + row + ystart, SDL_min(line_width, textbuf->w), pixel | (Uint32)fg.a << 24);
+            int first_row = rowHeight * line + font->strikethrough_top_row + ystart;
+            TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | (Uint32)fg.a << 24);
         }
     }
 
