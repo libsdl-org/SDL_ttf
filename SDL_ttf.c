@@ -103,9 +103,6 @@ struct _TTF_Font {
     int freesrc;
     FT_Open_Args args;
 
-    /* For non-scalable formats, we must remember which font index size */
-    int font_size_family;
-
     /* really just flags passed into FT_Load_Glyph */
     int hinting;
 };
@@ -194,7 +191,7 @@ static void TTF_SetFTError(const char *msg, FT_Error error)
     static const struct
     {
       int          err_code;
-      const char*  err_msg;
+      const char  *err_msg;
     } ft_errors[] = {
 #include <freetype/fterrors.h>
     };
@@ -238,7 +235,7 @@ int TTF_Init(void)
 static unsigned long RWread(
     FT_Stream stream,
     unsigned long offset,
-    unsigned char* buffer,
+    unsigned char *buffer,
     unsigned long count
 )
 {
@@ -384,12 +381,22 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
          * or series of fonts to grab from the non-scalable format.
          * It is not the point size of the font.
          * */
-        if (ptsize >= font->face->num_fixed_sizes)
-            ptsize = font->face->num_fixed_sizes - 1;
-        font->font_size_family = ptsize;
-        error = FT_Set_Pixel_Sizes(face,
-                face->available_sizes[ptsize].width,
-                face->available_sizes[ptsize].height);
+        if (font->face->num_fixed_sizes <= 0) {
+            TTF_SetError("Couldn't select size : no num_fixed_sizes");
+            TTF_CloseFont(font);
+            return NULL;
+        }
+
+        /* within [0; num_fixed_sizes - 1] */
+        ptsize = SDL_max(ptsize, 0);
+        ptsize = SDL_min(ptsize, font->face->num_fixed_sizes - 1);
+
+        error = FT_Select_Size(face, ptsize);
+        if (error) {
+            TTF_SetFTError("Couldn't select size", error);
+            TTF_CloseFont(font);
+            return NULL;
+        }
     }
 
     if (TTF_initFontMetrics(font) < 0) {
@@ -417,27 +424,23 @@ static int TTF_initFontMetrics(TTF_Font* font)
         font->underline_height = FT_FLOOR(FT_MulFix(face->underline_thickness, scale));
 
     } else {
-        int ptsize = font->font_size_family;
-
-        /* With non-scalale fonts, Freetype2 likes to fill many of the
-         * font metrics with the value of 0.  The size of the
-         * non-scalable fonts must be determined differently
-         * or sometimes cannot be determined.
-         * */
-        font->ascent = face->available_sizes[ptsize].height;
-        font->descent = 0;
-        font->height = face->available_sizes[ptsize].height;
-        font->lineskip = FT_CEIL(font->ascent);
-        font->underline_offset = FT_FLOOR(face->underline_position);
-        font->underline_height = FT_FLOOR(face->underline_thickness);
+        /* Get the font metrics for this font, for the selected size */
+        font->ascent   = FT_CEIL(face->size->metrics.ascender);
+        font->descent  = FT_CEIL(face->size->metrics.descender);
+        font->height   = FT_CEIL(face->size->metrics.height);
+        font->lineskip = FT_CEIL(face->size->metrics.height);
+        /* face->underline_position and face->underline_height are only 
+         * relevant for scalable formats (see freetype.h FT_FaceRec)*/
+        font->underline_offset = font->descent / 2;
+        font->underline_height = 1;
     }
 
     if (font->underline_height < 1) {
         font->underline_height = 1;
     }
 
-    /* Adjust OutlineStyle */
-    if (font->outline > 0) {
+    /* Adjust OutlineStyle, only for scalable fonts */
+    if (font->outline > 0 && FT_IS_SCALABLE(face)) {
         int fo = font->outline;
         font->underline_height += 2 * fo;
         font->underline_offset += 2 * fo;
@@ -554,48 +557,31 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
 
     /* Get the glyph metrics if desired */
     if ((want & CACHED_METRICS) && !(cached->stored & CACHED_METRICS)) {
-        if (FT_IS_SCALABLE(face)) {
-            /* Get the bounding box */
-            cached->minx = FT_FLOOR(metrics->horiBearingX);
-            cached->maxx = FT_CEIL(metrics->horiBearingX + metrics->width);
-            cached->maxy = FT_FLOOR(metrics->horiBearingY);
-            cached->miny = cached->maxy - FT_CEIL(metrics->height);
-            cached->yoffset = font->ascent - cached->maxy;
-            cached->advance = FT_CEIL(metrics->horiAdvance);
-        } else {
-            /* Get the bounding box for non-scalable format.
-             * Again, freetype2 fills in many of the font metrics
-             * with the value of 0, so some of the values we
-             * need must be calculated differently with certain
-             * assumptions about non-scalable formats.
-             * */
-            cached->minx = FT_FLOOR(metrics->horiBearingX);
-            cached->maxx = FT_CEIL(metrics->horiBearingX + metrics->width);
-            cached->maxy = FT_FLOOR(metrics->horiBearingY);
-            cached->miny = cached->maxy - FT_CEIL(face->available_sizes[font->font_size_family].height);
-            cached->yoffset = 0;
-            cached->advance = FT_CEIL(metrics->horiAdvance);
-        }
+
+        cached->minx = FT_FLOOR(metrics->horiBearingX);
+        cached->maxx = FT_CEIL(metrics->horiBearingX + metrics->width);
+        cached->maxy = FT_FLOOR(metrics->horiBearingY);
+        cached->miny = cached->maxy - FT_CEIL(metrics->height);
+        cached->yoffset = font->ascent - cached->maxy;
+        cached->advance = FT_CEIL(metrics->horiAdvance);
 
         /* Adjust for bold and italic text */
         if (TTF_HANDLE_STYLE_BOLD(font)) {
             cached->maxx += font->glyph_overhang;
             cached->advance += font->glyph_overhang;
         }
-        if (TTF_HANDLE_STYLE_ITALIC(font)) {
+        if (TTF_HANDLE_STYLE_ITALIC(font) && FT_IS_SCALABLE(face)) {
             int bump = (int)SDL_ceilf(font->glyph_italics);
             cached->maxx += bump;
         }
 
-        /* Adjust OutlineStyle */
-        if (font->outline > 0) {
+        /* Adjust OutlineStyle, only for scalable fonts */
+        if (font->outline > 0 && FT_IS_SCALABLE(face)) {
             int fo = font->outline;
             /* we could have updated minx/miny by -fo, but that would shift the text left  */
             cached->maxx += 2.1f * fo;
             cached->maxy += 2.1f * fo;
-            if (FT_IS_SCALABLE(face)) {
-                cached->yoffset -= 2 * fo;
-            }
+            cached->yoffset -= 2 * fo;
         }
 
         cached->stored |= CACHED_METRICS;
@@ -609,8 +595,8 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
         FT_Bitmap* dst;
         FT_Glyph bitmap_glyph = NULL;
 
-        /* Handle the italic style */
-        if (TTF_HANDLE_STYLE_ITALIC(font)) {
+        /* Handle the italic style, only for scalable fonts */
+        if (TTF_HANDLE_STYLE_ITALIC(font) && FT_IS_SCALABLE(face)) {
             FT_Matrix shear;
 
             shear.xx = 1 << 16;
@@ -807,12 +793,12 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
             int col;
             int offset;
             int pixel;
-            Uint8* pixmap;
+            Uint8 *pixmap;
 
             /* The pixmap is a little hard, we have to add and clamp */
             for (row = dst->rows - 1; row >= 0; --row) {
                 pixmap = (Uint8*) dst->buffer + row * dst->pitch;
-                for (offset=1; offset <= font->glyph_overhang; ++offset) {
+                for (offset = 1; offset <= font->glyph_overhang; ++offset) {
                     for (col = dst->width - 1; col > 0; --col) {
                         if (mono) {
                             pixmap[col] |= pixmap[col-1];
@@ -840,16 +826,10 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
             FT_Done_Glyph(bitmap_glyph);
         }
 
-        /* Freetype may report a larger pixmap than expected. There is maybe
-         * no metrics (e.g. non scalable font). Make sure we don't exceed
+        /* Freetype may report a larger pixmap than expected. Make sure we don't exceed
          * the size that will be computed in TTF_SizeUTF8_Internal() */
-        {
-            int width_max = SDL_max(cached->advance, cached->maxx - cached->minx);
-            int rows_max  = SDL_max(font->height,    cached->maxy - cached->miny);
-
-            dst->width = SDL_min((int)dst->width, width_max);
-            dst->rows  = SDL_min((int)dst->rows,  rows_max);
-        }
+        dst->width = SDL_min((int)dst->width, cached->maxx - cached->minx);
+        dst->rows  = SDL_min((int)dst->rows,  cached->maxy - cached->miny);
     }
 
     /* We're done, mark this glyph cached */
@@ -858,7 +838,7 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
     return 0;
 }
 
-static FT_Error Find_Glyph(TTF_Font* font, Uint32 ch, int want)
+static FT_Error Find_Glyph(TTF_Font *font, Uint32 ch, int want)
 {
     int retval = 0;
     int hsize = sizeof(font->cache) / sizeof(font->cache[0]);
@@ -866,8 +846,9 @@ static FT_Error Find_Glyph(TTF_Font* font, Uint32 ch, int want)
     int h = ch % hsize;
     font->current = &font->cache[h];
 
-    if (font->current->cached != ch)
+    if (font->current->cached != ch) {
         Flush_Glyph(font->current);
+    }
 
     if ((font->current->stored & want) != want) {
         retval = Load_Glyph(font, ch, font->current, want);
@@ -875,7 +856,7 @@ static FT_Error Find_Glyph(TTF_Font* font, Uint32 ch, int want)
     return retval;
 }
 
-void TTF_CloseFont(TTF_Font* font)
+void TTF_CloseFont(TTF_Font *font)
 {
     if (font) {
         Flush_Cache(font);
@@ -1118,7 +1099,7 @@ int TTF_GlyphIsProvided(const TTF_Font *font, Uint16 ch)
 }
 
 int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
-                     int* minx, int* maxx, int* miny, int* maxy, int* advance)
+                     int *minx, int *maxx, int *miny, int *maxy, int *advance)
 {
     FT_Error error;
 
@@ -1201,8 +1182,8 @@ static int TTF_SizeUTF8_Internal(TTF_Font *font, const char *text, int *w, int *
         }
 
         minx = SDL_min(minx, x + glyph->minx);
-
         maxx = SDL_max(maxx, x + glyph->maxx);
+        /* Allows to render a string with only one space " ". (bug 4344). */
         maxx = SDL_max(maxx, x + glyph->advance);
 
         miny = SDL_min(miny, glyph->yoffset);
