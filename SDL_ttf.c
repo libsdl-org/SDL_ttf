@@ -155,12 +155,11 @@ static void TTF_drawLine_Blended(const TTF_Font *font, const SDL_Surface *textbu
     int line;
     Uint32 *dst = (Uint32 *)textbuf->pixels + row * textbuf->pitch/4;
     int col;
-    Uint32 pixel = color | 0xFF000000; /* Amask */
 
     /* Draw line */
     for (line = font->underline_height; line > 0; --line) {
         for (col = 0; col < line_width; ++col) {
-            dst[col] = pixel;
+            dst[col] = color;
         }
         dst += textbuf->pitch/4;
     }
@@ -1664,13 +1663,13 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
     /* Handle the underline style */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
         int first_row = font->underline_top_row + ystart;
-        TTF_drawLine_Blended(font, textbuf, first_row, textbuf->w, pixel | (Uint32)fg.a << 24);
+        TTF_drawLine_Blended(font, textbuf, first_row, textbuf->w, pixel | 0xFF000000);
     }
 
     /* Handle the strikethrough style */
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
         int first_row = font->strikethrough_top_row + ystart;
-        TTF_drawLine_Blended(font, textbuf, first_row, textbuf->w, pixel | (Uint32)fg.a << 24);
+        TTF_drawLine_Blended(font, textbuf, first_row, textbuf->w, pixel | 0xFF000000);
     }
     return textbuf;
 }
@@ -1935,13 +1934,13 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
         /* Handle the underline style */
         if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
             int first_row = rowHeight * line + font->underline_top_row + ystart;
-            TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | (Uint32)fg.a << 24);
+            TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | 0xFF000000);
         }
 
         /* Handle the strikethrough style */
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
             int first_row = rowHeight * line + font->strikethrough_top_row + ystart;
-            TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | (Uint32)fg.a << 24);
+            TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | 0xFF000000);
         }
     }
 
