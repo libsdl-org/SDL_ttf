@@ -415,9 +415,9 @@ static int TTF_initFontMetrics(TTF_Font *font)
 
         /* Get the scalable font metrics for this font */
         FT_Fixed scale = face->size->metrics.y_scale;
-        font->ascent  = FT_CEIL(FT_MulFix(face->ascender, scale));
-        font->descent = FT_CEIL(FT_MulFix(face->descender, scale));
-        font->height  = font->ascent - font->descent + /* baseline */ 1;
+        font->ascent   = FT_CEIL(FT_MulFix(face->ascender, scale));
+        font->descent  = FT_CEIL(FT_MulFix(face->descender, scale));
+        font->height   = FT_CEIL(FT_MulFix(face->ascender - face->descender, scale));
         font->lineskip = FT_CEIL(FT_MulFix(face->height, scale));
         font->underline_offset = FT_FLOOR(FT_MulFix(face->underline_position, scale));
         font->underline_height = FT_FLOOR(FT_MulFix(face->underline_thickness, scale));
@@ -1723,9 +1723,6 @@ static SDL_bool CharacterIsDelimiter(char c, const char *delimiters)
     return SDL_FALSE;
 }
 
-/* Don't define this until we have a release where we can change font rendering
-#define TTF_USE_LINESKIP
- */
 SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
                                     const char *text, SDL_Color fg, Uint32 wrapLength)
 {
@@ -1836,11 +1833,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
         } while (tok < end);
     }
 
-#ifdef TTF_USE_LINESKIP
     rowHeight = SDL_max(height, TTF_FontLineSkip(font));
-#else
-    rowHeight = height;
-#endif
 
     /* Create the target surface */
     textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE,
