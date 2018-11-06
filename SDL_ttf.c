@@ -60,7 +60,7 @@ typedef struct cached_glyph {
     int maxy;
     int yoffset;
     int advance;
-    Uint32 cached;
+    SDL_bool is_cached;
 } c_glyph;
 
 /* The structure used to hold internal font information */
@@ -134,7 +134,7 @@ static int TTF_byteswapped = 0;
     }
 
 
-static int TTF_initFontMetrics(TTF_Font* font);
+static int TTF_initFontMetrics(TTF_Font *font);
 
 /* Draw a solid or shaded line of underline_height at the given row. */
 static void TTF_drawLine(const TTF_Font *font, const SDL_Surface *textbuf, int row, int color)
@@ -251,7 +251,7 @@ static unsigned long RWread(
 
 TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long index)
 {
-    TTF_Font* font;
+    TTF_Font *font;
     FT_Error error;
     FT_Face face;
     FT_Stream stream;
@@ -407,7 +407,7 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
 }
 
 /* Update font parameter depending on a style change */
-static int TTF_initFontMetrics(TTF_Font* font)
+static int TTF_initFontMetrics(TTF_Font *font)
 {
     FT_Face face = font->face;
 
@@ -429,7 +429,7 @@ static int TTF_initFontMetrics(TTF_Font* font)
         font->descent  = FT_CEIL(face->size->metrics.descender);
         font->height   = FT_CEIL(face->size->metrics.height);
         font->lineskip = FT_CEIL(face->size->metrics.height);
-        /* face->underline_position and face->underline_height are only 
+        /* face->underline_position and face->underline_height are only
          * relevant for scalable formats (see freetype.h FT_FaceRec)*/
         font->underline_offset = font->descent / 2;
         font->underline_height = 1;
@@ -500,7 +500,7 @@ TTF_Font* TTF_OpenFont(const char *file, int ptsize)
     return TTF_OpenFontIndex(file, ptsize, 0);
 }
 
-static void Flush_Glyph(c_glyph* glyph)
+static void Flush_Glyph(c_glyph *glyph)
 {
     glyph->stored = 0;
     glyph->index = 0;
@@ -512,28 +512,28 @@ static void Flush_Glyph(c_glyph* glyph)
         SDL_free(glyph->pixmap.buffer);
         glyph->pixmap.buffer = 0;
     }
-    glyph->cached = 0;
+    glyph->is_cached = SDL_FALSE;
 }
 
-static void Flush_Cache(TTF_Font* font)
+static void Flush_Cache(TTF_Font *font)
 {
     int i;
     int size = sizeof(font->cache) / sizeof(font->cache[0]);
 
     for (i = 0; i < size; ++i) {
-        if (font->cache[i].cached) {
+        if (font->cache[i].is_cached) {
             Flush_Glyph(&font->cache[i]);
         }
     }
 }
 
-static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
+static FT_Error Load_Glyph(TTF_Font *font, Uint32 idx, c_glyph *cached, int want)
 {
     FT_Face face;
     FT_Error error;
     FT_GlyphSlot glyph;
-    FT_Glyph_Metrics* metrics;
-    FT_Outline* outline;
+    FT_Glyph_Metrics *metrics;
+    FT_Outline *outline;
 
     if (!font || !font->face) {
         return FT_Err_Invalid_Handle;
@@ -542,9 +542,8 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
     face = font->face;
 
     /* Load the glyph */
-    if (!cached->index) {
-        cached->index = FT_Get_Char_Index(face, ch);
-    }
+    cached->index = idx;
+
     error = FT_Load_Glyph(face, cached->index, FT_LOAD_DEFAULT | font->hinting);
     if (error) {
         return error;
@@ -591,8 +590,8 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
          ((want & CACHED_PIXMAP) && !(cached->stored & CACHED_PIXMAP))) {
         int mono = (want & CACHED_BITMAP);
         unsigned int i;
-        FT_Bitmap* src;
-        FT_Bitmap* dst;
+        FT_Bitmap *src;
+        FT_Bitmap *dst;
         FT_Glyph bitmap_glyph = NULL;
 
         /* Handle the italic style, only for scalable fonts */
@@ -833,27 +832,32 @@ static FT_Error Load_Glyph(TTF_Font* font, Uint32 ch, c_glyph* cached, int want)
     }
 
     /* We're done, mark this glyph cached */
-    cached->cached = ch;
+    cached->is_cached = SDL_TRUE;
 
     return 0;
 }
 
-static FT_Error Find_Glyph(TTF_Font *font, Uint32 ch, int want)
+static FT_Error Find_GlyphByIndex(TTF_Font *font, FT_UInt idx, int want)
 {
     int retval = 0;
     int hsize = sizeof(font->cache) / sizeof(font->cache[0]);
 
-    int h = ch % hsize;
+    int h = idx % hsize;
     font->current = &font->cache[h];
 
-    if (font->current->cached != ch) {
+    if (font->current->is_cached && font->current->index != idx) {
         Flush_Glyph(font->current);
     }
 
     if ((font->current->stored & want) != want) {
-        retval = Load_Glyph(font, ch, font->current, want);
+        retval = Load_Glyph(font, idx, font->current, want);
     }
     return retval;
+}
+
+static FT_Error Find_Glyph(TTF_Font *font, Uint32 ch, int want) {
+    Uint32 idx = FT_Get_Char_Index(font->face, ch);
+    return Find_GlyphByIndex(font, idx, want);
 }
 
 void TTF_CloseFont(TTF_Font *font)
