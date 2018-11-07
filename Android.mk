@@ -1,7 +1,7 @@
 # Save the local path
 SDL_TTF_LOCAL_PATH := $(call my-dir)
 
-FREETYPE_LIBRARY_PATH := external/freetype-2.4.12
+FREETYPE_LIBRARY_PATH := external/freetype-2.9.1
 
 # Build freetype library
 ifneq ($(FREETYPE_LIBRARY_PATH),)
