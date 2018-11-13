@@ -372,6 +372,7 @@
       /* it contains the `adjusted' starting coordinates          */
       border->num_points    = --count;
       border->points[start] = border->points[count];
+      border->tags[start]   = border->tags[count];
 
       if ( reverse )
       {
@@ -436,8 +437,8 @@
     }
     else
     {
-      /* don't add zero-length lineto */
-      if ( border->num_points > 0                                          &&
+      /* don't add zero-length lineto, but always add moveto */
+      if ( border->num_points > border->start                              &&
            FT_IS_SMALL( border->points[border->num_points - 1].x - to->x ) &&
            FT_IS_SMALL( border->points[border->num_points - 1].y - to->y ) )
         return error;
