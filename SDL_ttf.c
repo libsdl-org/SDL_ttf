@@ -40,6 +40,10 @@
    in the result FT_Bitmap after the FT_Render_Glyph() call. */
 #define NUM_GRAYS       256
 
+
+/* x offset = cos(((90.0-12)/360)*2*M_PI), or 12 degree angle */
+#define GLYPH_ITALICS   0.207f
+
 /* Handy routines for converting from fixed point */
 #define FT_FLOOR(X) ((X & -64) / 64)
 #define FT_CEIL(X)  (((X + 63) & -64) / 64)
@@ -85,7 +89,6 @@ struct _TTF_Font {
 
     /* Extra width in glyph bounds for text styles */
     int glyph_overhang;
-    float glyph_italics;
 
     /* Information in the font for underlining */
     int underline_offset;
@@ -323,7 +326,7 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
 #if 0 /* Font debug code */
     for (i = 0; i < face->num_charmaps; i++) {
         FT_CharMap charmap = face->charmaps[i];
-        printf("Found charmap: platform id %d, encoding id %d\n", charmap->platform_id, charmap->encoding_id);
+        SDL_Log("Found charmap: platform id %d, encoding id %d", charmap->platform_id, charmap->encoding_id);
     }
 #endif
     if (!found) {
@@ -449,6 +452,14 @@ static int TTF_initFontMetrics(TTF_Font *font)
     font->underline_top_row = font->ascent - font->underline_offset - 1;
     font->strikethrough_top_row = font->height / 2;
 
+    /* Robustness */
+    if (font->underline_top_row < 0) {
+        font->underline_top_row = 0;
+    }
+    if (font->strikethrough_top_row < 0) {
+        font->strikethrough_top_row = 0;
+    }
+
     /* Update height according to the needs of the underline style */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
         int bottom_row = font->underline_top_row + font->underline_height;
@@ -461,21 +472,15 @@ static int TTF_initFontMetrics(TTF_Font *font)
     }
 
 #ifdef DEBUG_FONTS
-    printf("Font metrics:\n");
-    printf("\tascent = %d, descent = %d\n",
-        font->ascent, font->descent);
-    printf("\theight = %d, lineskip = %d\n",
-        font->height, font->lineskip);
-    printf("\tunderline_offset = %d, underline_height = %d\n",
-        font->underline_offset, font->underline_height);
-    printf("\tunderline_top_row = %d, strikethrough_top_row = %d\n",
-        font->underline_top_row, font->strikethrough_top_row);
+    SDL_Log("Font metrics:");
+    SDL_Log("ascent = %d, descent = %d", font->ascent, font->descent);
+    SDL_Log("height = %d, lineskip = %d", font->height, font->lineskip);
+    SDL_Log("underline_offset = %d, underline_height = %d", font->underline_offset, font->underline_height);
+    SDL_Log("underline_top_row = %d, strikethrough_top_row = %d", font->underline_top_row, font->strikethrough_top_row);
+    SDL_Log("scalable=%d", FT_IS_SCALABLE(face));
 #endif
 
     font->glyph_overhang = face->size->metrics.y_ppem / 10;
-    /* x offset = cos(((90.0-12)/360)*2*M_PI), or 12 degree angle */
-    font->glyph_italics = 0.207f;
-    font->glyph_italics *= font->height;
 
     return 0;
 }
@@ -563,13 +568,29 @@ static FT_Error Load_Glyph(TTF_Font *font, Uint32 idx, c_glyph *cached, int want
         cached->yoffset = font->ascent - cached->maxy;
         cached->advance = FT_CEIL(metrics->horiAdvance);
 
+#ifdef DEBUG_FONTS
+        SDL_Log("Index=%d minx=%d maxx=%d miny=%d maxy=%d yoffset=%d advance=%d", 
+                cached->index, cached->minx, cached->maxx, cached->miny, cached->maxy, cached->yoffset, cached->advance);
+#endif
+        /* Robustness */
+        if (cached->maxx - cached->minx < 0) {
+            int tmp = cached->maxx;
+            cached->maxx = cached->minx;
+            cached->minx = tmp;
+        }
+        if (cached->maxy - cached->miny < 0) {
+            int tmp = cached->maxy;
+            cached->maxy = cached->miny;
+            cached->miny = tmp;
+        }
+
         /* Adjust for bold and italic text */
         if (TTF_HANDLE_STYLE_BOLD(font)) {
             cached->maxx += font->glyph_overhang;
             cached->advance += font->glyph_overhang;
         }
         if (TTF_HANDLE_STYLE_ITALIC(font) && FT_IS_SCALABLE(face)) {
-            int bump = (int)SDL_ceilf(font->glyph_italics);
+            int bump = (int)SDL_ceilf(GLYPH_ITALICS * font->height);
             cached->maxx += bump;
         }
 
@@ -598,7 +619,7 @@ static FT_Error Load_Glyph(TTF_Font *font, Uint32 idx, c_glyph *cached, int want
             FT_Matrix shear;
 
             shear.xx = 1 << 16;
-            shear.xy = (int) (font->glyph_italics * (1 << 16)) / font->height;
+            shear.xy = (int) (GLYPH_ITALICS * (1 << 16));
             shear.yx = 0;
             shear.yy = 1 << 16;
 
