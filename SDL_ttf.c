@@ -355,8 +355,6 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
         FT_Set_Charmap(face, found);
     }
 
-    /* Set the default font style */
-    font->style = font->face_style;
     font->outline = 0;
     TTF_SetFontKerning(font, 1);
 
@@ -368,6 +366,9 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
     if (font->face->style_flags & FT_STYLE_FLAG_ITALIC) {
         font->face_style |= TTF_STYLE_ITALIC;
     }
+
+    /* Set the default font style */
+    font->style = font->face_style;
 
     /* Make sure that our font face is scalable (global metrics) */
     if (FT_IS_SCALABLE(face)) {
