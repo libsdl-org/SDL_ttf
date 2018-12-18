@@ -1871,9 +1871,14 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     lineskip = TTF_FontLineSkip(font);
     rowHeight = SDL_max(height, lineskip);
 
+    width = (numLines > 1) ? wrapLength : width;
+
+    /* Don't go above wrapLength if you have only 1 line which hasn't been cut */
+    width  = SDL_min((int)wrapLength, width);
+
     /* Create the target surface */
     textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE,
-            (numLines > 1) ? wrapLength : width,
+            width,
             rowHeight + lineskip * (numLines - 1),
             32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
     if (textbuf == NULL) {
