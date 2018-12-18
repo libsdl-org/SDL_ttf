@@ -1774,7 +1774,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
     c_glyph *glyph;
     FT_Bitmap *current;
     FT_Error error;
-    int line, numLines, rowHeight;
+    int line, numLines, rowHeight, lineskip;
     char *str, **strLines, **newLines;
     size_t textlen;
 
@@ -1868,12 +1868,13 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
         } while (tok < end);
     }
 
-    rowHeight = SDL_max(height, TTF_FontLineSkip(font));
+    lineskip = TTF_FontLineSkip(font);
+    rowHeight = SDL_max(height, lineskip);
 
     /* Create the target surface */
     textbuf = SDL_CreateRGBSurface(SDL_SWSURFACE,
             (numLines > 1) ? wrapLength : width,
-            rowHeight * numLines,
+            rowHeight + lineskip * (numLines - 1),
             32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
     if (textbuf == NULL) {
         if (strLines) {
@@ -1946,7 +1947,7 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
 
             for (row = 0; row < current->rows; ++row) {
                 dst = (Uint32*)textbuf->pixels +
-                    (rowHeight * line + row + ystart + glyph->yoffset) * textbuf->pitch/4 +
+                    (lineskip * line + row + ystart + glyph->yoffset) * textbuf->pitch/4 +
                     xstart + glyph->minx;
                 src = (Uint8*)current->buffer + row * current->pitch;
                 for (col = current->width; col > 0; --col) {
@@ -1961,13 +1962,13 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
 
         /* Handle the underline style */
         if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-            int first_row = rowHeight * line + font->underline_top_row + ystart;
+            int first_row = lineskip * line + font->underline_top_row + ystart;
             TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | (alpha_table[255] << 24));
         }
 
         /* Handle the strikethrough style */
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-            int first_row = rowHeight * line + font->strikethrough_top_row + ystart;
+            int first_row = lineskip * line + font->strikethrough_top_row + ystart;
             TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | (alpha_table[255] << 24));
         }
     }
