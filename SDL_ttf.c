@@ -1446,6 +1446,7 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
     FT_Error error;
     FT_UInt prev_index = 0;
     size_t textlen;
+    Uint8 bg_alpha;
 
     TTF_CHECKPOINTER(text, NULL);
 
@@ -1468,8 +1469,17 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
     if (!bg.a) {
         bg.a = SDL_ALPHA_OPAQUE;
     }
+
+    /* Save background alpha value */
+    bg_alpha = bg.a;
+
     if (fg.a != SDL_ALPHA_OPAQUE || bg.a != SDL_ALPHA_OPAQUE) {
         SDL_SetSurfaceBlendMode(textbuf, SDL_BLENDMODE_BLEND);
+
+        /* Would disturb alpha palette */
+        if (bg.a == SDL_ALPHA_OPAQUE) {
+            bg.a = 0;
+        }
     }
 
     /* Fill the palette with NUM_GRAYS levels of shading from bg to fg */
@@ -1485,6 +1495,9 @@ SDL_Surface *TTF_RenderUTF8_Shaded(TTF_Font *font,
         palette->colors[index].b = bg.b + (index*bdiff) / (NUM_GRAYS-1);
         palette->colors[index].a = bg.a + (index*adiff) / (NUM_GRAYS-1);
     }
+
+    /* Make sure background has the correct alpha value */
+    palette->colors[0].a = bg_alpha;
 
     /* Load and render each character */
     textlen = SDL_strlen(text);
