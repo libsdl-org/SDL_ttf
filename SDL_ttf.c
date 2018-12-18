@@ -1685,13 +1685,13 @@ SDL_Surface *TTF_RenderUTF8_Blended(TTF_Font *font,
     /* Handle the underline style */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
         int first_row = font->underline_top_row + ystart;
-        TTF_drawLine_Blended(font, textbuf, first_row, textbuf->w, pixel | 0xFF000000);
+        TTF_drawLine_Blended(font, textbuf, first_row, textbuf->w, pixel | (alpha_table[255] << 24));
     }
 
     /* Handle the strikethrough style */
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
         int first_row = font->strikethrough_top_row + ystart;
-        TTF_drawLine_Blended(font, textbuf, first_row, textbuf->w, pixel | 0xFF000000);
+        TTF_drawLine_Blended(font, textbuf, first_row, textbuf->w, pixel | (alpha_table[255] << 24));
     }
     return textbuf;
 }
@@ -1949,13 +1949,13 @@ SDL_Surface *TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
         /* Handle the underline style */
         if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
             int first_row = rowHeight * line + font->underline_top_row + ystart;
-            TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | 0xFF000000);
+            TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | (alpha_table[255] << 24));
         }
 
         /* Handle the strikethrough style */
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
             int first_row = rowHeight * line + font->strikethrough_top_row + ystart;
-            TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | 0xFF000000);
+            TTF_drawLine_Blended(font, textbuf, first_row, SDL_min(line_width, textbuf->w), pixel | (alpha_table[255] << 24));
         }
     }
 
