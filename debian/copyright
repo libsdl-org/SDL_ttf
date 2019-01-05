@@ -4,7 +4,7 @@ Upstream-Contact: Sam Lantinga <slouken@libsdl.org>
 Source: downloaded from http://www.libsdl.org/projects/SDL_ttf/
 
 Files: *
-Copyright: 2001-2018  Sam Lantinga
+Copyright: 2001-2019  Sam Lantinga
 License: zlib/libpng
 
 Files: debian/*
