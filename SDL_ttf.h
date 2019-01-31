@@ -121,10 +121,11 @@ extern DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
 extern DECLSPEC void SDLCALL TTF_SetFontOutline(TTF_Font *font, int outline);
 
 /* Set and retrieve FreeType hinter settings */
-#define TTF_HINTING_NORMAL    0
-#define TTF_HINTING_LIGHT     1
-#define TTF_HINTING_MONO      2
-#define TTF_HINTING_NONE      3
+#define TTF_HINTING_NORMAL          0
+#define TTF_HINTING_LIGHT           1
+#define TTF_HINTING_MONO            2
+#define TTF_HINTING_NONE            3
+#define TTF_HINTING_LIGHT_SUBPIXEL  4
 extern DECLSPEC int SDLCALL TTF_GetFontHinting(const TTF_Font *font);
 extern DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting);
 
@@ -185,6 +186,21 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid(TTF_Font *font,
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid(TTF_Font *font,
                 const Uint16 *text, SDL_Color fg);
 
+/* Create an 8-bit palettized surface and render the given text at
+   fast quality with the given font and color.  The 0 pixel is the
+   colorkey, giving a transparent background, and the 1 pixel is set
+   to the text color.
+   Text is wrapped to multiple lines on line endings and on word boundaries
+   if it extends beyond wrapLength in pixels.
+   This function returns the new surface, or NULL if there was an error.
+*/
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font *font,
+                const char *text, SDL_Color fg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid_Wrapped(TTF_Font *font,
+                const char *text, SDL_Color fg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid_Wrapped(TTF_Font *font,
+                const Uint16 *text, SDL_Color fg, Uint32 wrapLength);
+
 /* Create an 8-bit palettized surface and render the given glyph at
    fast quality with the given font and color.  The 0 pixel is the
    colorkey, giving a transparent background, and the 1 pixel is set
@@ -206,6 +222,20 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded(TTF_Font *font,
                 const char *text, SDL_Color fg, SDL_Color bg);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded(TTF_Font *font,
                 const Uint16 *text, SDL_Color fg, SDL_Color bg);
+
+/* Create an 8-bit palettized surface and render the given text at
+   high quality with the given font and colors.  The 0 pixel is background,
+   while other pixels have varying degrees of the foreground color.
+   Text is wrapped to multiple lines on line endings and on word boundaries
+   if it extends beyond wrapLength in pixels.
+   This function returns the new surface, or NULL if there was an error.
+*/
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font *font,
+                const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded_Wrapped(TTF_Font *font,
+                const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded_Wrapped(TTF_Font *font,
+                const Uint16 *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
 
 /* Create an 8-bit palettized surface and render the given glyph at
    high quality with the given font and colors.  The 0 pixel is background,
