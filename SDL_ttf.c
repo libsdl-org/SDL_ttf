@@ -1047,7 +1047,7 @@ static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Ui
     pixels = (void *)(((size_t)ptr + sizeof(void *) + alignment) & ~alignment);
     ((void **)pixels)[-1] = ptr;
 
-    textbuf = SDL_CreateRGBSurfaceFrom(pixels, width, height, 8, pitch, 0, 0, 0, 0);
+    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_INDEX8);
     if (textbuf == NULL) {
         SDL_free(ptr);
         return NULL;
@@ -1111,7 +1111,7 @@ static SDL_Surface* Create_Surface_Shaded(int width, int height, SDL_Color fg, S
     pixels = (void *)(((size_t)ptr + sizeof(void *) + alignment) & ~alignment);
     ((void **)pixels)[-1] = ptr;
 
-    textbuf = SDL_CreateRGBSurfaceFrom(pixels, width, height, 8, pitch, 0, 0, 0, 0);
+    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_INDEX8);
     if (textbuf == NULL) {
         SDL_free(ptr);
         return NULL;
@@ -1208,7 +1208,7 @@ static SDL_Surface *Create_Surface_Blended(int width, int height, SDL_Color fg, 
         pixels = (void *)(((size_t)ptr + sizeof(void *) + alignment) & ~alignment);
         ((void **)pixels)[-1] = ptr;
 
-        textbuf = SDL_CreateRGBSurfaceFrom(pixels, width, height, 32, pitch, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+        textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_ARGB8888);
         if (textbuf == NULL) {
             SDL_free(ptr);
             return NULL;
