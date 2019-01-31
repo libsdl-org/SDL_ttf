@@ -2321,7 +2321,7 @@ char* TTF_FontFaceStyleName(const TTF_Font *font)
     return font->face->style_name;
 }
 
-int TTF_GlyphIsProvided(const TTF_Font *font, Uint16 ch)
+int TTF_GlyphIsProvided(TTF_Font *font, Uint16 ch)
 {
     return (int)get_char_index(font, ch);
 }
