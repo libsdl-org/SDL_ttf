@@ -255,6 +255,8 @@ static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         const int want_bitmap, const int want_pixmap, const int want_subpixel,
         int translation, c_glyph **out_glyph, TTF_Image **out_image);
 
+static void Flush_Cache(TTF_Font *font);
+
 #if defined(USE_DUFFS_LOOP)
 
 /* 4-times unrolled loop */
@@ -1451,14 +1453,26 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
         return NULL;
     }
 
+    if (TTF_SetFontSize(font, ptsize) < 0) {
+        TTF_SetFTError("Couldn't set font size", error);
+        TTF_CloseFont(font);
+        return NULL;
+    }
+    return font;
+}
+
+int TTF_SetFontSize(TTF_Font *font, int ptsize)
+{
+    FT_Face face = font->face;
+    FT_Error error;
+
     /* Make sure that our font face is scalable (global metrics) */
     if (FT_IS_SCALABLE(face)) {
         /* Set the character size and use default DPI (72) */
         error = FT_Set_Char_Size(face, 0, ptsize * 64, 0, 0);
         if (error) {
             TTF_SetFTError("Couldn't set font size", error);
-            TTF_CloseFont(font);
-            return NULL;
+            return -1;
         }
     } else {
         /* Non-scalable font case.  ptsize determines which family
@@ -1466,8 +1480,7 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
          * It is not the point size of the font.  */
         if (face->num_fixed_sizes <= 0) {
             TTF_SetError("Couldn't select size : no num_fixed_sizes");
-            TTF_CloseFont(font);
-            return NULL;
+            return -1;
         }
 
         /* within [0; num_fixed_sizes - 1] */
@@ -1477,18 +1490,18 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
         error = FT_Select_Size(face, ptsize);
         if (error) {
             TTF_SetFTError("Couldn't select size", error);
-            TTF_CloseFont(font);
-            return NULL;
+            return -1;
         }
     }
 
     if (TTF_initFontMetrics(font) < 0) {
         TTF_SetError("Cannot initialize metrics");
-        TTF_CloseFont(font);
-        return NULL;
+        return -1;
     }
 
-    return font;
+    Flush_Cache(font);
+
+    return 0;
 }
 
 /* Update font parameter depending on a style change */
