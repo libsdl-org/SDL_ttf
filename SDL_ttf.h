@@ -109,6 +109,9 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int ptsiz
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontRW(SDL_RWops *src, int freesrc, int ptsize);
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long index);
 
+/* Set font size dynamically */
+extern DECLSPEC int SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
+
 /* Set and retrieve the font style */
 #define TTF_STYLE_NORMAL        0x00
 #define TTF_STYLE_BOLD          0x01
