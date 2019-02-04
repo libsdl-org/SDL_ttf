@@ -218,11 +218,13 @@ static FT_Library library;
 static int TTF_initialized = 0;
 static int TTF_byteswapped = 0;
 
-#define TTF_CHECKPOINTER(p, errval)                     \
+#define TTF_CHECK_INITIALIZED(errval)                   \
     if (!TTF_initialized) {                             \
         TTF_SetError("Library not initialized");        \
         return errval;                                  \
-    }                                                   \
+    }
+
+#define TTF_CHECK_POINTER(p, errval)                    \
     if (!p) {                                           \
         TTF_SetError("Passed a NULL pointer");          \
         return errval;                                  \
@@ -2343,6 +2345,9 @@ int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
                      int *minx, int *maxx, int *miny, int *maxy, int *advance)
 {
     c_glyph *glyph;
+
+    TTF_CHECK_POINTER(font, -1);
+
     if (Find_GlyphMetrics(font, ch, &glyph) < 0) {
         return -1;
     }
@@ -2381,8 +2386,9 @@ static int TTF_Size_Internal(TTF_Font *font,
     FT_Pos  prev_delta = 0;
     int prev_advance = 0;
 
-    TTF_CHECKPOINTER(font, -1);
-    TTF_CHECKPOINTER(text, -1);
+    TTF_CHECK_INITIALIZED(-1);
+    TTF_CHECK_POINTER(font, -1);
+    TTF_CHECK_POINTER(text, -1);
 
     /* Convert input string to default encoding UTF-8 */
     if (str_type == STR_TEXT) {
@@ -2537,8 +2543,9 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
     SDL_Surface *textbuf = NULL;
     Uint8 *utf8_alloc = NULL;
 
-    TTF_CHECKPOINTER(font, NULL);
-    TTF_CHECKPOINTER(text, NULL);
+    TTF_CHECK_INITIALIZED(NULL);
+    TTF_CHECK_POINTER(font, NULL);
+    TTF_CHECK_POINTER(text, NULL);
 
     /* Convert input string to default encoding UTF-8 */
     if (str_type == STR_TEXT) {
@@ -2625,6 +2632,8 @@ SDL_Surface* TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
     Uint16 ucs2[2];
     Uint8 utf8[4];
 
+    TTF_CHECK_POINTER(font, NULL);
+
     ucs2[0] = ch;
     ucs2[1] = 0;
     UCS2_to_UTF8(ucs2, utf8);
@@ -2650,6 +2659,8 @@ SDL_Surface* TTF_RenderGlyph_Shaded(TTF_Font *font, Uint16 ch, SDL_Color fg, SDL
 {
     Uint16 ucs2[2];
     Uint8 utf8[4];
+
+    TTF_CHECK_POINTER(font, NULL);
 
     ucs2[0] = ch;
     ucs2[1] = 0;
@@ -2694,8 +2705,9 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     int i, numLines, rowHeight, lineskip;
     char *str = NULL, **strLines = NULL, **newLines = NULL;
 
-    TTF_CHECKPOINTER(font, NULL);
-    TTF_CHECKPOINTER(text, NULL);
+    TTF_CHECK_INITIALIZED(NULL);
+    TTF_CHECK_POINTER(font, NULL);
+    TTF_CHECK_POINTER(text, NULL);
 
     /* Convert input string to default encoding UTF-8 */
     if (str_type == STR_TEXT) {
@@ -2919,6 +2931,8 @@ SDL_Surface* TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
     Uint16 ucs2[2];
     Uint8 utf8[4];
 
+    TTF_CHECK_POINTER(font, NULL);
+
     ucs2[0] = ch;
     ucs2[1] = 0;
     UCS2_to_UTF8(ucs2, utf8);
@@ -2927,8 +2941,13 @@ SDL_Surface* TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 
 void TTF_SetFontStyle(TTF_Font *font, int style)
 {
-    int prev_style  = font->style;
-    long face_style = font->face->style_flags;
+    int prev_style;
+    long face_style;
+
+    TTF_CHECK_POINTER(font,);
+
+    prev_style = font->style;
+    face_style = font->face->style_flags;
 
     /* Don't add a style if already in the font, SDL_ttf doesn't need to handle them */
     if (face_style & FT_STYLE_FLAG_BOLD) {
@@ -2951,8 +2970,13 @@ void TTF_SetFontStyle(TTF_Font *font, int style)
 
 int TTF_GetFontStyle(const TTF_Font *font)
 {
-    int style = font->style;
-    long face_style = font->face->style_flags;
+    int style;
+    long face_style;
+
+    TTF_CHECK_POINTER(font, -1);
+
+    style = font->style;
+    face_style = font->face->style_flags;
 
     /* Add the style already in the font */
     if (face_style & FT_STYLE_FLAG_BOLD) {
@@ -2967,6 +2991,8 @@ int TTF_GetFontStyle(const TTF_Font *font)
 
 void TTF_SetFontOutline(TTF_Font *font, int val)
 {
+    TTF_CHECK_POINTER(font,);
+
     font->outline_val = SDL_max(0, val);
     TTF_initFontMetrics(font);
     Flush_Cache(font);
@@ -2974,11 +3000,15 @@ void TTF_SetFontOutline(TTF_Font *font, int val)
 
 int TTF_GetFontOutline(const TTF_Font *font)
 {
+    TTF_CHECK_POINTER(font, -1);
+
     return font->outline_val;
 }
 
 void TTF_SetFontHinting(TTF_Font *font, int hinting)
 {
+    TTF_CHECK_POINTER(font,);
+
     if (hinting == TTF_HINTING_LIGHT || hinting == TTF_HINTING_LIGHT_SUBPIXEL) {
         font->ft_load_target = FT_LOAD_TARGET_LIGHT;
     } else if (hinting == TTF_HINTING_MONO) {
@@ -2996,6 +3026,8 @@ void TTF_SetFontHinting(TTF_Font *font, int hinting)
 
 int TTF_GetFontHinting(const TTF_Font *font)
 {
+    TTF_CHECK_POINTER(font, -1);
+
     if (font->ft_load_target == FT_LOAD_TARGET_LIGHT) {
         if (font->render_subpixel == 0) {
             return TTF_HINTING_LIGHT;
@@ -3028,6 +3060,9 @@ int TTF_WasInit(void)
 int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int index)
 {
     FT_Vector delta;
+
+    TTF_CHECK_POINTER(font, -1);
+
     FT_Get_Kerning(font->face, (FT_UInt)prev_index, (FT_UInt)index, FT_KERNING_DEFAULT, &delta);
     return (int)(delta.x >> 6);
 }
@@ -3037,6 +3072,8 @@ int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous_ch, Uint16 ch)
     FT_Error error;
     c_glyph *prev_glyph, *glyph;
     FT_Vector delta;
+
+    TTF_CHECK_POINTER(font, -1);
 
     if (ch == UNICODE_BOM_NATIVE || ch == UNICODE_BOM_SWAPPED) {
         return 0;
