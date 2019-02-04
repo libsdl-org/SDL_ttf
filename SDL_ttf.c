@@ -1057,7 +1057,7 @@ static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Ui
 
     /* Let SDL handle the memory allocation */
     textbuf->flags &= ~SDL_PREALLOC;
-    textbuf->flags |= SDL_MEMALIGNED;
+    textbuf->flags |= SDL_SIMD_ALIGNED;
 
     /* Initialize with background to 0 */
     SDL_memset(pixels, 0, height * pitch);
@@ -1121,7 +1121,7 @@ static SDL_Surface* Create_Surface_Shaded(int width, int height, SDL_Color fg, S
 
     /* Let SDL handle the memory allocation */
     textbuf->flags &= ~SDL_PREALLOC;
-    textbuf->flags |= SDL_MEMALIGNED;
+    textbuf->flags |= SDL_SIMD_ALIGNED;
 
     /* Initialize with background to 0 */
     SDL_memset(pixels, 0, height * pitch);
@@ -1218,7 +1218,7 @@ static SDL_Surface *Create_Surface_Blended(int width, int height, SDL_Color fg, 
 
         /* Let SDL handle the memory allocation */
         textbuf->flags &= ~SDL_PREALLOC;
-        textbuf->flags |= SDL_MEMALIGNED;
+        textbuf->flags |= SDL_SIMD_ALIGNED;
 
         /* Initialize with fg and 0 alpha */
         SDL_memset4(pixels, bgcolor, (height * pitch) / 4);
