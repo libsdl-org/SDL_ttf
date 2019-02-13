@@ -1645,6 +1645,23 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
         cached->sz_rows  = slot->bitmap.rows;
         cached->sz_width = slot->bitmap.width;
 
+        /* Current version of freetype is 2.9.1, but on older freetype (2.8.1) this can be 0.
+         * Try to get them from 'FT_Glyph_Metrics' */
+        if (cached->sz_left == 0 && cached->sz_top == 0 && cached->sz_rows == 0 && cached->sz_width == 0) {
+            FT_Glyph_Metrics *metrics = &slot->metrics;
+            if (metrics) {
+                int minx = FT_FLOOR(metrics->horiBearingX);
+                int maxx = FT_CEIL(metrics->horiBearingX + metrics->width);
+                int maxy = FT_FLOOR(metrics->horiBearingY);
+                int miny = maxy - FT_CEIL(metrics->height);
+
+                cached->sz_left  = minx;
+                cached->sz_top   = maxy;
+                cached->sz_rows  = maxy - miny;
+                cached->sz_width = maxx - minx;
+            }
+        }
+
         /* All FP 26.6 are 'long' but 'int' should be engouh */
         cached->advance  = (int)slot->metrics.horiAdvance; /* FP 26.6 */
 
