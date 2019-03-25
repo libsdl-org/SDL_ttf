@@ -245,7 +245,11 @@ typedef enum {
 static int TTF_initFontMetrics(TTF_Font *font);
 
 static int TTF_Size_Internal(TTF_Font *font, const char *text, const str_type_t str_type,
-        int *w, int *h, int *xstart, int *ystart);
+        int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count);
+
+#define NO_MEASUREMENT  \
+        0, NULL, NULL
+
 
 static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const str_type_t str_type,
         SDL_Color fg, SDL_Color bg, const render_mode_t render_mode);
@@ -2389,7 +2393,8 @@ int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
 
 static int TTF_Size_Internal(TTF_Font *font,
         const char *text, const str_type_t str_type,
-        int *w, int *h, int *xstart, int *ystart)
+        int *w, int *h, int *xstart, int *ystart,
+        int measure_width, int *extent, int *count)
 {
     int x = 0;
     int pos_x, pos_y;
@@ -2402,6 +2407,10 @@ static int TTF_Size_Internal(TTF_Font *font,
     FT_UInt prev_index = 0;
     FT_Pos  prev_delta = 0;
     int prev_advance = 0;
+
+    /* Measurement mode */
+    int char_count = 0;
+    int current_width = 0;
 
     TTF_CHECK_INITIALIZED(-1);
     TTF_CHECK_POINTER(font, -1);
@@ -2506,6 +2515,16 @@ static int TTF_Size_Internal(TTF_Font *font,
         maxx = SDL_max(maxx, pos_x + glyph->sz_width);
         miny = SDL_min(miny, pos_y);
         maxy = SDL_max(maxy, pos_y + glyph->sz_rows);
+
+        /* Measurement mode */
+        if (measure_width) {
+            int cw = maxx - minx;
+            if (cw >= measure_width) {
+                current_width = cw;
+                break;
+            }
+            char_count += 1;
+        }
     }
 
     /* Allows to render a string with only one space (bug 4344). */
@@ -2530,6 +2549,16 @@ static int TTF_Size_Internal(TTF_Font *font,
         *h = (maxy - miny);
     }
 
+    /* Measurement mode */
+    if (measure_width) {
+        if (extent) {
+            *extent = current_width;
+        }
+        if (count) {
+            *count = char_count;
+        }
+    }
+
     if (utf8_alloc)  SDL_stack_free(utf8_alloc);
     return 0;
 failure:
@@ -2539,17 +2568,32 @@ failure:
 
 int TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h)
 {
-    return TTF_Size_Internal(font, text, STR_TEXT, w, h, NULL, NULL);
+    return TTF_Size_Internal(font, text, STR_TEXT, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
 int TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h)
 {
-    return TTF_Size_Internal(font, text, STR_UTF8, w, h, NULL, NULL);
+    return TTF_Size_Internal(font, text, STR_UTF8, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
 int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 {
-    return TTF_Size_Internal(font, (const char *)text, STR_UNICODE, w, h, NULL, NULL);
+    return TTF_Size_Internal(font, (const char *)text, STR_UNICODE, w, h, NULL, NULL, NO_MEASUREMENT);
+}
+
+int TTF_MeasureText(TTF_Font *font, const char *text, int width, int *extent, int *count)
+{
+    return TTF_Size_Internal(font, text, STR_TEXT, NULL, NULL, NULL, NULL, width, extent, count);
+}
+
+int TTF_MeasureUTF8(TTF_Font *font, const char *text, int width, int *extent, int *count)
+{
+    return TTF_Size_Internal(font, text, STR_UTF8, NULL, NULL, NULL, NULL, width, extent, count);
+}
+
+int TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int width, int *extent, int *count)
+{
+    return TTF_Size_Internal(font, (const char *)text, STR_UNICODE, NULL, NULL, NULL, NULL, width, extent, count);
 }
 
 static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const str_type_t str_type,
@@ -2585,7 +2629,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
     }
 
     /* Get the dimensions of the text surface */
-    if ((TTF_Size_Internal(font, text, STR_UTF8, &width, &height, &xstart, &ystart) < 0) || !width) {
+    if ((TTF_Size_Internal(font, text, STR_UTF8, &width, &height, &xstart, &ystart, NO_MEASUREMENT) < 0) || !width) {
         TTF_SetError("Text has zero width");
         goto failure;
     }
@@ -2700,13 +2744,10 @@ SDL_Surface* TTF_RenderUNICODE_Blended(TTF_Font *font, const Uint16 *text, SDL_C
     return TTF_Render_Internal(font, (const char *)text, STR_UNICODE, fg, fg /* unused */, RENDER_BLENDED);
 }
 
-static SDL_bool CharacterIsDelimiter(char c, const char *delimiters)
+static SDL_bool CharacterIsDelimiter(char c)
 {
-    while (*delimiters) {
-        if (c == *delimiters) {
-            return SDL_TRUE;
-        }
-        ++delimiters;
+    if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+        return SDL_TRUE;
     }
     return SDL_FALSE;
 }
@@ -2720,7 +2761,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     Uint8 *utf8_alloc = NULL;
 
     int i, numLines, rowHeight, lineskip;
-    char *str = NULL, **strLines = NULL, **newLines = NULL;
+    char **strLines = NULL, *text_cpy;
 
     TTF_CHECK_INITIALIZED(NULL);
     TTF_CHECK_POINTER(font, NULL);
@@ -2734,7 +2775,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
             goto failure;
         }
         LATIN1_to_UTF8(text, utf8_alloc);
-        text = (const char *)utf8_alloc;
+        text_cpy = (char *)utf8_alloc;
     } else if (str_type == STR_UNICODE) {
         const Uint16 *text16 = (const Uint16 *) text;
         utf8_alloc = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text16));
@@ -2743,93 +2784,86 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
             goto failure;
         }
         UCS2_to_UTF8(text16, utf8_alloc);
-        text = (const char *)utf8_alloc;
+        text_cpy = (char *)utf8_alloc;
+    } else {
+        /* Use a copy anyway */
+        size_t str_len = SDL_strlen(text);
+        utf8_alloc = SDL_stack_alloc(Uint8, str_len + 1);
+        if (utf8_alloc == NULL) {
+            SDL_OutOfMemory();
+            goto failure;
+        }
+        SDL_memcpy(utf8_alloc, text, str_len + 1);
+        text_cpy = (char *)utf8_alloc;
     }
 
     /* Get the dimensions of the text surface */
-    if ((TTF_SizeUTF8(font, text, &width, &height) < 0) || !width) {
+    if ((TTF_SizeUTF8(font, text_cpy, &width, &height) < 0) || !width) {
         TTF_SetError("Text has zero width");
         goto failure;
     }
 
     numLines = 1;
-    str = NULL;
-    strLines = NULL;
-    if (wrapLength > 0 && *text) {
-        const char *wrapDelims = " \t\r\n";
-        int w, h;
-        char *spot, *tok, *next_tok, *end;
-        char delim;
-        size_t str_len = SDL_strlen(text);
 
+    if (wrapLength > 0 && *text_cpy) {
+        int maxNumLines = 0;
+        size_t textlen = SDL_strlen(text_cpy);
         numLines = 0;
 
-        str = SDL_stack_alloc(char, str_len+1);
-        if (str == NULL) {
-            TTF_SetError("Out of memory");
-            goto failure;
-        }
-
-        SDL_strlcpy(str, text, str_len+1);
-        tok = str;
-        end = str + str_len;
         do {
-            newLines = (char **)SDL_realloc(strLines, (numLines + 1) * sizeof (*strLines));
-            if (!newLines) {
-                TTF_SetError("Out of memory");
+            int extent = 0, max_count = 0, char_count = 0;
+            size_t save_textlen = -1;
+            char *save_text  = NULL;
+
+            if (numLines >= maxNumLines) {
+                char **saved = strLines;
+                maxNumLines += (width / wrapLength) + 1;
+                strLines = (char **)SDL_realloc(strLines, maxNumLines * sizeof (*strLines));
+                if (strLines == NULL) {
+                    strLines = saved;
+                    SDL_OutOfMemory();
+                    goto failure;
+                }
+            }
+
+            strLines[numLines++] = text_cpy;
+
+            if (TTF_MeasureUTF8(font, text_cpy, wrapLength, &extent, &max_count) < 0) {
+                TTF_SetError("Error measure text");
                 goto failure;
             }
-            strLines = newLines;
-            strLines[numLines++] = tok;
 
-            /* Look for the end of the line */
-            if ((spot = SDL_strchr(tok, '\r')) != NULL ||
-                (spot = SDL_strchr(tok, '\n')) != NULL) {
-                if (*spot == '\r') {
-                    ++spot;
+            while (textlen > 0) {
+                Uint32 c = UTF8_getch(&text_cpy, &textlen);
+                if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
+                    continue;
                 }
-                if (*spot == '\n') {
-                    ++spot;
-                }
-            } else {
-                spot = end;
-            }
-            next_tok = spot;
 
-            /* Get the longest string that will fit in the desired space */
-            for (; ;) {
-                /* Strip trailing whitespace */
-                while (spot > tok &&
-                        CharacterIsDelimiter(spot[-1], wrapDelims)) {
-                    --spot;
-                }
-                if (spot == tok) {
-                    if (CharacterIsDelimiter(*spot, wrapDelims)) {
-                        *spot = '\0';
+                char_count += 1;
+
+                /* Record last delimiter position */
+                if (CharacterIsDelimiter(c)) {
+                    save_textlen = textlen;
+                    save_text = text_cpy;
+                    /* Break, if new line */
+                    if (c == '\n' || c == '\r') {
+                        *(text_cpy - 1) = '\0';
+                        break;
                     }
-                    break;
-                }
-                delim = *spot;
-                *spot = '\0';
-
-                TTF_SizeUTF8(font, tok, &w, &h);
-                if ((Uint32)w <= wrapLength) {
-                    break;
-                } else {
-                    /* Back up and try again... */
-                    *spot = delim;
                 }
 
-                while (spot > tok &&
-                        !CharacterIsDelimiter(spot[-1], wrapDelims)) {
-                    --spot;
-                }
-                if (spot > tok) {
-                    next_tok = spot;
+                /* Break, if reach the limit */
+                if (char_count == max_count) {
+                    break;
                 }
             }
-            tok = next_tok;
-        } while (tok < end);
+
+            /* Cut at last delimiter/new lines, otherwise in the middle of the word */
+            if (save_text && textlen) {
+                text_cpy = save_text;
+                textlen = save_textlen;
+            }
+        } while (textlen > 0);
     }
 
     lineskip = TTF_FontLineSkip(font);
@@ -2860,13 +2894,19 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     /* Render each line */
     for (i = 0; i < numLines; i++) {
         int xstart, ystart, line_width;
+        char save_c = 0;
 
+        /* Add end-of-line */
         if (strLines) {
             text = strLines[i];
+            if (i + 1 < numLines) {
+                save_c = strLines[i + 1][0];
+                strLines[i + 1][0] = '\0';
+            }
         }
 
         /* Initialize xstart, ystart and compute positions */
-        TTF_Size_Internal(font, text, STR_UTF8, &line_width, NULL, &xstart, &ystart);
+        TTF_Size_Internal(font, text, STR_UTF8, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT);
 
         /* Move to i-th line */
         ystart += i * lineskip;
@@ -2884,16 +2924,21 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
             Draw_Line(textbuf, ystart + font->strikethrough_top_row, line_width, font->line_thickness, color, render_mode);
         }
+
+        /* Remove end-of-line */
+        if (strLines) {
+            if (i + 1 < numLines) {
+                strLines[i + 1][0] = save_c;
+            }
+        }
     }
 
     if (strLines)    SDL_free(strLines);
-    if (str)         SDL_stack_free(str);
     if (utf8_alloc)  SDL_stack_free(utf8_alloc);
     return textbuf;
 failure:
     if (textbuf)     SDL_FreeSurface(textbuf);
     if (strLines)    SDL_free(strLines);
-    if (str)         SDL_stack_free(str);
     if (utf8_alloc)  SDL_stack_free(utf8_alloc);
     return NULL;
 }
