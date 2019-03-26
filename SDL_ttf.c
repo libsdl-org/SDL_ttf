@@ -2216,17 +2216,19 @@ static void UCS2_to_UTF8(const Uint16 *src, Uint8 *dst)
     *dst = '\0';
 }
 
-/* Gets a unicode value from a UTF-8 encoded string and advance the string */
+/* Gets a unicode value from a UTF-8 encoded string
+ * Ouputs increment to advance the string */
 #define UNKNOWN_UNICODE 0xFFFD
-static Uint32 UTF8_getch(const char **src, size_t *srclen)
+static Uint32 UTF8_getch(const char *src, size_t srclen, int *inc)
 {
-    const Uint8 *p = *(const Uint8 **)src;
+    const Uint8 *p = (const Uint8 *)src;
     size_t left = 0;
+    size_t save_srclen = srclen;
     SDL_bool overlong = SDL_FALSE;
     SDL_bool underflow = SDL_FALSE;
     Uint32 ch = UNKNOWN_UNICODE;
 
-    if (*srclen == 0) {
+    if (srclen == 0) {
         return UNKNOWN_UNICODE;
     }
     if (p[0] >= 0xFC) {
@@ -2274,9 +2276,8 @@ static Uint32 UTF8_getch(const char **src, size_t *srclen)
             ch = (Uint32) p[0];
         }
     }
-    ++*src;
-    --*srclen;
-    while (left > 0 && *srclen > 0) {
+    --srclen;
+    while (left > 0 && srclen > 0) {
         ++p;
         if ((p[0] & 0xC0) != 0x80) {
             ch = UNKNOWN_UNICODE;
@@ -2284,8 +2285,7 @@ static Uint32 UTF8_getch(const char **src, size_t *srclen)
         }
         ch <<= 6;
         ch |= (p[0] & 0x3F);
-        ++*src;
-        --*srclen;
+        --srclen;
         --left;
     }
     if (left > 0) {
@@ -2303,6 +2303,9 @@ static Uint32 UTF8_getch(const char **src, size_t *srclen)
         (ch == 0xFFFE || ch == 0xFFFF) || ch > 0x10FFFF) {
         ch = UNKNOWN_UNICODE;
     }
+
+    *inc = save_srclen - srclen;
+
     return ch;
 }
 
@@ -2444,8 +2447,11 @@ static int TTF_Size_Internal(TTF_Font *font,
     /* Load each character and sum it's bounding box */
     textlen = SDL_strlen(text);
     while (textlen > 0) {
-        Uint32 c = UTF8_getch(&text, &textlen);
+        int inc = 0;
+        Uint32 c = UTF8_getch(text, textlen, &inc);
         FT_UInt idx = get_char_index(font, c);
+        text += inc;
+        textlen -= inc;
 
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
@@ -2834,7 +2840,11 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
             }
 
             while (textlen > 0) {
-                Uint32 c = UTF8_getch(&text_cpy, &textlen);
+                int inc = 0;
+                Uint32 c = UTF8_getch(text_cpy, textlen, &inc);
+                text_cpy += inc;
+                textlen -= inc;
+
                 if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
                     continue;
                 }
