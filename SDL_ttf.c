@@ -36,6 +36,40 @@
 #include "SDL_ttf.h"
 #include "SDL_cpuinfo.h"
 
+#ifndef TTF_USE_HARFBUZZ
+#  define TTF_USE_HARFBUZZ 0
+#endif
+
+#if TTF_USE_HARFBUZZ
+#include <hb.h>
+#include <hb-ft.h>
+
+/* Default configuration */
+static hb_direction_t g_hb_direction = HB_DIRECTION_LTR;
+static hb_script_t    g_hb_script = HB_SCRIPT_UNKNOWN;
+#endif
+
+/* Harfbuzz */
+int TTF_SetDirection(int direction) /* hb_direction_t */
+{
+#if TTF_USE_HARFBUZZ
+   g_hb_direction = direction;
+   return 0;
+#else
+   return -1;
+#endif
+}
+
+int TTF_SetScript(int script) /* hb_script_t */
+{
+#if TTF_USE_HARFBUZZ
+   g_hb_script = script;
+   return 0;
+#else
+   return -1;
+#endif
+}
+
 /* Round glyph to 16 bytes width and use SSE2 instructions */
 #if defined(__SSE2__)
 #  define HAVE_SSE2_INTRINSICS 1
@@ -202,6 +236,9 @@ struct _TTF_Font {
     /* Hinting modes */
     int ft_load_target;
     int render_subpixel;
+#if TTF_USE_HARFBUZZ
+    hb_font_t *hb_font;
+#endif
 };
 
 /* Tell if SDL_ttf has to handle the style */
@@ -1459,6 +1496,20 @@ TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long inde
         return NULL;
     }
 
+#if TTF_USE_HARFBUZZ
+    font->hb_font = hb_ft_font_create(face, NULL);
+    if (font->hb_font == NULL) {
+        TTF_SetError("Cannot create harfbuzz font");
+        TTF_CloseFont(font);
+        return NULL;
+    }
+
+    /* Default load-flags of hb_ft_font_create is no-hinting.
+     * So unless you call hb_ft_font_set_load_flags to match what flags you use for rendering,
+     * you will get mismatching advances and raster. */
+    hb_ft_font_set_load_flags(font->hb_font, FT_LOAD_DEFAULT | font->ft_load_target);
+#endif
+
     if (TTF_SetFontSize(font, ptsize) < 0) {
         TTF_SetFTError("Couldn't set font size", error);
         TTF_CloseFont(font);
@@ -1506,6 +1557,11 @@ int TTF_SetFontSize(TTF_Font *font, int ptsize)
     }
 
     Flush_Cache(font);
+
+#if TTF_USE_HARFBUZZ
+    /* Call when size or variations settings on underlying FT_Face change. */
+    hb_ft_font_changed(font->hb_font);
+#endif
 
     return 0;
 }
@@ -2120,6 +2176,9 @@ static SDL_INLINE int Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out
 void TTF_CloseFont(TTF_Font *font)
 {
     if (font) {
+#if TTF_USE_HARFBUZZ
+        hb_font_destroy(font->hb_font);
+#endif
         Flush_Cache(font);
         if (font->face) {
             FT_Done_Face(font->face);
@@ -2405,10 +2464,18 @@ static int TTF_Size_Internal(TTF_Font *font,
     int miny = 0, maxy = 0;
     Uint8 *utf8_alloc = NULL;
     c_glyph *glyph;
+#if TTF_USE_HARFBUZZ
+    hb_buffer_t *hb_buffer = NULL;
+    unsigned int g;
+    unsigned int glyph_count;
+    hb_glyph_info_t *hb_glyph_info;
+    hb_glyph_position_t *hb_glyph_position;
+#else
     size_t textlen;
     int skip_first = 1;
     FT_UInt prev_index = 0;
     FT_Pos  prev_delta = 0;
+#endif
     int prev_advance = 0;
 
     /* Measurement mode */
@@ -2444,6 +2511,34 @@ static int TTF_Size_Internal(TTF_Font *font,
     /* Reset buffer */
     font->pos_len = 0;
 
+#if TTF_USE_HARFBUZZ
+    /* Create a buffer for harfbuzz to use */
+    hb_buffer = hb_buffer_create();
+    if (hb_buffer == NULL) {
+       TTF_SetError("Cannot create harfbuzz buffer");
+       goto failure;
+    }
+
+    /* Set global configuration */
+    hb_buffer_set_direction(hb_buffer, g_hb_direction);
+    hb_buffer_set_script(hb_buffer, g_hb_script);
+
+    /* Layout the text */
+    hb_buffer_add_utf8(hb_buffer, text, -1, 0, -1);
+    hb_shape(font->hb_font, hb_buffer, NULL, 0);
+
+    /* Get the result */
+    hb_glyph_info = hb_buffer_get_glyph_infos(hb_buffer, &glyph_count);
+    hb_glyph_position = hb_buffer_get_glyph_positions(hb_buffer, &glyph_count);
+
+    /* Load and render each character */
+    for (g = 0; g < glyph_count; g++)
+    {
+        FT_UInt idx   = hb_glyph_info[g].codepoint;
+        int x_advance = hb_glyph_position[g].x_advance;
+        int x_offset  = hb_glyph_position[g].x_offset;
+        int y_offset  = hb_glyph_position[g].y_offset;
+#else
     /* Load each character and sum it's bounding box */
     textlen = SDL_strlen(text);
     while (textlen > 0) {
@@ -2456,6 +2551,7 @@ static int TTF_Size_Internal(TTF_Font *font,
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
         }
+#endif
         if (Find_GlyphByIndex(font, idx, 0, 0, 0, 0, &glyph, NULL) < 0) {
             goto failure;
         }
@@ -2472,6 +2568,12 @@ static int TTF_Size_Internal(TTF_Font *font,
             }
         }
 
+#if TTF_USE_HARFBUZZ
+        /* Compute positions */
+        pos_x  = x                     + x_offset;
+        pos_y  = F26Dot6(font->ascent) - y_offset;
+        x     += x_advance;
+#else
         /* Compute positions */
         x += prev_advance;
         prev_advance = glyph->advance;
@@ -2506,7 +2608,7 @@ static int TTF_Size_Internal(TTF_Font *font,
         /* Compute positions where to copy the glyph bitmap */
         pos_x = x;
         pos_y = F26Dot6(font->ascent);
-
+#endif
         /* Store things for Render_Line() */
         font->pos_buf[font->pos_len].x     = pos_x;
         font->pos_buf[font->pos_len].y     = pos_y;
@@ -2565,9 +2667,15 @@ static int TTF_Size_Internal(TTF_Font *font,
         }
     }
 
+#if TTF_USE_HARFBUZZ
+    if (hb_buffer)   hb_buffer_destroy(hb_buffer);
+#endif
     if (utf8_alloc)  SDL_stack_free(utf8_alloc);
     return 0;
 failure:
+#if TTF_USE_HARFBUZZ
+    if (hb_buffer)   hb_buffer_destroy(hb_buffer);
+#endif
     if (utf8_alloc)  SDL_stack_free(utf8_alloc);
     return -1;
 }
@@ -3092,6 +3200,10 @@ void TTF_SetFontHinting(TTF_Font *font, int hinting)
     }
 
     font->render_subpixel = (hinting == TTF_HINTING_LIGHT_SUBPIXEL) ? 1 : 0;
+#if TTF_USE_HARFBUZZ
+    /* update flag for HB */
+    hb_ft_font_set_load_flags(font->hb_font, FT_LOAD_DEFAULT | font->ft_load_target);
+#endif
 
     Flush_Cache(font);
 }
