@@ -305,6 +305,15 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font,
 #define TTF_RenderUNICODE(font, text, fg, bg)   \
     TTF_RenderUNICODE_Shaded(font, text, fg, bg)
 
+/* Set Direction and Script to be used for text shaping.
+   - direction is of type hb_direction_t
+   - script is of type hb_script_t
+
+   This functions returns always 0, or -1 if SDL_ttf is not compiled with HarfBuzz
+*/
+extern DECLSPEC int SDLCALL TTF_SetDirection(int direction); /* hb_direction_t */
+extern DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_script_t */
+
 /* Close an opened font file */
 extern DECLSPEC void SDLCALL TTF_CloseFont(TTF_Font *font);
 
