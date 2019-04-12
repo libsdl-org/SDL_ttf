@@ -2628,9 +2628,9 @@ static int TTF_Size_Internal(TTF_Font *font,
         if (measure_width) {
             int cw = maxx - minx;
             if (cw >= measure_width) {
-                current_width = cw;
                 break;
             }
+            current_width = cw;
             char_count += 1;
         }
     }
