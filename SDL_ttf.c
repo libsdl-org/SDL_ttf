@@ -2626,7 +2626,7 @@ static int TTF_Size_Internal(TTF_Font *font,
 
         /* Measurement mode */
         if (measure_width) {
-            int cw = maxx - minx;
+            int cw = SDL_max(maxx, FT_FLOOR(x + prev_advance)) - minx;
             if (cw >= measure_width) {
                 break;
             }
