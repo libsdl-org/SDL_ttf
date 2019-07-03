@@ -1598,16 +1598,18 @@ static int TTF_initFontMetrics(TTF_Font *font)
         font->line_thickness = 1;
     }
 
-    /* Adjust OutlineStyle, only for scalable fonts */
-    if (font->outline_val > 0 && FT_IS_SCALABLE(face)) {
-        int fo = font->outline_val;
-        font->line_thickness += 2 * fo;
-        underline_offset     += 2 * fo;
-        font->ascent         += 2 * fo;
-    }
-
     font->underline_top_row     = font->ascent - underline_offset - 1;
     font->strikethrough_top_row = font->height / 2;
+
+    /* Adjust OutlineStyle, only for scalable fonts */
+    /* TTF_Size(): increase w and h by 2 * outline_val, translate positionning by 1 * outline_val */
+    if (font->outline_val > 0) {
+        int fo = font->outline_val;
+        font->line_thickness        += 2 * fo;
+        font->height                += 2 * fo;
+        font->underline_top_row     -= fo;
+        font->strikethrough_top_row -= fo;
+    }
 
     /* Robustness: no negative values allowed */
     font->underline_top_row     = SDL_max(0, font->underline_top_row);
@@ -1750,14 +1752,6 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
         /* Adjust for italic text */
         if (TTF_HANDLE_STYLE_ITALIC(font) && slot->format == FT_GLYPH_FORMAT_OUTLINE) {
             cached->sz_width += (GLYPH_ITALICS * font->height) >> 16;
-        }
-
-        /* Adjust OutlineStyle */
-        if (font->outline_val > 0 && slot->format == FT_GLYPH_FORMAT_OUTLINE) {
-            int fo = font->outline_val;
-            cached->sz_width += 2 * fo;
-            cached->sz_rows  += 2 * fo;
-            cached->sz_left  -= fo;
         }
 
         /* Adjust for subpixel */
@@ -2437,15 +2431,19 @@ int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
 
     if (minx) {
         *minx = glyph->sz_left;
+        *minx -= font->outline_val;
     }
     if (maxx) {
         *maxx = glyph->sz_left + glyph->sz_width;
+        *maxx += font->outline_val;
     }
     if (miny) {
         *miny = glyph->sz_top - glyph->sz_rows;
+        *miny -= font->outline_val;
     }
     if (maxy) {
         *maxy = glyph->sz_top;
+        *maxy += font->outline_val;
     }
     if (advance) {
         *advance = FT_CEIL(glyph->advance);
@@ -2627,6 +2625,7 @@ static int TTF_Size_Internal(TTF_Font *font,
         /* Measurement mode */
         if (measure_width) {
             int cw = SDL_max(maxx, FT_FLOOR(x + prev_advance)) - minx;
+            cw += 2 * font->outline_val;
             if (cw >= measure_width) {
                 break;
             }
@@ -2642,19 +2641,25 @@ static int TTF_Size_Internal(TTF_Font *font,
      * a negative position. In this case an offset is needed for the whole line. */
     if (xstart) {
         *xstart = (minx < 0)? -minx : 0;
+        *xstart += font->outline_val;
     }
 
     /* Initial y start: compensation for a negative y offset */
     if (ystart) {
         *ystart = (miny < 0)? -miny : 0;
+        *ystart += font->outline_val;
     }
 
     /* Fill the bounds rectangle */
     if (w) {
         *w = (maxx - minx);
+        if (*w != 0) {
+            *w += 2 * font->outline_val;
+        }
     }
     if (h) {
         *h = (maxy - miny);
+        *h += 2 * font->outline_val;
     }
 
     /* Measurement mode */
