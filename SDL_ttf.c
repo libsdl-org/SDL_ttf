@@ -1606,7 +1606,6 @@ static int TTF_initFontMetrics(TTF_Font *font)
     if (font->outline_val > 0) {
         int fo = font->outline_val;
         font->line_thickness        += 2 * fo;
-        font->height                += 2 * fo;
         font->underline_top_row     -= fo;
         font->strikethrough_top_row -= fo;
     }
@@ -2369,7 +2368,7 @@ int TTF_FontHeight(const TTF_Font *font)
 
 int TTF_FontAscent(const TTF_Font *font)
 {
-    return font->ascent;
+    return font->ascent + 2 * font->outline_val;
 }
 
 int TTF_FontDescent(const TTF_Font *font)
@@ -2431,19 +2430,17 @@ int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
 
     if (minx) {
         *minx = glyph->sz_left;
-        *minx -= font->outline_val;
     }
     if (maxx) {
         *maxx = glyph->sz_left + glyph->sz_width;
-        *maxx += font->outline_val;
+        *maxx += 2 * font->outline_val;
     }
     if (miny) {
         *miny = glyph->sz_top - glyph->sz_rows;
-        *miny -= font->outline_val;
     }
     if (maxy) {
         *maxy = glyph->sz_top;
-        *maxy += font->outline_val;
+        *maxy += 2 * font->outline_val;
     }
     if (advance) {
         *advance = FT_CEIL(glyph->advance);
