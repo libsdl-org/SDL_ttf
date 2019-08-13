@@ -6,6 +6,41 @@ endif()
 cmake_minimum_required(VERSION 3.0)
 project(SDL_ttf C)
 
+if (ANDROID)
+
+    set(TTF_WITH_HARFBUZZ OFF CACHE BOOL "" FORCE)
+
+    option(TTF_WITH_HARFBUZZ "use harfbuzz to improve text shaping" OFF)
+
+    add_library(SDL_ttf SHARED)
+    target_sources(SDL_ttf PRIVATE SDL_ttf.c)
+
+    if (TTF_WITH_HARFBUZZ)
+        set(HARFBUZZ_INCLUDE_DIRS ../../external/harfbuzz-2.3.1/src)
+        set(HARFBUZZ_LIBRARIES harfbuzz)
+        set(FREETYPE_INCLUDE_DIRS ../../external/freetype-2.9.1/include)
+        set(FREETYPE_LIBRARY freetype)
+
+        add_definitions("-DTTF_USE_HARFBUZZ=1")
+        set(HB_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+        set(HB_HAVE_FREETYPE ON CACHE BOOL "" FORCE)
+        set(FT_WITH_HARFBUZZ ON CACHE BOOL "" FORCE)
+
+        add_subdirectory(external/harfbuzz-2.3.1)
+        include_directories(external/harfbuzz-2.3.1/src)
+        target_link_libraries(SDL_ttf PRIVATE harfbuzz)
+
+    else()
+        set(FT_WITH_HARFBUZZ OFF CACHE BOOL "" FORCE)
+    endif()
+
+    add_subdirectory(external/freetype-2.9.1)
+    include_directories(external/freetype-2.9.1/include)
+    target_link_libraries(SDL_ttf PRIVATE freetype SDL2)
+
+else()
+
+
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
@@ -85,3 +120,7 @@ if (PKG_CONFIG_FOUND)
       DESTINATION "lib${LIB_SUFFIX}/pkgconfig")
   endif ()
 endif ()
+
+
+endif()
+
