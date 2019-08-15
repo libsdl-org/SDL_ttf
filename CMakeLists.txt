@@ -12,8 +12,8 @@ if (ANDROID)
 
     option(TTF_WITH_HARFBUZZ "use harfbuzz to improve text shaping" OFF)
 
-    add_library(SDL_ttf SHARED)
-    target_sources(SDL_ttf PRIVATE SDL_ttf.c)
+    add_library(SDL2_ttf SHARED)
+    target_sources(SDL2_ttf PRIVATE SDL_ttf.c)
 
     if (TTF_WITH_HARFBUZZ)
         set(HARFBUZZ_INCLUDE_DIRS ../../external/harfbuzz-2.3.1/src)
@@ -28,7 +28,7 @@ if (ANDROID)
 
         add_subdirectory(external/harfbuzz-2.3.1)
         include_directories(external/harfbuzz-2.3.1/src)
-        target_link_libraries(SDL_ttf PRIVATE harfbuzz)
+        target_link_libraries(SDL2_ttf PRIVATE harfbuzz)
 
     else()
         set(FT_WITH_HARFBUZZ OFF CACHE BOOL "" FORCE)
@@ -36,7 +36,9 @@ if (ANDROID)
 
     add_subdirectory(external/freetype-2.9.1)
     include_directories(external/freetype-2.9.1/include)
-    target_link_libraries(SDL_ttf PRIVATE freetype SDL2)
+
+    target_include_directories(SDL2_ttf PUBLIC .)
+    target_link_libraries(SDL2_ttf PRIVATE freetype SDL2)
 
 else()
 
