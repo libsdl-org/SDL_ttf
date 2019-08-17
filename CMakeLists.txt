@@ -8,8 +8,6 @@ project(SDL_ttf C)
 
 if (ANDROID)
 
-    set(TTF_WITH_HARFBUZZ OFF CACHE BOOL "" FORCE)
-
     option(TTF_WITH_HARFBUZZ "use harfbuzz to improve text shaping" OFF)
 
     add_library(SDL2_ttf SHARED)
@@ -27,7 +25,7 @@ if (ANDROID)
         set(FT_WITH_HARFBUZZ ON CACHE BOOL "" FORCE)
 
         add_subdirectory(external/harfbuzz-2.3.1)
-        include_directories(external/harfbuzz-2.3.1/src)
+        target_include_directories(SDL2_ttf PUBLIC external/harfbuzz-2.3.1/src)
         target_link_libraries(SDL2_ttf PRIVATE harfbuzz)
 
     else()
