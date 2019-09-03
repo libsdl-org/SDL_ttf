@@ -2417,7 +2417,18 @@ int TTF_GlyphIsProvided(TTF_Font *font, Uint16 ch)
     return (int)get_char_index(font, ch);
 }
 
+int TTF_GlyphIsProvided32(TTF_Font *font, Uint32 ch)
+{
+    return (int)get_char_index(font, ch);
+}
+
 int TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
+                     int *minx, int *maxx, int *miny, int *maxy, int *advance)
+{
+    return TTF_GlyphMetrics32(font, ch, minx, maxx, miny, maxy, advance);
+}
+
+int TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
                      int *minx, int *maxx, int *miny, int *maxy, int *advance)
 {
     c_glyph *glyph;
