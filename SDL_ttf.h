@@ -106,6 +106,8 @@ extern DECLSPEC int SDLCALL TTF_Init(void);
  * is too high, the last indexed size will be the default. */
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFont(const char *file, int ptsize);
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int ptsize, long index);
+/* Open a font file from a SDL_RWops: 'src' must be kept alive for the lifetime of the TTF_Font.
+ * 'freesrc' can be set so that TTF_CloseFont closes the RWops */
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontRW(SDL_RWops *src, int freesrc, int ptsize);
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexRW(SDL_RWops *src, int freesrc, int ptsize, long index);
 
