@@ -1,0 +1,45 @@
+From 31e726d939e7b79506d11164d259c9789e429761 Mon Sep 17 00:00:00 2001
+From: Behdad Esfahbod <behdad@behdad.org>
+Date: Fri, 20 Sep 2013 07:20:53 +0200
+Subject: [PATCH] Fix vertical size of emboldened glyphs.
+
+Cf. https://bugzilla.gnome.org/show_bug.cgi?id=686709
+
+* src/base/ftsynth.c (FT_GlyphSlot_Embolden): Adjust `horiBearingY'
+also.
+---
+ src/base/ftsynth.c | 11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/src/base/ftsynth.c b/src/base/ftsynth.c
+index 241d37f..3098a60 100644
+--- a/src/base/ftsynth.c
++++ b/src/base/ftsynth.c
+@@ -4,7 +4,7 @@
+ /*                                                                         */
+ /*    FreeType synthesizing code for emboldening and slanting (body).      */
+ /*                                                                         */
+-/*  Copyright 2000-2006, 2010, 2012 by                                     */
++/*  Copyright 2000-2006, 2010, 2012, 2013 by                               */
+ /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
+ /*                                                                         */
+ /*  This file is part of the FreeType project, and may only be used,       */
+@@ -139,10 +139,11 @@
+     if ( slot->advance.y )
+       slot->advance.y += ystr;
+ 
+-    slot->metrics.width       += xstr;
+-    slot->metrics.height      += ystr;
+-    slot->metrics.horiAdvance += xstr;
+-    slot->metrics.vertAdvance += ystr;
++    slot->metrics.width        += xstr;
++    slot->metrics.height       += ystr;
++    slot->metrics.horiAdvance  += xstr;
++    slot->metrics.vertAdvance  += ystr;
++    slot->metrics.horiBearingY += ystr;
+ 
+     /* XXX: 16-bit overflow case must be excluded before here */
+     if ( slot->format == FT_GLYPH_FORMAT_BITMAP )
+-- 
+1.8.3.1
+

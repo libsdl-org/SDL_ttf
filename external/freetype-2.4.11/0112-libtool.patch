@@ -1,0 +1,12 @@
+--- freetype-2.4.11/builds/unix/freetype-config.in
++++ freetype-2.4.11/builds/unix/freetype-config.in
+@@ -153,8 +153,7 @@ if test "$echo_libs" = "yes" ; then
+ fi
+ 
+ if test "$echo_libtool" = "yes" ; then
+-  convlib="libfreetype.la"
+-  echo ${SYSROOT}$libdir/$convlib
++  echo ""
+ fi
+ 
+ # EOF

@@ -1,0 +1,37 @@
+From 06842c7b49c21f13c0ab61201daab6ff5a358fcc Mon Sep 17 00:00:00 2001
+From: Werner Lemberg <wl@gnu.org>
+Date: Sat, 13 Dec 2014 07:42:51 +0100
+Subject: [PATCH] * src/pcf/pcfread.c (pcf_read_TOC): Improve fix from
+ 2014-12-08.
+
+---
+ ChangeLog         | 4 ++++
+ src/pcf/pcfread.c | 7 ++++---
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/src/pcf/pcfread.c b/src/pcf/pcfread.c
+index e3caf82..a29a9e3 100644
+--- a/src/pcf/pcfread.c
++++ b/src/pcf/pcfread.c
+@@ -189,14 +189,15 @@ THE SOFTWARE.
+       tables++;
+     }
+ 
+-    /* no check of `tables->size' for last table element ... */
++    /* only check `tables->offset' for last table element ... */
+     if ( ( tables->offset > size ) )
+     {
+       error = PCF_Err_Invalid_Table;
+       goto Exit;
+     }
+-    /* ... instead, we adjust `tables->size' to the real value */
+-    tables->size = size - tables->offset;
++    /* ... and adjust `tables->size' to the real value if necessary */
++    if ( tables->size > size - tables->offset )
++      tables->size = size - tables->offset;
+ 
+ #ifdef FT_DEBUG_LEVEL_TRACE
+ 
+-- 
+2.1.0
+

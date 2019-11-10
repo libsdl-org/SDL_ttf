@@ -1,0 +1,14 @@
+--- freetype-2.4.11/src/tools/ftrandom/ftrandom.c.orig	2009-03-14 14:45:26.000000000 +0100
++++ freetype-2.4.11/src/tools/ftrandom/ftrandom.c	2016-02-10 17:51:45.047340575 +0100
+@@ -369,6 +369,11 @@
+           }
+ 
+           fontlist[fcnt].name = strdup( buffer );
++          if ( statb.st_size > LONG_MAX )
++          {
++              fprintf( stderr, "The file is too big\n" );
++              exit( 1 );
++          }
+           fontlist[fcnt].len  = statb.st_size;
+ 
+           figurefiletype( &fontlist[fcnt] );
