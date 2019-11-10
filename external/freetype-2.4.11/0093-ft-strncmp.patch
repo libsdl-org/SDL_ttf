@@ -1,0 +1,228 @@
+commit 9a56764037dfc01a89fe61f5c67971bf50343d00
+Author: Werner Lemberg <wl@gnu.org>
+Date:   Wed Feb 26 13:08:07 2014 +0100
+
+    [bdf] Fix Savannah bug #41692.
+    
+    bdflib puts data from the input stream into a buffer in chunks of
+    1024 bytes.  The data itself gets then parsed line by line, simply
+    increasing the current pointer into the buffer; if the search for
+    the final newline character exceeds the buffer size, more data gets
+    read.
+    
+    However, in case the current line's end is very near to the buffer
+    end, and the keyword to compare with is longer than the current
+    line's length, an out-of-bounds read might happen since `memcmp'
+    doesn't stop properly at the string end.
+    
+    * src/bdf/bdflib.c: s/ft_memcmp/ft_strncmp/ to make comparisons
+    stop at string ends.
+
+diff --git a/src/bdf/bdflib.c b/src/bdf/bdflib.c
+index c9e231e..b0ec292 100644
+--- a/src/bdf/bdflib.c
++++ b/src/bdf/bdflib.c
+@@ -1402,7 +1402,7 @@
+ 
+     /* If the property happens to be a comment, then it doesn't need */
+     /* to be added to the internal hash table.                       */
+-    if ( ft_memcmp( name, "COMMENT", 7 ) != 0 )
++    if ( ft_strncmp( name, "COMMENT", 7 ) != 0 )
+     {
+       /* Add the property to the font property table. */
+       error = hash_insert( fp->name,
+@@ -1420,13 +1420,13 @@
+     /* FONT_ASCENT and FONT_DESCENT need to be assigned if they are        */
+     /* present, and the SPACING property should override the default       */
+     /* spacing.                                                            */
+-    if ( ft_memcmp( name, "DEFAULT_CHAR", 12 ) == 0 )
++    if ( ft_strncmp( name, "DEFAULT_CHAR", 12 ) == 0 )
+       font->default_char = fp->value.l;
+-    else if ( ft_memcmp( name, "FONT_ASCENT", 11 ) == 0 )
++    else if ( ft_strncmp( name, "FONT_ASCENT", 11 ) == 0 )
+       font->font_ascent = fp->value.l;
+-    else if ( ft_memcmp( name, "FONT_DESCENT", 12 ) == 0 )
++    else if ( ft_strncmp( name, "FONT_DESCENT", 12 ) == 0 )
+       font->font_descent = fp->value.l;
+-    else if ( ft_memcmp( name, "SPACING", 7 ) == 0 )
++    else if ( ft_strncmp( name, "SPACING", 7 ) == 0 )
+     {
+       if ( !fp->value.atom )
+       {
+@@ -1484,7 +1484,7 @@
+     memory = font->memory;
+ 
+     /* Check for a comment. */
+-    if ( ft_memcmp( line, "COMMENT", 7 ) == 0 )
++    if ( ft_strncmp( line, "COMMENT", 7 ) == 0 )
+     {
+       linelen -= 7;
+ 
+@@ -1501,7 +1501,7 @@
+     /* The very first thing expected is the number of glyphs. */
+     if ( !( p->flags & _BDF_GLYPHS ) )
+     {
+-      if ( ft_memcmp( line, "CHARS", 5 ) != 0 )
++      if ( ft_strncmp( line, "CHARS", 5 ) != 0 )
+       {
+         FT_ERROR(( "_bdf_parse_glyphs: " ERRMSG1, lineno, "CHARS" ));
+         error = BDF_Err_Missing_Chars_Field;
+@@ -1535,7 +1535,7 @@
+     }
+ 
+     /* Check for the ENDFONT field. */
+-    if ( ft_memcmp( line, "ENDFONT", 7 ) == 0 )
++    if ( ft_strncmp( line, "ENDFONT", 7 ) == 0 )
+     {
+       /* Sort the glyphs by encoding. */
+       ft_qsort( (char *)font->glyphs,
+@@ -1549,7 +1549,7 @@
+     }
+ 
+     /* Check for the ENDCHAR field. */
+-    if ( ft_memcmp( line, "ENDCHAR", 7 ) == 0 )
++    if ( ft_strncmp( line, "ENDCHAR", 7 ) == 0 )
+     {
+       p->glyph_enc = 0;
+       p->flags    &= ~_BDF_GLYPH_BITS;
+@@ -1565,7 +1565,7 @@
+       goto Exit;
+ 
+     /* Check for the STARTCHAR field. */
+-    if ( ft_memcmp( line, "STARTCHAR", 9 ) == 0 )
++    if ( ft_strncmp( line, "STARTCHAR", 9 ) == 0 )
+     {
+       /* Set the character name in the parse info first until the */
+       /* encoding can be checked for an unencoded character.      */
+@@ -1599,7 +1599,7 @@
+     }
+ 
+     /* Check for the ENCODING field. */
+-    if ( ft_memcmp( line, "ENCODING", 8 ) == 0 )
++    if ( ft_strncmp( line, "ENCODING", 8 ) == 0 )
+     {
+       if ( !( p->flags & _BDF_GLYPH ) )
+       {
+@@ -1785,7 +1785,7 @@
+     }
+ 
+     /* Expect the SWIDTH (scalable width) field next. */
+-    if ( ft_memcmp( line, "SWIDTH", 6 ) == 0 )
++    if ( ft_strncmp( line, "SWIDTH", 6 ) == 0 )
+     {
+       if ( !( p->flags & _BDF_ENCODING ) )
+         goto Missing_Encoding;
+@@ -1801,7 +1801,7 @@
+     }
+ 
+     /* Expect the DWIDTH (scalable width) field next. */
+-    if ( ft_memcmp( line, "DWIDTH", 6 ) == 0 )
++    if ( ft_strncmp( line, "DWIDTH", 6 ) == 0 )
+     {
+       if ( !( p->flags & _BDF_ENCODING ) )
+         goto Missing_Encoding;
+@@ -1829,7 +1829,7 @@
+     }
+ 
+     /* Expect the BBX field next. */
+-    if ( ft_memcmp( line, "BBX", 3 ) == 0 )
++    if ( ft_strncmp( line, "BBX", 3 ) == 0 )
+     {
+       if ( !( p->flags & _BDF_ENCODING ) )
+         goto Missing_Encoding;
+@@ -1897,7 +1897,7 @@
+     }
+ 
+     /* And finally, gather up the bitmap. */
+-    if ( ft_memcmp( line, "BITMAP", 6 ) == 0 )
++    if ( ft_strncmp( line, "BITMAP", 6 ) == 0 )
+     {
+       unsigned long  bitmap_size;
+ 
+@@ -1972,7 +1972,7 @@
+     p    = (_bdf_parse_t *)    client_data;
+ 
+     /* Check for the end of the properties. */
+-    if ( ft_memcmp( line, "ENDPROPERTIES", 13 ) == 0 )
++    if ( ft_strncmp( line, "ENDPROPERTIES", 13 ) == 0 )
+     {
+       /* If the FONT_ASCENT or FONT_DESCENT properties have not been      */
+       /* encountered yet, then make sure they are added as properties and */
+@@ -2013,12 +2013,12 @@
+     }
+ 
+     /* Ignore the _XFREE86_GLYPH_RANGES properties. */
+-    if ( ft_memcmp( line, "_XFREE86_GLYPH_RANGES", 21 ) == 0 )
++    if ( ft_strncmp( line, "_XFREE86_GLYPH_RANGES", 21 ) == 0 )
+       goto Exit;
+ 
+     /* Handle COMMENT fields and properties in a special way to preserve */
+     /* the spacing.                                                      */
+-    if ( ft_memcmp( line, "COMMENT", 7 ) == 0 )
++    if ( ft_strncmp( line, "COMMENT", 7 ) == 0 )
+     {
+       name = value = line;
+       value += 7;
+@@ -2082,7 +2082,7 @@
+ 
+     /* Check for a comment.  This is done to handle those fonts that have */
+     /* comments before the STARTFONT line for some reason.                */
+-    if ( ft_memcmp( line, "COMMENT", 7 ) == 0 )
++    if ( ft_strncmp( line, "COMMENT", 7 ) == 0 )
+     {
+       if ( p->opts->keep_comments != 0 && p->font != 0 )
+       {
+@@ -2108,7 +2108,7 @@
+     {
+       memory = p->memory;
+ 
+-      if ( ft_memcmp( line, "STARTFONT", 9 ) != 0 )
++      if ( ft_strncmp( line, "STARTFONT", 9 ) != 0 )
+       {
+         /* we don't emit an error message since this code gets */
+         /* explicitly caught one level higher                  */
+@@ -2156,7 +2156,7 @@
+     }
+ 
+     /* Check for the start of the properties. */
+-    if ( ft_memcmp( line, "STARTPROPERTIES", 15 ) == 0 )
++    if ( ft_strncmp( line, "STARTPROPERTIES", 15 ) == 0 )
+     {
+       if ( !( p->flags & _BDF_FONT_BBX ) )
+       {
+@@ -2185,7 +2185,7 @@
+     }
+ 
+     /* Check for the FONTBOUNDINGBOX field. */
+-    if ( ft_memcmp( line, "FONTBOUNDINGBOX", 15 ) == 0 )
++    if ( ft_strncmp( line, "FONTBOUNDINGBOX", 15 ) == 0 )
+     {
+       if ( !( p->flags & _BDF_SIZE ) )
+       {
+@@ -2216,7 +2216,7 @@
+     }
+ 
+     /* The next thing to check for is the FONT field. */
+-    if ( ft_memcmp( line, "FONT", 4 ) == 0 )
++    if ( ft_strncmp( line, "FONT", 4 ) == 0 )
+     {
+       error = _bdf_list_split( &p->list, (char *)" +", line, linelen );
+       if ( error )
+@@ -2251,7 +2251,7 @@
+     }
+ 
+     /* Check for the SIZE field. */
+-    if ( ft_memcmp( line, "SIZE", 4 ) == 0 )
++    if ( ft_strncmp( line, "SIZE", 4 ) == 0 )
+     {
+       if ( !( p->flags & _BDF_FONT_NAME ) )
+       {
+@@ -2305,7 +2305,7 @@
+     }
+ 
+     /* Check for the CHARS field -- font properties are optional */
+-    if ( ft_memcmp( line, "CHARS", 5 ) == 0 )
++    if ( ft_strncmp( line, "CHARS", 5 ) == 0 )
+     {
+       char  nbuf[128];
+ 
