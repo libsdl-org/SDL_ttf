@@ -45,3 +45,19 @@ LOCAL_SHARED_LIBRARIES := SDL2
 LOCAL_EXPORT_C_INCLUDES += $(LOCAL_C_INCLUDES)
 
 include $(BUILD_SHARED_LIBRARY)
+
+###########################
+#
+# SDL2_ttf static library
+#
+###########################
+
+LOCAL_MODULE := SDL2_ttf_static
+
+LOCAL_MODULE_FILENAME := libSDL2_ttf
+
+LOCAL_LDLIBS :=
+LOCAL_EXPORT_LDLIBS :=
+
+include $(BUILD_STATIC_LIBRARY)
+
