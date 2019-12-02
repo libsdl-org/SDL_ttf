@@ -2269,6 +2269,44 @@ static void UCS2_to_UTF8(const Uint16 *src, Uint8 *dst)
     *dst = '\0';
 }
 
+/* Convert a unicode char to a UTF-8 string */
+static SDL_bool Char_to_UTF8(Uint32 ch, Uint8 *dst)
+{
+    if (ch <= 0x7F) {
+        *dst++ = (Uint8) ch;
+    } else if (ch <= 0x7FF) {
+        *dst++ = 0xC0 | (Uint8) ((ch >> 6) & 0x1F);
+        *dst++ = 0x80 | (Uint8) (ch & 0x3F);
+    } else if (ch <= 0xFFFF) {
+        *dst++ = 0xE0 | (Uint8) ((ch >> 12) & 0x0F);
+        *dst++ = 0x80 | (Uint8) ((ch >> 6) & 0x3F);
+        *dst++ = 0x80 | (Uint8) (ch & 0x3F);
+    } else if (ch <= 0x1FFFFF) {
+        *dst++ = 0xF0 | (Uint8) ((ch >> 18) & 0x07);
+        *dst++ = 0x80 | (Uint8) ((ch >> 12) & 0x3F);
+        *dst++ = 0x80 | (Uint8) ((ch >> 6) & 0x3F);
+        *dst++ = 0x80 | (Uint8) (ch & 0x3F);
+    } else if (ch <= 0x3FFFFFF) {
+        *dst++ = 0xF8 | (Uint8) ((ch >> 24) & 0x03);
+        *dst++ = 0x80 | (Uint8) ((ch >> 18) & 0x3F);
+        *dst++ = 0x80 | (Uint8) ((ch >> 12) & 0x3F);
+        *dst++ = 0x80 | (Uint8) ((ch >> 6) & 0x3F);
+        *dst++ = 0x80 | (Uint8) (ch & 0x3F);
+    } else if (ch < 0x7FFFFFFF) {
+        *dst++ = 0xFC | (Uint8) ((ch >> 30) & 0x01);
+        *dst++ = 0x80 | (Uint8) ((ch >> 24) & 0x3F);
+        *dst++ = 0x80 | (Uint8) ((ch >> 18) & 0x3F);
+        *dst++ = 0x80 | (Uint8) ((ch >> 12) & 0x3F);
+        *dst++ = 0x80 | (Uint8) ((ch >> 6) & 0x3F);
+        *dst++ = 0x80 | (Uint8) (ch & 0x3F);
+    } else {
+        TTF_SetError("Invalid character");
+        return SDL_FALSE;
+    }
+    *dst = '\0';
+    return SDL_TRUE;
+}
+
 /* Gets a unicode value from a UTF-8 encoded string
  * Ouputs increment to advance the string */
 #define UNKNOWN_UNICODE 0xFFFD
@@ -2835,14 +2873,19 @@ SDL_Surface* TTF_RenderUNICODE_Solid(TTF_Font *font, const Uint16 *text, SDL_Col
 
 SDL_Surface* TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
 {
-    Uint16 ucs2[2];
-    Uint8 utf8[4];
+    return TTF_RenderGlyph32_Solid(font, ch, fg);
+}
+
+SDL_Surface* TTF_RenderGlyph32_Solid(TTF_Font *font, Uint32 ch, SDL_Color fg)
+{
+    Uint8 utf8[7];
 
     TTF_CHECK_POINTER(font, NULL);
 
-    ucs2[0] = ch;
-    ucs2[1] = 0;
-    UCS2_to_UTF8(ucs2, utf8);
+    if (!Char_to_UTF8(ch, utf8)) {
+        return NULL;
+    }
+
     return TTF_RenderUTF8_Solid(font, (char *)utf8, fg);
 }
 
@@ -2863,14 +2906,19 @@ SDL_Surface* TTF_RenderUNICODE_Shaded(TTF_Font *font, const Uint16 *text, SDL_Co
 
 SDL_Surface* TTF_RenderGlyph_Shaded(TTF_Font *font, Uint16 ch, SDL_Color fg, SDL_Color bg)
 {
-    Uint16 ucs2[2];
-    Uint8 utf8[4];
+    return TTF_RenderGlyph32_Shaded(font, ch, fg, bg);
+}
+
+SDL_Surface* TTF_RenderGlyph32_Shaded(TTF_Font *font, Uint32 ch, SDL_Color fg, SDL_Color bg)
+{
+    Uint8 utf8[7];
 
     TTF_CHECK_POINTER(font, NULL);
 
-    ucs2[0] = ch;
-    ucs2[1] = 0;
-    UCS2_to_UTF8(ucs2, utf8);
+    if (!Char_to_UTF8(ch, utf8)) {
+        return NULL;
+    }
+
     return TTF_RenderUTF8_Shaded(font, (char *)utf8, fg, bg);
 }
 
@@ -3151,14 +3199,19 @@ SDL_Surface* TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, const Uint16 *tex
 
 SDL_Surface* TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 {
-    Uint16 ucs2[2];
-    Uint8 utf8[4];
+    return TTF_RenderGlyph32_Blended(font, ch, fg);
+}
+
+SDL_Surface* TTF_RenderGlyph32_Blended(TTF_Font *font, Uint32 ch, SDL_Color fg)
+{
+    Uint8 utf8[7];
 
     TTF_CHECK_POINTER(font, NULL);
 
-    ucs2[0] = ch;
-    ucs2[1] = 0;
-    UCS2_to_UTF8(ucs2, utf8);
+    if (!Char_to_UTF8(ch, utf8)) {
+        return NULL;
+    }
+
     return TTF_RenderUTF8_Blended(font, (char *)utf8, fg);
 }
 
@@ -3295,6 +3348,11 @@ int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int index)
 }
 
 int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous_ch, Uint16 ch)
+{
+    return TTF_GetFontKerningSizeGlyphs32(font, previous_ch, ch);
+}
+
+int TTF_GetFontKerningSizeGlyphs32(TTF_Font *font, Uint32 previous_ch, Uint32 ch)
 {
     FT_Error error;
     c_glyph *prev_glyph, *glyph;

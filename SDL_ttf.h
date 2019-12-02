@@ -232,6 +232,8 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid_Wrapped(TTF_Font *
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font,
                     Uint16 ch, SDL_Color fg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Solid(TTF_Font *font,
+                    Uint32 ch, SDL_Color fg);
 
 /* Create an 8-bit palettized surface and render the given text at
    high quality with the given font and colors.  The 0 pixel is background,
@@ -268,6 +270,8 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded_Wrapped(TTF_Font 
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
                 Uint16 ch, SDL_Color fg, SDL_Color bg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Shaded(TTF_Font *font,
+                Uint32 ch, SDL_Color fg, SDL_Color bg);
 
 /* Create a 32-bit ARGB surface and render the given text at high quality,
    using alpha blending to dither the font with the given color.
@@ -302,6 +306,8 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended_Wrapped(TTF_Font
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font,
                         Uint16 ch, SDL_Color fg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Blended(TTF_Font *font,
+                        Uint32 ch, SDL_Color fg);
 
 /* For compatibility with previous versions, here are the old functions */
 #define TTF_RenderText(font, text, fg, bg)  \
@@ -339,6 +345,7 @@ extern DECLSPEC int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int i
 
 /* Get the kerning size of two glyphs */
 extern DECLSPEC int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous_ch, Uint16 ch);
+extern DECLSPEC int TTF_GetFontKerningSizeGlyphs32(TTF_Font *font, Uint32 previous_ch, Uint32 ch);
 
 /* We'll use SDL for reporting errors */
 #define TTF_SetError    SDL_SetError
