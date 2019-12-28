@@ -371,7 +371,7 @@ static unsigned long RWread(
 	return SDL_RWread( src, buffer, 1, (int)count );
 }
 
-TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long index )
+TTF_Font* TTF_OpenFontIndexDPIRW( SDL_RWops *src, int freesrc, int ptsize, long index, unsigned int hdpi, unsigned int vdpi )
 {
 	TTF_Font* font;
 	FT_Error error;
@@ -463,8 +463,10 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	/* Make sure that our font face is scalable (global metrics) */
 	if ( FT_IS_SCALABLE(face) ) {
 
-		/* Set the character size and use default DPI (72) */
-		error = FT_Set_Char_Size( font->face, 0, ptsize * 64, 0, 0 );
+		/* Set the character size using the provided DPI.  If a zero DPI
+		 * is provided, then the other DPI setting will be used.  If both
+		 * are zero, then Freetype's default 72 DPI will be used.  */
+		error = FT_Set_Char_Size( font->face, 0, ptsize * 64, hdpi, vdpi );
 		if( error ) {
 			TTF_SetFTError( "Couldn't set font size", error );
 			TTF_CloseFont( font );
@@ -539,19 +541,39 @@ TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long ind
 	return font;
 }
 
+TTF_Font* TTF_OpenFontDPIRW(SDL_RWops *src, int freesrc, int ptsize, unsigned int hdpi, unsigned int vdpi)
+{
+	return TTF_OpenFontIndexDPIRW(src, freesrc, ptsize, 0, hdpi, vdpi);
+}
+
+TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long index )
+{
+	return TTF_OpenFontIndexDPIRW(src, freesrc, ptsize, index, 0, 0);
+}
+
 TTF_Font* TTF_OpenFontRW( SDL_RWops *src, int freesrc, int ptsize )
 {
 	return TTF_OpenFontIndexRW(src, freesrc, ptsize, 0);
 }
 
-TTF_Font* TTF_OpenFontIndex( const char *file, int ptsize, long index )
+TTF_Font* TTF_OpenFontIndexDPI(const char *file, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
 {
 	SDL_RWops *rw = SDL_RWFromFile(file, "rb");
 	if ( rw == NULL ) {
 		TTF_SetError(SDL_GetError());
 		return NULL;
 	}
-	return TTF_OpenFontIndexRW(rw, 1, ptsize, index);
+	return TTF_OpenFontIndexDPIRW(rw, 1, ptsize, index, hdpi, vdpi);
+}
+
+TTF_Font* TTF_OpenFontIndex( const char *file, int ptsize, long index )
+{
+	return TTF_OpenFontIndexDPI(file, ptsize, index, 0, 0);
+}
+
+TTF_Font* TTF_OpenFontDPI( const char *file, int ptsize, unsigned int hdpi, unsigned int vdpi )
+{
+	return TTF_OpenFontIndexDPI(file, ptsize, 0, hdpi, vdpi);
 }
 
 TTF_Font* TTF_OpenFont( const char *file, int ptsize )
