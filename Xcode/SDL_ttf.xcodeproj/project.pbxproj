@@ -7,8 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA9EE79914B2C589008773C0 /* FreeType.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9EE79814B2C589008773C0 /* FreeType.framework */; };
-		AA9EE79A14B2C593008773C0 /* FreeType.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AA9EE79814B2C589008773C0 /* FreeType.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A75FDAE523E3582C00529352 /* SDL_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1014BAEA010A4B677F000001 /* SDL_ttf.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A75FDAE823E3582C00529352 /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
+		A75FDAFE23E36B4300529352 /* SDL_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1014BAEA010A4B677F000001 /* SDL_ttf.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A75FDB0123E36B4300529352 /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
+		A75FDB0E23E37ED200529352 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A75FDB0C23E37ED200529352 /* SDL2.framework */; };
+		A75FDB1223E37EE400529352 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A75FDB1023E37EE400529352 /* SDL2.framework */; };
+		A75FDB1C23E381B800529352 /* FreeType.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A75FDB0D23E37ED200529352 /* FreeType.framework */; };
+		A75FDB1D23E381B800529352 /* FreeType.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A75FDB0D23E37ED200529352 /* FreeType.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A75FDB1F23E381BC00529352 /* FreeType.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A75FDB1123E37EE400529352 /* FreeType.framework */; };
+		A75FDB2023E381BC00529352 /* FreeType.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A75FDB1123E37EE400529352 /* FreeType.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A75FDB2223E381CF00529352 /* FreeType.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9EE79814B2C589008773C0 /* FreeType.framework */; };
+		A75FDB2323E381CF00529352 /* FreeType.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AA9EE79814B2C589008773C0 /* FreeType.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A75FDB2823E3825200529352 /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
+		A75FDB3323E3827100529352 /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		BE48FD5F07AFA17000BB41DA /* SDL_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1014BAEA010A4B677F000001 /* SDL_ttf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE48FD6207AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		BE48FD6B07AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
@@ -26,21 +38,54 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		AA9EE79714B2C55E008773C0 /* Copy Frameworks */ = {
+		A75FDB1E23E381B800529352 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 16;
+			dstSubfolderSpec = 10;
 			files = (
-				AA9EE79A14B2C593008773C0 /* FreeType.framework in Copy Frameworks */,
+				A75FDB1D23E381B800529352 /* FreeType.framework in Embed Frameworks */,
 			);
-			name = "Copy Frameworks";
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB2123E381BC00529352 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A75FDB2023E381BC00529352 /* FreeType.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB2423E381CF00529352 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A75FDB2323E381CF00529352 /* FreeType.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1014BAEA010A4B677F000001 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../SDL_ttf.h; sourceTree = SOURCE_ROOT; };
+		A75FDAF323E3582C00529352 /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A75FDB0A23E36B4300529352 /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A75FDB0B23E36B4300529352 /* Framework-iOS copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Framework-iOS copy-Info.plist"; path = "/Users/saml/projects/SDL_ttf/Xcode/Framework-iOS copy-Info.plist"; sourceTree = "<absolute>"; };
+		A75FDB0C23E37ED200529352 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = iOS/SDL2.framework; sourceTree = "<group>"; };
+		A75FDB0D23E37ED200529352 /* FreeType.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FreeType.framework; path = iOS/FreeType.framework; sourceTree = "<group>"; };
+		A75FDB1023E37EE400529352 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = tvOS/SDL2.framework; sourceTree = "<group>"; };
+		A75FDB1123E37EE400529352 /* FreeType.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FreeType.framework; path = tvOS/FreeType.framework; sourceTree = "<group>"; };
+		A75FDB2E23E3825200529352 /* libSDL2_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A75FDB2F23E3825200529352 /* Static Library copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Static Library copy-Info.plist"; path = "/Users/saml/projects/SDL_ttf/Xcode/Static Library copy-Info.plist"; sourceTree = "<absolute>"; };
+		A75FDB3923E3827100529352 /* libSDL2_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A75FDB3A23E3827200529352 /* Static Library-iOS copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Static Library-iOS copy-Info.plist"; path = "/Users/saml/projects/SDL_ttf/Xcode/Static Library-iOS copy-Info.plist"; sourceTree = "<absolute>"; };
 		AA9EE79814B2C589008773C0 /* FreeType.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FreeType.framework; sourceTree = "<group>"; };
 		BE48FD6607AFA17000BB41DA /* Info-Framework.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Framework.plist"; sourceTree = "<group>"; };
 		BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,12 +99,44 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A75FDAE923E3582C00529352 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A75FDB1C23E381B800529352 /* FreeType.framework in Frameworks */,
+				A75FDB0E23E37ED200529352 /* SDL2.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB0223E36B4300529352 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A75FDB1F23E381BC00529352 /* FreeType.framework in Frameworks */,
+				A75FDB1223E37EE400529352 /* SDL2.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB2923E3825200529352 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB3423E3827100529352 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE48FD6307AFA17000BB41DA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A75FDB2223E381CF00529352 /* FreeType.framework in Frameworks */,
 				BE48FD8407AFA29000BB41DA /* SDL2.framework in Frameworks */,
-				AA9EE79914B2C589008773C0 /* FreeType.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +165,10 @@
 				BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */,
 				BE48FD6E07AFA17000BB41DA /* libSDL2_ttf.a */,
 				BE48FD7207AFA17000BB41DA /* Create DMG */,
+				A75FDAF323E3582C00529352 /* SDL2_ttf.framework */,
+				A75FDB0A23E36B4300529352 /* SDL2_ttf.framework */,
+				A75FDB2E23E3825200529352 /* libSDL2_ttf.a */,
+				A75FDB3923E3827100529352 /* libSDL2_ttf.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -101,6 +182,9 @@
 				BE48FD8107AFA26B00BB41DA /* Frameworks */,
 				034768DDFF38A45A11DB9C8B /* Products */,
 				BE48FD6607AFA17000BB41DA /* Info-Framework.plist */,
+				A75FDB0B23E36B4300529352 /* Framework-iOS copy-Info.plist */,
+				A75FDB2F23E3825200529352 /* Static Library copy-Info.plist */,
+				A75FDB3A23E3827200529352 /* Static Library-iOS copy-Info.plist */,
 			);
 			name = SDL_ttfFramework;
 			sourceTree = "<group>";
@@ -132,6 +216,8 @@
 		A75FDAE123E3496200529352 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				A75FDB0D23E37ED200529352 /* FreeType.framework */,
+				A75FDB0C23E37ED200529352 /* SDL2.framework */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -139,6 +225,8 @@
 		A75FDAE223E3496700529352 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
+				A75FDB1123E37EE400529352 /* FreeType.framework */,
+				A75FDB1023E37EE400529352 /* SDL2.framework */,
 			);
 			name = tvOS;
 			sourceTree = "<group>";
@@ -154,9 +242,9 @@
 		BE48FD8207AFA27300BB41DA /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A75FDAE223E3496700529352 /* tvOS */,
 				A75FDAE123E3496200529352 /* iOS */,
 				A75FDAE023E3493000529352 /* macOS */,
+				A75FDAE223E3496700529352 /* tvOS */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -182,6 +270,36 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		A75FDAE423E3582C00529352 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A75FDAE523E3582C00529352 /* SDL_ttf.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDAFD23E36B4300529352 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A75FDAFE23E36B4300529352 /* SDL_ttf.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB2623E3825200529352 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB3123E3827100529352 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE48FD5E07AFA17000BB41DA /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -200,6 +318,90 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		A75FDAE323E3582C00529352 /* Framework-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A75FDAF023E3582C00529352 /* Build configuration list for PBXNativeTarget "Framework-iOS" */;
+			buildPhases = (
+				A75FDAE423E3582C00529352 /* Headers */,
+				A75FDAE623E3582C00529352 /* Resources */,
+				A75FDAE723E3582C00529352 /* Sources */,
+				A75FDAE923E3582C00529352 /* Frameworks */,
+				A75FDAEC23E3582C00529352 /* Rez */,
+				A75FDAEF23E3582C00529352 /* Convert SDL includes to SDL Framework includes */,
+				A75FDB1E23E381B800529352 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			comments = "Installed into ~/Library/Frameworks/SDL_ttf.framework\n\nAdd -framework SDL_ttf to your linker flags\nAdd ~/Library/Frameworks/SDL_ttf.framework/Headers to your header search path\nAdd ~/Library/Frameworks to your library search path";
+			dependencies = (
+			);
+			name = "Framework-iOS";
+			productInstallPath = "@executable_path/../Frameworks";
+			productName = SDL_ttf;
+			productReference = A75FDAF323E3582C00529352 /* SDL2_ttf.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		A75FDAFC23E36B4300529352 /* Framework-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A75FDB0723E36B4300529352 /* Build configuration list for PBXNativeTarget "Framework-tvOS" */;
+			buildPhases = (
+				A75FDAFD23E36B4300529352 /* Headers */,
+				A75FDAFF23E36B4300529352 /* Resources */,
+				A75FDB0023E36B4300529352 /* Sources */,
+				A75FDB0223E36B4300529352 /* Frameworks */,
+				A75FDB0523E36B4300529352 /* Rez */,
+				A75FDB0623E36B4300529352 /* Convert SDL includes to SDL Framework includes */,
+				A75FDB2123E381BC00529352 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			comments = "Installed into ~/Library/Frameworks/SDL_ttf.framework\n\nAdd -framework SDL_ttf to your linker flags\nAdd ~/Library/Frameworks/SDL_ttf.framework/Headers to your header search path\nAdd ~/Library/Frameworks to your library search path";
+			dependencies = (
+			);
+			name = "Framework-tvOS";
+			productInstallPath = "@executable_path/../Frameworks";
+			productName = SDL_ttf;
+			productReference = A75FDB0A23E36B4300529352 /* SDL2_ttf.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		A75FDB2523E3825200529352 /* Static Library-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A75FDB2B23E3825200529352 /* Build configuration list for PBXNativeTarget "Static Library-iOS" */;
+			buildPhases = (
+				A75FDB2623E3825200529352 /* Headers */,
+				A75FDB2723E3825200529352 /* Sources */,
+				A75FDB2923E3825200529352 /* Frameworks */,
+				A75FDB2A23E3825200529352 /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Static Library-iOS";
+			productInstallPath = /usr/local/lib;
+			productName = "Static Library";
+			productReference = A75FDB2E23E3825200529352 /* libSDL2_ttf.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		A75FDB3023E3827100529352 /* Static Library-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A75FDB3623E3827100529352 /* Build configuration list for PBXNativeTarget "Static Library-tvOS" */;
+			buildPhases = (
+				A75FDB3123E3827100529352 /* Headers */,
+				A75FDB3223E3827100529352 /* Sources */,
+				A75FDB3423E3827100529352 /* Frameworks */,
+				A75FDB3523E3827100529352 /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Static Library-tvOS";
+			productInstallPath = /usr/local/lib;
+			productName = "Static Library";
+			productReference = A75FDB3923E3827100529352 /* libSDL2_ttf.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		BE48FD5D07AFA17000BB41DA /* Framework */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00B7E1E9097E26C600826121 /* Build configuration list for PBXNativeTarget "Framework" */;
@@ -209,8 +411,8 @@
 				BE48FD6107AFA17000BB41DA /* Sources */,
 				BE48FD6307AFA17000BB41DA /* Frameworks */,
 				BE48FD6407AFA17000BB41DA /* Rez */,
-				AA9EE79714B2C55E008773C0 /* Copy Frameworks */,
 				AA9EE79C14B2C5D0008773C0 /* Convert SDL includes to SDL Framework includes */,
+				A75FDB2423E381CF00529352 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -265,7 +467,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 1130;
 			};
 			buildConfigurationList = 00B7E1F5097E26C600826121 /* Build configuration list for PBXProject "SDL_ttf" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -281,13 +483,31 @@
 			projectRoot = "";
 			targets = (
 				BE48FD5D07AFA17000BB41DA /* Framework */,
+				A75FDAE323E3582C00529352 /* Framework-iOS */,
+				A75FDAFC23E36B4300529352 /* Framework-tvOS */,
 				BE48FD6807AFA17000BB41DA /* Static Library */,
+				A75FDB2523E3825200529352 /* Static Library-iOS */,
+				A75FDB3023E3827100529352 /* Static Library-tvOS */,
 				BE48FD6F07AFA17000BB41DA /* Create DMG */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A75FDAE623E3582C00529352 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDAFF23E36B4300529352 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE48FD6007AFA17000BB41DA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -298,6 +518,34 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXRezBuildPhase section */
+		A75FDAEC23E3582C00529352 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB0523E36B4300529352 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB2A23E3825200529352 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB3523E3827100529352 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE48FD6407AFA17000BB41DA /* Rez */ = {
 			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
@@ -315,6 +563,34 @@
 /* End PBXRezBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		A75FDAEF23E3582C00529352 /* Convert SDL includes to SDL Framework includes */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Convert SDL includes to SDL Framework includes";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$PUBLIC_HEADERS_FOLDER_PATH\"\nHEADER=SDL_ttf.h\nsed 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' <$HEADER >$HEADER.new\nmv $HEADER.new $HEADER\n";
+		};
+		A75FDB0623E36B4300529352 /* Convert SDL includes to SDL Framework includes */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Convert SDL includes to SDL Framework includes";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$PUBLIC_HEADERS_FOLDER_PATH\"\nHEADER=SDL_ttf.h\nsed 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' <$HEADER >$HEADER.new\nmv $HEADER.new $HEADER\n";
+		};
 		AA9EE79C14B2C5D0008773C0 /* Convert SDL includes to SDL Framework includes */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -327,7 +603,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $SYMROOT/$CONFIGURATION/$PUBLIC_HEADERS_FOLDER_PATH\nHEADER=SDL_ttf.h\nsed 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' <$HEADER >$HEADER.new\nmv $HEADER.new $HEADER\n";
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$PUBLIC_HEADERS_FOLDER_PATH\"\nHEADER=SDL_ttf.h\nsed 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' <$HEADER >$HEADER.new\nmv $HEADER.new $HEADER\n";
 		};
 		BE48FD7107AFA17000BB41DA /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -341,6 +617,38 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A75FDAE723E3582C00529352 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A75FDAE823E3582C00529352 /* SDL_ttf.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB0023E36B4300529352 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A75FDB0123E36B4300529352 /* SDL_ttf.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB2723E3825200529352 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A75FDB2823E3825200529352 /* SDL_ttf.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A75FDB3223E3827100529352 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A75FDB3323E3827100529352 /* SDL_ttf.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE48FD6107AFA17000BB41DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -371,38 +679,36 @@
 		00B7E1EA097E26C600826121 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 15.0.0;
-				DYLIB_CURRENT_VERSION = 15.1.0;
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "Info-Framework.plist";
-				INSTALL_PATH = "@rpath";
-				WRAPPER_EXTENSION = framework;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/macOS",
+				);
 			};
 			name = Debug;
 		};
 		00B7E1EB097E26C600826121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 15.0.0;
-				DYLIB_CURRENT_VERSION = 15.1.0;
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "Info-Framework.plist";
-				INSTALL_PATH = "@rpath";
-				WRAPPER_EXTENSION = framework;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/macOS",
+				);
 			};
 			name = Release;
 		};
 		00B7E1EE097E26C600826121 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				LIBRARY_STYLE = STATIC;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
 		00B7E1EF097E26C600826121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				LIBRARY_STYLE = STATIC;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
@@ -448,15 +754,57 @@
 		00B7E1F6097E26C600826121 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 15.0.0;
+				DYLIB_CURRENT_VERSION = 15.1.0;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/tvOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "\"$(SRCROOT)/iOS\"";
 				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/macOS\"";
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				"HEADER_SEARCH_PATHS[sdk=appletvos*]" = (
+					"\"$(SRCROOT)/tvOS/SDL2.framework/Headers\"",
+					"\"$(SRCROOT)/tvOS/FreeType.framework/Headers\"",
+				);
+				"HEADER_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"\"$(SRCROOT)/iOS/SDL2.framework/Headers\"",
+					"\"$(SRCROOT)/iOS/FreeType.framework/Headers\"",
+				);
 				"HEADER_SEARCH_PATHS[sdk=macosx*]" = (
 					"\"$(SRCROOT)/macOS/SDL2.framework/Headers\"",
 					"\"$(SRCROOT)/macOS/FreeType.framework/Headers\"",
 				);
+				INFOPLIST_FILE = "Info-Framework.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libsdl.SDL2-ttf";
@@ -468,19 +816,142 @@
 		00B7E1F7097E26C600826121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = 15.0.0;
+				DYLIB_CURRENT_VERSION = 15.1.0;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/tvOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "\"$(SRCROOT)/iOS\"";
 				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/macOS\"";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				"HEADER_SEARCH_PATHS[sdk=appletvos*]" = (
+					"\"$(SRCROOT)/tvOS/SDL2.framework/Headers\"",
+					"\"$(SRCROOT)/tvOS/FreeType.framework/Headers\"",
+				);
+				"HEADER_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"\"$(SRCROOT)/iOS/SDL2.framework/Headers\"",
+					"\"$(SRCROOT)/iOS/FreeType.framework/Headers\"",
+				);
 				"HEADER_SEARCH_PATHS[sdk=macosx*]" = (
 					"\"$(SRCROOT)/macOS/SDL2.framework/Headers\"",
 					"\"$(SRCROOT)/macOS/FreeType.framework/Headers\"",
 				);
+				INFOPLIST_FILE = "Info-Framework.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libsdl.SDL2-ttf";
 				PRODUCT_NAME = SDL2_ttf;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		A75FDAF123E3582C00529352 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/iOS",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A75FDAF223E3582C00529352 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/iOS",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A75FDB0823E36B4300529352 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/tvOS",
+				);
+				SDKROOT = appletvos;
+			};
+			name = Debug;
+		};
+		A75FDB0923E36B4300529352 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/tvOS",
+				);
+				SDKROOT = appletvos;
+			};
+			name = Release;
+		};
+		A75FDB2C23E3825200529352 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		A75FDB2D23E3825200529352 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		A75FDB3723E3827100529352 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				SDKROOT = appletvos;
+			};
+			name = Debug;
+		};
+		A75FDB3823E3827100529352 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				SDKROOT = appletvos;
 			};
 			name = Release;
 		};
@@ -519,6 +990,42 @@
 			buildConfigurations = (
 				00B7E1F6097E26C600826121 /* Debug */,
 				00B7E1F7097E26C600826121 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A75FDAF023E3582C00529352 /* Build configuration list for PBXNativeTarget "Framework-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A75FDAF123E3582C00529352 /* Debug */,
+				A75FDAF223E3582C00529352 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A75FDB0723E36B4300529352 /* Build configuration list for PBXNativeTarget "Framework-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A75FDB0823E36B4300529352 /* Debug */,
+				A75FDB0923E36B4300529352 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A75FDB2B23E3825200529352 /* Build configuration list for PBXNativeTarget "Static Library-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A75FDB2C23E3825200529352 /* Debug */,
+				A75FDB2D23E3825200529352 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A75FDB3623E3827100529352 /* Build configuration list for PBXNativeTarget "Static Library-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A75FDB3723E3827100529352 /* Debug */,
+				A75FDB3823E3827100529352 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

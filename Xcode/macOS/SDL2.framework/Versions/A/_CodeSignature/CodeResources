@@ -8,37 +8,30 @@
 		<data>
 		0MsKwsSJd+J//85WS9WZBbbANNI=
 		</data>
-		<key>Resources/LICENSE</key>
+		<key>Resources/License.txt</key>
 		<data>
-		djph/3SWDq02ue9fXbZdCD10ZsE=
+		VILsZtXQ+SRYtfG2XJ8ZtkKItSU=
 		</data>
-		<key>Resources/README.md</key>
+		<key>Resources/ReadMe.txt</key>
 		<data>
-		dnX0UY3OwvXfesQAB4U3zyP+ZWU=
-		</data>
-		<key>Resources/build-metal-shaders.sh</key>
-		<data>
-		XEqsS9buS1a66XCZxL4QuDjGr1g=
+		JbxWZUxpvG/D7Yb/DvLh6Aunla0=
 		</data>
 		<key>Resources/default.metallib</key>
 		<data>
 		dF9gKJnv0WdQs57PRAzLo+EyGAA=
 		</data>
-		<key>Resources/gendynapi.pl</key>
-		<data>
-		OOHSvn94UZ3JcA24Ewpqehe1HM8=
-		</data>
-		<key>Resources/sdlgenblit.pl</key>
-		<data>
-		enQsN/aY7qY8us7lZ6xhC3rUBiw=
-		</data>
-		<key>Resources/sort_controllers.py</key>
-		<data>
-		u3kE/JI7jJmmmtWyz2ITOWCOVAo=
-		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
+		<key>Frameworks/hidapi.framework</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			SQKg9EfLaLm6Srp3/F1LCi0GQls=
+			</data>
+			<key>requirement</key>
+			<string>cdhash H"803627ff64838db79c6c193e648ac2bf63ffe3eb" or cdhash H"4902a0f447cb68b9ba4aba77fc5d4b0a2d06425b"</string>
+		</dict>
 		<key>Headers/SDL.h</key>
 		<dict>
 			<key>hash</key>
@@ -241,22 +234,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			MyL2/BYwqph06UNEG67lu9X5HTQ=
+			6bU2gUFzijDi/AYKku8gXsA4tQg=
 			</data>
 			<key>hash2</key>
 			<data>
-			ftT4e+IHIXNe7CkTDhhb+qPdBbIjTz700n9wVdqPZ4s=
+			6pQfvDmd+9cjTmWML7S9ZVJQz7FAp/n79zmFJQ6rW8w=
 			</data>
 		</dict>
 		<key>Headers/SDL_joystick.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			HvTVVTYTkgpbPRCCtBwVLX1oeIc=
+			K9z1CAW/nstv8ExYHSHZVkzB6rA=
 			</data>
 			<key>hash2</key>
 			<data>
-			QhC1qDCCaIRZgMIvYJmZN3/S1o35qF39DIiHsuVZXA4=
+			Begpgo8SYC3bsrdRQTUPXZys5hlvqFyHVNPcrnD9DAY=
 			</data>
 		</dict>
 		<key>Headers/SDL_keyboard.h</key>
@@ -604,11 +597,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			FkDjbhMRH8gLIwcuzMRotNx5ByM=
+			yTcMqVA8gpQb1xsjN1gv8P90gCw=
 			</data>
 			<key>hash2</key>
 			<data>
-			b4X9T/ejacfQOCwMxwN/lyyzmTIVnBaFb/Y5iW/gzRc=
+			1UiM09hCzLrtTnsK/8+vZulhmtme5o6mgdsYjgOijxk=
 			</data>
 		</dict>
 		<key>Headers/SDL_syswm.h</key>
@@ -732,37 +725,26 @@
 			Rh3rm7LxbevE1ZOsSBXrIAVZpUoIj8PbXgLCSe5/SA4=
 			</data>
 		</dict>
-		<key>Resources/LICENSE</key>
+		<key>Resources/License.txt</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			djph/3SWDq02ue9fXbZdCD10ZsE=
+			VILsZtXQ+SRYtfG2XJ8ZtkKItSU=
 			</data>
 			<key>hash2</key>
 			<data>
-			99dABMx1d4yuRsXwE58kTWfAfvZM9Rk36CcjUhl9yxg=
+			Y68o5ttLrQEravu8qDEelhBjWJJDm9cuZ33qP6cPjB4=
 			</data>
 		</dict>
-		<key>Resources/README.md</key>
+		<key>Resources/ReadMe.txt</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			dnX0UY3OwvXfesQAB4U3zyP+ZWU=
+			JbxWZUxpvG/D7Yb/DvLh6Aunla0=
 			</data>
 			<key>hash2</key>
 			<data>
-			WKe5LH0TtnoWfTFxtObYRVgrfmoUPcj6MMICVsG0cfc=
-			</data>
-		</dict>
-		<key>Resources/build-metal-shaders.sh</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			XEqsS9buS1a66XCZxL4QuDjGr1g=
-			</data>
-			<key>hash2</key>
-			<data>
-			V6AsfRLOYDrWAJe4GTHcul4uboopi/QP39ZNC/H7Wh8=
+			pOpMHiFjj3pIWQqZ5KDvYNyp0twU7vCZmLwAQJLVkT4=
 			</data>
 		</dict>
 		<key>Resources/default.metallib</key>
@@ -774,39 +756,6 @@
 			<key>hash2</key>
 			<data>
 			A5lFX3lFIAtu4Lxgjh7TXdIVDe0n6G1iPofA+3H+xMA=
-			</data>
-		</dict>
-		<key>Resources/gendynapi.pl</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			OOHSvn94UZ3JcA24Ewpqehe1HM8=
-			</data>
-			<key>hash2</key>
-			<data>
-			G8M9YBhFAQSSSPYTUN2nN7XmGjSnOQMyEto9rWqLjtQ=
-			</data>
-		</dict>
-		<key>Resources/sdlgenblit.pl</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			enQsN/aY7qY8us7lZ6xhC3rUBiw=
-			</data>
-			<key>hash2</key>
-			<data>
-			rHN2OvRkilNlYnCggTw1eBcLnWEPk7pmmGUJex/l1cw=
-			</data>
-		</dict>
-		<key>Resources/sort_controllers.py</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			u3kE/JI7jJmmmtWyz2ITOWCOVAo=
-			</data>
-			<key>hash2</key>
-			<data>
-			aUCOYcjamZBwSPmd/u0WOZ9RfSLNBiRvXnQH70bMdRQ=
 			</data>
 		</dict>
 	</dict>

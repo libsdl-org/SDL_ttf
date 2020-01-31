@@ -407,21 +407,6 @@ extern DECLSPEC void SDLCALL SDL_JoystickClose(SDL_Joystick * joystick);
  */
 extern DECLSPEC SDL_JoystickPowerLevel SDLCALL SDL_JoystickCurrentPowerLevel(SDL_Joystick * joystick);
 
-/*
- *  Enumerate available Steam Controllers
- */
-#if defined(__IPHONEOS__) || defined(__ANDROID__)
-#define HAVE_STEAMCONTROLLERS
-#define USE_STEAMCONTROLLER_HIDAPI
-#elif defined(__LINUX__)
-#define HAVE_STEAMCONTROLLERS
-#define USE_STEAMCONTROLLER_LINUX
-#endif
-#ifdef USE_STEAMCONTROLLER_LINUX
-typedef void (*SDL_SteamControllerEnumCallback)( void *pContext, SDL_JoystickID nJoystickID, int nDevice, int nFD, SDL_bool bWireless, SDL_bool bConnected );
-extern DECLSPEC void SDLCALL SDL_EnumSteamControllers( SDL_SteamControllerEnumCallback callback, void *pContext );
-#endif
-
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }
