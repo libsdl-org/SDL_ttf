@@ -2425,7 +2425,7 @@ static Uint32 UTF8_getch(const char *src, size_t srclen, int *inc)
         ch = UNKNOWN_UNICODE;
     }
 
-    *inc = save_srclen - srclen;
+    *inc = (int)(save_srclen - srclen);
 
     return ch;
 }
