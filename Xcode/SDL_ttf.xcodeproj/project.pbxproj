@@ -77,15 +77,12 @@
 		1014BAEA010A4B677F000001 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../SDL_ttf.h; sourceTree = SOURCE_ROOT; };
 		A75FDAF323E3582C00529352 /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A75FDB0A23E36B4300529352 /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A75FDB0B23E36B4300529352 /* Framework-iOS copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Framework-iOS copy-Info.plist"; path = "/Users/saml/projects/SDL_ttf/Xcode/Framework-iOS copy-Info.plist"; sourceTree = "<absolute>"; };
 		A75FDB0C23E37ED200529352 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = iOS/SDL2.framework; sourceTree = "<group>"; };
 		A75FDB0D23E37ED200529352 /* FreeType.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FreeType.framework; path = iOS/FreeType.framework; sourceTree = "<group>"; };
 		A75FDB1023E37EE400529352 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = tvOS/SDL2.framework; sourceTree = "<group>"; };
 		A75FDB1123E37EE400529352 /* FreeType.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FreeType.framework; path = tvOS/FreeType.framework; sourceTree = "<group>"; };
 		A75FDB2E23E3825200529352 /* libSDL2_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		A75FDB2F23E3825200529352 /* Static Library copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Static Library copy-Info.plist"; path = "/Users/saml/projects/SDL_ttf/Xcode/Static Library copy-Info.plist"; sourceTree = "<absolute>"; };
 		A75FDB3923E3827100529352 /* libSDL2_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		A75FDB3A23E3827200529352 /* Static Library-iOS copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Static Library-iOS copy-Info.plist"; path = "/Users/saml/projects/SDL_ttf/Xcode/Static Library-iOS copy-Info.plist"; sourceTree = "<absolute>"; };
 		AA9EE79814B2C589008773C0 /* FreeType.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FreeType.framework; sourceTree = "<group>"; };
 		BE48FD6607AFA17000BB41DA /* Info-Framework.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Framework.plist"; sourceTree = "<group>"; };
 		BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -182,9 +179,6 @@
 				BE48FD8107AFA26B00BB41DA /* Frameworks */,
 				034768DDFF38A45A11DB9C8B /* Products */,
 				BE48FD6607AFA17000BB41DA /* Info-Framework.plist */,
-				A75FDB0B23E36B4300529352 /* Framework-iOS copy-Info.plist */,
-				A75FDB2F23E3825200529352 /* Static Library copy-Info.plist */,
-				A75FDB3A23E3827200529352 /* Static Library-iOS copy-Info.plist */,
 			);
 			name = SDL_ttfFramework;
 			sourceTree = "<group>";
@@ -612,7 +606,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PRODUCT_NAME=SDL2_ttf\n\n# Sign framework\nif [ \"$SDL_CODESIGN_IDENTITY\" != \"\" ]; then\n    codesign --force --sign \"$SDL_CODESIGN_IDENTITY\" $TARGET_BUILD_DIR/$PRODUCT_NAME.framework/Versions/A || exit $?\n    codesign --force --sign \"$SDL_CODESIGN_IDENTITY\" $TARGET_BUILD_DIR/FreeType.framework/Versions/A || exit $?\nfi\n\n# clean up the framework, remove headers, extra files\nmkdir -p build/dmg-tmp\ncp -a $TARGET_BUILD_DIR/*.framework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname $PRODUCT_NAME -srcfolder build/dmg-tmp build/$PRODUCT_NAME.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n";
+			shellScript = "PRODUCT_NAME=SDL2_ttf\n\n# Sign framework\nif [ \"$SDL_CODESIGN_IDENTITY\" != \"\" ]; then\n    codesign --force --deep --sign \"$SDL_CODESIGN_IDENTITY\" $TARGET_BUILD_DIR/$PRODUCT_NAME.framework/Versions/A || exit $?\nfi\n\n# clean up the framework, remove headers, extra files\nmkdir -p build/dmg-tmp\ncp -a $TARGET_BUILD_DIR/*.framework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname $PRODUCT_NAME -srcfolder build/dmg-tmp build/$PRODUCT_NAME.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
