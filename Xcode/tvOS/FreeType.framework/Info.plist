@@ -9,11 +9,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.9.1</string>
+	<string>2.10.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2.9.1</string>
+	<string>2.10.1</string>
 	<key>MinimumOSVersion</key>
 	<string>9.0</string>
 </dict>
