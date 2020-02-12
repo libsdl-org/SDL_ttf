@@ -57,7 +57,7 @@ LOCAL_C_INCLUDES = \
     $(LOCAL_PATH)/ \
     $(LOCAL_PATH)/src/ \
     $(LOCAL_PATH)/src/hb-ucdn/ \
-    $(LOCAL_PATH)/../freetype-2.9.1/include/ \
+    $(LOCAL_PATH)/../freetype-2.10.1/include/ \
 
 
 #LOCAL_CFLAGS += -DHB_NO_MT -DHAVE_OT -DHAVE_UCDN -fPIC
