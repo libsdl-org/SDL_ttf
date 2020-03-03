@@ -227,7 +227,7 @@ struct _TTF_Font {
 
     /* Internal buffer to store positions computed by TTF_Size_Internal()
      * for rendered string by Render_Line() */
-    struct {
+    struct PosBuf {
         FT_UInt index;
         int x;
         int y;
@@ -1490,7 +1490,7 @@ TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, int freesrc, int ptsize, long i
 
     font->pos_len = 0;
     font->pos_max = 16;
-    font->pos_buf = SDL_malloc(font->pos_max * sizeof (font->pos_buf[0]));
+    font->pos_buf = (TTF_Font::PosBuf *)SDL_malloc(font->pos_max * sizeof (font->pos_buf[0]));
     if (! font->pos_buf) {
         TTF_SetError("Out of memory");
         TTF_CloseFont(font);
@@ -1905,7 +1905,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
              * preferred (see FT_LOAD_DEFAULT section of FreeType2 API Reference).
              * FT_Render_Glyph() canreturn two-color bitmap or 4/16/256 color graymap
              * according to the format of embedded bitmap/graymap. */
-            for (i = 0; i < src->rows; i++) {
+            for (i = 0; i < (unsigned int)src->rows; i++) {
                 unsigned char *srcp = src->buffer + i * src->pitch;
                 unsigned char *dstp = dst->buffer + i * dst->pitch;
                 unsigned int k, quotient, remainder;
@@ -1926,6 +1926,10 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                 }
 
 /* FT_RENDER_MODE_MONO and src->pixel_mode MONO */
+#ifdef _WIN32
+#pragma warning(push, 1)
+#pragma warning(disable:4127)
+#endif
 #define MONO_MONO(K_MAX)                                                    \
                 if ((K_MAX)) {                                              \
                     unsigned char c = *srcp++;                              \
@@ -2043,6 +2047,9 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                 }
             }
         }
+#ifdef _WIN32
+#pragma warning(pop)
+#endif
 
         /* Handle the bold style */
         if (TTF_HANDLE_STYLE_BOLD(font)) {
@@ -2633,9 +2640,9 @@ static int TTF_Size_Internal(TTF_Font *font,
 
         /* Realloc, if needed */
         if (font->pos_len >= font->pos_max) {
-            void *saved = font->pos_buf;
+            TTF_Font::PosBuf *saved = font->pos_buf;
             font->pos_max *= 2;
-            font->pos_buf = SDL_realloc(font->pos_buf, font->pos_max * sizeof (font->pos_buf[0]));
+            font->pos_buf = (TTF_Font::PosBuf *)SDL_realloc(font->pos_buf, font->pos_max * sizeof (font->pos_buf[0]));
             if (font->pos_buf == NULL) {
                 font->pos_buf = saved;
                 TTF_SetError("Out of memory");
@@ -2964,7 +2971,7 @@ SDL_Surface* TTF_RenderUNICODE_Blended(TTF_Font *font, const Uint16 *text, SDL_C
     return TTF_Render_Internal(font, (const char *)text, STR_UNICODE, fg, fg /* unused */, RENDER_BLENDED);
 }
 
-static SDL_bool CharacterIsDelimiter(char c)
+static SDL_bool CharacterIsDelimiter(Uint32 c)
 {
     if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
         return SDL_TRUE;
@@ -3032,7 +3039,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
 
         do {
             int extent = 0, max_count = 0, char_count = 0;
-            size_t save_textlen = -1;
+            size_t save_textlen = (size_t)-1;
             char *save_text  = NULL;
 
             if (numLines >= maxNumLines) {
