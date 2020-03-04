@@ -875,6 +875,10 @@ static int Get_Alignement()
 #endif
 }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-value"
+#endif
 #define BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, WB, WP, WS, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) \
                                                                                                                         \
 static SDL_INLINE                                                                                                       \
@@ -1007,6 +1011,10 @@ BUILD_RENDER_LINE(8_Solid               , 0, 0, BITMAP, 0     , 0     ,         
 BUILD_RENDER_LINE(8_Shaded_SP           , 0, 0, 0     , PIXMAP, SUBPIX,                       ,                , BG         )
 BUILD_RENDER_LINE(8_Blended_SP          , 1, 0, 0     , PIXMAP, SUBPIX,                       , BG_Blended     ,            )
 BUILD_RENDER_LINE(8_Blended_Opaque_SP   , 1, 1, 0     , PIXMAP, SUBPIX, BG_Blended_Opaque     ,                ,            )
+#endif
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
 #endif
 
 static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha)
