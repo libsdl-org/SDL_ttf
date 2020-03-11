@@ -243,6 +243,13 @@ struct _TTF_Font {
 #endif
 };
 
+
+#ifdef _WIN32
+typedef TTF_Font::PosBuf PosBuf_t;
+#else
+typedef void PosBuf_t;
+#endif
+
 /* Tell if SDL_ttf has to handle the style */
 #define TTF_HANDLE_STYLE_BOLD(font)          ((font)->style & TTF_STYLE_BOLD)
 #define TTF_HANDLE_STYLE_ITALIC(font)        ((font)->style & TTF_STYLE_ITALIC)
@@ -1498,7 +1505,7 @@ TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, int freesrc, int ptsize, long i
 
     font->pos_len = 0;
     font->pos_max = 16;
-    font->pos_buf = (TTF_Font::PosBuf *)SDL_malloc(font->pos_max * sizeof (font->pos_buf[0]));
+    font->pos_buf = (PosBuf_t *)SDL_malloc(font->pos_max * sizeof (font->pos_buf[0]));
     if (! font->pos_buf) {
         TTF_SetError("Out of memory");
         TTF_CloseFont(font);
@@ -2648,9 +2655,9 @@ static int TTF_Size_Internal(TTF_Font *font,
 
         /* Realloc, if needed */
         if (font->pos_len >= font->pos_max) {
-            TTF_Font::PosBuf *saved = font->pos_buf;
+            PosBuf_t *saved = font->pos_buf;
             font->pos_max *= 2;
-            font->pos_buf = (TTF_Font::PosBuf *)SDL_realloc(font->pos_buf, font->pos_max * sizeof (font->pos_buf[0]));
+            font->pos_buf = (PosBuf_t *)SDL_realloc(font->pos_buf, font->pos_max * sizeof (font->pos_buf[0]));
             if (font->pos_buf == NULL) {
                 font->pos_buf = saved;
                 TTF_SetError("Out of memory");
