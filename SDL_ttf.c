@@ -189,6 +189,14 @@ typedef struct cached_glyph {
     };
 } c_glyph;
 
+/* Internal buffer to store positions computed by TTF_Size_Internal()
+ * for rendered string by Render_Line() */
+typedef struct PosBuf {
+    FT_UInt index;
+    int x;
+    int y;
+} PosBuf_t;
+
 /* The structure used to hold internal font information */
 struct _TTF_Font {
     /* Freetype2 maintains all sorts of useful info itself */
@@ -227,11 +235,7 @@ struct _TTF_Font {
 
     /* Internal buffer to store positions computed by TTF_Size_Internal()
      * for rendered string by Render_Line() */
-    struct PosBuf {
-        FT_UInt index;
-        int x;
-        int y;
-    } *pos_buf;
+    PosBuf_t *pos_buf;
     Uint32 pos_len;
     Uint32 pos_max;
 
@@ -242,13 +246,6 @@ struct _TTF_Font {
     hb_font_t *hb_font;
 #endif
 };
-
-
-#ifdef _WIN32
-typedef TTF_Font::PosBuf PosBuf_t;
-#else
-typedef void PosBuf_t;
-#endif
 
 /* Tell if SDL_ttf has to handle the style */
 #define TTF_HANDLE_STYLE_BOLD(font)          ((font)->style & TTF_STYLE_BOLD)
