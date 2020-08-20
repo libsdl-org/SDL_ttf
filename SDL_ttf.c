@@ -3114,7 +3114,9 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
 
     width  = (numLines > 1) ? wrapLength : width;
     /* Don't go above wrapLength if you have only 1 line which hasn't been cut */
-    width  = SDL_min((int)wrapLength, width);
+    if (wrapLength > 0) {
+        width = SDL_min((int)wrapLength, width);
+    }
     height = rowHeight + lineskip * (numLines - 1);
 
     /* Support alpha blending */
