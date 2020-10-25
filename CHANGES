@@ -1,3 +1,19 @@
+2.0.11.1:
+- Added new functions for optional DPI-scaling of fonts (bug #2951),
+  namely TTF_OpenFontDPI, TTF_OpenFontDPIRW, TTF_OpenFontIndexDPI and
+  TTF_OpenFontIndexDPIRW.
+- Fixed invalid memory read & write by TTF_RenderUTF8* with specific
+  input (bug #2749)
+- Fixed TTF_RenderGlyph_Shaded (bug #1433, archlinux bug #28674.)
+- Fixed bug where each occurance of a specific characters in a string
+  appears clipped horizontally (Use the correct rounding of character
+  width calculation.)
+- Fixed a wrong use of FT_Set_Pixel_Sizes().
+- Fixed file not getting closed in TTF_OpenFontIndexRW in error cases
+  (bug #1531)
+- Build fixes / updates.
+- Updated external libraries with multiple bug/security fixes.
+
 2.0.11:
 Sam Lantinga - Sat Dec 31 10:49:42 EST 2011
  * SDL_ttf is now under the zlib license
