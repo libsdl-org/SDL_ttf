@@ -21,12 +21,12 @@
 
 /* A simple program to test the text rendering feature of the TTF library */
 
+#include "SDL.h"
+#include "SDL_ttf.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#include "SDL.h"
-#include "SDL_ttf.h"
 
 #define DEFAULT_PTSIZE  18
 #define DEFAULT_TEXT    "The quick brown fox jumped over the lazy dog"

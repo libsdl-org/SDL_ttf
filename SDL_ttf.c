@@ -19,10 +19,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "SDL.h"
+#include "SDL_cpuinfo.h"
+#include "SDL_endian.h"
+
+#include "SDL_ttf.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -30,11 +31,6 @@
 #include FT_STROKER_H
 #include FT_GLYPH_H
 #include FT_TRUETYPE_IDS_H
-
-#include "SDL.h"
-#include "SDL_cpuinfo.h"
-#include "SDL_endian.h"
-#include "SDL_ttf.h"
 
 #ifndef TTF_USE_HARFBUZZ
 #  define TTF_USE_HARFBUZZ 0
