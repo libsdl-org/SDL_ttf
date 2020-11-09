@@ -161,6 +161,7 @@ FT2_CONFIG = @FT2_CONFIG@
 FT2_LIBS = @FT2_LIBS@
 GL_LIBS = @GL_LIBS@
 GREP = @GREP@
+ICONV_LIBS = @ICONV_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -304,7 +305,7 @@ EXTRA_DIST = \
 libSDL_ttf_la_LIBADD = @MATHLIB@
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = SDL_ttf.pc
-showfont_LDADD = libSDL_ttf.la
+showfont_LDADD = libSDL_ttf.la @ICONV_LIBS@
 glfont_LDADD = libSDL_ttf.la @GL_LIBS@ @MATHLIB@
 all: all-am
 
