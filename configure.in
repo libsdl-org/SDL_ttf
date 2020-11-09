@@ -70,11 +70,6 @@ case "$host" in
 	;;
 esac
 
-
-dnl Check for iconv (character conversion library; see iconv.m4)
-dnl This isn't available on many systems
-dnl AM_ICONV
-
 case "$host" in
     *-*-beos*)
         ac_default_prefix=/boot/develop/tools/gnupro
@@ -166,7 +161,9 @@ if test x$have_opengl = xyes; then
 else
     GL_LIBS=""
 fi
+AC_CHECK_LIB(iconv, libiconv_open, [ICONV_LIBS="-liconv"])
 AC_SUBST([GL_LIBS])
+AC_SUBST([ICONV_LIBS])
 AC_SUBST([MATHLIB])
 AC_SUBST([WINDRES])
 

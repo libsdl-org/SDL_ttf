@@ -45,7 +45,7 @@ pkgconfig_DATA = SDL_ttf.pc
 
 noinst_PROGRAMS = showfont glfont
 
-showfont_LDADD = libSDL_ttf.la
+showfont_LDADD = libSDL_ttf.la @ICONV_LIBS@
 glfont_LDADD = libSDL_ttf.la @GL_LIBS@ @MATHLIB@
 
 # Rule to build tar-gzipped distribution package
