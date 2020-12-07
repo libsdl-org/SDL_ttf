@@ -14,12 +14,13 @@ EXTRA_DIST =			\
 	debian			\
 	external		\
 	version.rc		\
+	Makefile.os2		\
 	VisualC			\
 	VisualC-WinRT		\
 	Xcode			\
-	Xcode-iOS		\
 	SDL2_ttf.spec		\
 	SDL2_ttf.spec.in	\
+	SDL2_ttfConfig.cmake	\
 	gcc-fat.sh		\
 	autogen.sh		\
 	$(srcdir)/*.txt
