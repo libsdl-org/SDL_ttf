@@ -19,54 +19,54 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\external\freetype-2.4.12\include\freetype\config\ftconfig.h" />
-    <ClInclude Include="..\..\external\freetype-2.4.12\include\freetype\config\ftheader.h" />
-    <ClInclude Include="..\..\external\freetype-2.4.12\include\freetype\config\ftmodule.h" />
-    <ClInclude Include="..\..\external\freetype-2.4.12\include\freetype\config\ftoption.h" />
-    <ClInclude Include="..\..\external\freetype-2.4.12\include\freetype\config\ftstdlib.h" />
-    <ClInclude Include="..\..\external\freetype-2.4.12\include\ft2build.h" />
+    <ClInclude Include="..\..\external\freetype-2.10.1\include\freetype\config\ftconfig.h" />
+    <ClInclude Include="..\..\external\freetype-2.10.1\include\freetype\config\ftheader.h" />
+    <ClInclude Include="..\..\external\freetype-2.10.1\include\freetype\config\ftmodule.h" />
+    <ClInclude Include="..\..\external\freetype-2.10.1\include\freetype\config\ftoption.h" />
+    <ClInclude Include="..\..\external\freetype-2.10.1\include\freetype\config\ftstdlib.h" />
+    <ClInclude Include="..\..\external\freetype-2.10.1\include\ft2build.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\autofit\autofit.c">
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\autofit\autofit.c">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">MinSpace</Optimization>
     </ClCompile>
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftbase.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftbbox.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftbitmap.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftfstype.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftgasp.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftglyph.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftgxval.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftinit.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftlcdfil.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftmm.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftotval.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftpatent.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftpfr.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftstroke.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftsynth.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftsystem.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\fttype1.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftwinfnt.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\base\ftxf86.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\bdf\bdf.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\cache\ftcache.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\cff\cff.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\cid\type1cid.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\gzip\ftgzip.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\lzw\ftlzw.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\pcf\pcf.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\pfr\pfr.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\psaux\psaux.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\pshinter\pshinter.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\psnames\psmodule.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\raster\raster.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\sfnt\sfnt.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\smooth\smooth.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\truetype\truetype.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\type1\type1.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\type42\type42.c" />
-    <ClCompile Include="..\..\external\freetype-2.4.12\src\winfonts\winfnt.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftbase.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftbbox.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftbitmap.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftfstype.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftgasp.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftglyph.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftgxval.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftinit.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftlcdfil.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftmm.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftotval.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftpatent.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftpfr.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftstroke.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftsynth.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftsystem.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\fttype1.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftwinfnt.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\base\ftxf86.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\bdf\bdf.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\cache\ftcache.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\cff\cff.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\cid\type1cid.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\gzip\ftgzip.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\lzw\ftlzw.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\pcf\pcf.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\pfr\pfr.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\psaux\psaux.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\pshinter\pshinter.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\psnames\psmodule.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\raster\raster.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\sfnt\sfnt.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\smooth\smooth.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\truetype\truetype.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\type1\type1.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\type42\type42.c" />
+    <ClCompile Include="..\..\external\freetype-2.10.1\src\winfonts\winfnt.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7b62bbd5-2f9d-428f-a1ee-857e485592f7}</ProjectGuid>
@@ -139,7 +139,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\external\freetype-2.4.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\external\freetype-2.10.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4703</DisableSpecificWarnings>
     </ClCompile>
@@ -154,7 +154,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\external\freetype-2.4.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\external\freetype-2.10.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4703</DisableSpecificWarnings>
     </ClCompile>
@@ -169,7 +169,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\external\freetype-2.4.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\external\freetype-2.10.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4703</DisableSpecificWarnings>
     </ClCompile>
@@ -184,7 +184,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\external\freetype-2.4.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\external\freetype-2.10.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4703</DisableSpecificWarnings>
     </ClCompile>
