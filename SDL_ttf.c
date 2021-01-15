@@ -31,6 +31,7 @@
 #include FT_STROKER_H
 #include FT_GLYPH_H
 #include FT_TRUETYPE_IDS_H
+#include FT_COLOR_H
 
 #ifndef TTF_USE_HARFBUZZ
 #  define TTF_USE_HARFBUZZ 0
@@ -149,7 +150,9 @@ static SDL_INLINE int hasNEON()
 #define CACHED_METRICS  0x10
 #define CACHED_BITMAP   0x01
 #define CACHED_PIXMAP   0x02
-#define CACHED_SUBPIX   0x04
+#define CACHED_COLOR    0x04
+#define CACHED_SUBPIX   0x08
+
 
 typedef struct {
     unsigned char *buffer; /* aligned */
@@ -158,6 +161,7 @@ typedef struct {
     int            width;
     int            rows;
     int            pitch;
+    int            is_color;
 } TTF_Image;
 
 /* Cached glyph information */
@@ -297,7 +301,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         SDL_Color fg, SDL_Color bg, Uint32 wrapLength, render_mode_t render_mode);
 
 static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
-        int want_bitmap, int want_pixmap, int want_subpixel,
+        int want_bitmap, int want_pixmap, int want_color, int want_subpixel,
         int translation, c_glyph **out_glyph, TTF_Image **out_image);
 
 static void Flush_Cache(TTF_Font *font);
@@ -331,6 +335,44 @@ static void Flush_Cache(TTF_Font *font);
 
 #endif
 
+
+/* Blend colored glyphs */
+static SDL_INLINE void BG_Blended_Color(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
+{
+    const Uint32 *src   = (Uint32 *)image->buffer;
+    Uint32      *dst    = destination;
+    Uint32       width  = image->width;
+    Uint32       height = image->rows;
+
+    if (fg_alpha == 0) { /* SDL_ALPHA_OPAQUE */
+        while (height--) {
+            /* *INDENT-OFF* */
+            DUFFS_LOOP4(
+                *dst++ = *src++;
+            , width);
+            /* *INDENT-ON* */
+            src = (const Uint32 *)((const Uint8 *)src + srcskip);
+            dst = (Uint32 *)((Uint8 *)dst + dstskip);
+        }
+    } else {
+        Uint32 alpha;
+        Uint32 tmp;
+
+        while (height--) {
+            /* *INDENT-OFF* */
+            DUFFS_LOOP4(
+                    tmp = *src++;
+                    alpha = tmp >> 24;
+                    tmp &= ~0xFF000000;
+                    alpha =  DIVIDE_BY_255(fg_alpha * alpha) << 24;
+                    *dst++ = tmp | alpha
+                    , width);
+            /* *INDENT-ON* */
+            src = (const Uint32 *)((const Uint8 *)src + srcskip);
+            dst = (Uint32 *)((Uint8 *)dst + dstskip);
+        }
+    }
+}
 
 /* Blended Opaque */
 static SDL_INLINE void BG_Blended_Opaque(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
@@ -813,12 +855,18 @@ static void clip_glyph(int *_x, int *_y, TTF_Image *image, const SDL_Surface *te
     int x = *_x;
     int y = *_y;
 
+    int srcbpp = 1;
+    if (image->is_color) {
+        /* This isn't tested because colored image never ends up left clipped */
+        srcbpp = 4;
+    }
+
     /* Don't go below x=0 */
     if (x < 0) {
         int tmp = -x;
         x = 0;
         image->width  -= tmp;
-        image->buffer += tmp;
+        image->buffer += srcbpp * tmp;
     }
     /* Don't go above textbuf->w */
     above_w = x + image->width - textbuf->w;
@@ -879,7 +927,7 @@ static int Get_Alignement()
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-value"
 #endif
-#define BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, WB, WP, WS, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) \
+#define BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, WB_WP_WC, WS, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) \
                                                                                                                         \
 static SDL_INLINE                                                                                                       \
 int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha)                    \
@@ -893,12 +941,12 @@ int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int yst
         int y       = font->pos_buf[i].y;                                                                               \
         TTF_Image *image;                                                                                               \
                                                                                                                         \
-        if (Find_GlyphByIndex(font, idx, WB, WP, WS, x & 63, NULL, &image) == 0) {                                      \
+        if (Find_GlyphByIndex(font, idx, WB_WP_WC, WS, x & 63, NULL, &image) == 0) {                                    \
             int above_w, above_h;                                                                                       \
             Uint32 dstskip;                                                                                             \
             Sint32 srcskip; /* Can be negative */                                                                       \
             Uint8 *dst;                                                                                                 \
-            int rest;                                                                                                   \
+            int remainder;                                                                                              \
             Uint8 *saved_buffer = image->buffer;                                                                        \
             int saved_width = image->width;                                                                             \
             image->buffer += alignment;                                                                                 \
@@ -914,21 +962,32 @@ int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int yst
                 /* Most often, glyph is inside textbuf */                                                               \
                 /* Compute dst */                                                                                       \
                 dst  = (Uint8 *)textbuf->pixels + y * textbuf->pitch + x * bpp;                                         \
-                /* Align dst, get rest, shift & align glyph width */                                                    \
-                rest = ((size_t)dst & alignment) / bpp;                                                                 \
+                /* Align dst, get remainder, shift & align glyph width */                                               \
+                remainder = ((size_t)dst & alignment) / bpp;                                                            \
                 dst  = (Uint8 *)((size_t)dst & ~alignment);                                                             \
-                image->buffer -= rest;                                                                                  \
-                image->width   = (image->width + rest + alignment) & ~alignment;                                        \
+                image->buffer -= remainder;                                                                             \
+                image->width   = (image->width + remainder + alignment) & ~alignment;                                   \
                 /* Compute srcskip, dstskip */                                                                          \
                 srcskip = image->pitch - image->width;                                                                  \
                 dstskip = textbuf->pitch - image->width * bpp;                                                          \
                 /* Render glyph at (x, y) with optimized copy functions */                                              \
-                if (IS_BLENDED_OPAQUE) {                                                                                \
-                    BLIT_GLYPH_BLENDED_OPAQUE_OPTIM(image, (Uint32 *)dst, srcskip, dstskip);                            \
-                } else if (IS_BLENDED) {                                                                                \
-                    BLIT_GLYPH_BLENDED_OPTIM(image, (Uint32 *)dst, srcskip, dstskip, fg_alpha);                         \
-                } else {                                                                                                \
-                    BLIT_GLYPH_OPTIM(image, dst, srcskip, dstskip);                                                     \
+                if (!IS_BLENDED || image->is_color == 0) {                                                              \
+                    if (IS_BLENDED_OPAQUE) {                                                                            \
+                        BLIT_GLYPH_BLENDED_OPAQUE_OPTIM(image, (Uint32 *)dst, srcskip, dstskip);                        \
+                    } else if (IS_BLENDED) {                                                                            \
+                        BLIT_GLYPH_BLENDED_OPTIM(image, (Uint32 *)dst, srcskip, dstskip, fg_alpha);                     \
+                    } else {                                                                                            \
+                        BLIT_GLYPH_OPTIM(image, dst, srcskip, dstskip);                                                 \
+                    }                                                                                                   \
+                } else if (IS_BLENDED && image->is_color) {                                                             \
+                    image->buffer = saved_buffer;                                                                       \
+                    image->buffer += alignment;                                                                         \
+                    image->width = saved_width;                                                                         \
+                    dst = (Uint8 *)textbuf->pixels + y * textbuf->pitch + x * bpp;                                      \
+                    /* Compute srcskip, dstskip */                                                                      \
+                    srcskip = image->pitch - 4 * image->width;                                                          \
+                    dstskip = textbuf->pitch - image->width * bpp;                                                      \
+                    BG_Blended_Color(image, (Uint32 *)dst, srcskip, dstskip, fg_alpha);                                 \
                 }                                                                                                       \
                 /* restore modification */                                                                              \
                 image->width = saved_width;                                                                             \
@@ -943,7 +1002,10 @@ int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int yst
                 srcskip = image_clipped.pitch - image_clipped.width;                                                    \
                 dstskip = textbuf->pitch - image_clipped.width * bpp;                                                   \
                 /* Render glyph at (x, y) */                                                                            \
-                if (IS_BLENDED_OPAQUE) {                                                                                \
+                if (IS_BLENDED && image->is_color) {                                                                    \
+                    srcskip -= 3 * image_clipped.width;                                                                 \
+                    BG_Blended_Color(&image_clipped, (Uint32 *)dst, srcskip, dstskip, fg_alpha);                        \
+                } else if (IS_BLENDED_OPAQUE) {                                                                         \
                     BG_Blended_Opaque(&image_clipped, (Uint32 *)dst, srcskip, dstskip);                                 \
                 } else if (IS_BLENDED) {                                                                                \
                     BG_Blended(&image_clipped, (Uint32 *)dst, srcskip, dstskip, fg_alpha);                              \
@@ -961,56 +1023,58 @@ int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int yst
 }                                                                                                                       \
                                                                                                                         \
 
-#define PIXMAP  CACHED_PIXMAP
-#define BITMAP  CACHED_BITMAP
+#define BITMAP  CACHED_BITMAP, 0, 0
+#define PIXMAP  0, CACHED_PIXMAP, 0
+#define COLOR   0, 0, CACHED_COLOR
+
 #define SUBPIX  CACHED_SUBPIX
 
-/* BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, WANT_BITMAP, WANT_PIXMAP, WANT_SUBPIXEL, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) */
+/* BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, WANT_BITMAP_PIXMAP_COLOR, WANT_SUBPIXEL, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) */
 
 #if defined(HAVE_SSE2_INTRINSICS)
-BUILD_RENDER_LINE(SSE_Shaded            , 0, 0, 0     , PIXMAP, 0     ,                       ,                , BG_SSE     )
-BUILD_RENDER_LINE(SSE_Blended           , 1, 0, 0     , PIXMAP, 0     ,                       , BG_Blended_SSE ,            )
-BUILD_RENDER_LINE(SSE_Blended_Opaque    , 1, 1, 0     , PIXMAP, 0     , BG_Blended_Opaque_SSE ,                ,            )
-BUILD_RENDER_LINE(SSE_Solid             , 0, 0, BITMAP, 0     , 0     ,                       ,                , BG_SSE     )
-BUILD_RENDER_LINE(SSE_Shaded_SP         , 0, 0, 0     , PIXMAP, SUBPIX,                       ,                , BG_SSE     )
-BUILD_RENDER_LINE(SSE_Blended_SP        , 1, 0, 0     , PIXMAP, SUBPIX,                       , BG_Blended_SSE ,            )
-BUILD_RENDER_LINE(SSE_Blended_Opaque_SP , 1, 1, 0     , PIXMAP, SUBPIX, BG_Blended_Opaque_SSE ,                ,            )
+BUILD_RENDER_LINE(SSE_Shaded            , 0, 0, PIXMAP, 0     ,                       ,                , BG_SSE     )
+BUILD_RENDER_LINE(SSE_Blended           , 1, 0,  COLOR, 0     ,                       , BG_Blended_SSE ,            )
+BUILD_RENDER_LINE(SSE_Blended_Opaque    , 1, 1,  COLOR, 0     , BG_Blended_Opaque_SSE ,                ,            )
+BUILD_RENDER_LINE(SSE_Solid             , 0, 0, BITMAP, 0     ,                       ,                , BG_SSE     )
+BUILD_RENDER_LINE(SSE_Shaded_SP         , 0, 0, PIXMAP, SUBPIX,                       ,                , BG_SSE     )
+BUILD_RENDER_LINE(SSE_Blended_SP        , 1, 0,  COLOR, SUBPIX,                       , BG_Blended_SSE ,            )
+BUILD_RENDER_LINE(SSE_Blended_Opaque_SP , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaque_SSE ,                ,            )
 #endif
 
 #if defined(HAVE_NEON_INTRINSICS)
-BUILD_RENDER_LINE(NEON_Shaded           , 0, 0, 0     , PIXMAP, 0     ,                       ,                , BG_NEON    )
-BUILD_RENDER_LINE(NEON_Blended          , 1, 0, 0     , PIXMAP, 0     ,                       , BG_Blended_NEON,            )
-BUILD_RENDER_LINE(NEON_Blended_Opaque   , 1, 1, 0     , PIXMAP, 0     , BG_Blended_Opaque_NEON,                ,            )
-BUILD_RENDER_LINE(NEON_Solid            , 0, 0, BITMAP, 0     , 0     ,                       ,                , BG_NEON    )
-BUILD_RENDER_LINE(NEON_Shaded_SP        , 0, 0, 0     , PIXMAP, SUBPIX,                       ,                , BG_NEON    )
-BUILD_RENDER_LINE(NEON_Blended_SP       , 1, 0, 0     , PIXMAP, SUBPIX,                       , BG_Blended_NEON,            )
-BUILD_RENDER_LINE(NEON_Blended_Opaque_SP, 1, 1, 0     , PIXMAP, SUBPIX, BG_Blended_Opaque_NEON,                ,            )
+BUILD_RENDER_LINE(NEON_Shaded           , 0, 0, PIXMAP, 0     ,                       ,                , BG_NEON    )
+BUILD_RENDER_LINE(NEON_Blended          , 1, 0,  COLOR, 0     ,                       , BG_Blended_NEON,            )
+BUILD_RENDER_LINE(NEON_Blended_Opaque   , 1, 1,  COLOR, 0     , BG_Blended_Opaque_NEON,                ,            )
+BUILD_RENDER_LINE(NEON_Solid            , 0, 0, BITMAP, 0     ,                       ,                , BG_NEON    )
+BUILD_RENDER_LINE(NEON_Shaded_SP        , 0, 0, PIXMAP, SUBPIX,                       ,                , BG_NEON    )
+BUILD_RENDER_LINE(NEON_Blended_SP       , 1, 0,  COLOR, SUBPIX,                       , BG_Blended_NEON,            )
+BUILD_RENDER_LINE(NEON_Blended_Opaque_SP, 1, 1,  COLOR, SUBPIX, BG_Blended_Opaque_NEON,                ,            )
 #endif
 
 #if defined(HAVE_BLIT_GLYPH_64)
-BUILD_RENDER_LINE(64_Shaded             , 0, 0, 0     , PIXMAP, 0     ,                       ,                , BG_64      )
-BUILD_RENDER_LINE(64_Blended            , 1, 0, 0     , PIXMAP, 0     ,                       , BG_Blended_32  ,            )
-BUILD_RENDER_LINE(64_Blended_Opaque     , 1, 1, 0     , PIXMAP, 0     , BG_Blended_Opaque_32  ,                ,            )
-BUILD_RENDER_LINE(64_Solid              , 0, 0, BITMAP, 0     , 0     ,                       ,                , BG_64      )
-BUILD_RENDER_LINE(64_Shaded_SP          , 0, 0, 0     , PIXMAP, SUBPIX,                       ,                , BG_64      )
-BUILD_RENDER_LINE(64_Blended_SP         , 1, 0, 0     , PIXMAP, SUBPIX,                       , BG_Blended_32  ,            )
-BUILD_RENDER_LINE(64_Blended_Opaque_SP  , 1, 1, 0     , PIXMAP, SUBPIX, BG_Blended_Opaque_32  ,                ,            )
+BUILD_RENDER_LINE(64_Shaded             , 0, 0, PIXMAP, 0     ,                       ,                , BG_64      )
+BUILD_RENDER_LINE(64_Blended            , 1, 0,  COLOR, 0     ,                       , BG_Blended_32  ,            )
+BUILD_RENDER_LINE(64_Blended_Opaque     , 1, 1,  COLOR, 0     , BG_Blended_Opaque_32  ,                ,            )
+BUILD_RENDER_LINE(64_Solid              , 0, 0, BITMAP, 0     ,                       ,                , BG_64      )
+BUILD_RENDER_LINE(64_Shaded_SP          , 0, 0, PIXMAP, SUBPIX,                       ,                , BG_64      )
+BUILD_RENDER_LINE(64_Blended_SP         , 1, 0,  COLOR, SUBPIX,                       , BG_Blended_32  ,            )
+BUILD_RENDER_LINE(64_Blended_Opaque_SP  , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaque_32  ,                ,            )
 #elif defined(HAVE_BLIT_GLYPH_32)
-BUILD_RENDER_LINE(32_Shaded             , 0, 0, 0     , PIXMAP, 0     ,                       ,                , BG_32      )
-BUILD_RENDER_LINE(32_Blended            , 1, 0, 0     , PIXMAP, 0     ,                       , BG_Blended_32  ,            )
-BUILD_RENDER_LINE(32_Blended_Opaque     , 1, 1, 0     , PIXMAP, 0     , BG_Blended_Opaque_32  ,                ,            )
-BUILD_RENDER_LINE(32_Solid              , 0, 0, BITMAP, 0     , 0     ,                       ,                , BG_32      )
-BUILD_RENDER_LINE(32_Shaded_SP          , 0, 0, 0     , PIXMAP, SUBPIX,                       ,                , BG_32      )
-BUILD_RENDER_LINE(32_Blended_SP         , 1, 0, 0     , PIXMAP, SUBPIX,                       , BG_Blended_32  ,            )
-BUILD_RENDER_LINE(32_Blended_Opaque_SP  , 1, 1, 0     , PIXMAP, SUBPIX, BG_Blended_Opaque_32  ,                ,            )
+BUILD_RENDER_LINE(32_Shaded             , 0, 0, PIXMAP, 0     ,                       ,                , BG_32      )
+BUILD_RENDER_LINE(32_Blended            , 1, 0,  COLOR, 0     ,                       , BG_Blended_32  ,            )
+BUILD_RENDER_LINE(32_Blended_Opaque     , 1, 1,  COLOR, 0     , BG_Blended_Opaque_32  ,                ,            )
+BUILD_RENDER_LINE(32_Solid              , 0, 0, BITMAP, 0     ,                       ,                , BG_32      )
+BUILD_RENDER_LINE(32_Shaded_SP          , 0, 0, PIXMAP, SUBPIX,                       ,                , BG_32      )
+BUILD_RENDER_LINE(32_Blended_SP         , 1, 0,  COLOR, SUBPIX,                       , BG_Blended_32  ,            )
+BUILD_RENDER_LINE(32_Blended_Opaque_SP  , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaque_32  ,                ,            )
 #else
-BUILD_RENDER_LINE(8_Shaded              , 0, 0, 0     , PIXMAP, 0     ,                       ,                , BG         )
-BUILD_RENDER_LINE(8_Blended             , 1, 0, 0     , PIXMAP, 0     ,                       , BG_Blended     ,            )
-BUILD_RENDER_LINE(8_Blended_Opaque      , 1, 1, 0     , PIXMAP, 0     , BG_Blended_Opaque     ,                ,            )
-BUILD_RENDER_LINE(8_Solid               , 0, 0, BITMAP, 0     , 0     ,                       ,                , BG         )
-BUILD_RENDER_LINE(8_Shaded_SP           , 0, 0, 0     , PIXMAP, SUBPIX,                       ,                , BG         )
-BUILD_RENDER_LINE(8_Blended_SP          , 1, 0, 0     , PIXMAP, SUBPIX,                       , BG_Blended     ,            )
-BUILD_RENDER_LINE(8_Blended_Opaque_SP   , 1, 1, 0     , PIXMAP, SUBPIX, BG_Blended_Opaque     ,                ,            )
+BUILD_RENDER_LINE(8_Shaded              , 0, 0, PIXMAP, 0     ,                       ,                , BG         )
+BUILD_RENDER_LINE(8_Blended             , 1, 0,  COLOR, 0     ,                       , BG_Blended     ,            )
+BUILD_RENDER_LINE(8_Blended_Opaque      , 1, 1,  COLOR, 0     , BG_Blended_Opaque     ,                ,            )
+BUILD_RENDER_LINE(8_Solid               , 0, 0, BITMAP, 0     ,                       ,                , BG         )
+BUILD_RENDER_LINE(8_Shaded_SP           , 0, 0, PIXMAP, SUBPIX,                       ,                , BG         )
+BUILD_RENDER_LINE(8_Blended_SP          , 1, 0,  COLOR, SUBPIX,                       , BG_Blended     ,            )
+BUILD_RENDER_LINE(8_Blended_Opaque_SP   , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaque     ,                ,            )
 #endif
 
 #ifdef __GNUC__
@@ -1727,7 +1791,13 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
     FT_GlyphSlot slot;
     FT_Error error;
 
-    error = FT_Load_Glyph(font->face, cached->index, FT_LOAD_DEFAULT | font->ft_load_target);
+    int ft_load = FT_LOAD_DEFAULT | font->ft_load_target;
+
+    if (want & CACHED_COLOR) {
+        ft_load |= FT_LOAD_COLOR;
+    }
+
+    error = FT_Load_Glyph(font->face, cached->index, ft_load);
     if (error) {
         return error;
     }
@@ -1799,6 +1869,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 
     if (((want & CACHED_BITMAP) && !(cached->stored & CACHED_BITMAP)) ||
         ((want & CACHED_PIXMAP) && !(cached->stored & CACHED_PIXMAP)) ||
+        ((want & CACHED_COLOR) && !(cached->stored & CACHED_COLOR)) ||
          (want & CACHED_SUBPIX)
        ) {
         const int  mono  = (want & CACHED_BITMAP);
@@ -1888,6 +1959,9 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 
         /* Compute pitch: glyph is padded right to be able to read an 'aligned' size expanding on the right */
         dst->pitch = dst->width + alignment;
+        if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
+            dst->pitch += 3 * dst->width;
+        }
 
         if (dst->rows != 0) {
             unsigned int i;
@@ -1928,6 +2002,9 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                 } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY4) {
                     quotient  = src->width / 2;
                     remainder = src->width & 0x1;
+                } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
+                    quotient  = src->width;
+                    remainder = 0;
                 } else {
                     quotient  = src->width;
                     remainder = 0;
@@ -2050,6 +2127,8 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                         NORMAL_GRAY4(2);
                     }
                     NORMAL_GRAY4(remainder);
+                } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
+                    SDL_memcpy(dstp, srcp, 4 * src->width);
                 } else {
                     SDL_memcpy(dstp, srcp, src->width);
                 }
@@ -2089,8 +2168,26 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             dst->buffer -= alignment;
         }
 
+        if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
+            dst->is_color = 1;
+        } else {
+            dst->is_color = 0;
+        }
+
         /* Mark that we rendered this format */
-        cached->stored |= (mono ? CACHED_BITMAP : CACHED_PIXMAP);
+        if (mono) {
+            cached->stored |= CACHED_BITMAP;
+        } else if (want & CACHED_COLOR) {
+            cached->stored |= CACHED_COLOR;
+            /* Most of the time, glyphs loaded with FT_LOAD_COLOR are non colored, so the cache is
+               also suitable for Shaded rendering (eg, loaded without FT_LOAD_COLOR) */
+            if (dst->is_color == 0) {
+                cached->stored |= CACHED_PIXMAP;
+            }
+        } else {
+            cached->stored |= CACHED_PIXMAP;
+        }
+
 
         /* Free outlined glyph */
         if (glyph) {
@@ -2103,7 +2200,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 }
 
 static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
-        const int want_bitmap, const int want_pixmap, const int want_subpixel,
+        const int want_bitmap, const int want_pixmap, const int want_color, const int want_subpixel,
         int translation, c_glyph **out_glyph, TTF_Image **out_image)
 {
     /* cache size is 256, get key by masking */
@@ -2113,7 +2210,7 @@ static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         *out_glyph = glyph;
     }
 
-    if (want_pixmap) {
+    if (want_pixmap || want_color) {
         *out_image = &glyph->pixmap;
     }
 
@@ -2126,7 +2223,7 @@ static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         /* No a real cache, but if it always advances by integer pixels (eg translation 0 or same as previous),
          * this allows to render as fast as normal mode. */
         int retval;
-        int want = CACHED_METRICS | want_bitmap | want_pixmap | want_subpixel;
+        int want = CACHED_METRICS | want_bitmap | want_pixmap | want_color | want_subpixel;
 
         if (glyph->stored && glyph->index != idx) {
             Flush_Glyph(glyph);
@@ -2152,7 +2249,7 @@ static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
     else
     {
         int retval;
-        const int want = CACHED_METRICS | want_bitmap | want_pixmap;
+        const int want = CACHED_METRICS | want_bitmap | want_pixmap | want_color;
 
         /* Faster check as it gets inlined */
         if (want_pixmap) {
@@ -2163,10 +2260,22 @@ static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
             if ((glyph->stored & CACHED_BITMAP) && glyph->index == idx) {
                 return 0;
             }
+        } else if (want_color) {
+            if ((glyph->stored & CACHED_COLOR) && glyph->index == idx) {
+                return 0;
+            }
         } else {
             /* Get metrics */
             if (glyph->stored && glyph->index == idx) {
                 return 0;
+            }
+        }
+
+        /* Cache cannot contain both PIXMAP and COLOR (unless COLOR is actually not colored). 
+           So, if it's already used, clear it */
+        if (want_color || want_pixmap) {
+            if (glyph->stored & (CACHED_COLOR|CACHED_PIXMAP)) {
+                Flush_Glyph(glyph);
             }
         }
 
@@ -2206,7 +2315,7 @@ static SDL_INLINE FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
 static SDL_INLINE int Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out_glyph)
 {
     FT_UInt idx = get_char_index(font, ch);
-    return Find_GlyphByIndex(font, idx, 0, 0, 0, 0, out_glyph, NULL);
+    return Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, out_glyph, NULL);
 }
 
 void TTF_CloseFont(TTF_Font *font)
@@ -2642,7 +2751,7 @@ static int TTF_Size_Internal(TTF_Font *font,
             continue;
         }
 #endif
-        if (Find_GlyphByIndex(font, idx, 0, 0, 0, 0, &glyph, NULL) < 0) {
+        if (Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, &glyph, NULL) < 0) {
             goto failure;
         }
 
