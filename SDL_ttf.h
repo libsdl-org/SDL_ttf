@@ -355,6 +355,10 @@ extern DECLSPEC int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int i
 extern DECLSPEC int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous_ch, Uint16 ch);
 extern DECLSPEC int TTF_GetFontKerningSizeGlyphs32(TTF_Font *font, Uint32 previous_ch, Uint32 ch);
 
+/* Enable Signed Distance Field rendering (with the Blended APIs) */
+extern DECLSPEC int TTF_SetFontSDF(TTF_Font *font, SDL_bool on_off);
+extern DECLSPEC SDL_bool TTF_GetFontSDF(const TTF_Font *font);
+
 /* We'll use SDL for reporting errors */
 #define TTF_SetError    SDL_SetError
 #define TTF_GetError    SDL_GetError
