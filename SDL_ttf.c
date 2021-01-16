@@ -31,7 +31,13 @@
 #include FT_STROKER_H
 #include FT_GLYPH_H
 #include FT_TRUETYPE_IDS_H
-#include FT_COLOR_H
+
+/* Enable rendering with color */
+#if defined(FT_HAS_COLOR)
+#  define TTF_USE_COLOR 1
+#else
+#  define TTF_USE_COLOR 0
+#endif
 
 /* Enable Signed Distance Field rendering (requires latest FreeType version) */
 #ifndef TTF_USE_SDF
@@ -1814,9 +1820,11 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 
     int ft_load = FT_LOAD_DEFAULT | font->ft_load_target;
 
+#if TTF_USE_COLOR
     if (want & CACHED_COLOR) {
         ft_load |= FT_LOAD_COLOR;
     }
+#endif
 
     error = FT_Load_Glyph(font->face, cached->index, ft_load);
     if (error) {
@@ -1996,9 +2004,11 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 
         /* Compute pitch: glyph is padded right to be able to read an 'aligned' size expanding on the right */
         dst->pitch = dst->width + alignment;
+#if TTF_USE_COLOR
         if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
             dst->pitch += 3 * dst->width;
         }
+#endif
 
         if (dst->rows != 0) {
             unsigned int i;
@@ -2039,9 +2049,11 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                 } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY4) {
                     quotient  = src->width / 2;
                     remainder = src->width & 0x1;
+#if TTF_USE_COLOR
                 } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
                     quotient  = src->width;
                     remainder = 0;
+#endif
 #if TTF_USE_SDF
                 } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY16) {
                     quotient  = src->width;
@@ -2181,8 +2193,10 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                         NORMAL_GRAY4(2);
                     }
                     NORMAL_GRAY4(remainder);
+#if TTF_USE_COLOR
                 } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
                     SDL_memcpy(dstp, srcp, 4 * src->width);
+#endif
 #if TTF_USE_SDF
                 } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY16) {
                     while (quotient--) {
@@ -2228,28 +2242,38 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             dst->buffer -= alignment;
         }
 
+#if TTF_USE_COLOR
         if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
             dst->is_color = 1;
         } else {
             dst->is_color = 0;
         }
+#else
+        dst->is_color = 0;
+#endif
 
         /* Mark that we rendered this format */
         if (mono) {
             cached->stored |= CACHED_BITMAP;
-        } else if (want & CACHED_COLOR) {
-            cached->stored |= CACHED_COLOR;
-            /* Most of the time, glyphs loaded with FT_LOAD_COLOR are non colored, so the cache is
-               also suitable for Shaded rendering (eg, loaded without FT_LOAD_COLOR) */
-            if (dst->is_color == 0) {
-                cached->stored |= CACHED_PIXMAP;
-            }
         } else {
-            cached->stored |= CACHED_PIXMAP;
-            /* If font has no color information, Shaded/Pixmap cache is also suitable for Blend/Color */
-            if (!FT_HAS_COLOR(font->face)) {
+#if TTF_USE_COLOR
+            if (want & CACHED_COLOR) {
                 cached->stored |= CACHED_COLOR;
+                /* Most of the time, glyphs loaded with FT_LOAD_COLOR are non colored, so the cache is
+                   also suitable for Shaded rendering (eg, loaded without FT_LOAD_COLOR) */
+                if (dst->is_color == 0) {
+                    cached->stored |= CACHED_PIXMAP;
+                }
+            } else {
+                cached->stored |= CACHED_PIXMAP;
+                /* If font has no color information, Shaded/Pixmap cache is also suitable for Blend/Color */
+                if (!FT_HAS_COLOR(font->face)) {
+                    cached->stored |= CACHED_COLOR;
+                }
             }
+#else
+            cached->stored |= CACHED_COLOR | CACHED_PIXMAP;
+#endif
         }
 
         /* Free outlined glyph */
