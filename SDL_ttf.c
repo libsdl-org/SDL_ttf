@@ -1895,22 +1895,26 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
         }
 
         /* Render as outline */
-        if (font->outline_val > 0 && slot->format == FT_GLYPH_FORMAT_OUTLINE) {
+        if ((font->outline_val > 0 && slot->format == FT_GLYPH_FORMAT_OUTLINE)
+            || slot->format == FT_GLYPH_FORMAT_BITMAP) {
+
             FT_BitmapGlyph bitmap_glyph;
-            FT_Stroker stroker;
 
             error = FT_Get_Glyph(slot, &glyph);
             if (error) {
                 return error;
             }
 
-            error = FT_Stroker_New(library, &stroker);
-            if (error) {
-                return error;
+            if (font->outline_val > 0) {
+                FT_Stroker stroker;
+                error = FT_Stroker_New(library, &stroker);
+                if (error) {
+                    return error;
+                }
+                FT_Stroker_Set(stroker, font->outline_val * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+                FT_Glyph_Stroke(&glyph, stroker, 1 /* delete the original glyph */);
+                FT_Stroker_Done(stroker);
             }
-            FT_Stroker_Set(stroker, font->outline_val * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
-            FT_Glyph_Stroke(&glyph, stroker, 1 /* delete the original glyph */);
-            FT_Stroker_Done(stroker);
 
             /* Render the glyph */
             error = FT_Glyph_To_Bitmap(&glyph, mono ? FT_RENDER_MODE_MONO : FT_RENDER_MODE_NORMAL, 0, 1);
