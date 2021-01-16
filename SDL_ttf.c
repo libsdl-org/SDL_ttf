@@ -31,6 +31,7 @@
 #include FT_STROKER_H
 #include FT_GLYPH_H
 #include FT_TRUETYPE_IDS_H
+#include FT_IMAGE_H
 
 /* Enable rendering with color */
 #if defined(FT_HAS_COLOR)
@@ -40,7 +41,9 @@
 #endif
 
 /* Enable Signed Distance Field rendering (requires latest FreeType version) */
-#ifndef TTF_USE_SDF
+#if defined(FT_RASTER_FLAG_SDF)
+#  define TTF_USE_SDF 1
+#else
 #  define TTF_USE_SDF 0
 #endif
 
