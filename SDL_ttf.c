@@ -33,6 +33,16 @@
 #include FT_TRUETYPE_IDS_H
 #include FT_COLOR_H
 
+/* Enable Signed Distance Field rendering (requires latest FreeType version) */
+#ifndef TTF_USE_SDF
+#  define TTF_USE_SDF 0
+#endif
+
+#if TTF_USE_SDF
+#include FT_MODULE_H
+#endif
+
+/* Enable HarfBuzz for Complex text rendering */
 #ifndef TTF_USE_HARFBUZZ
 #  define TTF_USE_HARFBUZZ 0
 #endif
@@ -245,6 +255,7 @@ struct _TTF_Font {
 #if TTF_USE_HARFBUZZ
     hb_font_t *hb_font;
 #endif
+    int render_sdf;
 };
 
 /* Tell if SDL_ttf has to handle the style */
@@ -1429,6 +1440,16 @@ int TTF_Init(void)
     }
     if (status == 0) {
         ++TTF_initialized;
+#if TTF_USE_SDF
+#  if 0
+        /* Set various properties of the renderers. */
+        int spread = 4;
+        int overlaps = 0;
+        FT_Property_Set( library, "bsdf", "spread", &spread);
+        FT_Property_Set( library, "sdf", "spread", &spread);
+        FT_Property_Set( library, "sdf", "overlaps", &overlaps);
+#  endif
+#endif
     }
     return status;
 }
@@ -1876,6 +1897,18 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
         TTF_Image *dst   = (mono ? &cached->bitmap : &cached->pixmap);
         FT_Glyph   glyph = NULL;
         FT_Bitmap *src;
+        FT_Render_Mode ft_render_mode;
+
+        if (mono) {
+            ft_render_mode = FT_RENDER_MODE_MONO;
+        } else {
+            ft_render_mode = FT_RENDER_MODE_NORMAL;
+#if TTF_USE_SDF
+            if ((want & CACHED_COLOR) && font->render_sdf) {
+                ft_render_mode = FT_RENDER_MODE_SDF;
+            }
+#endif
+        }
 
         /* Subpixel translation, flush previous datas */
         if (want & CACHED_SUBPIX) {
@@ -1917,7 +1950,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             }
 
             /* Render the glyph */
-            error = FT_Glyph_To_Bitmap(&glyph, mono ? FT_RENDER_MODE_MONO : FT_RENDER_MODE_NORMAL, 0, 1);
+            error = FT_Glyph_To_Bitmap(&glyph, ft_render_mode, 0, 1);
             if (error) {
                 FT_Done_Glyph(glyph);
                 return error;
@@ -1932,7 +1965,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             dst->top    = bitmap_glyph->top;
         } else {
             /* Render the glyph */
-            error = FT_Render_Glyph(slot, mono ? FT_RENDER_MODE_MONO : FT_RENDER_MODE_NORMAL);
+            error = FT_Render_Glyph(slot, ft_render_mode);
             if (error) {
                 return error;
             }
@@ -2009,6 +2042,11 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                 } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
                     quotient  = src->width;
                     remainder = 0;
+#if TTF_USE_SDF
+                } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY16) {
+                    quotient  = src->width;
+                    remainder = 0;
+#endif
                 } else {
                     quotient  = src->width;
                     remainder = 0;
@@ -2090,6 +2128,18 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                     }                                                       \
                 }
 
+
+/* FT_RENDER_MODE_SDF and src->pixel_mode GRAY16 in FT_F6Dot10 */
+#define NORMAL_GRAY16                                                       \
+                {                                                           \
+                    unsigned char c = *srcp++;                              \
+                    unsigned char c2 = *srcp++;                             \
+                    *dstp++ = ((c2 & 0x7f) << 1) | (c >> 7);                \
+                }
+
+
+
+
                 if (mono) {
                     if (src->pixel_mode == FT_PIXEL_MODE_MONO) {
                         while (quotient--) {
@@ -2133,6 +2183,12 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                     NORMAL_GRAY4(remainder);
                 } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
                     SDL_memcpy(dstp, srcp, 4 * src->width);
+#if TTF_USE_SDF
+                } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY16) {
+                    while (quotient--) {
+                        NORMAL_GRAY16
+                    }
+#endif
                 } else {
                     SDL_memcpy(dstp, srcp, src->width);
                 }
@@ -3480,6 +3536,25 @@ int TTF_GetFontHinting(const TTF_Font *font)
         return TTF_HINTING_NONE;
     }
     return TTF_HINTING_NORMAL;
+}
+
+int TTF_SetFontSDF(TTF_Font *font, SDL_bool on_off)
+{
+    TTF_CHECK_POINTER(font, -1);
+#if TTF_USE_SDF
+    font->render_sdf = on_off;
+    Flush_Cache(font);
+    return 0;
+#else
+    TTF_SetError("SDL_ttf compiled without SDF support");
+    return -1;
+#endif
+}
+
+SDL_bool TTF_GetFontSDF(const TTF_Font *font)
+{
+    TTF_CHECK_POINTER(font, -1);
+    return font->render_sdf;
 }
 
 void TTF_Quit(void)
