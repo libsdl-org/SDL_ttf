@@ -2186,8 +2186,11 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             }
         } else {
             cached->stored |= CACHED_PIXMAP;
+            /* If font has no color information, Shaded/Pixmap cache is also suitable for Blend/Color */
+            if (!FT_HAS_COLOR(font->face)) {
+                cached->stored |= CACHED_COLOR;
+            }
         }
-
 
         /* Free outlined glyph */
         if (glyph) {
