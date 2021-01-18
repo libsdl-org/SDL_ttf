@@ -1022,15 +1022,17 @@ int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int yst
                 srcskip = image_clipped.pitch - image_clipped.width;                                                    \
                 dstskip = textbuf->pitch - image_clipped.width * bpp;                                                   \
                 /* Render glyph at (x, y) */                                                                            \
-                if (IS_BLENDED && image->is_color) {                                                                    \
+                if (!IS_BLENDED || image->is_color == 0) {                                                              \
+                    if (IS_BLENDED_OPAQUE) {                                                                            \
+                        BG_Blended_Opaque(&image_clipped, (Uint32 *)dst, srcskip, dstskip);                             \
+                    } else if (IS_BLENDED) {                                                                            \
+                        BG_Blended(&image_clipped, (Uint32 *)dst, srcskip, dstskip, fg_alpha);                          \
+                    } else {                                                                                            \
+                        BG(&image_clipped, dst, srcskip, dstskip);                                                      \
+                    }                                                                                                   \
+                } else if (IS_BLENDED && image->is_color) {                                                             \
                     srcskip -= 3 * image_clipped.width;                                                                 \
                     BG_Blended_Color(&image_clipped, (Uint32 *)dst, srcskip, dstskip, fg_alpha);                        \
-                } else if (IS_BLENDED_OPAQUE) {                                                                         \
-                    BG_Blended_Opaque(&image_clipped, (Uint32 *)dst, srcskip, dstskip);                                 \
-                } else if (IS_BLENDED) {                                                                                \
-                    BG_Blended(&image_clipped, (Uint32 *)dst, srcskip, dstskip, fg_alpha);                              \
-                } else {                                                                                                \
-                    BG(&image_clipped, dst, srcskip, dstskip);                                                          \
                 }                                                                                                       \
             }                                                                                                           \
             image->buffer = saved_buffer;                                                                               \
