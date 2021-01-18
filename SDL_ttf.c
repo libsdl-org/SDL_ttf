@@ -394,6 +394,62 @@ static SDL_INLINE void BG_Blended_Color(const TTF_Image *image, Uint32 *destinat
     }
 }
 
+/* Blended Opaque SDF */
+static SDL_INLINE void BG_Blended_Opaque_SDF(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
+{
+    const Uint8 *src    = image->buffer;
+    Uint32      *dst    = destination;
+    Uint32       width  = image->width;
+    Uint32       height = image->rows;
+
+    Uint32 s;
+    Uint32 d;
+
+    while (height--) {
+        /* *INDENT-OFF* */
+        DUFFS_LOOP4(
+            d = *dst;
+            s = *src++ << 24;
+            if (s > d) {
+                *dst = s;
+            }
+            dst++;
+        , width);
+        /* *INDENT-ON* */
+        src += srcskip;
+        dst  = (Uint32 *)((Uint8 *)dst + dstskip);
+    }
+}
+
+/* Blended non-opaque SDF */
+static SDL_INLINE void BG_Blended_SDF(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
+{
+    const Uint8 *src    = image->buffer;
+    Uint32      *dst    = destination;
+    Uint32       width  = image->width;
+    Uint32       height = image->rows;
+
+    Uint32 s;
+    Uint32 d;
+
+    Uint32 tmp;
+    while (height--) {
+        /* *INDENT-OFF* */
+        DUFFS_LOOP4(
+            d = *dst;
+            tmp = fg_alpha * (*src++);
+            s = DIVIDE_BY_255(tmp) << 24;
+            if (s > d) {
+                *dst = s;
+            }
+            dst++;
+        , width);
+        /* *INDENT-ON* */
+        src += srcskip;
+        dst  = (Uint32 *)((Uint8 *)dst + dstskip);
+    }
+}
+
 /* Blended Opaque */
 static SDL_INLINE void BG_Blended_Opaque(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
 {
@@ -1099,6 +1155,17 @@ BUILD_RENDER_LINE(8_Blended_SP          , 1, 0,  COLOR, SUBPIX,                 
 BUILD_RENDER_LINE(8_Blended_Opaque_SP   , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaque     ,                ,            )
 #endif
 
+
+#if TTF_USE_SDF
+int (*Render_Line_SDF_Shaded)() = NULL;
+BUILD_RENDER_LINE(SDF_Blended           , 1, 0,  COLOR, 0     ,                       , BG_Blended_SDF ,            )
+BUILD_RENDER_LINE(SDF_Blended_Opaque    , 1, 1,  COLOR, 0     , BG_Blended_Opaque_SDF ,                ,            )
+int (*Render_Line_SDF_Solid)() = NULL;
+int (*Render_Line_SDF_Shaded_SP)() = NULL;
+BUILD_RENDER_LINE(SDF_Blended_SP        , 1, 0,  COLOR, SUBPIX,                       , BG_Blended_SDF ,            )
+BUILD_RENDER_LINE(SDF_Blended_Opaque_SP , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaque_SDF ,                ,            )
+#endif
+
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
@@ -1137,6 +1204,11 @@ static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel,
             return Render_Line_##NAME##_Solid(font, textbuf, xstart, ystart, 0);                            \
         }
 
+#if TTF_USE_SDF
+    if (font->render_sdf && render_mode == RENDER_BLENDED) {
+        Call_Specific_Render_Line(SDF)
+    }
+#endif
 
 #if defined(HAVE_NEON_INTRINSICS)
     if (hasNEON()) {
@@ -1898,6 +1970,14 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             cached->sz_width += 1;
         }
 
+        /* Adjust for SDF */
+        if (font->render_sdf) {
+            /* Default 'spread' property */
+            cached->sz_width += 16;
+            cached->sz_rows  += 16;
+        }
+
+
         cached->stored |= CACHED_METRICS;
     }
 
@@ -2146,16 +2226,6 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                 }
 
 
-/* FT_RENDER_MODE_SDF and src->pixel_mode GRAY16 in FT_F6Dot10 */
-#define NORMAL_GRAY16                                                       \
-                {                                                           \
-                    unsigned char c = *srcp++;                              \
-                    unsigned char c2 = *srcp++;                             \
-                    *dstp++ = ((c2 & 0x7f) << 1) | (c >> 7);                \
-                }
-
-
-
 
                 if (mono) {
                     if (src->pixel_mode == FT_PIXEL_MODE_MONO) {
@@ -2204,8 +2274,13 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 #endif
 #if TTF_USE_SDF
                 } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY16) {
+                    /* FT_RENDER_MODE_SDF and src->pixel_mode GRAY16 in FT_F6Dot10
+                       for default spread value: 8 */
                     while (quotient--) {
-                        NORMAL_GRAY16
+                        Sint16 s = *(Uint16 *)srcp;
+                        srcp += 2;
+                        Uint8 alpha = (s < 0) ? s >> 5 : 255;
+                        *dstp++ = alpha;
                     }
 #endif
                 } else {
