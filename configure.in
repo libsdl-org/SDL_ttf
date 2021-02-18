@@ -57,7 +57,7 @@ fi
 AC_CHECK_PROGS(WINDRES, [windres $hostaliaswindres $host_os-windres])
 
 case "$host" in
-    *-*-cygwin* | *-*-mingw32*)
+    *-*-cygwin* | *-*-mingw*)
 	;;
     *)
 	AC_FUNC_ALLOCA
@@ -69,7 +69,7 @@ case "$host" in
     *-*-beos*)
         ac_default_prefix=/boot/develop/tools/gnupro
         ;;
-    *-*-cygwin* | *-*-mingw32*)
+    *-*-cygwin* | *-*-mingw*)
         if test "$build" != "$host"; then # cross-compiling
             # Default cross-compile location
             ac_default_prefix=/usr/local/cross-tools/$host
@@ -107,7 +107,7 @@ LIBS="$LIBS $SDL_LIBS"
 
 dnl Check for OpenGL
 case "$host" in
-    *-*-cygwin* | *-*-mingw32*)
+    *-*-cygwin* | *-*-mingw*)
         MATHLIB=""
         SYS_GL_LIBS="-lopengl32"
         ;;
