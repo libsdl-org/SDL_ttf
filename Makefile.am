@@ -1,4 +1,6 @@
 # Makefile.am for the SDL truetype font loading library and viewer
+ACLOCAL_AMFLAGS = -I acinclude
+AUTOMAKE_OPTIONS= foreign
 
 lib_LTLIBRARIES = libSDL2_ttf.la
 
