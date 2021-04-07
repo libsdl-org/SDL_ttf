@@ -199,7 +199,7 @@ def print_shaping_table(f):
 	min_u, max_u = min (keys), max (keys)
 	for u in range (min_u, max_u + 1):
 		s = [shapes[u][shape] if u in shapes and shape in shapes[u] else 0
-		     for shape in  ['initial', 'medial', 'final', 'isolated']]
+			for shape in  ['initial', 'medial', 'final', 'isolated']]
 		value = ', '.join ("0x%04Xu" % c for c in s)
 		print ("  {%s}, /* U+%04X %s */" % (value, u, names[u] if u in names else ""))
 

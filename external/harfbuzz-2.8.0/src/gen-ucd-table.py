@@ -11,7 +11,7 @@ import logging
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 if len (sys.argv) not in (2, 3):
-	sys.exit (__doc__)
+    sys.exit (__doc__)
 
 # https://github.com/harfbuzz/packtab
 import packTab
