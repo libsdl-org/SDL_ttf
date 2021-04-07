@@ -45,8 +45,8 @@ LOCAL_SRC_FILES = \
     src/hb-aat-layout.cc \
     src/hb-aat-map.cc \
     src/hb-number.cc \
-	src/hb-ot-metrics.cc \
-	src/hb-ot-shape-complex-syllabic.cc \
+    src/hb-ot-metrics.cc \
+    src/hb-ot-shape-complex-syllabic.cc \
 
 
 LOCAL_ARM_MODE := arm
