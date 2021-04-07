@@ -176,6 +176,9 @@
 #include "hb-aat.h"
 #define HB_AAT_H_IN
 
+#if 0
+#  For Android & SDL, it doesn't compile with ndk-r21d
+#  https://github.com/harfbuzz/harfbuzz/commit/7cb22ba7ebf6ef053790a3201cb7014bacd51e46
 #include <cassert>
 #include <cfloat>
 #include <climits>
@@ -185,6 +188,17 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#else
+#include <limits.h>
+#include <math.h>
+#include <float.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
+#include <assert.h>
+#include <stdio.h>
+#include <stdarg.h>
+#endif
 
 #if (defined(_MSC_VER) && _MSC_VER >= 1500) || defined(__MINGW32__)
 #ifdef __MINGW32_VERSION
@@ -336,7 +350,6 @@ extern "C" void  hb_free_impl(void *ptr);
 #  define HB_NODISCARD
 #endif
 #define hb_success_t HB_NODISCARD bool
-
 /* https://github.com/harfbuzz/harfbuzz/issues/1852 */
 #if defined(__clang__) && !(defined(_AIX) && (defined(__IBMCPP__) || defined(__ibmxl__)))
 /* Disable certain sanitizer errors. */
@@ -391,7 +404,13 @@ extern "C" void  hb_free_impl(void *ptr);
 #endif
 
 #ifndef HB_NO_ERRNO
+#if 0
+#  For Android & SDL, it doesn't compile with ndk-r21d
+#  https://github.com/harfbuzz/harfbuzz/commit/7cb22ba7ebf6ef053790a3201cb7014bacd51e46
 #  include <cerrno>
+#else
+#  include <errno.h>
+#endif
 #else
 static int HB_UNUSED _hb_errno = 0;
 #  undef errno
