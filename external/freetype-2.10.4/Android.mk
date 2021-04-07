@@ -53,7 +53,7 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/include
 
 SUPPORT_HARFBUZZ ?= false
 ifeq ($(SUPPORT_HARFBUZZ),true)
-    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../harfbuzz-2.3.1/src/
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../harfbuzz-2.8.0/src/
     LOCAL_CFLAGS += -DFT_CONFIG_OPTION_USE_HARFBUZZ
 endif
 
