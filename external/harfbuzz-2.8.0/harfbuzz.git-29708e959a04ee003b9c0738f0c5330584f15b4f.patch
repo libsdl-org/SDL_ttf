@@ -1,0 +1,28 @@
+From 29708e959a04ee003b9c0738f0c5330584f15b4f Mon Sep 17 00:00:00 2001
+From: Behdad Esfahbod <behdad@behdad.org>
+Date: Mon, 22 Mar 2021 15:22:15 -0700
+Subject: [PATCH] [aat] Fix offsetToIndex math for out-of-bounds values
+
+Previously, some bad font data was accidentally being interpretted as
+legit if it happened to not fall out of memory bounds. The intention
+of the code was what this commit does.  I'm surprised we weren't getting
+a "arithmetic between signed and unsigned values" warning / error
+before.
+---
+ src/hb-aat-layout-common.hh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/hb-aat-layout-common.hh b/src/hb-aat-layout-common.hh
+index 98ed20d8eb..2507434c7a 100644
+--- a/src/hb-aat-layout-common.hh
++++ b/src/hb-aat-layout-common.hh
+@@ -678,7 +678,8 @@ struct ObsoleteTypes
+ 				     const void *base,
+ 				     const T *array)
+   {
+-    return (offset - ((const char *) array - (const char *) base)) / T::static_size;
++    /* https://github.com/harfbuzz/harfbuzz/issues/2816 */
++    return (offset - unsigned ((const char *) array - (const char *) base)) / T::static_size;
+   }
+   template <typename T>
+   static unsigned int byteOffsetToIndex (unsigned int offset,
