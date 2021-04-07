@@ -87,6 +87,9 @@ case "$host" in
 esac
 AM_CONDITIONAL(USE_VERSION_RC, test x$use_version_rc = xtrue)
 
+SUMMARY="\n\nSDL2_ttf Configure Summary:\n"
+
+
 dnl Check for the FreeType 2 library
 PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [], [dnl
     AC_CHECK_FT2(,,[AC_MSG_ERROR([dnl
@@ -95,6 +98,31 @@ PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [], [dnl
 ])
 CFLAGS="$CFLAGS $FT2_CFLAGS"
 LIBS="$LIBS $FT2_LIBS"
+
+dnl Check for the HarfBuzz library
+CheckHarfBuzz()
+{
+    AC_ARG_ENABLE(harfbuzz,[AS_HELP_STRING([--enable-harfbuzz], [Enable HarfBuzz [default=yes]])],,enable_harfbuzz=yes)
+
+    if test x$enable_harfbuzz != xyes; then
+        AC_DEFINE(TTF_USE_HARFBUZZ, 0, [ ])
+        SUMMARY="${SUMMARY} harfbuzz: disabled"
+    else
+        PKG_CHECK_MODULES([HB], [harfbuzz >= 2.3.1], harfbuzz=yes, harfbuzz=no)
+
+        if test x$harfbuzz = xyes; then
+            AC_DEFINE(TTF_USE_HARFBUZZ, 1, [ ])
+            CFLAGS="$CFLAGS $HB_CFLAGS"
+            LIBS="$LIBS $HB_LIBS"
+            SUMMARY="${SUMMARY} harfbuzz: enabled"
+        else
+            AC_DEFINE(TTF_USE_HARFBUZZ, 0, [ ])
+            SUMMARY="${SUMMARY} harfbuzz: not found"
+        fi
+    fi
+}
+
+CheckHarfBuzz
 
 dnl Check for SDL
 SDL_VERSION=2.0.12
@@ -167,4 +195,7 @@ Makefile
 SDL2_ttf.spec
 SDL2_ttf.pc
 ])
+
+AC_CONFIG_COMMANDS([summary], [printf "$SUMMARY"], [SUMMARY="$SUMMARY"])
+
 AC_OUTPUT
