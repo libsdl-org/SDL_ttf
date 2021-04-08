@@ -16,7 +16,6 @@ LOCAL_SRC_FILES := \
         ./src/base/ftglyph.c \
         ./src/base/ftgxval.c \
         ./src/base/ftinit.c \
-        ./src/base/ftlcdfil.c \
         ./src/base/ftmm.c \
         ./src/base/ftotval.c \
         ./src/base/ftpatent.c \
