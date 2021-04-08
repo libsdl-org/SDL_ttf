@@ -94,7 +94,7 @@ int TTF_SetScript(int script) /* hb_script_t */
 #endif
 
 /* Round glyph width to 16 bytes use NEON instructions */
-#if defined(__ARM_NEON)
+#if 0 /*defined(__ARM_NEON)*/
 #  define HAVE_NEON_INTRINSICS 1
 #endif
 
