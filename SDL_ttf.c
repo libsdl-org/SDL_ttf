@@ -2371,7 +2371,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 }
 
 static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
-        const int want_bitmap, const int want_pixmap, const int want_color, const int want_subpixel,
+        int want_bitmap, int want_pixmap, int want_color, int want_subpixel,
         int translation, c_glyph **out_glyph, TTF_Image **out_image)
 {
     /* cache size is 256, get key by masking */
