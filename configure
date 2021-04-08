@@ -11886,7 +11886,7 @@ else
 fi
 
 
-SUMMARY="\n\nSDL2_ttf Configure Summary:\n"
+SUMMARY="\nSDL2_ttf Configure Summary:\n"
 
 
 
@@ -12711,7 +12711,7 @@ fi
 
 $as_echo "#define TTF_USE_HARFBUZZ 0" >>confdefs.h
 
-        SUMMARY="${SUMMARY} harfbuzz: disabled"
+        SUMMARY="${SUMMARY}Using harfbuzz      : NO\n"
     else
 
 pkg_failed=no
@@ -12791,12 +12791,12 @@ $as_echo "#define TTF_USE_HARFBUZZ 1" >>confdefs.h
 
             CFLAGS="$CFLAGS $HB_CFLAGS"
             LIBS="$LIBS $HB_LIBS"
-            SUMMARY="${SUMMARY} harfbuzz: enabled"
+            SUMMARY="${SUMMARY}Using harfbuzz      : YES\n"
         else
 
 $as_echo "#define TTF_USE_HARFBUZZ 0" >>confdefs.h
 
-            SUMMARY="${SUMMARY} harfbuzz: not found"
+            SUMMARY="${SUMMARY}Using harfbuzz      : NO\n"
         fi
     fi
 }
