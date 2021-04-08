@@ -394,6 +394,8 @@ static SDL_INLINE void BG_Blended_Color(const TTF_Image *image, Uint32 *destinat
     }
 }
 
+#if TTF_USE_SDF
+
 /* Blended Opaque SDF */
 static SDL_INLINE void BG_Blended_Opaque_SDF(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
 {
@@ -449,6 +451,8 @@ static SDL_INLINE void BG_Blended_SDF(const TTF_Image *image, Uint32 *destinatio
         dst  = (Uint32 *)((Uint8 *)dst + dstskip);
     }
 }
+
+#endif /* TTF_USE_SDF */
 
 /* Blended Opaque */
 static SDL_INLINE void BG_Blended_Opaque(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
