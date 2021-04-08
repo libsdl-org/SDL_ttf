@@ -59,10 +59,10 @@ AC_CHECK_PROGS(WINDRES, [windres $hostaliaswindres $host_os-windres])
 
 case "$host" in
     *-*-cygwin* | *-*-mingw*)
-	;;
-    *)
-	AC_FUNC_ALLOCA
-	;;
+        ;;
+
+    *)  AC_FUNC_ALLOCA
+        ;;
 esac
 
 
@@ -151,7 +151,7 @@ case "$host" in
     *-*-aix*)
         if test x$ac_cv_c_compiler_gnu = xyes; then
             CFLAGS="-mthreads"
-	fi
+        fi
         SYS_GL_LIBS=""
         ;;
     *)
@@ -197,5 +197,4 @@ SDL2_ttf.pc
 ])
 
 AC_CONFIG_COMMANDS([summary], [printf "$SUMMARY"], [SUMMARY="$SUMMARY"])
-
 AC_OUTPUT
