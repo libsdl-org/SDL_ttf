@@ -52,6 +52,7 @@
 
 FT_BEGIN_HEADER
 
+#ifndef FT_PUBLIC_FUNCTION_ATTRIBUTE
   /*
    * Mark a function declaration as public.  This ensures it will be
    * properly exported to client code.  Place this before a function
@@ -85,6 +86,7 @@ FT_BEGIN_HEADER
 #ifndef FT_PUBLIC_FUNCTION_ATTRIBUTE
 #define FT_PUBLIC_FUNCTION_ATTRIBUTE  /* empty */
 #endif
+#endif /* FT_PUBLIC_FUNCTION_ATTRIBUTE */
 
 
   /*

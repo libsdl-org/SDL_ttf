@@ -48,6 +48,7 @@ AM_INIT_AUTOMAKE(SDL2_ttf, $VERSION)
 
 dnl Check for tools
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 if test -z "$host_alias"; then
@@ -89,41 +90,6 @@ AM_CONDITIONAL(USE_VERSION_RC, test x$use_version_rc = xtrue)
 
 SUMMARY="\nSDL2_ttf Configure Summary:\n"
 
-
-dnl Check for the FreeType 2 library
-PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [], [dnl
-    AC_CHECK_FT2(,,[AC_MSG_ERROR([dnl
-*** Unable to find FreeType2 library (http://www.freetype.org/)])]
-    )
-])
-CFLAGS="$CFLAGS $FT2_CFLAGS"
-LIBS="$LIBS $FT2_LIBS"
-
-dnl Check for the HarfBuzz library
-CheckHarfBuzz()
-{
-    AC_ARG_ENABLE(harfbuzz,[AS_HELP_STRING([--enable-harfbuzz], [Enable HarfBuzz [default=yes]])],,enable_harfbuzz=yes)
-
-    if test x$enable_harfbuzz != xyes; then
-        AC_DEFINE(TTF_USE_HARFBUZZ, 0, [ ])
-        SUMMARY="${SUMMARY}Using harfbuzz      : NO\n"
-    else
-        PKG_CHECK_MODULES([HB], [harfbuzz >= 2.3.1], harfbuzz=yes, harfbuzz=no)
-
-        if test x$harfbuzz = xyes; then
-            AC_DEFINE(TTF_USE_HARFBUZZ, 1, [ ])
-            CFLAGS="$CFLAGS $HB_CFLAGS"
-            LIBS="$LIBS $HB_LIBS"
-            SUMMARY="${SUMMARY}Using harfbuzz      : YES\n"
-        else
-            AC_DEFINE(TTF_USE_HARFBUZZ, 0, [ ])
-            SUMMARY="${SUMMARY}Using harfbuzz      : NO\n"
-        fi
-    fi
-}
-
-CheckHarfBuzz
-
 dnl Check for SDL
 SDL_VERSION=2.0.12
 AC_SUBST(SDL_VERSION)
@@ -133,6 +99,83 @@ AM_PATH_SDL2($SDL_VERSION,
 )
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
+
+dnl Check for the FreeType 2 library
+AC_ARG_ENABLE(freetype-builtin, [AS_HELP_STRING([--enable-freetype-builtin], [Use included version of FreeType [default=yes]])], [], enable_freetype_builtin=yes)
+
+if test x$enable_freetype_builtin = xyes; then
+	SUMMARY="${SUMMARY}Using included FreeType : YES\n"
+else
+	PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [], [dnl
+		AC_CHECK_FT2(,,[AC_MSG_ERROR([dnl
+*** Unable to find FreeType2 library (http://www.freetype.org/)])]
+		)
+	])
+	CFLAGS="$CFLAGS $FT2_CFLAGS"
+	LIBS="$LIBS $FT2_LIBS"
+
+	SUMMARY="${SUMMARY}Using included FreeType : NO\n"
+fi
+AM_CONDITIONAL(USE_BUILTIN_FREETYPE, test x$enable_freetype_builtin = xyes)
+
+dnl Check for the HarfBuzz library
+AC_ARG_ENABLE(harfbuzz, [AS_HELP_STRING([--enable-harfbuzz], [Enable HarfBuzz [default=yes]])], [], enable_harfbuzz=yes)
+AC_ARG_ENABLE(harfbuzz-builtin, [AS_HELP_STRING([--enable-harfbuzz-builtin], [Use included version of HarfBuzz [default=yes]])], [], enable_harfbuzz_builtin=yes)
+
+if test x$enable_harfbuzz = xyes; then
+	AC_DEFINE(TTF_USE_HARFBUZZ, 1, [])
+	SUMMARY="${SUMMARY}Using HarfBuzz          : YES\n"
+
+	if test x$enable_harfbuzz_builtin = xyes; then
+		SUMMARY="${SUMMARY}Using included HarfBuzz : YES\n"
+	else
+		SUMMARY="${SUMMARY}Using included HarfBuzz : NO\n"
+		PKG_CHECK_MODULES([HB], [harfbuzz >= 2.3.1], harfbuzz=yes, harfbuzz=no)
+
+		if test x$harfbuzz = xyes; then
+			AC_DEFINE(TTF_USE_HARFBUZZ, 1, [])
+			CFLAGS="$CFLAGS $HB_CFLAGS"
+			LIBS="$LIBS $HB_LIBS"
+			SUMMARY="${SUMMARY}Using harfbuzz      : YES\n"
+		else
+			AC_MSG_ERROR([dnl
+*** Unable to find HarfBuzz library (http://www.freetype.org/)])
+		fi
+	fi
+else
+	AC_DEFINE(TTF_USE_HARFBUZZ, 0, [])
+	SUMMARY="${SUMMARY}Using HarfBuzz          : NO\n"
+	enable_harfbuzz_builtin=no
+fi
+AM_CONDITIONAL(USE_BUILTIN_HARFBUZZ, test x$enable_harfbuzz_builtin = xyes)
+
+dnl See if GCC's -fvisibility=hidden is supported (gcc4 and later, usually).
+dnl  Details of this flag are here: http://gcc.gnu.org/wiki/Visibility
+CheckVisibilityHidden()
+{
+    AC_MSG_CHECKING(for GCC -fvisibility=hidden option)
+    have_gcc_fvisibility=no
+
+    visibility_CFLAGS="-fvisibility=hidden"
+    save_CFLAGS="$CFLAGS"
+    CFLAGS="$save_CFLAGS $visibility_CFLAGS -Werror"
+    AC_TRY_COMPILE([
+    #if !defined(__GNUC__) || __GNUC__ < 4
+    #error SDL only uses visibility attributes in GCC 4 or newer
+    #endif
+    ],[
+    ],[
+    have_gcc_fvisibility=yes
+    ])
+    AC_MSG_RESULT($have_gcc_fvisibility)
+    CFLAGS="$save_CFLAGS"
+
+    if test x$have_gcc_fvisibility = xyes; then
+        CFLAGS="$CFLAGS $visibility_CFLAGS"
+        CXXFLAGS="$CXXFLAGS $visibility_CFLAGS"
+    fi
+}
+CheckVisibilityHidden
 
 dnl Check for OpenGL
 case "$host" in

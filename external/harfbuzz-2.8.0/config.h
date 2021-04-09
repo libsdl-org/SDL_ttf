@@ -128,22 +128,22 @@
 #define LT_OBJDIR ".libs/"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "https://github.com/harfbuzz/harfbuzz/issues/new"
+/* #define PACKAGE_BUGREPORT "https://github.com/harfbuzz/harfbuzz/issues/new" */
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "HarfBuzz"
+/* #define PACKAGE_NAME "HarfBuzz" */
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "HarfBuzz 2.8.0"
+/* #define PACKAGE_STRING "HarfBuzz 2.8.0" */
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "harfbuzz"
+/* #define PACKAGE_TARNAME "harfbuzz" */
 
 /* Define to the home page for this package. */
-#define PACKAGE_URL "http://harfbuzz.org/"
+/* #define PACKAGE_URL "http://harfbuzz.org/" */
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "2.8.0"
+/* #define PACKAGE_VERSION "2.8.0" */
 
 /* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
