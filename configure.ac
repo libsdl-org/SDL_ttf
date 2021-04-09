@@ -128,6 +128,26 @@ if test x$enable_harfbuzz = xyes; then
 
 	if test x$enable_harfbuzz_builtin = xyes; then
 		SUMMARY="${SUMMARY}Using included HarfBuzz : YES\n"
+		AX_CXX_COMPILE_STDCXX(11)
+		AC_CHECK_ALIGNOF([struct{char;}])
+		case "$host" in
+		  *-*-mingw*) is_win32=yes
+			CXXFLAGS="$CXXFLAGS -static-libgcc"
+			CFLAGS="$CFLAGS -static-libgcc"
+		  ;;
+		esac
+		case "$host" in
+		  arm-*-*)
+		    if test "x$ac_cv_alignof_struct_char__" != x1; then
+			CXXFLAGS="$CXXFLAGS -mstructure-size-boundary=8"
+		    fi
+		  ;;
+		esac
+		AM_CONDITIONAL(OS_WIN32, test "$hb_os_win32" = "yes")
+		dnl silence a lot of harfbuzz warnings:
+		CXXFLAGS="$CXXFLAGS -Wno-unused-result"
+		dnl prevent linking to libstdc++:
+		CXXFLAGS="$CXXFLAGS -fno-rtti -fno-exceptions -fno-threadsafe-statics"
 	else
 		SUMMARY="${SUMMARY}Using included HarfBuzz : NO\n"
 		PKG_CHECK_MODULES([HB], [harfbuzz >= 2.3.1], harfbuzz=yes, harfbuzz=no)

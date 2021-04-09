@@ -13,8 +13,8 @@ libSDL2_ttf_la_SOURCES =		\
 
 libSDL2_ttf_la_CPPFLAGS =
 
-FREETYPE_PATH := external/freetype-2.10.4
-FREETYPE_SOURCES := \
+FREETYPE_PATH = external/freetype-2.10.4
+FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/autofit/autofit.c \
 	$(FREETYPE_PATH)/src/base/ftbase.c \
 	$(FREETYPE_PATH)/src/base/ftbbox.c \
@@ -62,8 +62,8 @@ libSDL2_ttf_la_SOURCES += $(FREETYPE_SOURCES)
 libSDL2_ttf_la_CPPFLAGS += -I$(srcdir)/$(FREETYPE_PATH)/include -DFT2_BUILD_LIBRARY -DFT_PUBLIC_FUNCTION_ATTRIBUTE=
 endif
 
-HARFBUZZ_PATH := external/harfbuzz-2.8.0
-HARFBUZZ_SOURCES := \
+HARFBUZZ_PATH = external/harfbuzz-2.8.0
+HARFBUZZ_SOURCES = \
 	$(HARFBUZZ_PATH)/src/hb-aat-layout.cc \
 	$(HARFBUZZ_PATH)/src/hb-aat-map.cc \
 	$(HARFBUZZ_PATH)/src/hb-blob.cc \
@@ -111,7 +111,13 @@ HARFBUZZ_SOURCES := \
 if USE_BUILTIN_HARFBUZZ
 libSDL2_ttf_la_SOURCES += $(HARFBUZZ_SOURCES)
 libSDL2_ttf_la_CPPFLAGS += -I$(srcdir)/$(HARFBUZZ_PATH) -I$(srcdir)/$(HARFBUZZ_PATH)/src -DHAVE_CONFIG_H -DFT_CONFIG_OPTION_USE_HARFBUZZ
-libSDL2_ttf_la_CXXFLAGS := -std=c++11
+if OS_WIN32
+LINKER = $(CXXLINK)
+else
+LINKER = $(LINK)
+endif
+else
+LINKER = $(LINK)
 endif
 
 if USE_VERSION_RC
@@ -126,6 +132,7 @@ libSDL2_ttf_la_LDFLAGS = 	\
 	-release $(LT_RELEASE)	\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 endif
+libSDL2_ttf_la_LINK = $(LINKER) $(libSDL2_ttf_la_LDFLAGS)
 libSDL2_ttf_la_LIBADD = @MATHLIB@
 
 pkgconfigdir = $(libdir)/pkgconfig
