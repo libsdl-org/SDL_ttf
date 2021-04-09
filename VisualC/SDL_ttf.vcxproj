@@ -206,7 +206,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy %(FullPath) $(SolutionDir)\$(Platform)\$(Configuration)\</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
     </CustomBuild>
-    <CustomBuild Include="external\lib\x86\libharfbuzz-0.dll.dll">
+    <CustomBuild Include="external\lib\x86\libharfbuzz-0.dll">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying %(Filename)%(Extension)</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy %(FullPath) $(SolutionDir)\$(Platform)\$(Configuration)\</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
