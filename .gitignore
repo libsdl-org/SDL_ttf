@@ -5,6 +5,7 @@ config.status
 Makefile
 libtool
 .deps
+.dirstamp
 .libs
 *.lo
 *.o
