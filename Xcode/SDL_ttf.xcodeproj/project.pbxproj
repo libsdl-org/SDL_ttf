@@ -19,6 +19,12 @@
 		BE48FD6207AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		BE48FD6B07AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		BE48FD8407AFA29000BB41DA /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FD8307AFA29000BB41DA /* SDL2.framework */; };
+		F364A5B82620E1A200325ECE /* FTL.TXT in Resources */ = {isa = PBXBuildFile; fileRef = F364A5B72620E1A200325ECE /* FTL.TXT */; };
+		F364A5B92620E1A200325ECE /* FTL.TXT in Resources */ = {isa = PBXBuildFile; fileRef = F364A5B72620E1A200325ECE /* FTL.TXT */; };
+		F364A5BA2620E1A200325ECE /* FTL.TXT in Resources */ = {isa = PBXBuildFile; fileRef = F364A5B72620E1A200325ECE /* FTL.TXT */; };
+		F364A5C42620E22400325ECE /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = F364A5C32620E22400325ECE /* ReadMe.txt */; };
+		F364A5C52620E22400325ECE /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = F364A5C32620E22400325ECE /* ReadMe.txt */; };
+		F364A5C62620E22400325ECE /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = F364A5C32620E22400325ECE /* ReadMe.txt */; };
 		F384BB6C261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
 		F384BB6D261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
 		F384BB6E261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
@@ -587,6 +593,8 @@
 		BE48FD6E07AFA17000BB41DA /* libSDL2_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD7207AFA17000BB41DA /* Create DMG */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Create DMG"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD8307AFA29000BB41DA /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
+		F364A5B72620E1A200325ECE /* FTL.TXT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FTL.TXT; path = "../../../external/freetype-2.10.4/docs/FTL.TXT"; sourceTree = "<group>"; };
+		F364A5C32620E22400325ECE /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		F384BB6B261EC0760028A248 /* autofit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = autofit.c; path = "../external/freetype-2.10.4/src/autofit/autofit.c"; sourceTree = "<group>"; };
 		F384BB76261EC0DD0028A248 /* ftbdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbdf.c; path = "../external/freetype-2.10.4/src/base/ftbdf.c"; sourceTree = "<group>"; };
 		F384BB77261EC0DD0028A248 /* ftgasp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftgasp.c; path = "../external/freetype-2.10.4/src/base/ftgasp.c"; sourceTree = "<group>"; };
@@ -674,8 +682,6 @@
 		F384BE60261ECD9F0028A248 /* HarfBuzz-LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "HarfBuzz-LICENSE.txt"; sourceTree = "<group>"; };
 		F384BE61261ECD9F0028A248 /* FreeType-LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "FreeType-LICENSE.txt"; sourceTree = "<group>"; };
 		F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SDL_ttf.c; path = ../SDL_ttf.c; sourceTree = SOURCE_ROOT; };
-		F59C710300D5CB5801000001 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
-		F59C710400D5CB5801000001 /* Welcome.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Welcome.txt; sourceTree = "<group>"; };
 		F59C710600D5CB5801000001 /* SDL_ttf.info */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SDL_ttf.info; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -933,9 +939,9 @@
 		F59C710100D5CB5801000001 /* resources */ = {
 			isa = PBXGroup;
 			children = (
-				F59C710300D5CB5801000001 /* ReadMe.txt */,
-				F59C710400D5CB5801000001 /* Welcome.txt */,
+				F364A5C32620E22400325ECE /* ReadMe.txt */,
 				F384BE61261ECD9F0028A248 /* FreeType-LICENSE.txt */,
+				F364A5B72620E1A200325ECE /* FTL.TXT */,
 				F384BE60261ECD9F0028A248 /* HarfBuzz-LICENSE.txt */,
 			);
 			path = resources;
@@ -1172,7 +1178,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F364A5C52620E22400325ECE /* ReadMe.txt in Resources */,
 				F384BE66261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */,
+				F364A5B92620E1A200325ECE /* FTL.TXT in Resources */,
 				F384BE63261ECD9F0028A248 /* HarfBuzz-LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1181,7 +1189,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F364A5C62620E22400325ECE /* ReadMe.txt in Resources */,
 				F384BE67261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */,
+				F364A5BA2620E1A200325ECE /* FTL.TXT in Resources */,
 				F384BE64261ECD9F0028A248 /* HarfBuzz-LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1190,7 +1200,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F364A5C42620E22400325ECE /* ReadMe.txt in Resources */,
 				F384BE65261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */,
+				F364A5B82620E1A200325ECE /* FTL.TXT in Resources */,
 				F384BE62261ECD9F0028A248 /* HarfBuzz-LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1970,6 +1982,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					FT2_BUILD_LIBRARY,
+					"FT_PUBLIC_FUNCTION_ATTRIBUTE=",
 					FT_CONFIG_OPTION_USE_HARFBUZZ,
 					HAVE_CONFIG_H,
 					"TTF_USE_HARFBUZZ=1",
@@ -2039,6 +2052,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					FT2_BUILD_LIBRARY,
+					"FT_PUBLIC_FUNCTION_ATTRIBUTE=",
 					FT_CONFIG_OPTION_USE_HARFBUZZ,
 					HAVE_CONFIG_H,
 					"TTF_USE_HARFBUZZ=1",
