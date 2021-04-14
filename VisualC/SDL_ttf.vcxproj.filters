@@ -36,10 +36,16 @@
     <CustomBuild Include="external\lib\x86\LICENSE.freetype.txt">
       <Filter>x86</Filter>
     </CustomBuild>
-    <CustomBuild Include="external\lib\x86\LICENSE.zlib.txt">
+    <CustomBuild Include="external\lib\x86\libharfbuzz-0.dll">
+      <Filter>x86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="external\lib\x86\LICENSE.harfbuzz.txt">
       <Filter>x86</Filter>
     </CustomBuild>
     <CustomBuild Include="external\lib\x86\zlib1.dll">
+      <Filter>x86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="external\lib\x86\LICENSE.zlib.txt">
       <Filter>x86</Filter>
     </CustomBuild>
     <CustomBuild Include="external\lib\x64\libfreetype-6.dll">
@@ -48,10 +54,16 @@
     <CustomBuild Include="external\lib\x64\LICENSE.freetype.txt">
       <Filter>x64</Filter>
     </CustomBuild>
-    <CustomBuild Include="external\lib\x64\LICENSE.zlib.txt">
+    <CustomBuild Include="external\lib\x64\libharfbuzz-0.dll">
+      <Filter>x64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="external\lib\x64\LICENSE.harfbuzz.txt">
       <Filter>x64</Filter>
     </CustomBuild>
     <CustomBuild Include="external\lib\x64\zlib1.dll">
+      <Filter>x64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="external\lib\x64\LICENSE.zlib.txt">
       <Filter>x64</Filter>
     </CustomBuild>
   </ItemGroup>
