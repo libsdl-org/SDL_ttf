@@ -180,14 +180,11 @@ CheckVisibilityHidden()
     visibility_CFLAGS="-fvisibility=hidden"
     save_CFLAGS="$CFLAGS"
     CFLAGS="$save_CFLAGS $visibility_CFLAGS -Werror"
-    AC_TRY_COMPILE([
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
     #if !defined(__GNUC__) || __GNUC__ < 4
     #error SDL only uses visibility attributes in GCC 4 or newer
     #endif
-    ],[
-    ],[
-    have_gcc_fvisibility=yes
-    ])
+    ]],[])], [have_gcc_fvisibility=yes],[])
     AC_MSG_RESULT($have_gcc_fvisibility)
     CFLAGS="$save_CFLAGS"
 
@@ -234,13 +231,11 @@ AC_MSG_CHECKING(for OpenGL support)
 have_opengl=no
 save_LIBS="$LIBS"
 LIBS="$LIBS $SYS_GL_LIBS"
-AC_TRY_LINK([
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
  #include "SDL_opengl.h"
-],[
+]], [[
  glOrtho( -2.0, 2.0, -2.0, 2.0, -20.0, 20.0 );
-],[
-have_opengl=yes
-])
+]])], [have_opengl=yes],[])
 AC_MSG_RESULT($have_opengl)
 LIBS="$save_LIBS"
 if test x$have_opengl = xyes; then
