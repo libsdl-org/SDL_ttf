@@ -1,35 +1,37 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(README)
 
 dnl Set various version strings - taken gratefully from the GTk sources
-
 # Making releases:
-#   MICRO_VERSION += 1;
-#   INTERFACE_AGE += 1;
-#   BINARY_AGE += 1;
-# if any functions have been added, set INTERFACE_AGE to 0.
+#   MICRO_VERSION_MACRO += 1;
+#   INTERFACE_AGE_MACRO += 1;
+#   BINARY_AGE_MACRO += 1;
+# if any functions have been added, set INTERFACE_AGE_MACRO to 0.
 # if backwards compatibility has been broken,
-# set BINARY_AGE and INTERFACE_AGE to 0.
+# set BINARY_AGE_MACRO and INTERFACE_AGE_MACRO to 0.
+m4_define([MAJOR_VERSION_MACRO], [2])
+m4_define([MINOR_VERSION_MACRO], [0])
+m4_define([MICRO_VERSION_MACRO], [11])
+dnl 'patch' version added to not bump version to 2.0.12,
+dnl  because SDL2_ttf does have a 2.0.12 release.  this
+dnl  affects only the package and libtool versions,  but
+dnl  not SDL_TTF_VERSION which still reads 2.0.11..
+m4_define([PATCH_VERSION_MACRO], [1])
+m4_define([INTERFACE_AGE_MACRO], [1])
+m4_define([BINARY_AGE_MACRO], [11])
 
-MAJOR_VERSION=2
-MINOR_VERSION=0
-MICRO_VERSION=11
-# 'patch' version added to not bump version to 2.0.12,
-#  because SDL2_ttf does have a 2.0.12 release.  this
-# affects only the package and libtool versions,  but
-# not SDL_TTF_VERSION which still reads 2.0.11..
-PATCH_VERSION=1
-INTERFACE_AGE=1
-BINARY_AGE=11
-VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION.$PATCH_VERSION
+AC_INIT([SDL_ttf],
+        MAJOR_VERSION_MACRO.MINOR_VERSION_MACRO.MICRO_VERSION_MACRO.PATCH_VERSION_MACRO,
+        [https://github.com/libsdl-org/SDL_ttf/issues],
+        [SDL_ttf])
+AC_CONFIG_MACRO_DIR([acinclude])
+AC_CONFIG_SRCDIR([SDL_ttf.c])
 
-AC_SUBST(MAJOR_VERSION)
-AC_SUBST(MINOR_VERSION)
-AC_SUBST(MICRO_VERSION)
-AC_SUBST(PATCH_VERSION)
-AC_SUBST(INTERFACE_AGE)
-AC_SUBST(BINARY_AGE)
-AC_SUBST(VERSION)
+AC_SUBST([MAJOR_VERSION], MAJOR_VERSION_MACRO)
+AC_SUBST([MINOR_VERSION], MINOR_VERSION_MACRO)
+AC_SUBST([MICRO_VERSION], MICRO_VERSION_MACRO)
+AC_SUBST([PATCH_VERSION], PATCH_VERSION_MACRO)
+AC_SUBST([INTERFACE_AGE], INTERFACE_AGE_MACRO)
+AC_SUBST([BINARY_AGE], BINARY_AGE_MACRO)
 
 # libtool versioning
 LT_INIT([win32-dll])
@@ -48,10 +50,9 @@ dnl Detect the canonical build and host environments
 AC_CANONICAL_HOST
 
 dnl Setup for automake
-AM_INIT_AUTOMAKE(SDL_ttf, $VERSION)
+AM_INIT_AUTOMAKE([foreign tar-ustar])
 
 dnl Check for tools
-AC_PROG_LIBTOOL
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
@@ -64,10 +65,10 @@ AC_CHECK_PROGS(WINDRES, [windres $hostaliaswindres $host_os-windres])
 
 case "$host" in
     *-*-cygwin* | *-*-mingw*)
-	;;
-    *)
-	AC_FUNC_ALLOCA
-	;;
+        ;;
+
+    *)  AC_FUNC_ALLOCA
+        ;;
 esac
 
 case "$host" in
@@ -125,9 +126,9 @@ case "$host" in
         SYS_GL_LIBS="-Wl,-framework,OpenGL"
         ;;
     *-*-aix*)
-        if test x$ac_cv_prog_gcc = xyes; then
+        if test x$ac_cv_c_compiler_gnu = xyes; then
             CFLAGS="-mthreads"
-	fi
+        fi
         SYS_GL_LIBS=""
         ;;
     *)
@@ -146,13 +147,11 @@ AC_MSG_CHECKING(for OpenGL support)
 have_opengl=no
 save_LIBS="$LIBS"
 LIBS="$LIBS $SYS_GL_LIBS"
-AC_TRY_LINK([
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
  #include "SDL_opengl.h"
-],[
+]], [[
  glOrtho( -2.0, 2.0, -2.0, 2.0, -20.0, 20.0 );
-],[
-have_opengl=yes
-])
+]])], [have_opengl=yes],[])
 AC_MSG_RESULT($have_opengl)
 LIBS="$save_LIBS"
 if test x$have_opengl = xyes; then
@@ -168,8 +167,9 @@ AC_SUBST([MATHLIB])
 AC_SUBST([WINDRES])
 
 # Finally create all the generated files
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 SDL_ttf.spec
 SDL_ttf.pc
 ])
+AC_OUTPUT

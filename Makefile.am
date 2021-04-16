@@ -1,4 +1,5 @@
 # Makefile.am for the SDL truetype font loading library and viewer
+ACLOCAL_AMFLAGS = -I acinclude
 
 lib_LTLIBRARIES = libSDL_ttf.la
 
@@ -11,6 +12,7 @@ libSDL_ttf_la_SOURCES =		\
 
 EXTRA_DIST =			\
 	Android.mk		\
+	external		\
 	CHANGES			\
 	version.rc		\
 	VisualC			\
