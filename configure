@@ -1579,7 +1579,7 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
-       --disable-freetypetest  Do not try to compile and run a test FreeType
+  --disable-freetypetest  Do not try to compile and run a test FreeType
                           program
   --disable-sdltest       Do not try to compile and run a test SDL program
 
@@ -1589,8 +1589,8 @@ Optional Packages:
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
-       --with-ft-prefix=PREFIX Prefix where FreeType is installed (optional)
-       --with-ft-exec-prefix=PREFIX
+  --with-ft-prefix=PREFIX Prefix where FreeType is installed (optional)
+  --with-ft-exec-prefix=PREFIX
                           Exec prefix where FreeType is installed (optional)
   --with-sdl-prefix=PFX   Prefix where SDL is installed (optional)
   --with-sdl-exec-prefix=PFX Exec prefix where SDL is installed (optional)
@@ -11951,7 +11951,6 @@ fi
 	echo "$FT2_PKG_ERRORS" >&5
 
 	    # Get the cflags and libraries from the freetype-config script
-   #
 
 # Check whether --with-ft-prefix was given.
 if test "${with_ft_prefix+set}" = set; then :
@@ -12151,7 +12150,7 @@ else
 
 
 #include <ft2build.h>
-#include FT_FREETYPE_H
+#include <freetype/freetype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12262,7 +12261,6 @@ elif test $pkg_failed = untried; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	    # Get the cflags and libraries from the freetype-config script
-   #
 
 # Check whether --with-ft-prefix was given.
 if test "${with_ft_prefix+set}" = set; then :
@@ -12462,7 +12460,7 @@ else
 
 
 #include <ft2build.h>
-#include FT_FREETYPE_H
+#include <freetype/freetype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
