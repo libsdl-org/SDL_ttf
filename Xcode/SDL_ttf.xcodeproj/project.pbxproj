@@ -235,12 +235,6 @@
 		F384BCAB261EC2770028A248 /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCA7261EC2770028A248 /* smooth.c */; };
 		F384BCAC261EC2770028A248 /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCA7261EC2770028A248 /* smooth.c */; };
 		F384BCAD261EC2770028A248 /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCA7261EC2770028A248 /* smooth.c */; };
-		F384BCB3261EC2880028A248 /* apinames.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCB2261EC2880028A248 /* apinames.c */; };
-		F384BCB4261EC2880028A248 /* apinames.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCB2261EC2880028A248 /* apinames.c */; };
-		F384BCB5261EC2880028A248 /* apinames.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCB2261EC2880028A248 /* apinames.c */; };
-		F384BCB6261EC2880028A248 /* apinames.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCB2261EC2880028A248 /* apinames.c */; };
-		F384BCB7261EC2880028A248 /* apinames.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCB2261EC2880028A248 /* apinames.c */; };
-		F384BCB8261EC2880028A248 /* apinames.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCB2261EC2880028A248 /* apinames.c */; };
 		F384BCBE261EC2980028A248 /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCBD261EC2980028A248 /* truetype.c */; };
 		F384BCBF261EC2980028A248 /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCBD261EC2980028A248 /* truetype.c */; };
 		F384BCC0261EC2980028A248 /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCBD261EC2980028A248 /* truetype.c */; };
@@ -630,7 +624,6 @@
 		F384BC91261EC2560028A248 /* raster.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = raster.c; path = "../external/freetype-2.10.4/src/raster/raster.c"; sourceTree = "<group>"; };
 		F384BC9C261EC2680028A248 /* sfnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sfnt.c; path = "../external/freetype-2.10.4/src/sfnt/sfnt.c"; sourceTree = "<group>"; };
 		F384BCA7261EC2770028A248 /* smooth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = smooth.c; path = "../external/freetype-2.10.4/src/smooth/smooth.c"; sourceTree = "<group>"; };
-		F384BCB2261EC2880028A248 /* apinames.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = apinames.c; path = "../external/freetype-2.10.4/src/tools/apinames.c"; sourceTree = "<group>"; };
 		F384BCBD261EC2980028A248 /* truetype.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = truetype.c; path = "../external/freetype-2.10.4/src/truetype/truetype.c"; sourceTree = "<group>"; };
 		F384BCC8261EC2AE0028A248 /* type1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type1.c; path = "../external/freetype-2.10.4/src/type1/type1.c"; sourceTree = "<group>"; };
 		F384BCD3261EC2BE0028A248 /* type42.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type42.c; path = "../external/freetype-2.10.4/src/type42/type42.c"; sourceTree = "<group>"; };
@@ -832,7 +825,6 @@
 		F384BB6A261EC02C0028A248 /* FreeType */ = {
 			isa = PBXGroup;
 			children = (
-				F384BCB2261EC2880028A248 /* apinames.c */,
 				F384BB6B261EC0760028A248 /* autofit.c */,
 				F384BC0D261EC0F90028A248 /* bdf.c */,
 				F384BC2E261EC1710028A248 /* cff.c */,
@@ -1334,7 +1326,6 @@
 				F384BC30261EC1710028A248 /* cff.c in Sources */,
 				F384BDA8261EC7650028A248 /* hb-buffer-serialize.cc in Sources */,
 				F384BBC2261EC0DE0028A248 /* ftsynth.c in Sources */,
-				F384BCB4261EC2880028A248 /* apinames.c in Sources */,
 				F384BE08261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */,
 				F384BD42261EC7650028A248 /* hb-static.cc in Sources */,
 				F384BD78261EC7650028A248 /* hb-number.cc in Sources */,
@@ -1426,7 +1417,6 @@
 				F384BC31261EC1710028A248 /* cff.c in Sources */,
 				F384BDA9261EC7650028A248 /* hb-buffer-serialize.cc in Sources */,
 				F384BBC3261EC0DE0028A248 /* ftsynth.c in Sources */,
-				F384BCB5261EC2880028A248 /* apinames.c in Sources */,
 				F384BE09261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */,
 				F384BD43261EC7650028A248 /* hb-static.cc in Sources */,
 				F384BD79261EC7650028A248 /* hb-number.cc in Sources */,
@@ -1518,7 +1508,6 @@
 				F384BC33261EC1710028A248 /* cff.c in Sources */,
 				F384BDAB261EC7650028A248 /* hb-buffer-serialize.cc in Sources */,
 				F384BBC5261EC0DE0028A248 /* ftsynth.c in Sources */,
-				F384BCB7261EC2880028A248 /* apinames.c in Sources */,
 				F384BE0B261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */,
 				F384BD45261EC7650028A248 /* hb-static.cc in Sources */,
 				F384BD7B261EC7650028A248 /* hb-number.cc in Sources */,
@@ -1610,7 +1599,6 @@
 				F384BC34261EC1710028A248 /* cff.c in Sources */,
 				F384BDAC261EC7650028A248 /* hb-buffer-serialize.cc in Sources */,
 				F384BBC6261EC0DE0028A248 /* ftsynth.c in Sources */,
-				F384BCB8261EC2880028A248 /* apinames.c in Sources */,
 				F384BE0C261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */,
 				F384BD46261EC7650028A248 /* hb-static.cc in Sources */,
 				F384BD7C261EC7650028A248 /* hb-number.cc in Sources */,
@@ -1702,7 +1690,6 @@
 				F384BC2F261EC1710028A248 /* cff.c in Sources */,
 				F384BDA7261EC7650028A248 /* hb-buffer-serialize.cc in Sources */,
 				F384BBC1261EC0DE0028A248 /* ftsynth.c in Sources */,
-				F384BCB3261EC2880028A248 /* apinames.c in Sources */,
 				F384BE07261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */,
 				F384BD41261EC7650028A248 /* hb-static.cc in Sources */,
 				F384BD77261EC7650028A248 /* hb-number.cc in Sources */,
@@ -1794,7 +1781,6 @@
 				F384BC32261EC1710028A248 /* cff.c in Sources */,
 				F384BDAA261EC7650028A248 /* hb-buffer-serialize.cc in Sources */,
 				F384BBC4261EC0DE0028A248 /* ftsynth.c in Sources */,
-				F384BCB6261EC2880028A248 /* apinames.c in Sources */,
 				F384BE0A261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */,
 				F384BD44261EC7650028A248 /* hb-static.cc in Sources */,
 				F384BD7A261EC7650028A248 /* hb-number.cc in Sources */,
