@@ -60,6 +60,10 @@ add_library(SDL2_ttf SDL_ttf.c SDL_ttf.h)
 target_link_libraries(SDL2_ttf SDL2::SDL2 Freetype::Freetype)
 target_include_directories(SDL2_ttf PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>)
 
+if (NOT BUILD_SHARED_LIBS)
+  set_target_properties(SDL2_ttf PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif ()
+
 install(
   TARGETS SDL2_ttf
   EXPORT SDL2_ttfTargets
