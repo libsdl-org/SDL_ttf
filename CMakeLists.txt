@@ -45,10 +45,10 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 if (NOT (TARGET SDL2 OR TARGET SDL2-static))
-	find_package(SDL2 REQUIRED)
+  find_package(SDL2 REQUIRED)
 endif()
 if (NOT (TARGET Freetype::Freetype))
-	find_package(Freetype REQUIRED)
+  find_package(Freetype REQUIRED)
 endif()
 find_package(PkgConfig QUIET)
 
