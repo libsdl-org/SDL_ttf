@@ -2000,7 +2000,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libsdl.SDL2-ttf";
 				PRODUCT_NAME = SDL2_ttf;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
-				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../external/freetype-2.10.4/include\" \"$(SRCROOT)/../external/harfbuzz-2.8.0\" \"$(SRCROOT)/../external/harfbuzz-2.8.0/src\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../external/freetype-2.10.4/include\" \"$(SRCROOT)/../external/harfbuzz-2.8.0\" \"$(SRCROOT)/../external/harfbuzz-2.8.0/src\" $(PROJECT_DIR)/../../SDL/include";
 			};
 			name = Debug;
 		};
@@ -2069,7 +2069,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libsdl.SDL2-ttf";
 				PRODUCT_NAME = SDL2_ttf;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
-				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../external/freetype-2.10.4/include\" \"$(SRCROOT)/../external/harfbuzz-2.8.0\" \"$(SRCROOT)/../external/harfbuzz-2.8.0/src\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../external/freetype-2.10.4/include\" \"$(SRCROOT)/../external/harfbuzz-2.8.0\" \"$(SRCROOT)/../external/harfbuzz-2.8.0/src\" $(PROJECT_DIR)/../../SDL/include";
 			};
 			name = Release;
 		};
