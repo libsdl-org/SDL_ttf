@@ -33,7 +33,8 @@
 #include FT_TRUETYPE_IDS_H
 #include FT_IMAGE_H
 
-/* Enable rendering with color */
+/* Enable rendering with color
+ * Freetype may need to be compiled with FT_CONFIG_OPTION_USE_PNG */
 #if defined(FT_HAS_COLOR)
 #  define TTF_USE_COLOR 1
 #else
@@ -51,7 +52,8 @@
 #include FT_MODULE_H
 #endif
 
-/* Enable HarfBuzz for Complex text rendering */
+/* Enable HarfBuzz for Complex text rendering
+ * Freetype may need to be compiled with FT_CONFIG_OPTION_USE_HARFBUZZ */
 #ifndef TTF_USE_HARFBUZZ
 #  define TTF_USE_HARFBUZZ 0
 #endif
