@@ -32,10 +32,7 @@
 #endif
 
 #ifdef HAVE_CONFIG_H
-#ifndef HB_CONFIG_H_FILENAME
-#define HB_CONFIG_H_FILENAME "config.h"
-#endif
-#include HB_CONFIG_H_FILENAME
+#include "config.h"
 #endif
 
 
@@ -159,10 +156,7 @@
 #endif
 
 #ifdef HAVE_CONFIG_OVERRIDE_H
-#ifndef HB_CONFIG_OVERRIDE_H_FILENAME
-#define HB_CONFIG_OVERRIDE_H_FILENAME "config-override.h"
-#endif
-#include HB_CONFIG_OVERRIDE_H_FILENAME
+#include "config-override.h"
 #endif
 
 
