@@ -1979,8 +1979,8 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
         /* Adjust for SDF */
         if (font->render_sdf) {
             /* Default 'spread' property */
-            cached->sz_width += 16;
-            cached->sz_rows  += 16;
+            cached->sz_width += 2 * 8;
+            cached->sz_rows  += 2 * 8;
         }
 
 
