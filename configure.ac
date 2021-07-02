@@ -131,7 +131,7 @@ if test x$enable_harfbuzz = xyes; then
 		AX_CXX_COMPILE_STDCXX(11)
 		AC_CHECK_ALIGNOF([struct{char;}])
 		case "$host" in
-		  *-*-mingw*) is_win32=yes
+		  *-*-mingw*) hb_os_win32=yes
 			CXXFLAGS="$CXXFLAGS -static-libgcc"
 			CFLAGS="$CFLAGS -static-libgcc"
 		  ;;
@@ -143,7 +143,6 @@ if test x$enable_harfbuzz = xyes; then
 		    fi
 		  ;;
 		esac
-		AM_CONDITIONAL(OS_WIN32, test "$hb_os_win32" = "yes")
 		dnl silence a lot of harfbuzz warnings:
 		CXXFLAGS="$CXXFLAGS -Wno-unused-result"
 		dnl prevent linking to libstdc++:
@@ -167,6 +166,7 @@ else
 	SUMMARY="${SUMMARY}Using HarfBuzz          : NO\n"
 	enable_harfbuzz_builtin=no
 fi
+AM_CONDITIONAL(OS_WIN32, test x$hb_os_win32 = xyes)
 AM_CONDITIONAL(USE_BUILTIN_HARFBUZZ, test x$enable_harfbuzz_builtin = xyes)
 
 dnl See if GCC's -fvisibility=hidden is supported (gcc4 and later, usually).

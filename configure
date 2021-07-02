@@ -784,10 +784,10 @@ X_CFLAGS
 XMKMF
 USE_BUILTIN_HARFBUZZ_FALSE
 USE_BUILTIN_HARFBUZZ_TRUE
-HB_LIBS
-HB_CFLAGS
 OS_WIN32_FALSE
 OS_WIN32_TRUE
+HB_LIBS
+HB_CFLAGS
 HAVE_CXX11
 USE_BUILTIN_FREETYPE_FALSE
 USE_BUILTIN_FREETYPE_TRUE
@@ -18269,7 +18269,7 @@ _ACEOF
 
 
 		case "$host" in
-		  *-*-mingw*) is_win32=yes
+		  *-*-mingw*) hb_os_win32=yes
 			CXXFLAGS="$CXXFLAGS -static-libgcc"
 			CFLAGS="$CFLAGS -static-libgcc"
 		  ;;
@@ -18281,14 +18281,6 @@ _ACEOF
 		    fi
 		  ;;
 		esac
-		 if test "$hb_os_win32" = "yes"; then
-  OS_WIN32_TRUE=
-  OS_WIN32_FALSE='#'
-else
-  OS_WIN32_TRUE='#'
-  OS_WIN32_FALSE=
-fi
-
 				CXXFLAGS="$CXXFLAGS -Wno-unused-result"
 				CXXFLAGS="$CXXFLAGS -fno-rtti -fno-exceptions -fno-threadsafe-statics"
 	else
@@ -18381,6 +18373,14 @@ else
 	SUMMARY="${SUMMARY}Using HarfBuzz          : NO\n"
 	enable_harfbuzz_builtin=no
 fi
+ if test x$hb_os_win32 = xyes; then
+  OS_WIN32_TRUE=
+  OS_WIN32_FALSE='#'
+else
+  OS_WIN32_TRUE='#'
+  OS_WIN32_FALSE=
+fi
+
  if test x$enable_harfbuzz_builtin = xyes; then
   USE_BUILTIN_HARFBUZZ_TRUE=
   USE_BUILTIN_HARFBUZZ_FALSE='#'
