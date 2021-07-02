@@ -2145,11 +2145,6 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                     quotient  = src->width;
                     remainder = 0;
 #endif
-#if TTF_USE_SDF
-                } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY16) {
-                    quotient  = src->width;
-                    remainder = 0;
-#endif
                 } else {
                     quotient  = src->width;
                     remainder = 0;
@@ -2278,19 +2273,30 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                 } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
                     SDL_memcpy(dstp, srcp, 4 * src->width);
 #endif
-#if TTF_USE_SDF
-                } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY16) {
-                    /* FT_RENDER_MODE_SDF and src->pixel_mode GRAY16 in FT_F6Dot10
-                       for default spread value: 8 */
-                    while (quotient--) {
-                        Sint16 s = *(Uint16 *)srcp;
-                        srcp += 2;
-                        Uint8 alpha = (s < 0) ? s >> 5 : 255;
-                        *dstp++ = alpha;
-                    }
-#endif
                 } else {
+#if TTF_USE_SDF
+                    if (ft_render_mode != FT_RENDER_MODE_SDF) {
+                        SDL_memcpy(dstp, srcp, src->width);
+                    } else {
+                        int x;
+                        for (x = 0; x < src->width; x++) {
+                            Uint8 s = srcp[x];
+                            Uint8 d;
+                            if (s < 128) {
+                                d = 256 - (128 - s) * 2;
+                            } else {
+                                d = 255;
+                                /* some glitch ?
+                                if (s == 255) {
+                                    d = 0;
+                                }*/
+                            }
+                            dstp[x] = d;
+                        }
+                    }
+#else
                     SDL_memcpy(dstp, srcp, src->width);
+#endif
                 }
             }
         }
@@ -3016,12 +3022,18 @@ static int TTF_Size_Internal(TTF_Font *font,
     if (xstart) {
         *xstart = (minx < 0)? -minx : 0;
         *xstart += font->outline_val;
+        if (font->render_sdf) {
+            *xstart += 8; /* Default 'spread' property */
+        }
     }
 
     /* Initial y start: compensation for a negative y offset */
     if (ystart) {
         *ystart = (miny < 0)? -miny : 0;
         *ystart += font->outline_val;
+        if (font->render_sdf) {
+            *ystart += 8; /* Default 'spread' property */
+        }
     }
 
     /* Fill the bounds rectangle */
