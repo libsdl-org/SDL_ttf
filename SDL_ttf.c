@@ -1163,11 +1163,11 @@ BUILD_RENDER_LINE(8_Blended_Opaque_SP   , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaqu
 
 
 #if TTF_USE_SDF
-int (*Render_Line_SDF_Shaded)() = NULL;
+static int (*Render_Line_SDF_Shaded)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha) = NULL;
 BUILD_RENDER_LINE(SDF_Blended           , 1, 0,  COLOR, 0     ,                       , BG_Blended_SDF ,            )
 BUILD_RENDER_LINE(SDF_Blended_Opaque    , 1, 1,  COLOR, 0     , BG_Blended_Opaque_SDF ,                ,            )
-int (*Render_Line_SDF_Solid)() = NULL;
-int (*Render_Line_SDF_Shaded_SP)() = NULL;
+static int (*Render_Line_SDF_Solid)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha) = NULL;
+static int (*Render_Line_SDF_Shaded_SP)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha) = NULL;
 BUILD_RENDER_LINE(SDF_Blended_SP        , 1, 0,  COLOR, SUBPIX,                       , BG_Blended_SDF ,            )
 BUILD_RENDER_LINE(SDF_Blended_Opaque_SP , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaque_SDF ,                ,            )
 #endif
