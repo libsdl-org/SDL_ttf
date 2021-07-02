@@ -1912,7 +1912,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 
     error = FT_Load_Glyph(font->face, cached->index, ft_load);
     if (error) {
-        return error;
+        goto ft_failure;
     }
 
     /* Get our glyph shortcut */
@@ -2035,14 +2035,14 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 
             error = FT_Get_Glyph(slot, &glyph);
             if (error) {
-                return error;
+                goto ft_failure;
             }
 
             if (font->outline_val > 0) {
                 FT_Stroker stroker;
                 error = FT_Stroker_New(library, &stroker);
                 if (error) {
-                    return error;
+                    goto ft_failure;
                 }
                 FT_Stroker_Set(stroker, font->outline_val * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
                 FT_Glyph_Stroke(&glyph, stroker, 1 /* delete the original glyph */);
@@ -2053,7 +2053,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             error = FT_Glyph_To_Bitmap(&glyph, ft_render_mode, 0, 1);
             if (error) {
                 FT_Done_Glyph(glyph);
-                return error;
+                goto ft_failure;
             }
 
             /* Access bitmap content by typecasting */
@@ -2067,7 +2067,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             /* Render the glyph */
             error = FT_Render_Glyph(slot, ft_render_mode);
             if (error) {
-                return error;
+                goto ft_failure;
             }
 
             /* Access bitmap from slot */
@@ -2110,7 +2110,8 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             dst->buffer = (unsigned char *)SDL_malloc(alignment + dst->pitch * dst->rows);
 
             if (!dst->buffer) {
-                return FT_Err_Out_Of_Memory;
+                error = FT_Err_Out_Of_Memory;
+                goto ft_failure;
             }
 
             /* Memset */
@@ -2377,6 +2378,10 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 
     /* We're done, this glyph is cached since 'stored' is not 0 */
     return 0;
+
+ft_failure:
+    TTF_SetFTError("Couldn't find glyph", error);
+    return -1;
 }
 
 static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
@@ -2422,7 +2427,6 @@ static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         if (retval == 0) {
             return 0;
         } else {
-            TTF_SetFTError("Couldn't find glyph", retval);
             return -1;
         }
     }
@@ -2468,7 +2472,6 @@ static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         if (retval == 0) {
             return 0;
         } else {
-            TTF_SetFTError("Couldn't find glyph", retval);
             return -1;
         }
     }
