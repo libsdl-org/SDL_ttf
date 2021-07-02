@@ -386,7 +386,8 @@ static SDL_INLINE void BG_Blended_Color(const TTF_Image *image, Uint32 *destinat
                     tmp = *src++;
                     alpha = tmp >> 24;
                     tmp &= ~0xFF000000;
-                    alpha =  DIVIDE_BY_255(fg_alpha * alpha) << 24;
+                    alpha = fg_alpha * alpha;
+                    alpha =  DIVIDE_BY_255(alpha) << 24;
                     *dst++ = tmp | alpha
                     , width);
             /* *INDENT-ON* */
