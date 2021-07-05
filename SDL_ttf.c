@@ -2478,9 +2478,10 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                                 d = 256 - (128 - s) * 2;
                             } else {
                                 d = 255;
+                                /* some glitch ?
                                 if (s == 255) {
                                     d = 0;
-                                }
+                                }*/
                             }
                             dstp[x] = d;
                         }
