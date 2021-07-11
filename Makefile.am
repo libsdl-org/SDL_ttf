@@ -8,9 +8,9 @@ libSDL2_ttfinclude_HEADERS =	\
 	SDL_ttf.h
 
 libSDL2_ttf_la_SOURCES =		\
-	SDL_ttf.c
+	SDL_ttf.c $(LOCAL_FT2_SOURCES) $(LOCAL_HB_SOURCES)
 
-libSDL2_ttf_la_CPPFLAGS =
+libSDL2_ttf_la_CPPFLAGS = $(TTF_CPPFLAGS) $(LOCAL_FT2_FLAGS) $(LOCAL_HB_FLAGS)
 
 FREETYPE_PATH = external/freetype-2.10.4
 FREETYPE_SOURCES = \
@@ -56,8 +56,8 @@ FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/winfonts/winfnt.c
 
 if USE_BUILTIN_FREETYPE
-libSDL2_ttf_la_SOURCES += $(FREETYPE_SOURCES)
-libSDL2_ttf_la_CPPFLAGS += -I$(srcdir)/$(FREETYPE_PATH)/include -DFT2_BUILD_LIBRARY -DFT_PUBLIC_FUNCTION_ATTRIBUTE=
+LOCAL_FT2_FLAGS = -I$(srcdir)/$(FREETYPE_PATH)/include -DFT2_BUILD_LIBRARY -DFT_PUBLIC_FUNCTION_ATTRIBUTE=
+LOCAL_FT2_SOURCES = $(FREETYPE_SOURCES)
 endif
 
 HARFBUZZ_PATH = external/harfbuzz-2.8.0
@@ -104,11 +104,14 @@ HARFBUZZ_SOURCES = \
 	$(HARFBUZZ_PATH)/src/hb-shaper.cc \
 	$(HARFBUZZ_PATH)/src/hb-static.cc \
 	$(HARFBUZZ_PATH)/src/hb-ucd.cc \
+	$(HARFBUZZ_PATH)/src/hb-coretext.cc \
+	$(HARFBUZZ_PATH)/src/hb-gdi.cc \
+	$(HARFBUZZ_PATH)/src/hb-uniscribe.cc \
 	$(HARFBUZZ_PATH)/src/hb-unicode.cc
 
 if USE_BUILTIN_HARFBUZZ
-libSDL2_ttf_la_SOURCES += $(HARFBUZZ_SOURCES)
-libSDL2_ttf_la_CPPFLAGS += -I$(srcdir)/$(HARFBUZZ_PATH) -I$(srcdir)/$(HARFBUZZ_PATH)/src -DHAVE_CONFIG_H -DFT_CONFIG_OPTION_USE_HARFBUZZ
+LOCAL_HB_FLAGS = -I$(srcdir)/$(HARFBUZZ_PATH) -I$(srcdir)/$(HARFBUZZ_PATH)/src -DHAVE_CONFIG_H -DFT_CONFIG_OPTION_USE_HARFBUZZ
+LOCAL_HB_SOURCES = $(HARFBUZZ_SOURCES)
 if OS_WIN32
 LINKER = $(CXXLINK)
 else
@@ -131,7 +134,7 @@ libSDL2_ttf_la_LDFLAGS = 	\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 endif
 libSDL2_ttf_la_LINK = $(LINKER) $(libSDL2_ttf_la_LDFLAGS)
-libSDL2_ttf_la_LIBADD = @MATHLIB@
+libSDL2_ttf_la_LIBADD = $(TTF_LIBS) @MATHLIB@
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = SDL2_ttf.pc
@@ -167,3 +170,7 @@ $(PACKAGE)-$(VERSION).tar.gz: distcheck
 rpm: $(PACKAGE)-$(VERSION).tar.gz
 	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz
 
+distclean-local:
+	-rm -rf `find $(srcdir) -name .deps`
+dist-hook:
+	-rm -rf `find $(distdir) -name .deps`

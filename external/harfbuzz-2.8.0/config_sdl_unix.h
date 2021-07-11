@@ -83,7 +83,7 @@
 #define HAVE_PTHREAD 1
 
 /* Have PTHREAD_PRIO_INHERIT. */
-#define HAVE_PTHREAD_PRIO_INHERIT 1
+/* #undef HAVE_PTHREAD_PRIO_INHERIT */
 
 /* Define to 1 if you have the <stdbool.h> header file. */
 #define HAVE_STDBOOL_H 1
@@ -125,7 +125,7 @@
 /* #undef HAVE_WINDOWS_H */
 
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
-#define LT_OBJDIR ".libs/"
+/* #define LT_OBJDIR ".libs/" */
 
 /* Define to the address where bug reports for this package should be sent. */
 /* #define PACKAGE_BUGREPORT "https://github.com/harfbuzz/harfbuzz/issues/new" */

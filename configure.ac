@@ -99,6 +99,8 @@ AM_PATH_SDL2($SDL_VERSION,
 )
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
+TTF_LIBS=
+TTF_CPPFLAGS=
 
 dnl Check for the FreeType 2 library
 AC_ARG_ENABLE(freetype-builtin, [AS_HELP_STRING([--enable-freetype-builtin], [Use included version of FreeType [default=yes]])], [], enable_freetype_builtin=yes)
@@ -111,8 +113,8 @@ else
 *** Unable to find FreeType2 library (http://www.freetype.org/)])]
 		)
 	])
-	CFLAGS="$CFLAGS $FT2_CFLAGS"
-	LIBS="$LIBS $FT2_LIBS"
+	TTF_CFLAGS="$TTF_CFLAGS $FT2_CFLAGS"
+	TTF_LIBS="$TTF_LIBS $FT2_LIBS"
 
 	SUMMARY="${SUMMARY}Using included FreeType : NO\n"
 fi
@@ -132,8 +134,10 @@ if test x$enable_harfbuzz = xyes; then
 		AC_CHECK_ALIGNOF([struct{char;}])
 		case "$host" in
 		  *-*-mingw*) hb_os_win32=yes
-			CXXFLAGS="$CXXFLAGS -static-libgcc"
+			CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
 			CFLAGS="$CFLAGS -static-libgcc"
+			# for uniscribe support:
+			TTF_LIBS="$TTF_LIBS -lusp10 -lgdi32 -lrpcrt4"
 		  ;;
 		esac
 		case "$host" in
@@ -153,8 +157,8 @@ if test x$enable_harfbuzz = xyes; then
 
 		if test x$harfbuzz = xyes; then
 			AC_DEFINE(TTF_USE_HARFBUZZ, 1, [])
-			CFLAGS="$CFLAGS $HB_CFLAGS"
-			LIBS="$LIBS $HB_LIBS"
+			TTF_CFLAGS="$TTF_CFLAGS $HB_CFLAGS"
+			TTF_LIBS="$TTF_LIBS $HB_LIBS"
 			SUMMARY="${SUMMARY}Using harfbuzz      : YES\n"
 		else
 			AC_MSG_ERROR([dnl
@@ -246,6 +250,8 @@ fi
 AC_SUBST([GL_LIBS])
 AC_SUBST([MATHLIB])
 AC_SUBST([WINDRES])
+AC_SUBST([TTF_CFLAGS])
+AC_SUBST([TTF_LIBS])
 
 # Finally create all the generated files
 AC_CONFIG_FILES([

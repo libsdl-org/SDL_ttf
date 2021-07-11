@@ -91,11 +91,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@USE_BUILTIN_FREETYPE_TRUE@am__append_1 = $(FREETYPE_SOURCES)
-@USE_BUILTIN_FREETYPE_TRUE@am__append_2 = -I$(srcdir)/$(FREETYPE_PATH)/include -DFT2_BUILD_LIBRARY -DFT_PUBLIC_FUNCTION_ATTRIBUTE=
-@USE_BUILTIN_HARFBUZZ_TRUE@am__append_3 = $(HARFBUZZ_SOURCES)
-@USE_BUILTIN_HARFBUZZ_TRUE@am__append_4 = -I$(srcdir)/$(HARFBUZZ_PATH) -I$(srcdir)/$(HARFBUZZ_PATH)/src -DHAVE_CONFIG_H -DFT_CONFIG_OPTION_USE_HARFBUZZ
-@USE_VERSION_RC_FALSE@libSDL2_ttf_la_DEPENDENCIES =
+@USE_VERSION_RC_FALSE@libSDL2_ttf_la_DEPENDENCIES =  \
+@USE_VERSION_RC_FALSE@	$(am__DEPENDENCIES_1)
 noinst_PROGRAMS = showfont$(EXEEXT) glfont$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -150,6 +147,7 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
 	"$(DESTDIR)$(libSDL2_ttfincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
+am__DEPENDENCIES_1 =
 am__libSDL2_ttf_la_SOURCES_DIST = SDL_ttf.c \
 	$(FREETYPE_PATH)/src/autofit/autofit.c \
 	$(FREETYPE_PATH)/src/base/ftbase.c \
@@ -231,6 +229,9 @@ am__libSDL2_ttf_la_SOURCES_DIST = SDL_ttf.c \
 	$(HARFBUZZ_PATH)/src/hb-shaper.cc \
 	$(HARFBUZZ_PATH)/src/hb-static.cc \
 	$(HARFBUZZ_PATH)/src/hb-ucd.cc \
+	$(HARFBUZZ_PATH)/src/hb-coretext.cc \
+	$(HARFBUZZ_PATH)/src/hb-gdi.cc \
+	$(HARFBUZZ_PATH)/src/hb-uniscribe.cc \
 	$(HARFBUZZ_PATH)/src/hb-unicode.cc
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 =  \
@@ -317,6 +318,9 @@ am__objects_3 = $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-aat-layout.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-shaper.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-static.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ucd.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-coretext.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-gdi.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-uniscribe.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-unicode.lo
 @USE_BUILTIN_HARFBUZZ_TRUE@am__objects_4 = $(am__objects_3)
 am_libSDL2_ttf_la_OBJECTS = libSDL2_ttf_la-SDL_ttf.lo $(am__objects_2) \
@@ -393,10 +397,12 @@ am__depfiles_remade = $(FREETYPE_PATH)/src/autofit/$(DEPDIR)/libSDL2_ttf_la-auto
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-serialize.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-common.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-face.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-fallback-shape.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo \
@@ -430,6 +436,7 @@ am__depfiles_remade = $(FREETYPE_PATH)/src/autofit/$(DEPDIR)/libSDL2_ttf_la-auto
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-static.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ucd.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-unicode.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-uniscribe.Plo \
 	./$(DEPDIR)/glfont.Po ./$(DEPDIR)/libSDL2_ttf_la-SDL_ttf.Plo \
 	./$(DEPDIR)/showfont.Po
 am__mv = mv -f
@@ -611,6 +618,8 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+TTF_CFLAGS = @TTF_CFLAGS@
+TTF_LIBS = @TTF_LIBS@
 VERSION = @VERSION@
 WINDRES = @WINDRES@
 XMKMF = @XMKMF@
@@ -680,8 +689,10 @@ libSDL2_ttfincludedir = $(includedir)/SDL2
 libSDL2_ttfinclude_HEADERS = \
 	SDL_ttf.h
 
-libSDL2_ttf_la_SOURCES = SDL_ttf.c $(am__append_1) $(am__append_3)
-libSDL2_ttf_la_CPPFLAGS = $(am__append_2) $(am__append_4)
+libSDL2_ttf_la_SOURCES = \
+	SDL_ttf.c $(LOCAL_FT2_SOURCES) $(LOCAL_HB_SOURCES)
+
+libSDL2_ttf_la_CPPFLAGS = $(TTF_CPPFLAGS) $(LOCAL_FT2_FLAGS) $(LOCAL_HB_FLAGS)
 FREETYPE_PATH = external/freetype-2.10.4
 FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/autofit/autofit.c \
@@ -725,6 +736,8 @@ FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/type42/type42.c \
 	$(FREETYPE_PATH)/src/winfonts/winfnt.c
 
+@USE_BUILTIN_FREETYPE_TRUE@LOCAL_FT2_FLAGS = -I$(srcdir)/$(FREETYPE_PATH)/include -DFT2_BUILD_LIBRARY -DFT_PUBLIC_FUNCTION_ATTRIBUTE=
+@USE_BUILTIN_FREETYPE_TRUE@LOCAL_FT2_SOURCES = $(FREETYPE_SOURCES)
 HARFBUZZ_PATH = external/harfbuzz-2.8.0
 HARFBUZZ_SOURCES = \
 	$(HARFBUZZ_PATH)/src/hb-aat-layout.cc \
@@ -769,8 +782,13 @@ HARFBUZZ_SOURCES = \
 	$(HARFBUZZ_PATH)/src/hb-shaper.cc \
 	$(HARFBUZZ_PATH)/src/hb-static.cc \
 	$(HARFBUZZ_PATH)/src/hb-ucd.cc \
+	$(HARFBUZZ_PATH)/src/hb-coretext.cc \
+	$(HARFBUZZ_PATH)/src/hb-gdi.cc \
+	$(HARFBUZZ_PATH)/src/hb-uniscribe.cc \
 	$(HARFBUZZ_PATH)/src/hb-unicode.cc
 
+@USE_BUILTIN_HARFBUZZ_TRUE@LOCAL_HB_FLAGS = -I$(srcdir)/$(HARFBUZZ_PATH) -I$(srcdir)/$(HARFBUZZ_PATH)/src -DHAVE_CONFIG_H -DFT_CONFIG_OPTION_USE_HARFBUZZ
+@USE_BUILTIN_HARFBUZZ_TRUE@LOCAL_HB_SOURCES = $(HARFBUZZ_SOURCES)
 @OS_WIN32_FALSE@@USE_BUILTIN_HARFBUZZ_TRUE@LINKER = $(LINK)
 @OS_WIN32_TRUE@@USE_BUILTIN_HARFBUZZ_TRUE@LINKER = $(CXXLINK)
 @USE_BUILTIN_HARFBUZZ_FALSE@LINKER = $(LINK)
@@ -786,7 +804,7 @@ HARFBUZZ_SOURCES = \
 
 @USE_VERSION_RC_TRUE@libSDL2_ttf_la_DEPENDENCIES = version.o
 libSDL2_ttf_la_LINK = $(LINKER) $(libSDL2_ttf_la_LDFLAGS)
-libSDL2_ttf_la_LIBADD = @MATHLIB@
+libSDL2_ttf_la_LIBADD = $(TTF_LIBS) @MATHLIB@
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = SDL2_ttf.pc
 EXTRA_DIST = \
@@ -1270,6 +1288,15 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-static.lo:  \
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ucd.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-coretext.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-gdi.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-uniscribe.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-unicode.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
@@ -1381,10 +1408,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-serialize.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-common.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-face.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-fallback-shape.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo@am__quote@ # am--include-marker
@@ -1418,6 +1447,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-static.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ucd.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-unicode.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-uniscribe.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glfont.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libSDL2_ttf_la-SDL_ttf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/showfont.Po@am__quote@ # am--include-marker
@@ -2057,6 +2087,27 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ucd.lo: $(HARFBUZZ_PATH)/src/hb-ucd.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ucd.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ucd.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ucd.cc
 
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-coretext.lo: $(HARFBUZZ_PATH)/src/hb-coretext.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-coretext.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-coretext.lo `test -f '$(HARFBUZZ_PATH)/src/hb-coretext.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-coretext.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-coretext.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-coretext.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-coretext.lo `test -f '$(HARFBUZZ_PATH)/src/hb-coretext.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-coretext.cc
+
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-gdi.lo: $(HARFBUZZ_PATH)/src/hb-gdi.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-gdi.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-gdi.lo `test -f '$(HARFBUZZ_PATH)/src/hb-gdi.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-gdi.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-gdi.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-gdi.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-gdi.lo `test -f '$(HARFBUZZ_PATH)/src/hb-gdi.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-gdi.cc
+
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-uniscribe.lo: $(HARFBUZZ_PATH)/src/hb-uniscribe.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-uniscribe.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-uniscribe.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-uniscribe.lo `test -f '$(HARFBUZZ_PATH)/src/hb-uniscribe.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-uniscribe.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-uniscribe.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-uniscribe.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-uniscribe.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-uniscribe.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-uniscribe.lo `test -f '$(HARFBUZZ_PATH)/src/hb-uniscribe.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-uniscribe.cc
+
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-unicode.lo: $(HARFBUZZ_PATH)/src/hb-unicode.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-unicode.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-unicode.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-unicode.lo `test -f '$(HARFBUZZ_PATH)/src/hb-unicode.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-unicode.cc
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-unicode.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-unicode.Plo
@@ -2231,6 +2282,9 @@ distdir-am: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
+	  dist-hook
 	-test -n "$(am__skip_mode_fix)" \
 	|| find "$(distdir)" -type d ! -perm -755 \
 		-exec chmod u+rwx,go+rx {} \; -o \
@@ -2502,10 +2556,12 @@ distclean: distclean-am
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-serialize.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-common.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-face.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-fallback-shape.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo
@@ -2539,12 +2595,13 @@ distclean: distclean-am
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-static.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ucd.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-unicode.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-uniscribe.Plo
 	-rm -f ./$(DEPDIR)/glfont.Po
 	-rm -f ./$(DEPDIR)/libSDL2_ttf_la-SDL_ttf.Plo
 	-rm -f ./$(DEPDIR)/showfont.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
-	distclean-libtool distclean-tags
+	distclean-libtool distclean-local distclean-tags
 
 dvi: dvi-am
 
@@ -2636,10 +2693,12 @@ maintainer-clean: maintainer-clean-am
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-serialize.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-common.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-face.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-fallback-shape.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo
@@ -2673,6 +2732,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-static.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ucd.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-unicode.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-uniscribe.Plo
 	-rm -f ./$(DEPDIR)/glfont.Po
 	-rm -f ./$(DEPDIR)/libSDL2_ttf_la-SDL_ttf.Plo
 	-rm -f ./$(DEPDIR)/showfont.Po
@@ -2700,22 +2760,23 @@ uninstall-am: uninstall-libLTLIBRARIES \
 .PHONY: CTAGS GTAGS TAGS all all-am am--depfiles am--refresh check \
 	check-am clean clean-cscope clean-generic clean-libLTLIBRARIES \
 	clean-libtool clean-noinstPROGRAMS cscope cscopelist-am ctags \
-	ctags-am dist dist-all dist-bzip2 dist-gzip dist-lzip \
-	dist-shar dist-tarZ dist-xz dist-zip dist-zstd distcheck \
-	distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distcleancheck distdir \
-	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-libSDL2_ttfincludeHEADERS \
-	install-man install-pdf install-pdf-am install-pkgconfigDATA \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-libLTLIBRARIES \
-	uninstall-libSDL2_ttfincludeHEADERS uninstall-pkgconfigDATA
+	ctags-am dist dist-all dist-bzip2 dist-gzip dist-hook \
+	dist-lzip dist-shar dist-tarZ dist-xz dist-zip dist-zstd \
+	distcheck distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-local distclean-tags \
+	distcleancheck distdir distuninstallcheck dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-libLTLIBRARIES \
+	install-libSDL2_ttfincludeHEADERS install-man install-pdf \
+	install-pdf-am install-pkgconfigDATA install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
+	uninstall-libLTLIBRARIES uninstall-libSDL2_ttfincludeHEADERS \
+	uninstall-pkgconfigDATA
 
 .PRECIOUS: Makefile
 
@@ -2729,6 +2790,11 @@ $(PACKAGE)-$(VERSION).tar.gz: distcheck
 # Rule to build RPM distribution package
 rpm: $(PACKAGE)-$(VERSION).tar.gz
 	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz
+
+distclean-local:
+	-rm -rf `find $(srcdir) -name .deps`
+dist-hook:
+	-rm -rf `find $(distdir) -name .deps`
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
