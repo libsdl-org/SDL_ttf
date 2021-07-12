@@ -16893,7 +16893,7 @@ $as_echo "$as_me: WARNING:
 
      FT2_CFLAGS=""
      FT2_LIBS=""
-     as_fn_error $? "*** Unable to find FreeType2 library (http://www.freetype.org/)" "$LINENO" 5
+     as_fn_error $? "*** Unable to find FreeType2 library (https://www.freetype.org)" "$LINENO" 5
 
    fi
 
@@ -17204,7 +17204,7 @@ $as_echo "$as_me: WARNING:
 
      FT2_CFLAGS=""
      FT2_LIBS=""
-     as_fn_error $? "*** Unable to find FreeType2 library (http://www.freetype.org/)" "$LINENO" 5
+     as_fn_error $? "*** Unable to find FreeType2 library (https://www.freetype.org)" "$LINENO" 5
 
    fi
 
@@ -18366,13 +18366,49 @@ $as_echo "yes" >&6; }
 fi
 
 		if test x$harfbuzz = xyes; then
+			save_CFLAGS="$CFLAGS"
+			save_LIBS="$LIBS"
+			CFLAGS="$CFLAGS $HB_CFLAGS"
+			LIBS="$LIBS $HB_LIBS"
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for freetype support in harfbuzz" >&5
+$as_echo_n "checking for freetype support in harfbuzz... " >&6; }
+			harbuzz_has_freetype=no
+			cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+					void* hb_ft_font_create(void*, void*);
+					return !hb_ft_font_create((void*)0,(void*)0);
+  ;
+  return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  harbuzz_has_freetype=yes
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+			CFLAGS="$save_CFLAGS"
+			LDFLAGS="$save_LDFLAGS"
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $harbuzz_has_freetype" >&5
+$as_echo "$harbuzz_has_freetype" >&6; }
+			if test x$harbuzz_has_freetype = xno; then
+				harfbuzz=no
+				as_fn_error $? "*** HarfBuzz library was built without FreeType support.)" "$LINENO" 5
+			fi
+		fi
+		if test x$harfbuzz = xyes; then
 			$as_echo "#define TTF_USE_HARFBUZZ 1" >>confdefs.h
 
 			TTF_CFLAGS="$TTF_CFLAGS $HB_CFLAGS"
 			TTF_LIBS="$TTF_LIBS $HB_LIBS"
 			SUMMARY="${SUMMARY}Using harfbuzz      : YES\n"
 		else
-			as_fn_error $? "*** Unable to find HarfBuzz library (http://www.freetype.org/)" "$LINENO" 5
+			as_fn_error $? "*** Unable to find HarfBuzz library (https://harfbuzz.github.io)" "$LINENO" 5
 		fi
 	fi
 else

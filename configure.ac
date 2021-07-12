@@ -110,7 +110,7 @@ if test x$enable_freetype_builtin = xyes; then
 else
 	PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [], [dnl
 		AC_CHECK_FT2(,,[AC_MSG_ERROR([dnl
-*** Unable to find FreeType2 library (http://www.freetype.org/)])]
+*** Unable to find FreeType2 library (https://www.freetype.org)])]
 		)
 	])
 	TTF_CFLAGS="$TTF_CFLAGS $FT2_CFLAGS"
@@ -156,13 +156,33 @@ if test x$enable_harfbuzz = xyes; then
 		PKG_CHECK_MODULES([HB], [harfbuzz >= 2.3.1], harfbuzz=yes, harfbuzz=no)
 
 		if test x$harfbuzz = xyes; then
+			save_CFLAGS="$CFLAGS"
+			save_LIBS="$LIBS"
+			CFLAGS="$CFLAGS $HB_CFLAGS"
+			LIBS="$LIBS $HB_LIBS"
+			AC_MSG_CHECKING(for freetype support in harfbuzz)
+			harbuzz_has_freetype=no
+			AC_LINK_IFELSE([AC_LANG_PROGRAM([],[[
+					void* hb_ft_font_create(void*, void*);
+					return !hb_ft_font_create((void*)0,(void*)0);]])
+				], [harbuzz_has_freetype=yes])
+			CFLAGS="$save_CFLAGS"
+			LDFLAGS="$save_LDFLAGS"
+			AC_MSG_RESULT($harbuzz_has_freetype)
+			if test x$harbuzz_has_freetype = xno; then
+				harfbuzz=no
+				AC_MSG_ERROR([dnl
+*** HarfBuzz library was built without FreeType support.)])
+			fi
+		fi
+		if test x$harfbuzz = xyes; then
 			AC_DEFINE(TTF_USE_HARFBUZZ, 1, [])
 			TTF_CFLAGS="$TTF_CFLAGS $HB_CFLAGS"
 			TTF_LIBS="$TTF_LIBS $HB_LIBS"
 			SUMMARY="${SUMMARY}Using harfbuzz      : YES\n"
 		else
 			AC_MSG_ERROR([dnl
-*** Unable to find HarfBuzz library (http://www.freetype.org/)])
+*** Unable to find HarfBuzz library (https://harfbuzz.github.io)])
 		fi
 	fi
 else
