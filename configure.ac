@@ -164,10 +164,10 @@ if test x$enable_harfbuzz = xyes; then
 			harbuzz_has_freetype=no
 			AC_LINK_IFELSE([AC_LANG_PROGRAM([],[[
 					void* hb_ft_font_create(void*, void*);
-					return !hb_ft_font_create((void*)0,(void*)0);]])
-				], [harbuzz_has_freetype=yes])
+					return !hb_ft_font_create((void*)0, (void*)0);]])
+				],[harbuzz_has_freetype=yes])
 			CFLAGS="$save_CFLAGS"
-			LDFLAGS="$save_LDFLAGS"
+			LIBS="$save_LIBS"
 			AC_MSG_RESULT($harbuzz_has_freetype)
 			if test x$harbuzz_has_freetype = xno; then
 				harfbuzz=no

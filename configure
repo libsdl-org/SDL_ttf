@@ -18381,7 +18381,7 @@ main ()
 {
 
 					void* hb_ft_font_create(void*, void*);
-					return !hb_ft_font_create((void*)0,(void*)0);
+					return !hb_ft_font_create((void*)0, (void*)0);
   ;
   return 0;
 }
@@ -18393,7 +18393,7 @@ fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 			CFLAGS="$save_CFLAGS"
-			LDFLAGS="$save_LDFLAGS"
+			LIBS="$save_LIBS"
 			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $harbuzz_has_freetype" >&5
 $as_echo "$harbuzz_has_freetype" >&6; }
 			if test x$harbuzz_has_freetype = xno; then
