@@ -692,7 +692,7 @@ libSDL2_ttfinclude_HEADERS = \
 libSDL2_ttf_la_SOURCES = \
 	SDL_ttf.c $(LOCAL_FT2_SOURCES) $(LOCAL_HB_SOURCES)
 
-libSDL2_ttf_la_CPPFLAGS = $(TTF_CPPFLAGS) $(LOCAL_FT2_FLAGS) $(LOCAL_HB_FLAGS)
+libSDL2_ttf_la_CPPFLAGS = $(TTF_CFLAGS) $(LOCAL_FT2_FLAGS) $(LOCAL_HB_FLAGS)
 FREETYPE_PATH = external/freetype-2.10.4
 FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/autofit/autofit.c \
