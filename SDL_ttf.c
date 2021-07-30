@@ -1046,8 +1046,8 @@ int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int yst
                 /* Compute dst */                                                                                       \
                 dst  = (Uint8 *)textbuf->pixels + y * textbuf->pitch + x * bpp;                                         \
                 /* Align dst, get remainder, shift & align glyph width */                                               \
-                remainder = ((size_t)dst & alignment) / bpp;                                                            \
-                dst  = (Uint8 *)((size_t)dst & ~alignment);                                                             \
+                remainder = ((uintptr_t)dst & alignment) / bpp;                                                         \
+                dst  = (Uint8 *)((uintptr_t)dst & ~alignment);                                                          \
                 image->buffer -= remainder;                                                                             \
                 image->width   = (image->width + remainder + alignment) & ~alignment;                                   \
                 /* Compute srcskip, dstskip */                                                                          \
@@ -1263,7 +1263,7 @@ static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Ui
     }
 
     /* address is aligned */
-    pixels = (void *)(((size_t)ptr + sizeof(void *) + alignment) & ~alignment);
+    pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
     ((void **)pixels)[-1] = ptr;
 
     textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_INDEX8);
@@ -1327,7 +1327,7 @@ static SDL_Surface* Create_Surface_Shaded(int width, int height, SDL_Color fg, S
     }
 
     /* address is aligned */
-    pixels = (void *)(((size_t)ptr + sizeof(void *) + alignment) & ~alignment);
+    pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
     ((void **)pixels)[-1] = ptr;
 
     textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_INDEX8);
@@ -1424,7 +1424,7 @@ static SDL_Surface *Create_Surface_Blended(int width, int height, SDL_Color fg, 
         }
 
         /* address is aligned */
-        pixels = (void *)(((size_t)ptr + sizeof(void *) + alignment) & ~alignment);
+        pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
         ((void **)pixels)[-1] = ptr;
 
         textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_ARGB8888);
@@ -3345,7 +3345,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
 
         do {
             int extent = 0, max_count = 0, char_count = 0;
-            size_t save_textlen = (size_t)-1;
+            size_t save_textlen = (size_t)(-1);
             char *save_text  = NULL;
 
             if (numLines >= maxNumLines) {
