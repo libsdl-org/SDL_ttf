@@ -92,7 +92,7 @@ extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
    byteswapped.  A UNICODE BOM character in a string will override
    this setting for the remainder of that string.
 */
-extern DECLSPEC void SDLCALL TTF_ByteSwappedUNICODE(int swapped);
+extern DECLSPEC void SDLCALL TTF_ByteSwappedUNICODE(SDL_bool swapped);
 
 /* The internal structure containing font information */
 typedef struct _TTF_Font TTF_Font;
