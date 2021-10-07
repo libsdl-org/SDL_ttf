@@ -281,7 +281,7 @@ struct _TTF_Font {
 /* The FreeType font engine/library */
 static FT_Library library;
 static int TTF_initialized = 0;
-static int TTF_byteswapped = 0;
+static SDL_bool TTF_byteswapped = SDL_FALSE;
 
 #define TTF_CHECK_INITIALIZED(errval)                   \
     if (!TTF_initialized) {                             \
@@ -1460,7 +1460,7 @@ const SDL_version* TTF_Linked_Version(void)
 /* This function tells the library whether UNICODE text is generally
    byteswapped.  A UNICODE BOM character at the beginning of a string
    will override this setting for that string.  */
-void TTF_ByteSwappedUNICODE(int swapped)
+void TTF_ByteSwappedUNICODE(SDL_bool swapped)
 {
     TTF_byteswapped = swapped;
 }
@@ -2574,16 +2574,16 @@ static void LATIN1_to_UTF8(const char *src, Uint8 *dst)
 /* Convert a UCS-2 string to a UTF-8 string */
 static void UCS2_to_UTF8(const Uint16 *src, Uint8 *dst)
 {
-    int swapped = TTF_byteswapped;
+    SDL_bool swapped = TTF_byteswapped;
 
     while (*src) {
         Uint16 ch = *src++;
         if (ch == UNICODE_BOM_NATIVE) {
-            swapped = 0;
+            swapped = SDL_FALSE;
             continue;
         }
         if (ch == UNICODE_BOM_SWAPPED) {
-            swapped = 1;
+            swapped = SDL_TRUE;
             continue;
         }
         if (swapped) {
