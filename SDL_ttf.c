@@ -3679,7 +3679,7 @@ int TTF_SetFontSDF(TTF_Font *font, SDL_bool on_off)
 
 SDL_bool TTF_GetFontSDF(const TTF_Font *font)
 {
-    TTF_CHECK_POINTER(font, -1);
+    TTF_CHECK_POINTER(font, SDL_FALSE);
     return font->render_sdf;
 }
 
