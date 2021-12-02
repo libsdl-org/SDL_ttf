@@ -27,18 +27,20 @@ AC_SUBST([MICRO_VERSION], MICRO_VERSION_MACRO)
 AC_SUBST([INTERFACE_AGE], INTERFACE_AGE_MACRO)
 AC_SUBST([BINARY_AGE], BINARY_AGE_MACRO)
 
-# libtool versioning
+dnl libtool versioning
 LT_INIT([win32-dll])
 
 LT_RELEASE=$MAJOR_VERSION.$MINOR_VERSION
 LT_CURRENT=`expr $MICRO_VERSION - $INTERFACE_AGE`
 LT_REVISION=$INTERFACE_AGE
 LT_AGE=`expr $BINARY_AGE - $INTERFACE_AGE`
+LT_EXTRA="" dnl for OS2 dll name
 
 AC_SUBST(LT_RELEASE)
 AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
+AC_SUBST(LT_EXTRA)
 
 dnl Detect the canonical build and host environments
 AC_CANONICAL_HOST
@@ -66,7 +68,6 @@ case "$host" in
         ;;
 esac
 
-
 case "$host" in
     *-*-beos*)
         ac_default_prefix=/boot/develop/tools/gnupro
@@ -84,6 +85,14 @@ case "$host" in
         if test x$WINDRES != x; then
             use_version_rc=true
         fi
+        ;;
+    *-*-os2*)
+        # disable static builds on os/2
+        enable_static=no
+        # -DBUILD_SDL is needed for DECLSPEC
+        CFLAGS="$CFLAGS -DBUILD_SDL"
+        # OS/2 does not support a DLL name longer than 8 characters.
+        LT_EXTRA="-os2dllname SDL2ttf"
         ;;
 esac
 AM_CONDITIONAL(USE_VERSION_RC, test x$use_version_rc = xtrue)

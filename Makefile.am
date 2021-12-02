@@ -131,7 +131,7 @@ else
 libSDL2_ttf_la_LDFLAGS = 	\
 	-no-undefined		\
 	-release $(LT_RELEASE)	\
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) $(LT_EXTRA)
 endif
 libSDL2_ttf_la_LINK = $(LINKER) $(libSDL2_ttf_la_LDFLAGS)
 libSDL2_ttf_la_LIBADD = $(TTF_LIBS) @MATHLIB@
