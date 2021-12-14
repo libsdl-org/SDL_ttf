@@ -203,11 +203,16 @@ AM_CONDITIONAL(OS_WIN32, test x$hb_os_win32 = xyes)
 AM_CONDITIONAL(USE_BUILTIN_HARFBUZZ, test x$enable_harfbuzz_builtin = xyes)
 
 dnl See if GCC's -fvisibility=hidden is supported (gcc4 and later, usually).
-dnl  Details of this flag are here: http://gcc.gnu.org/wiki/Visibility
 CheckVisibilityHidden()
 {
     AC_MSG_CHECKING(for GCC -fvisibility=hidden option)
     have_gcc_fvisibility=no
+    case "$host" in
+    *-*-cygwin* | *-*-mingw* | *-*-os2*)
+        AC_MSG_RESULT([ignored for $host_os])
+        return
+        ;;
+    esac
 
     visibility_CFLAGS="-fvisibility=hidden"
     save_CFLAGS="$CFLAGS"
