@@ -34,6 +34,8 @@ CFLAGS =$(CFLAGS_BASE)
 CFLAGS+= -bd
 # for DECLSPEC:
 CFLAGS+= -DBUILD_SDL
+# ignore many 'W201: Unreachable code' warnings:
+CFLAGS+= -wcd=201
 
 all: $(LIBFILE) showfont.exe
 
