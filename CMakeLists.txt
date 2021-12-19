@@ -1,3 +1,9 @@
+# FIXME: CMAKE SUPPORT IN SDL2_ttf IS VERY INCOMPLETE YET !!!
+#
+# FIXME: make it able build against system libs or the included ones.
+# FIXME: handle library versioning.
+# FIXME: test accross different target platforms.
+
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the SDL_ttf source code and call cmake from there")
 endif()
@@ -7,7 +13,6 @@ cmake_minimum_required(VERSION 3.0)
 project(SDL_ttf C)
 
 if (ANDROID)
-
     option(TTF_WITH_HARFBUZZ "use harfbuzz to improve text shaping" OFF)
 
     add_library(SDL2_ttf SHARED)
@@ -39,7 +44,6 @@ if (ANDROID)
     target_link_libraries(SDL2_ttf PRIVATE freetype SDL2)
 
 else()
-
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -131,6 +135,4 @@ if (PKG_CONFIG_FOUND)
   endif ()
 endif ()
 
-
 endif()
-
