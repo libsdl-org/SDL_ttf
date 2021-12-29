@@ -36,6 +36,8 @@ CFLAGS+= -bd
 CFLAGS+= -DBUILD_SDL
 # ignore many 'W201: Unreachable code' warnings:
 CFLAGS+= -wcd=201
+# newer OpenWatcom versions enable W303 by default
+CFLAGS+= -wcd=303
 
 all: $(LIBFILE) showfont.exe
 
