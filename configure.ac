@@ -10,9 +10,9 @@ dnl Set various version strings - taken gratefully from the GTk sources
 # set BINARY_AGE_MACRO and INTERFACE_AGE_MACRO to 0.
 m4_define([MAJOR_VERSION_MACRO], [2])
 m4_define([MINOR_VERSION_MACRO], [0])
-m4_define([MICRO_VERSION_MACRO], [15])
-m4_define([INTERFACE_AGE_MACRO], [1])
-m4_define([BINARY_AGE_MACRO], [15])
+m4_define([MICRO_VERSION_MACRO], [18])
+m4_define([INTERFACE_AGE_MACRO], [0])
+m4_define([BINARY_AGE_MACRO], [18])
 
 AC_INIT([SDL2_ttf],
         MAJOR_VERSION_MACRO.MINOR_VERSION_MACRO.MICRO_VERSION_MACRO,

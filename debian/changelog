@@ -1,3 +1,9 @@
+libsdl2-ttf (2.0.18) UNRELEASED; urgency=medium
+
+  * Updated to version 2.0.18
+
+ -- Sam Lantinga <slouken@libsdl.org>  Fri, 31 Dec 2021 10:03:03 -0800
+
 libsdl2-ttf (2.0.15) UNRELEASED; urgency=medium
 
   * Updated to version 2.0.15

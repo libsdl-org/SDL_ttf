@@ -5,7 +5,7 @@
 # your own environment!.
 
 LIBNAME = SDL2ttf
-VERSION = 2.0.15
+VERSION = 2.0.18
 
 TITLENAME = $(LIBNAME) $(VERSION)
 

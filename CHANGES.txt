@@ -1,3 +1,41 @@
+2.0.18:
+Sylvain - Jan 16, 2021
+ * Added support for Signed Distance Field rendering with TTF_SetFontSDF() and TTF_GetFontSDF()
+David Ludwig - Dec 28, 2019
+ * Added optional DPI-scaling of fonts, with the following new functions:
+    TTF_OpenFontDPI()
+    TTF_OpenFontIndexDPI()
+    TTF_OpenFontDPIRW()
+    TTF_OpenFontIndexDPIRW()
+    TTF_SetFontSizeDPI()
+Weard Anaether - Dec 2, 2019 
+ * Added 32-bit character support with:
+    TTF_RenderGlyph32_Solid()
+    TTF_RenderGlyph32_Shaded()
+    TTF_RenderGlyph32_Blended()
+    TTF_GetFontKerningSizeGlyphs32()
+Arthur Danskin - Sep 3, 2019 
+ * Added 32-bit character support with TTF_GlyphIsProvided32() and TTF_GlyphMetrics32()
+Sylvain - Apr 5, 2019 
+ * Added functions to set direction and script when using Harfbuzz:
+    TTF_SetDirection()
+    TTF_SetScript()
+Sylvain - Mar 25, 2019
+ * Added extended API for text measurement:
+    TTF_MeasureText()
+    TTF_MeasureUTF8()
+    TTF_MeasureUNICODE()
+Sylvain - Jan 31, 2019
+ * Added TTF_SetFontSize() to set font size dynamically
+ * Added 'Shaded' and 'Solid' text wrapped functions:
+    TTF_RenderText_Solid_Wrapped()
+    TTF_RenderUTF8_Solid_Wrapped()
+    TTF_RenderUNICODE_Solid_Wrapped()
+    TTF_RenderText_Shaded_Wrapped()
+    TTF_RenderUTF8_Shaded_Wrapped()
+    TTF_RenderUNICODE_Shaded_Wrapped()
+ * Added TTF_HINTING_LIGHT_SUBPIXEL for better results at small text sizes at a performance cost
+
 2.0.15:
 Sam Lantinga - Fri Oct 26 13:26:54 PDT 2018
  * Updated to FreeType version 2.9.1
