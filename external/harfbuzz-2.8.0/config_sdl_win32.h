@@ -35,14 +35,10 @@
 #define HAVE_FREETYPE 1
 
 /* Define to 1 if you have the `FT_Done_MM_Var' function. */
-#if ((FREETYPE_MAJOR*10000 + FREETYPE_MINOR*100 + FREETYPE_PATCH) >= 20900)
 #define HAVE_FT_DONE_MM_VAR 1
-#endif
 
 /* Define to 1 if you have the `FT_Get_Var_Blend_Coordinates' function. */
-#if ((FREETYPE_MAJOR*10000 + FREETYPE_MINOR*100 + FREETYPE_PATCH) >= 20701)
 #define HAVE_FT_GET_VAR_BLEND_COORDINATES 1
-#endif
 
 /* Define to 1 if you have the `FT_Set_Var_Blend_Coordinates' function. */
 #define HAVE_FT_SET_VAR_BLEND_COORDINATES 1
