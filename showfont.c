@@ -109,58 +109,58 @@ int main(int argc, char *argv[])
     forecol = &black;
     backcol = &white;
     for (i=1; argv[i] && argv[i][0] == '-'; ++i) {
-        if (strcmp(argv[i], "-solid") == 0) {
+        if (SDL_strcmp(argv[i], "-solid") == 0) {
             rendermethod = TextRenderSolid;
         } else
-        if (strcmp(argv[i], "-shaded") == 0) {
+        if (SDL_strcmp(argv[i], "-shaded") == 0) {
             rendermethod = TextRenderShaded;
         } else
-        if (strcmp(argv[i], "-blended") == 0) {
+        if (SDL_strcmp(argv[i], "-blended") == 0) {
             rendermethod = TextRenderBlended;
         } else
-        if (strcmp(argv[i], "-utf8") == 0) {
+        if (SDL_strcmp(argv[i], "-utf8") == 0) {
             rendertype = RENDER_UTF8;
         } else
-        if (strcmp(argv[i], "-unicode") == 0) {
+        if (SDL_strcmp(argv[i], "-unicode") == 0) {
             rendertype = RENDER_UNICODE;
         } else
-        if (strcmp(argv[i], "-b") == 0) {
+        if (SDL_strcmp(argv[i], "-b") == 0) {
             renderstyle |= TTF_STYLE_BOLD;
         } else
-        if (strcmp(argv[i], "-i") == 0) {
+        if (SDL_strcmp(argv[i], "-i") == 0) {
             renderstyle |= TTF_STYLE_ITALIC;
         } else
-        if (strcmp(argv[i], "-u") == 0) {
+        if (SDL_strcmp(argv[i], "-u") == 0) {
             renderstyle |= TTF_STYLE_UNDERLINE;
         } else
-        if (strcmp(argv[i], "-s") == 0) {
+        if (SDL_strcmp(argv[i], "-s") == 0) {
             renderstyle |= TTF_STYLE_STRIKETHROUGH;
         } else
-        if (strcmp(argv[i], "-outline") == 0) {
-            if (sscanf (argv[++i], "%d", &outline) != 1) {
-                fprintf(stderr, TTF_SHOWFONT_USAGE, argv0);
+        if (SDL_strcmp(argv[i], "-outline") == 0) {
+            if (SDL_sscanf(argv[++i], "%d", &outline) != 1) {
+                SDL_Log(TTF_SHOWFONT_USAGE, argv0);
                 return(1);
             }
         } else
-        if (strcmp(argv[i], "-hintlight") == 0) {
+        if (SDL_strcmp(argv[i], "-hintlight") == 0) {
             hinting = TTF_HINTING_LIGHT;
         } else
-        if (strcmp(argv[i], "-hintmono") == 0) {
+        if (SDL_strcmp(argv[i], "-hintmono") == 0) {
             hinting = TTF_HINTING_MONO;
         } else
-        if (strcmp(argv[i], "-hintnone") == 0) {
+        if (SDL_strcmp(argv[i], "-hintnone") == 0) {
             hinting = TTF_HINTING_NONE;
         } else
-        if (strcmp(argv[i], "-nokerning") == 0) {
+        if (SDL_strcmp(argv[i], "-nokerning") == 0) {
             kerning = 0;
         } else
-        if (strcmp(argv[i], "-dump") == 0) {
+        if (SDL_strcmp(argv[i], "-dump") == 0) {
             dump = 1;
         } else
-        if (strcmp(argv[i], "-fgcol") == 0) {
+        if (SDL_strcmp(argv[i], "-fgcol") == 0) {
             int r, g, b, a = 0xFF;
-            if (sscanf (argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
-                fprintf(stderr, TTF_SHOWFONT_USAGE, argv0);
+            if (SDL_sscanf(argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
+                SDL_Log(TTF_SHOWFONT_USAGE, argv0);
                 return(1);
             }
             forecol->r = (Uint8)r;
@@ -168,10 +168,10 @@ int main(int argc, char *argv[])
             forecol->b = (Uint8)b;
             forecol->a = (Uint8)a;
         } else
-        if (strcmp(argv[i], "-bgcol") == 0) {
+        if (SDL_strcmp(argv[i], "-bgcol") == 0) {
             int r, g, b, a = 0xFF;
-            if (sscanf (argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
-                fprintf(stderr, TTF_SHOWFONT_USAGE, argv0);
+            if (SDL_sscanf(argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
+                SDL_Log(TTF_SHOWFONT_USAGE, argv0);
                 return(1);
             }
             backcol->r = (Uint8)r;
@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
             backcol->b = (Uint8)b;
             backcol->a = (Uint8)a;
         } else {
-            fprintf(stderr, TTF_SHOWFONT_USAGE, argv0);
+            SDL_Log(TTF_SHOWFONT_USAGE, argv0);
             return(1);
         }
     }
@@ -188,13 +188,13 @@ int main(int argc, char *argv[])
 
     /* Check usage */
     if (!argv[0]) {
-        fprintf(stderr, TTF_SHOWFONT_USAGE, argv0);
+        SDL_Log(TTF_SHOWFONT_USAGE, argv0);
         return(1);
     }
 
     /* Initialize the TTF library */
     if (TTF_Init() < 0) {
-        fprintf(stderr, "Couldn't initialize TTF: %s\n",SDL_GetError());
+        SDL_Log("Couldn't initialize TTF: %s\n",SDL_GetError());
         SDL_Quit();
         return(2);
     }
@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
     }
     font = TTF_OpenFont(argv[0], ptsize);
     if (font == NULL) {
-        fprintf(stderr, "Couldn't load %d pt font from %s: %s\n",
+        SDL_Log("Couldn't load %d pt font from %s: %s\n",
                     ptsize, argv[0], SDL_GetError());
         cleanup(2);
     }
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 
     /* Create a window */
     if (SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &window, &renderer) < 0) {
-        fprintf(stderr, "SDL_CreateWindowAndRenderer() failed: %s\n", SDL_GetError());
+        SDL_Log("SDL_CreateWindowAndRenderer() failed: %s\n", SDL_GetError());
         cleanup(2);
     }
 
@@ -319,7 +319,7 @@ int main(int argc, char *argv[])
         break;
     }
     if (text == NULL) {
-        fprintf(stderr, "Couldn't render text: %s\n", SDL_GetError());
+        SDL_Log("Couldn't render text: %s\n", SDL_GetError());
         TTF_CloseFont(font);
         cleanup(2);
     }
@@ -328,7 +328,7 @@ int main(int argc, char *argv[])
     scene.messageRect.w = text->w;
     scene.messageRect.h = text->h;
     scene.message = SDL_CreateTextureFromSurface(renderer, text);
-    printf("Font is generally %d big, and string is %d big\n",
+    SDL_Log("Font is generally %d big, and string is %d big\n",
                         TTF_FontHeight(font), text->h);
 
     draw_scene(renderer, &scene);
@@ -337,8 +337,7 @@ int main(int argc, char *argv[])
     done = 0;
     while (!done) {
         if (SDL_WaitEvent(&event) < 0) {
-            fprintf(stderr, "SDL_PullEvent() error: %s\n",
-                                SDL_GetError());
+            SDL_Log("SDL_PullEvent() error: %s\n", SDL_GetError());
             done = 1;
             continue;
         }
