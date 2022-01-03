@@ -3364,7 +3364,11 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
 
             if (numLines >= maxNumLines) {
                 char **saved = strLines;
-                maxNumLines += (width / (wrapLength + 1)) + 1;
+                if (wrapLength == 0) {
+                    maxNumLines += 32;
+                } else {
+                    maxNumLines += (width / wrapLength) + 1;
+                }
                 strLines = (char **)SDL_realloc(strLines, maxNumLines * sizeof (*strLines));
                 if (strLines == NULL) {
                     strLines = saved;
