@@ -222,6 +222,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid(TTF_Font *font,
    to the text color.
    Text is wrapped to multiple lines on line endings and on word boundaries
    if it extends beyond wrapLength in pixels.
+   If wrapLength is 0, only wrap on new lines.
    This function returns the new surface, or NULL if there was an error.
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font *font,
@@ -260,6 +261,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded(TTF_Font *font,
    while other pixels have varying degrees of the foreground color.
    Text is wrapped to multiple lines on line endings and on word boundaries
    if it extends beyond wrapLength in pixels.
+   If wrapLength is 0, only wrap on new lines.
    This function returns the new surface, or NULL if there was an error.
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font *font,
@@ -297,6 +299,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended(TTF_Font *font,
    using alpha blending to dither the font with the given color.
    Text is wrapped to multiple lines on line endings and on word boundaries
    if it extends beyond wrapLength in pixels.
+   If wrapLength is 0, only wrap on new lines.
    This function returns the new surface, or NULL if there was an error.
 */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Font *font,
