@@ -1,4 +1,6 @@
 2.0.18:
+Ozkan Sezer - Wed Jan  5 14:15:46 PST 2022
+ * Added TTF_GetFreeTypeVersion() and TTF_GetHarfBuzzVersion()
 Sylvain - Jan 16, 2021
  * Added support for Signed Distance Field rendering with TTF_SetFontSDF() and TTF_GetFontSDF()
 David Ludwig - Dec 28, 2019

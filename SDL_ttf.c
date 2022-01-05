@@ -1550,13 +1550,24 @@ void TTF_GetFreeTypeVersion(int *major, int *minor, int *patch)
     FT_Library_Version(library, major, minor, patch);
 }
 
-void TTF_GetHarfBuzzVersion(unsigned int *major, unsigned int *minor, unsigned int *patch)
+void TTF_GetHarfBuzzVersion(int *major, int *minor, int *patch)
 {
+    unsigned int hb_major = 0;
+    unsigned int hb_minor = 0;
+    unsigned int hb_micro = 0;
+
 #if TTF_USE_HARFBUZZ
-    hb_version(major, minor, patch);
-#else
-    *major = *minor = *patch = 0;
+    hb_version(&hb_major, &hb_minor, &hb_micro);
 #endif
+    if (major) {
+        *major = (int)hb_major;
+    }
+    if (minor) {
+        *minor = (int)hb_minor;
+    }
+    if (patch) {
+        *patch = (int)hb_micro;
+    }
 }
 
 static unsigned long RWread(
