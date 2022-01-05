@@ -84,6 +84,12 @@ extern "C" {
  */
 extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
 
+/* This function stores the version of the FreeType2 library in use.
+   TTF_Init() should be called before using.
+ */
+extern DECLSPEC void SDLCALL TTF_GetFreeTypeVersion(int *major, int *minor, int *patch);
+extern DECLSPEC void SDLCALL TTF_GetHarfBuzzVersion(unsigned int *major, unsigned int *minor, unsigned int *patch);
+
 /* ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark) */
 #define UNICODE_BOM_NATIVE  0xFEFF
 #define UNICODE_BOM_SWAPPED 0xFFFE

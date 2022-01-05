@@ -279,7 +279,7 @@ struct _TTF_Font {
 #define TTF_STYLE_NO_GLYPH_CHANGE   (TTF_STYLE_UNDERLINE | TTF_STYLE_STRIKETHROUGH)
 
 /* The FreeType font engine/library */
-static FT_Library library;
+static FT_Library library = NULL;
 static int TTF_initialized = 0;
 static SDL_bool TTF_byteswapped = SDL_FALSE;
 
@@ -1542,6 +1542,21 @@ int TTF_Init(void)
 #endif
     }
     return status;
+}
+
+SDL_COMPILE_TIME_ASSERT(FT_Int, sizeof(int) == sizeof(FT_Int)); /* just in case. */
+void TTF_GetFreeTypeVersion(int *major, int *minor, int *patch)
+{
+    FT_Library_Version(library, major, minor, patch);
+}
+
+void TTF_GetHarfBuzzVersion(unsigned int *major, unsigned int *minor, unsigned int *patch)
+{
+#if TTF_USE_HARFBUZZ
+    hb_version(major, minor, patch);
+#else
+    *major = *minor = *patch = 0;
+#endif
 }
 
 static unsigned long RWread(
@@ -3742,6 +3757,7 @@ void TTF_Quit(void)
     if (TTF_initialized) {
         if (--TTF_initialized == 0) {
             FT_Done_FreeType(library);
+            library = NULL;
         }
     }
 }
