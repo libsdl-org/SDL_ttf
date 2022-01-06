@@ -89,7 +89,8 @@ extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
  */
 extern DECLSPEC void SDLCALL TTF_GetFreeTypeVersion(int *major, int *minor, int *patch);
 
-/* This function stores the version of the HarfBuzz library in use, or 0 if HarfBuzz is not available.
+/* This function stores the version of the HarfBuzz library in use,
+   or 0 if HarfBuzz is not available.
  */
 extern DECLSPEC void SDLCALL TTF_GetHarfBuzzVersion(int *major, int *minor, int *patch);
 
