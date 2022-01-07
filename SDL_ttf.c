@@ -3410,6 +3410,10 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
                 goto failure;
             }
 
+            if (max_count == 0) {
+                max_count = 1;
+            }
+
             while (textlen > 0) {
                 int inc = 0;
                 int is_delim;
