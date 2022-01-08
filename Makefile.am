@@ -142,21 +142,19 @@ pkgconfig_DATA = SDL2_ttf.pc
 %.o : %.rc
 	$(WINDRES) $< $@
 
-EXTRA_DIST =			\
+EXTRA_DIST = CHANGES.txt COPYING.txt README.txt \
 	Android.mk		\
-	debian			\
-	external		\
-	version.rc		\
 	Makefile.os2		\
+	Xcode			\
 	VisualC			\
 	VisualC-WinRT		\
-	Xcode			\
+	version.rc		\
+	debian			\
+	external		\
 	SDL2_ttf.spec		\
 	SDL2_ttf.spec.in	\
 	SDL2_ttfConfig.cmake	\
-	gcc-fat.sh		\
-	autogen.sh		\
-	$(srcdir)/*.txt
+	autogen.sh gcc-fat.sh
 
 noinst_PROGRAMS = showfont glfont
 

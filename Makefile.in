@@ -808,21 +808,19 @@ libSDL2_ttf_la_LINK = $(LINKER) $(libSDL2_ttf_la_LDFLAGS)
 libSDL2_ttf_la_LIBADD = $(TTF_LIBS) @MATHLIB@
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = SDL2_ttf.pc
-EXTRA_DIST = \
+EXTRA_DIST = CHANGES.txt COPYING.txt README.txt \
 	Android.mk		\
-	debian			\
-	external		\
-	version.rc		\
 	Makefile.os2		\
+	Xcode			\
 	VisualC			\
 	VisualC-WinRT		\
-	Xcode			\
+	version.rc		\
+	debian			\
+	external		\
 	SDL2_ttf.spec		\
 	SDL2_ttf.spec.in	\
 	SDL2_ttfConfig.cmake	\
-	gcc-fat.sh		\
-	autogen.sh		\
-	$(srcdir)/*.txt
+	autogen.sh gcc-fat.sh
 
 showfont_LDADD = libSDL2_ttf.la
 glfont_LDADD = libSDL2_ttf.la @GL_LIBS@ @MATHLIB@
