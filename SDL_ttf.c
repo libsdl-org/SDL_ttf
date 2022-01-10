@@ -278,6 +278,9 @@ struct _TTF_Font {
     hb_direction_t hb_direction;
 #endif
     int render_sdf;
+
+    /* Extra layout setting for wrapped text */
+    int horizontal_align;
 };
 
 /* Tell if SDL_ttf has to handle the style */
@@ -974,10 +977,11 @@ static SDL_INLINE void BG_NEON(const TTF_Image *image, Uint8 *destination, Sint3
 #endif
 
 /* Underline and Strikethrough style. Draw a line at the given row. */
-static void Draw_Line(TTF_Font *font, const SDL_Surface *textbuf, int row, int line_width, int line_thickness, Uint32 color, const render_mode_t render_mode)
+static void Draw_Line(TTF_Font *font, const SDL_Surface *textbuf, int column, int row, int line_width, int line_thickness, Uint32 color, const render_mode_t render_mode)
 {
     int tmp    = row + line_thickness - textbuf->h;
-    Uint8 *dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch;
+    int x_offset = column * textbuf->format->BytesPerPixel;
+    Uint8 *dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch + x_offset;
 
 #if TTF_USE_HARFBUZZ
     /* No Underline/Strikethrough style if direction is vertical */
@@ -3326,11 +3330,11 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
 
     /* Apply underline or strikethrough style, if needed */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-        Draw_Line(font, textbuf, ystart + font->underline_top_row, width, font->line_thickness, color, render_mode);
+        Draw_Line(font, textbuf, 0, ystart + font->underline_top_row, width, font->line_thickness, color, render_mode);
     }
 
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-        Draw_Line(font, textbuf, ystart + font->strikethrough_top_row, width, font->line_thickness, color, render_mode);
+        Draw_Line(font, textbuf, 0, ystart + font->strikethrough_top_row, width, font->line_thickness, color, render_mode);
     }
 
     if (utf8_alloc) {
@@ -3653,11 +3657,11 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
             }
         }
     } else {
-        if (numLines > 1) {
-            width = wrapLength;
-        } else {
+        if (numLines <= 1 && font->horizontal_align == TTF_WRAPPED_ALIGN_LEFT) {
             /* Don't go above wrapLength if you have only 1 line which hasn't been cut */
             width = SDL_min((int)wrapLength, width);
+        } else {
+            width = wrapLength;
         }
     }
     height = rowHeight + lineskip * (numLines - 1);
@@ -3683,7 +3687,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
 
     /* Render each line */
     for (i = 0; i < numLines; i++) {
-        int xstart, ystart, line_width;
+        int xstart, ystart, line_width, xoffset;
         char save_c = 0;
 
         /* Add end-of-line */
@@ -3703,20 +3707,28 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         /* Move to i-th line */
         ystart += i * lineskip;
 
+        /* Control left/right/center align of each bit of text */
+        if (font->horizontal_align == TTF_WRAPPED_ALIGN_RIGHT) {
+            xoffset = width - line_width;
+        } else if (font->horizontal_align == TTF_WRAPPED_ALIGN_CENTER) {
+            xoffset = width / 2 - line_width / 2;
+        } else {
+            xoffset = 0;
+        }
+
         /* Render one text line to textbuf at (xstart, ystart) */
-        if (Render_Line(render_mode, font->render_subpixel, font, textbuf, xstart, ystart, fg) < 0) {
+        if (Render_Line(render_mode, font->render_subpixel, font, textbuf, xstart + xoffset, ystart, fg) < 0) {
             goto failure;
         }
 
         /* Apply underline or strikethrough style, if needed */
         if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-            Draw_Line(font, textbuf, ystart + font->underline_top_row, line_width, font->line_thickness, color, render_mode);
+            Draw_Line(font, textbuf, xoffset, ystart + font->underline_top_row, line_width, font->line_thickness, color, render_mode);
         }
 
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-            Draw_Line(font, textbuf, ystart + font->strikethrough_top_row, line_width, font->line_thickness, color, render_mode);
+            Draw_Line(font, textbuf, xoffset, ystart + font->strikethrough_top_row, line_width, font->line_thickness, color, render_mode);
         }
-
         /* Remove end-of-line */
         if (strLines) {
             if (i + 1 < numLines) {
@@ -3947,6 +3959,26 @@ SDL_bool TTF_GetFontSDF(const TTF_Font *font)
 {
     TTF_CHECK_POINTER(font, SDL_FALSE);
     return font->render_sdf;
+}
+
+void TTF_SetFontWrappedAlign(TTF_Font *font, int align)
+{
+    TTF_CHECK_POINTER(font,);
+
+    /* input not checked, unknown values assumed to be TTF_WRAPPED_ALIGN_LEFT */
+    if (align == TTF_WRAPPED_ALIGN_CENTER) {
+        font->horizontal_align = TTF_WRAPPED_ALIGN_CENTER;
+    } else if (align == TTF_WRAPPED_ALIGN_RIGHT) {
+        font->horizontal_align = TTF_WRAPPED_ALIGN_RIGHT;
+    } else {
+        font->horizontal_align = TTF_WRAPPED_ALIGN_LEFT;
+    }
+}
+
+int TTF_GetFontWrappedAlign(const TTF_Font *font)
+{
+    TTF_CHECK_POINTER(font,-1);
+    return font->horizontal_align;
 }
 
 void TTF_Quit(void)

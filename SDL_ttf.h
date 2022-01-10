@@ -162,6 +162,13 @@ extern DECLSPEC void SDLCALL TTF_SetFontOutline(TTF_Font *font, int outline);
 extern DECLSPEC int SDLCALL TTF_GetFontHinting(const TTF_Font *font);
 extern DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting);
 
+/* Special layout option for rendering wrapped text */
+#define TTF_WRAPPED_ALIGN_LEFT     0
+#define TTF_WRAPPED_ALIGN_CENTER   1
+#define TTF_WRAPPED_ALIGN_RIGHT    2
+extern DECLSPEC int SDLCALL TTF_GetFontWrappedAlign(const TTF_Font *font);
+extern DECLSPEC void SDLCALL TTF_SetFontWrappedAlign(TTF_Font *font, int align);
+
 /* Get the total height of the font - usually equal to point size */
 extern DECLSPEC int SDLCALL TTF_FontHeight(const TTF_Font *font);
 
