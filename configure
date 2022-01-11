@@ -17067,7 +17067,7 @@ $as_echo "$as_me: WARNING:
 
 
 
-		PC_LIBS="$TTF_LIBS $PC_LIBS"
+		PC_LIBS="$FT2_LIBS $PC_LIBS"
 
 elif test $pkg_failed = untried; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -17379,7 +17379,7 @@ $as_echo "$as_me: WARNING:
 
 
 
-		PC_LIBS="$TTF_LIBS $PC_LIBS"
+		PC_LIBS="$FT2_LIBS $PC_LIBS"
 
 else
 	FT2_CFLAGS=$pkg_cv_FT2_CFLAGS
