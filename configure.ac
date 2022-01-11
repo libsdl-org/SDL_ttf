@@ -110,6 +110,8 @@ CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 TTF_LIBS=
 TTF_CPPFLAGS=
+PC_REQUIRES=
+PC_LIBS=
 
 dnl Check for the FreeType 2 library
 AC_ARG_ENABLE(freetype-builtin, [AS_HELP_STRING([--enable-freetype-builtin], [Use included version of FreeType [default=yes]])], [], enable_freetype_builtin=yes)
@@ -117,10 +119,13 @@ AC_ARG_ENABLE(freetype-builtin, [AS_HELP_STRING([--enable-freetype-builtin], [Us
 if test x$enable_freetype_builtin = xyes; then
 	SUMMARY="${SUMMARY}Using included FreeType : YES\n"
 else
-	PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [], [dnl
+	PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [
+		PC_REQUIRES="freetype2 $PC_REQUIRES"
+	], [dnl
 		AC_CHECK_FT2(,,[AC_MSG_ERROR([dnl
 *** Unable to find FreeType2 library (https://www.freetype.org)])]
 		)
+		PC_LIBS="$TTF_LIBS $PC_LIBS"
 	])
 	TTF_CFLAGS="$TTF_CFLAGS $FT2_CFLAGS"
 	TTF_LIBS="$TTF_LIBS $FT2_LIBS"
@@ -186,6 +191,7 @@ if test x$enable_harfbuzz = xyes; then
 		fi
 		if test x$harfbuzz = xyes; then
 			AC_DEFINE(TTF_USE_HARFBUZZ, 1, [])
+			PC_REQUIRES="harfbuzz $PC_REQUIRES"
 			TTF_CFLAGS="$TTF_CFLAGS $HB_CFLAGS"
 			TTF_LIBS="$TTF_LIBS $HB_LIBS"
 			SUMMARY="${SUMMARY}Using harfbuzz      : YES\n"
@@ -286,6 +292,8 @@ AC_SUBST([MATHLIB])
 AC_SUBST([WINDRES])
 AC_SUBST([TTF_CFLAGS])
 AC_SUBST([TTF_LIBS])
+AC_SUBST([PC_REQUIRES])
+AC_SUBST([PC_LIBS])
 
 # Finally create all the generated files
 AC_CONFIG_FILES([
