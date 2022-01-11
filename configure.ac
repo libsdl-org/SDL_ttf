@@ -125,7 +125,7 @@ else
 		AC_CHECK_FT2(,,[AC_MSG_ERROR([dnl
 *** Unable to find FreeType2 library (https://www.freetype.org)])]
 		)
-		PC_LIBS="$TTF_LIBS $PC_LIBS"
+		PC_LIBS="$FT2_LIBS $PC_LIBS"
 	])
 	TTF_CFLAGS="$TTF_CFLAGS $FT2_CFLAGS"
 	TTF_LIBS="$TTF_LIBS $FT2_LIBS"
