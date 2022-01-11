@@ -149,7 +149,6 @@ EXTRA_DIST = CHANGES.txt COPYING.txt README.txt \
 	VisualC			\
 	VisualC-WinRT		\
 	version.rc		\
-	debian			\
 	external		\
 	SDL2_ttf.spec		\
 	SDL2_ttf.spec.in	\
