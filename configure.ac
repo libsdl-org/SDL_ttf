@@ -93,10 +93,13 @@ esac
 AM_CONDITIONAL(USE_VERSION_RC, test x$use_version_rc = xtrue)
 
 dnl Check for the FreeType 2 library
-PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [], [dnl
+PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [
+    PC_REQUIRES="freetype2 $PC_REQUIRES"
+], [dnl
     AC_CHECK_FT2(,,[AC_MSG_ERROR([dnl
 *** Unable to find FreeType2 library (http://www.freetype.org/)])]
     )
+    PC_LIBS="$FT2_LIBS $PC_LIBS"
 ])
 CFLAGS="$CFLAGS $FT2_CFLAGS"
 LIBS="$LIBS $FT2_LIBS"
@@ -165,6 +168,8 @@ AC_SUBST([GL_LIBS])
 AC_SUBST([ICONV_LIBS])
 AC_SUBST([MATHLIB])
 AC_SUBST([WINDRES])
+AC_SUBST([PC_REQUIRES])
+AC_SUBST([PC_LIBS])
 
 # Finally create all the generated files
 AC_CONFIG_FILES([
