@@ -128,11 +128,11 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPI(const char *file, int pt
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontDPIRW(SDL_RWops *src, int freesrc, int ptsize, unsigned int hdpi, unsigned int vdpi);
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPIRW(SDL_RWops *src, int freesrc, int ptsize, long index, unsigned int hdpi, unsigned int vdpi);
 
-/* Set font size dynamically */
+/* Set font size dynamically. This clears already generated glyphs, if any, from the cache. */
 extern DECLSPEC int SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
 extern DECLSPEC int SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsigned int hdpi, unsigned int vdpi);
 
-/* Set and retrieve the font style */
+/* Set and retrieve the font style. Setting the style clears already generated glyphs, if any, from the cache. */
 #define TTF_STYLE_NORMAL        0x00
 #define TTF_STYLE_BOLD          0x01
 #define TTF_STYLE_ITALIC        0x02
@@ -143,7 +143,7 @@ extern DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
 extern DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
 extern DECLSPEC void SDLCALL TTF_SetFontOutline(TTF_Font *font, int outline);
 
-/* Set and retrieve FreeType hinter settings */
+/* Set and retrieve FreeType hinter settings. Setting it clears already generated glyphs, if any, from the cache. */
 #define TTF_HINTING_NORMAL          0
 #define TTF_HINTING_LIGHT           1
 #define TTF_HINTING_MONO            2
