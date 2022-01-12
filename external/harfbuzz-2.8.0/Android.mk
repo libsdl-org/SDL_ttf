@@ -56,7 +56,7 @@ LOCAL_CPP_EXTENSION := .cc
 LOCAL_C_INCLUDES = \
     $(LOCAL_PATH)/ \
     $(LOCAL_PATH)/src/ \
-    $(LOCAL_PATH)/../freetype-2.10.4/include/ \
+    $(LOCAL_PATH)/../freetype-2.11.1/include/ \
 
 
 LOCAL_STATIC_LIBRARIES += freetype

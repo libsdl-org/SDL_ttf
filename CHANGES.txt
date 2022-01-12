@@ -1,3 +1,7 @@
+2.0.20:
+Sam Lantinga - Wed Jan 12 10:57:16 PST 2022
+ * Updated to FreeType version 2.11.1
+
 2.0.18:
 Ozkan Sezer - Wed Jan  5 14:15:46 PST 2022
  * Added TTF_GetFreeTypeVersion() and TTF_GetHarfBuzzVersion()

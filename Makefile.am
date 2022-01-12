@@ -12,7 +12,7 @@ libSDL2_ttf_la_SOURCES =		\
 
 libSDL2_ttf_la_CPPFLAGS = $(TTF_CFLAGS) $(LOCAL_FT2_FLAGS) $(LOCAL_HB_FLAGS)
 
-FREETYPE_PATH = external/freetype-2.10.4
+FREETYPE_PATH = external/freetype-2.11.1
 FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/autofit/autofit.c \
 	$(FREETYPE_PATH)/src/base/ftbase.c \
@@ -48,6 +48,7 @@ FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/pshinter/pshinter.c \
 	$(FREETYPE_PATH)/src/psnames/psmodule.c \
 	$(FREETYPE_PATH)/src/raster/raster.c \
+	$(FREETYPE_PATH)/src/sdf/sdf.c \
 	$(FREETYPE_PATH)/src/sfnt/sfnt.c \
 	$(FREETYPE_PATH)/src/smooth/smooth.c \
 	$(FREETYPE_PATH)/src/truetype/truetype.c \

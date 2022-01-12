@@ -182,6 +182,7 @@ am__libSDL2_ttf_la_SOURCES_DIST = SDL_ttf.c \
 	$(FREETYPE_PATH)/src/pshinter/pshinter.c \
 	$(FREETYPE_PATH)/src/psnames/psmodule.c \
 	$(FREETYPE_PATH)/src/raster/raster.c \
+	$(FREETYPE_PATH)/src/sdf/sdf.c \
 	$(FREETYPE_PATH)/src/sfnt/sfnt.c \
 	$(FREETYPE_PATH)/src/smooth/smooth.c \
 	$(FREETYPE_PATH)/src/truetype/truetype.c \
@@ -269,6 +270,7 @@ am__objects_1 =  \
 	$(FREETYPE_PATH)/src/pshinter/libSDL2_ttf_la-pshinter.lo \
 	$(FREETYPE_PATH)/src/psnames/libSDL2_ttf_la-psmodule.lo \
 	$(FREETYPE_PATH)/src/raster/libSDL2_ttf_la-raster.lo \
+	$(FREETYPE_PATH)/src/sdf/libSDL2_ttf_la-sdf.lo \
 	$(FREETYPE_PATH)/src/sfnt/libSDL2_ttf_la-sfnt.lo \
 	$(FREETYPE_PATH)/src/smooth/libSDL2_ttf_la-smooth.lo \
 	$(FREETYPE_PATH)/src/truetype/libSDL2_ttf_la-truetype.lo \
@@ -385,6 +387,7 @@ am__depfiles_remade = $(FREETYPE_PATH)/src/autofit/$(DEPDIR)/libSDL2_ttf_la-auto
 	$(FREETYPE_PATH)/src/pshinter/$(DEPDIR)/libSDL2_ttf_la-pshinter.Plo \
 	$(FREETYPE_PATH)/src/psnames/$(DEPDIR)/libSDL2_ttf_la-psmodule.Plo \
 	$(FREETYPE_PATH)/src/raster/$(DEPDIR)/libSDL2_ttf_la-raster.Plo \
+	$(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Plo \
 	$(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/libSDL2_ttf_la-sfnt.Plo \
 	$(FREETYPE_PATH)/src/smooth/$(DEPDIR)/libSDL2_ttf_la-smooth.Plo \
 	$(FREETYPE_PATH)/src/truetype/$(DEPDIR)/libSDL2_ttf_la-truetype.Plo \
@@ -675,7 +678,6 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
-runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
@@ -696,7 +698,7 @@ libSDL2_ttf_la_SOURCES = \
 	SDL_ttf.c $(LOCAL_FT2_SOURCES) $(LOCAL_HB_SOURCES)
 
 libSDL2_ttf_la_CPPFLAGS = $(TTF_CFLAGS) $(LOCAL_FT2_FLAGS) $(LOCAL_HB_FLAGS)
-FREETYPE_PATH = external/freetype-2.10.4
+FREETYPE_PATH = external/freetype-2.11.1
 FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/autofit/autofit.c \
 	$(FREETYPE_PATH)/src/base/ftbase.c \
@@ -732,6 +734,7 @@ FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/pshinter/pshinter.c \
 	$(FREETYPE_PATH)/src/psnames/psmodule.c \
 	$(FREETYPE_PATH)/src/raster/raster.c \
+	$(FREETYPE_PATH)/src/sdf/sdf.c \
 	$(FREETYPE_PATH)/src/sfnt/sfnt.c \
 	$(FREETYPE_PATH)/src/smooth/smooth.c \
 	$(FREETYPE_PATH)/src/truetype/truetype.c \
@@ -1102,6 +1105,15 @@ $(FREETYPE_PATH)/src/raster/$(DEPDIR)/$(am__dirstamp):
 $(FREETYPE_PATH)/src/raster/libSDL2_ttf_la-raster.lo:  \
 	$(FREETYPE_PATH)/src/raster/$(am__dirstamp) \
 	$(FREETYPE_PATH)/src/raster/$(DEPDIR)/$(am__dirstamp)
+$(FREETYPE_PATH)/src/sdf/$(am__dirstamp):
+	@$(MKDIR_P) $(FREETYPE_PATH)/src/sdf
+	@: > $(FREETYPE_PATH)/src/sdf/$(am__dirstamp)
+$(FREETYPE_PATH)/src/sdf/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) $(FREETYPE_PATH)/src/sdf/$(DEPDIR)
+	@: > $(FREETYPE_PATH)/src/sdf/$(DEPDIR)/$(am__dirstamp)
+$(FREETYPE_PATH)/src/sdf/libSDL2_ttf_la-sdf.lo:  \
+	$(FREETYPE_PATH)/src/sdf/$(am__dirstamp) \
+	$(FREETYPE_PATH)/src/sdf/$(DEPDIR)/$(am__dirstamp)
 $(FREETYPE_PATH)/src/sfnt/$(am__dirstamp):
 	@$(MKDIR_P) $(FREETYPE_PATH)/src/sfnt
 	@: > $(FREETYPE_PATH)/src/sfnt/$(am__dirstamp)
@@ -1344,6 +1356,8 @@ mostlyclean-compile:
 	-rm -f $(FREETYPE_PATH)/src/psnames/*.lo
 	-rm -f $(FREETYPE_PATH)/src/raster/*.$(OBJEXT)
 	-rm -f $(FREETYPE_PATH)/src/raster/*.lo
+	-rm -f $(FREETYPE_PATH)/src/sdf/*.$(OBJEXT)
+	-rm -f $(FREETYPE_PATH)/src/sdf/*.lo
 	-rm -f $(FREETYPE_PATH)/src/sfnt/*.$(OBJEXT)
 	-rm -f $(FREETYPE_PATH)/src/sfnt/*.lo
 	-rm -f $(FREETYPE_PATH)/src/smooth/*.$(OBJEXT)
@@ -1396,6 +1410,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/pshinter/$(DEPDIR)/libSDL2_ttf_la-pshinter.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/psnames/$(DEPDIR)/libSDL2_ttf_la-psmodule.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/raster/$(DEPDIR)/libSDL2_ttf_la-raster.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/libSDL2_ttf_la-sfnt.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/smooth/$(DEPDIR)/libSDL2_ttf_la-smooth.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/truetype/$(DEPDIR)/libSDL2_ttf_la-truetype.Plo@am__quote@ # am--include-marker
@@ -1726,6 +1741,13 @@ $(FREETYPE_PATH)/src/raster/libSDL2_ttf_la-raster.lo: $(FREETYPE_PATH)/src/raste
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(FREETYPE_PATH)/src/raster/raster.c' object='$(FREETYPE_PATH)/src/raster/libSDL2_ttf_la-raster.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o $(FREETYPE_PATH)/src/raster/libSDL2_ttf_la-raster.lo `test -f '$(FREETYPE_PATH)/src/raster/raster.c' || echo '$(srcdir)/'`$(FREETYPE_PATH)/src/raster/raster.c
+
+$(FREETYPE_PATH)/src/sdf/libSDL2_ttf_la-sdf.lo: $(FREETYPE_PATH)/src/sdf/sdf.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT $(FREETYPE_PATH)/src/sdf/libSDL2_ttf_la-sdf.lo -MD -MP -MF $(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Tpo -c -o $(FREETYPE_PATH)/src/sdf/libSDL2_ttf_la-sdf.lo `test -f '$(FREETYPE_PATH)/src/sdf/sdf.c' || echo '$(srcdir)/'`$(FREETYPE_PATH)/src/sdf/sdf.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Tpo $(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(FREETYPE_PATH)/src/sdf/sdf.c' object='$(FREETYPE_PATH)/src/sdf/libSDL2_ttf_la-sdf.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o $(FREETYPE_PATH)/src/sdf/libSDL2_ttf_la-sdf.lo `test -f '$(FREETYPE_PATH)/src/sdf/sdf.c' || echo '$(srcdir)/'`$(FREETYPE_PATH)/src/sdf/sdf.c
 
 $(FREETYPE_PATH)/src/sfnt/libSDL2_ttf_la-sfnt.lo: $(FREETYPE_PATH)/src/sfnt/sfnt.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT $(FREETYPE_PATH)/src/sfnt/libSDL2_ttf_la-sfnt.lo -MD -MP -MF $(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/libSDL2_ttf_la-sfnt.Tpo -c -o $(FREETYPE_PATH)/src/sfnt/libSDL2_ttf_la-sfnt.lo `test -f '$(FREETYPE_PATH)/src/sfnt/sfnt.c' || echo '$(srcdir)/'`$(FREETYPE_PATH)/src/sfnt/sfnt.c
@@ -2134,6 +2156,7 @@ clean-libtool:
 	-rm -rf $(FREETYPE_PATH)/src/pshinter/.libs $(FREETYPE_PATH)/src/pshinter/_libs
 	-rm -rf $(FREETYPE_PATH)/src/psnames/.libs $(FREETYPE_PATH)/src/psnames/_libs
 	-rm -rf $(FREETYPE_PATH)/src/raster/.libs $(FREETYPE_PATH)/src/raster/_libs
+	-rm -rf $(FREETYPE_PATH)/src/sdf/.libs $(FREETYPE_PATH)/src/sdf/_libs
 	-rm -rf $(FREETYPE_PATH)/src/sfnt/.libs $(FREETYPE_PATH)/src/sfnt/_libs
 	-rm -rf $(FREETYPE_PATH)/src/smooth/.libs $(FREETYPE_PATH)/src/smooth/_libs
 	-rm -rf $(FREETYPE_PATH)/src/truetype/.libs $(FREETYPE_PATH)/src/truetype/_libs
@@ -2484,6 +2507,8 @@ distclean-generic:
 	-test -z "$(FREETYPE_PATH)/src/psnames/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/psnames/$(am__dirstamp)
 	-test -z "$(FREETYPE_PATH)/src/raster/$(DEPDIR)/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/raster/$(DEPDIR)/$(am__dirstamp)
 	-test -z "$(FREETYPE_PATH)/src/raster/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/raster/$(am__dirstamp)
+	-test -z "$(FREETYPE_PATH)/src/sdf/$(DEPDIR)/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/sdf/$(DEPDIR)/$(am__dirstamp)
+	-test -z "$(FREETYPE_PATH)/src/sdf/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/sdf/$(am__dirstamp)
 	-test -z "$(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/$(am__dirstamp)
 	-test -z "$(FREETYPE_PATH)/src/sfnt/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/sfnt/$(am__dirstamp)
 	-test -z "$(FREETYPE_PATH)/src/smooth/$(DEPDIR)/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/smooth/$(DEPDIR)/$(am__dirstamp)
@@ -2543,6 +2568,7 @@ distclean: distclean-am
 	-rm -f $(FREETYPE_PATH)/src/pshinter/$(DEPDIR)/libSDL2_ttf_la-pshinter.Plo
 	-rm -f $(FREETYPE_PATH)/src/psnames/$(DEPDIR)/libSDL2_ttf_la-psmodule.Plo
 	-rm -f $(FREETYPE_PATH)/src/raster/$(DEPDIR)/libSDL2_ttf_la-raster.Plo
+	-rm -f $(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Plo
 	-rm -f $(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/libSDL2_ttf_la-sfnt.Plo
 	-rm -f $(FREETYPE_PATH)/src/smooth/$(DEPDIR)/libSDL2_ttf_la-smooth.Plo
 	-rm -f $(FREETYPE_PATH)/src/truetype/$(DEPDIR)/libSDL2_ttf_la-truetype.Plo
@@ -2680,6 +2706,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f $(FREETYPE_PATH)/src/pshinter/$(DEPDIR)/libSDL2_ttf_la-pshinter.Plo
 	-rm -f $(FREETYPE_PATH)/src/psnames/$(DEPDIR)/libSDL2_ttf_la-psmodule.Plo
 	-rm -f $(FREETYPE_PATH)/src/raster/$(DEPDIR)/libSDL2_ttf_la-raster.Plo
+	-rm -f $(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Plo
 	-rm -f $(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/libSDL2_ttf_la-sfnt.Plo
 	-rm -f $(FREETYPE_PATH)/src/smooth/$(DEPDIR)/libSDL2_ttf_la-smooth.Plo
 	-rm -f $(FREETYPE_PATH)/src/truetype/$(DEPDIR)/libSDL2_ttf_la-truetype.Plo
