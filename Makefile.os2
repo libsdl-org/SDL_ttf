@@ -23,7 +23,7 @@ OBJS = $(SRCS:.c=.obj)
 
 LIBS = freetype.lib  zlib.lib  SDL2.lib
 
-CFLAGS_BASE = -bt=os2 -d0 -q -bm -5s -fp5 -fpi87 -sg -oteanbmier -ei -j
+CFLAGS_BASE = -bt=os2 -d0 -q -bm -5s -fp5 -fpi87 -sg -oeatxh -ei -j
 # warnings:
 CFLAGS_BASE+= -wx
 # include paths:
@@ -78,6 +78,7 @@ clean: .SYMBOLIC
   @if exist *.obj rm *.obj
   @if exist *.err rm *.err
   @if exist $(LNKFILE) rm $(LNKFILE)
+
 distclean: .SYMBOLIC clean
   @if exist $(DLLFILE) rm $(DLLFILE)
   @if exist $(LIBFILE) rm $(LIBFILE)
