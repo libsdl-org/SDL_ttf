@@ -1,0 +1,27 @@
+From b54d9b695a17afb86f022084e12d72bb4a199673 Mon Sep 17 00:00:00 2001
+From: tstuefe <thomas.stuefe@gmail.com>
+Date: Thu, 6 May 2021 06:22:48 +0200
+Subject: [PATCH] start
+
+---
+ src/hb-ot-shape-complex-use-machine.hh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/hb-ot-shape-complex-use-machine.hh b/src/hb-ot-shape-complex-use-machine.hh
+index b4b2b75100..96bebcef0c 100644
+--- a/src/hb-ot-shape-complex-use-machine.hh
++++ b/src/hb-ot-shape-complex-use-machine.hh
+@@ -375,7 +375,9 @@ hb_iter_with_fallback_t<machine_index_t<Iter>,
+ typename Iter::item_t>
+ {
+ 	machine_index_t (const Iter& it) : it (it) {}
+-	machine_index_t (const machine_index_t& o) : it (o.it) {}
++	machine_index_t (const machine_index_t& o) :
++	  hb_iter_with_fallback_t<machine_index_t<Iter>, typename Iter::item_t>(o),
++	  it (o.it) {}
+ 	
+ 	static constexpr bool is_random_access_iterator = Iter::is_random_access_iterator;
+ 	static constexpr bool is_sorted_iterator = Iter::is_sorted_iterator;
+
+https://github.com/harfbuzz/harfbuzz/pull/2973
+https://github.com/harfbuzz/harfbuzz/pull/2972
