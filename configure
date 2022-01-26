@@ -16685,6 +16685,104 @@ rm -f core conftest.err conftest.$ac_objext \
 
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
+
+CheckWarnAll()
+{
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GCC -Wall option" >&5
+$as_echo_n "checking for GCC -Wall option... " >&6; }
+    have_gcc_Wall=no
+
+    save_CFLAGS="$CFLAGS"
+    CFLAGS="$save_CFLAGS -Wall"
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+int x = 0;
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  have_gcc_Wall=yes
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_gcc_Wall" >&5
+$as_echo "$have_gcc_Wall" >&6; }
+    CFLAGS="$save_CFLAGS"
+
+    if test x$have_gcc_Wall = xyes; then
+        CFLAGS="$CFLAGS -Wall"
+        CXXFLAGS="$CXXFLAGS -Wall"
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for necessary GCC -Wno-multichar option" >&5
+$as_echo_n "checking for necessary GCC -Wno-multichar option... " >&6; }
+        need_gcc_Wno_multichar=no
+        case "$host" in
+            *-*-haiku*)
+                need_gcc_Wno_multichar=yes
+                ;;
+        esac
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $need_gcc_Wno_multichar" >&5
+$as_echo "$need_gcc_Wno_multichar" >&6; }
+        if test x$need_gcc_Wno_multichar = xyes; then
+            CFLAGS="$CFLAGS -Wno-multichar"
+            CXXFLAGS="$CXXFLAGS -Wno-multichar"
+        fi
+    fi
+}
+
+CheckVisibilityHidden()
+{
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GCC -fvisibility=hidden option" >&5
+$as_echo_n "checking for GCC -fvisibility=hidden option... " >&6; }
+    have_gcc_fvisibility=no
+    case "$host" in
+    *-*-cygwin* | *-*-mingw* | *-*-os2*)
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: ignored for $host_os" >&5
+$as_echo "ignored for $host_os" >&6; }
+        return
+        ;;
+    esac
+
+    visibility_CFLAGS="-fvisibility=hidden"
+    save_CFLAGS="$CFLAGS"
+    CFLAGS="$save_CFLAGS $visibility_CFLAGS -Werror"
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+    #if !defined(__GNUC__) || __GNUC__ < 4
+    #error SDL only uses visibility attributes in GCC 4 or newer
+    #endif
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  have_gcc_fvisibility=yes
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_gcc_fvisibility" >&5
+$as_echo "$have_gcc_fvisibility" >&6; }
+    CFLAGS="$save_CFLAGS"
+
+    if test x$have_gcc_fvisibility = xyes; then
+        CFLAGS="$CFLAGS $visibility_CFLAGS"
+        CXXFLAGS="$CXXFLAGS $visibility_CFLAGS"
+    fi
+}
+
+CheckWarnAll
+
+CheckVisibilityHidden
+
 TTF_LIBS=
 TTF_CPPFLAGS=
 PC_REQUIRES=
@@ -18607,52 +18705,6 @@ else
 fi
 
 
-CheckVisibilityHidden()
-{
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GCC -fvisibility=hidden option" >&5
-$as_echo_n "checking for GCC -fvisibility=hidden option... " >&6; }
-    have_gcc_fvisibility=no
-    case "$host" in
-    *-*-cygwin* | *-*-mingw* | *-*-os2*)
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: ignored for $host_os" >&5
-$as_echo "ignored for $host_os" >&6; }
-        return
-        ;;
-    esac
-
-    visibility_CFLAGS="-fvisibility=hidden"
-    save_CFLAGS="$CFLAGS"
-    CFLAGS="$save_CFLAGS $visibility_CFLAGS -Werror"
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-    #if !defined(__GNUC__) || __GNUC__ < 4
-    #error SDL only uses visibility attributes in GCC 4 or newer
-    #endif
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  have_gcc_fvisibility=yes
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_gcc_fvisibility" >&5
-$as_echo "$have_gcc_fvisibility" >&6; }
-    CFLAGS="$save_CFLAGS"
-
-    if test x$have_gcc_fvisibility = xyes; then
-        CFLAGS="$CFLAGS $visibility_CFLAGS"
-        CXXFLAGS="$CXXFLAGS $visibility_CFLAGS"
-    fi
-}
-CheckVisibilityHidden
-
 case "$host" in
     *-*-cygwin* | *-*-mingw*)
         MATHLIB=""
@@ -19409,7 +19461,7 @@ int
 main ()
 {
 
- glOrtho( -2.0, 2.0, -2.0, 2.0, -20.0, 20.0 );
+ glOrtho(-2.0, 2.0, -2.0, 2.0, -20.0, 20.0);
 
   ;
   return 0;
