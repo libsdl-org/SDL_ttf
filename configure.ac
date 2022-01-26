@@ -92,6 +92,80 @@ case "$host" in
 esac
 AM_CONDITIONAL(USE_VERSION_RC, test x$use_version_rc = xtrue)
 
+dnl Check for SDL
+SDL_VERSION=1.2.4
+AC_SUBST(SDL_VERSION)
+AM_PATH_SDL($SDL_VERSION,
+            :,
+	    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+)
+CFLAGS="$CFLAGS $SDL_CFLAGS"
+LIBS="$LIBS $SDL_LIBS"
+
+dnl See if GCC's -Wall is supported.
+CheckWarnAll()
+{
+    AC_MSG_CHECKING(for GCC -Wall option)
+    have_gcc_Wall=no
+
+    save_CFLAGS="$CFLAGS"
+    CFLAGS="$save_CFLAGS -Wall"
+    AC_TRY_COMPILE([int x = 0;],, [have_gcc_Wall=yes])
+    AC_MSG_RESULT($have_gcc_Wall)
+    CFLAGS="$save_CFLAGS"
+
+    if test x$have_gcc_Wall = xyes; then
+        CFLAGS="$CFLAGS -Wall"
+
+dnl Haiku headers use multicharacter constants all over the place. Ignore these warnings when using -Wall.
+        AC_MSG_CHECKING(for necessary GCC -Wno-multichar option)
+        need_gcc_Wno_multichar=no
+        case "$host" in
+            *-*-beos* | *-*-haiku*)
+                need_gcc_Wno_multichar=yes
+                ;;
+        esac
+        AC_MSG_RESULT($need_gcc_Wno_multichar)
+        if test x$need_gcc_Wno_multichar = xyes; then
+            CFLAGS="$CFLAGS -Wno-multichar"
+        fi
+    fi
+}
+
+dnl See if GCC's -fvisibility=hidden is supported (gcc4 and later, usually).
+CheckVisibilityHidden()
+{
+    AC_MSG_CHECKING(for GCC -fvisibility=hidden option)
+    have_gcc_fvisibility=no
+    case "$host" in
+    *-*-cygwin* | *-*-mingw* | *-*-os2*)
+        AC_MSG_RESULT([ignored for $host_os])
+        return
+        ;;
+    esac
+
+    visibility_CFLAGS="-fvisibility=hidden"
+    save_CFLAGS="$CFLAGS"
+    CFLAGS="$save_CFLAGS $visibility_CFLAGS -Werror"
+    AC_TRY_COMPILE([
+    #if !defined(__GNUC__) || __GNUC__ < 4
+    #error SDL only uses visibility attributes in GCC 4 or newer
+    #endif
+    ],, [have_gcc_fvisibility=yes])
+    AC_MSG_RESULT($have_gcc_fvisibility)
+    CFLAGS="$save_CFLAGS"
+
+    if test x$have_gcc_fvisibility = xyes; then
+        CFLAGS="$CFLAGS $visibility_CFLAGS"
+    fi
+}
+
+dnl check for GCC warning options
+CheckWarnAll
+
+dnl check for GCC visibility attributes
+CheckVisibilityHidden
+
 dnl Check for the FreeType 2 library
 PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [
     PC_REQUIRES="freetype2 $PC_REQUIRES"
@@ -103,16 +177,6 @@ PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [
 ])
 CFLAGS="$CFLAGS $FT2_CFLAGS"
 LIBS="$LIBS $FT2_LIBS"
-
-dnl Check for SDL
-SDL_VERSION=1.2.4
-AC_SUBST(SDL_VERSION)
-AM_PATH_SDL($SDL_VERSION,
-            :,
-	    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
-)
-CFLAGS="$CFLAGS $SDL_CFLAGS"
-LIBS="$LIBS $SDL_LIBS"
 
 dnl Check for OpenGL
 case "$host" in
@@ -153,7 +217,7 @@ LIBS="$LIBS $SYS_GL_LIBS"
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[
  #include "SDL_opengl.h"
 ]], [[
- glOrtho( -2.0, 2.0, -2.0, 2.0, -20.0, 20.0 );
+ glOrtho(-2.0, 2.0, -2.0, 2.0, -20.0, 20.0);
 ]])], [have_opengl=yes],[])
 AC_MSG_RESULT($have_opengl)
 LIBS="$save_LIBS"
