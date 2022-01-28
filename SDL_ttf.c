@@ -68,10 +68,14 @@ static hb_script_t    g_hb_script = HB_SCRIPT_UNKNOWN;
 #endif
 
 /* Harfbuzz */
-int TTF_SetDirection(int direction) /* hb_direction_t */
+int TTF_SetDirection(TTF_Direction direction)
 {
 #if TTF_USE_HARFBUZZ
-    g_hb_direction = direction;
+    if (direction == TTF_DIRECTION_RTL) {
+        g_hb_direction = HB_DIRECTION_RTL;
+    } else {
+        g_hb_direction = HB_DIRECTION_LTR;
+    }
     return 0;
 #else
     (void) direction;
@@ -79,10 +83,219 @@ int TTF_SetDirection(int direction) /* hb_direction_t */
 #endif
 }
 
-int TTF_SetScript(int script) /* hb_script_t */
+
+static 
+hb_script_t TTF_to_HB(TTF_Script script) 
+{
+#define CASE_SCRIPT(x) case TTF_SCRIPT_##x: return HB_SCRIPT_##x;
+    switch (script) {
+        CASE_SCRIPT(COMMON)
+        CASE_SCRIPT(INHERITED)
+        CASE_SCRIPT(UNKNOWN)
+
+        CASE_SCRIPT(ARABIC)
+        CASE_SCRIPT(ARMENIAN)
+        CASE_SCRIPT(BENGALI)
+        CASE_SCRIPT(CYRILLIC)
+        CASE_SCRIPT(DEVANAGARI)
+        CASE_SCRIPT(GEORGIAN)
+        CASE_SCRIPT(GREEK)
+        CASE_SCRIPT(GUJARATI)
+        CASE_SCRIPT(GURMUKHI)
+        CASE_SCRIPT(HANGUL)
+        CASE_SCRIPT(HAN)
+        CASE_SCRIPT(HEBREW)
+        CASE_SCRIPT(HIRAGANA)
+        CASE_SCRIPT(KANNADA)
+        CASE_SCRIPT(KATAKANA)
+        CASE_SCRIPT(LAO)
+        CASE_SCRIPT(LATIN)
+        CASE_SCRIPT(MALAYALAM)
+        CASE_SCRIPT(ORIYA)
+        CASE_SCRIPT(TAMIL)
+        CASE_SCRIPT(TELUGU)
+        CASE_SCRIPT(THAI)
+
+        CASE_SCRIPT(TIBETAN)
+
+        CASE_SCRIPT(BOPOMOFO)
+        CASE_SCRIPT(BRAILLE)
+        CASE_SCRIPT(CANADIAN_SYLLABICS)
+        CASE_SCRIPT(CHEROKEE)
+        CASE_SCRIPT(ETHIOPIC)
+        CASE_SCRIPT(KHMER)
+        CASE_SCRIPT(MONGOLIAN)
+        CASE_SCRIPT(MYANMAR)
+        CASE_SCRIPT(OGHAM)
+        CASE_SCRIPT(RUNIC)
+        CASE_SCRIPT(SINHALA)
+        CASE_SCRIPT(SYRIAC)
+        CASE_SCRIPT(THAANA)
+        CASE_SCRIPT(YI)
+
+        CASE_SCRIPT(DESERET)
+        CASE_SCRIPT(GOTHIC)
+        CASE_SCRIPT(OLD_ITALIC)
+
+        CASE_SCRIPT(BUHID)
+        CASE_SCRIPT(HANUNOO)
+        CASE_SCRIPT(TAGALOG)
+        CASE_SCRIPT(TAGBANWA)
+
+        CASE_SCRIPT(CYPRIOT)
+        CASE_SCRIPT(LIMBU)
+        CASE_SCRIPT(LINEAR_B)
+        CASE_SCRIPT(OSMANYA)
+        CASE_SCRIPT(SHAVIAN)
+        CASE_SCRIPT(TAI_LE)
+        CASE_SCRIPT(UGARITIC)
+
+        CASE_SCRIPT(BUGINESE)
+        CASE_SCRIPT(COPTIC)
+        CASE_SCRIPT(GLAGOLITIC)
+        CASE_SCRIPT(KHAROSHTHI)
+        CASE_SCRIPT(NEW_TAI_LUE)
+        CASE_SCRIPT(OLD_PERSIAN)
+        CASE_SCRIPT(SYLOTI_NAGRI)
+        CASE_SCRIPT(TIFINAGH)
+
+        CASE_SCRIPT(BALINESE)
+        CASE_SCRIPT(CUNEIFORM)
+        CASE_SCRIPT(NKO)
+        CASE_SCRIPT(PHAGS_PA)
+        CASE_SCRIPT(PHOENICIAN)
+
+        CASE_SCRIPT(CARIAN)
+        CASE_SCRIPT(CHAM)
+        CASE_SCRIPT(KAYAH_LI)
+        CASE_SCRIPT(LEPCHA)
+        CASE_SCRIPT(LYCIAN)
+        CASE_SCRIPT(LYDIAN)
+        CASE_SCRIPT(OL_CHIKI)
+        CASE_SCRIPT(REJANG)
+        CASE_SCRIPT(SAURASHTRA)
+        CASE_SCRIPT(SUNDANESE)
+        CASE_SCRIPT(VAI)
+
+        CASE_SCRIPT(AVESTAN)
+        CASE_SCRIPT(BAMUM)
+        CASE_SCRIPT(EGYPTIAN_HIEROGLYPHS)
+        CASE_SCRIPT(IMPERIAL_ARAMAIC)
+        CASE_SCRIPT(INSCRIPTIONAL_PAHLAVI)
+        CASE_SCRIPT(INSCRIPTIONAL_PARTHIAN)
+        CASE_SCRIPT(JAVANESE)
+        CASE_SCRIPT(KAITHI)
+        CASE_SCRIPT(LISU)
+        CASE_SCRIPT(MEETEI_MAYEK)
+        CASE_SCRIPT(OLD_SOUTH_ARABIAN)
+        CASE_SCRIPT(OLD_TURKIC)
+        CASE_SCRIPT(SAMARITAN)
+        CASE_SCRIPT(TAI_THAM)
+        CASE_SCRIPT(TAI_VIET)
+
+        CASE_SCRIPT(BATAK)
+        CASE_SCRIPT(BRAHMI)
+        CASE_SCRIPT(MANDAIC)
+
+        CASE_SCRIPT(CHAKMA)
+        CASE_SCRIPT(MEROITIC_CURSIVE)
+        CASE_SCRIPT(MEROITIC_HIEROGLYPHS)
+        CASE_SCRIPT(MIAO)
+        CASE_SCRIPT(SHARADA)
+        CASE_SCRIPT(SORA_SOMPENG)
+        CASE_SCRIPT(TAKRI)
+
+        /*
+        * Since HarfBuzz: 0.9.30
+        */
+        CASE_SCRIPT(BASSA_VAH)
+        CASE_SCRIPT(CAUCASIAN_ALBANIAN)
+        CASE_SCRIPT(DUPLOYAN)
+        CASE_SCRIPT(ELBASAN)
+        CASE_SCRIPT(GRANTHA)
+        CASE_SCRIPT(KHOJKI)
+        CASE_SCRIPT(KHUDAWADI)
+        CASE_SCRIPT(LINEAR_A)
+        CASE_SCRIPT(MAHAJANI)
+        CASE_SCRIPT(MANICHAEAN)
+        CASE_SCRIPT(MENDE_KIKAKUI)
+        CASE_SCRIPT(MODI)
+        CASE_SCRIPT(MRO)
+        CASE_SCRIPT(NABATAEAN)
+        CASE_SCRIPT(OLD_NORTH_ARABIAN)
+        CASE_SCRIPT(OLD_PERMIC)
+        CASE_SCRIPT(PAHAWH_HMONG)
+        CASE_SCRIPT(PALMYRENE)
+        CASE_SCRIPT(PAU_CIN_HAU)
+        CASE_SCRIPT(PSALTER_PAHLAVI)
+        CASE_SCRIPT(SIDDHAM)
+        CASE_SCRIPT(TIRHUTA)
+        CASE_SCRIPT(WARANG_CITI)
+
+        CASE_SCRIPT(AHOM)
+        CASE_SCRIPT(ANATOLIAN_HIEROGLYPHS)
+        CASE_SCRIPT(HATRAN)
+        CASE_SCRIPT(MULTANI)
+        CASE_SCRIPT(OLD_HUNGARIAN)
+        CASE_SCRIPT(SIGNWRITING)
+
+        /*
+        * Since HarfBuzz 1.3.0
+        */
+        CASE_SCRIPT(ADLAM)
+        CASE_SCRIPT(BHAIKSUKI)
+        CASE_SCRIPT(MARCHEN)
+        CASE_SCRIPT(OSAGE)
+        CASE_SCRIPT(TANGUT)
+        CASE_SCRIPT(NEWA)
+
+        /*
+        * Since HarfBuzz 1.6.0
+        */
+        CASE_SCRIPT(MASARAM_GONDI)
+        CASE_SCRIPT(NUSHU)
+        CASE_SCRIPT(SOYOMBO)
+        CASE_SCRIPT(ZANABAZAR_SQUARE)
+
+        /*
+        * Since HarfBuzz 1.8.0
+        */
+        CASE_SCRIPT(DOGRA)
+        CASE_SCRIPT(GUNJALA_GONDI)
+        CASE_SCRIPT(HANIFI_ROHINGYA)
+        CASE_SCRIPT(MAKASAR)
+        CASE_SCRIPT(MEDEFAIDRIN)
+        CASE_SCRIPT(OLD_SOGDIAN)
+        CASE_SCRIPT(SOGDIAN)
+
+        /*
+        * Since HarfBuzz 2.4.0
+        */
+        CASE_SCRIPT(ELYMAIC)
+        CASE_SCRIPT(NANDINAGARI)
+        CASE_SCRIPT(NYIAKENG_PUACHUE_HMONG)
+        CASE_SCRIPT(WANCHO)
+
+        /*
+        * Since HarfBuzz 2.6.7
+        */
+        CASE_SCRIPT(CHORASMIAN)
+        CASE_SCRIPT(DIVES_AKURU)
+        CASE_SCRIPT(KHITAN_SMALL_SCRIPT)
+        CASE_SCRIPT(YEZIDI)
+
+        /* No script set. */
+        CASE_SCRIPT(INVALID)
+        default: 
+            return HB_SCRIPT_INVALID;
+    }
+#undef CASE_SCRIPT
+}
+
+int TTF_SetScript(TTF_Script script)
 {
 #if TTF_USE_HARFBUZZ
-    g_hb_script = script;
+    g_hb_script = TTF_to_HB(script);
     return 0;
 #else
     (void) script;
