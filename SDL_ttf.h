@@ -339,13 +339,13 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Blended(TTF_Font *font,
     TTF_RenderUNICODE_Shaded(font, text, fg, bg)
 
 /* Set Direction and Script to be used for text shaping.
-   - direction is of type hb_direction_t
-   - script is of type hb_script_t
+   - direction is of type hb_direction_t or ttf_direction_t
+   - script is of type hb_script_t or ttf_script_t
 
    This functions returns always 0, or -1 if SDL_ttf is not compiled with HarfBuzz
 */
-extern DECLSPEC int SDLCALL TTF_SetDirection(int direction); /* hb_direction_t */
-extern DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_script_t */
+extern DECLSPEC int SDLCALL TTF_SetDirection(int direction); /* hb_direction_t or ttf_direction_t */
+extern DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_script_t or ttf_script_t */
 
 /* Close an opened font file */
 extern DECLSPEC void SDLCALL TTF_CloseFont(TTF_Font *font);
@@ -375,6 +375,228 @@ extern DECLSPEC SDL_bool TTF_GetFontSDF(const TTF_Font *font);
 /* We'll use SDL for reporting errors */
 #define TTF_SetError    SDL_SetError
 #define TTF_GetError    SDL_GetError
+
+/* Exact mapping with HarfBuzz types */
+typedef enum {
+  TTF_DIRECTION_INVALID = 0,
+  TTF_DIRECTION_LTR = 4,
+  TTF_DIRECTION_RTL
+  /* TTF_DIRECTION_TTB, */
+  /* TTF_DIRECTION_BTT  */
+} ttf_direction_t;
+
+#define TTF_TAG(c1,c2,c3,c4) ((Uint32)((((Uint32)(c1)&0xFF)<<24)|(((Uint32)(c2)&0xFF)<<16)|(((Uint32)(c3)&0xFF)<<8)|((Uint32)(c4)&0xFF)))
+#define TTF_TAG_NONE TTF_TAG(0,0,0,0)
+#define TTF_TAG_MAX TTF_TAG(0xff,0xff,0xff,0xff)
+#define TTF_TAG_MAX_SIGNED TTF_TAG(0x7f,0xff,0xff,0xff)
+
+typedef enum
+{
+  TTF_SCRIPT_COMMON			= TTF_TAG ('Z','y','y','y'), /*1.1*/
+  TTF_SCRIPT_INHERITED			= TTF_TAG ('Z','i','n','h'), /*1.1*/
+  TTF_SCRIPT_UNKNOWN			= TTF_TAG ('Z','z','z','z'), /*5.0*/
+
+  TTF_SCRIPT_ARABIC			= TTF_TAG ('A','r','a','b'), /*1.1*/
+  TTF_SCRIPT_ARMENIAN			= TTF_TAG ('A','r','m','n'), /*1.1*/
+  TTF_SCRIPT_BENGALI			= TTF_TAG ('B','e','n','g'), /*1.1*/
+  TTF_SCRIPT_CYRILLIC			= TTF_TAG ('C','y','r','l'), /*1.1*/
+  TTF_SCRIPT_DEVANAGARI			= TTF_TAG ('D','e','v','a'), /*1.1*/
+  TTF_SCRIPT_GEORGIAN			= TTF_TAG ('G','e','o','r'), /*1.1*/
+  TTF_SCRIPT_GREEK			= TTF_TAG ('G','r','e','k'), /*1.1*/
+  TTF_SCRIPT_GUJARATI			= TTF_TAG ('G','u','j','r'), /*1.1*/
+  TTF_SCRIPT_GURMUKHI			= TTF_TAG ('G','u','r','u'), /*1.1*/
+  TTF_SCRIPT_HANGUL			= TTF_TAG ('H','a','n','g'), /*1.1*/
+  TTF_SCRIPT_HAN				= TTF_TAG ('H','a','n','i'), /*1.1*/
+  TTF_SCRIPT_HEBREW			= TTF_TAG ('H','e','b','r'), /*1.1*/
+  TTF_SCRIPT_HIRAGANA			= TTF_TAG ('H','i','r','a'), /*1.1*/
+  TTF_SCRIPT_KANNADA			= TTF_TAG ('K','n','d','a'), /*1.1*/
+  TTF_SCRIPT_KATAKANA			= TTF_TAG ('K','a','n','a'), /*1.1*/
+  TTF_SCRIPT_LAO				= TTF_TAG ('L','a','o','o'), /*1.1*/
+  TTF_SCRIPT_LATIN			= TTF_TAG ('L','a','t','n'), /*1.1*/
+  TTF_SCRIPT_MALAYALAM			= TTF_TAG ('M','l','y','m'), /*1.1*/
+  TTF_SCRIPT_ORIYA			= TTF_TAG ('O','r','y','a'), /*1.1*/
+  TTF_SCRIPT_TAMIL			= TTF_TAG ('T','a','m','l'), /*1.1*/
+  TTF_SCRIPT_TELUGU			= TTF_TAG ('T','e','l','u'), /*1.1*/
+  TTF_SCRIPT_THAI			= TTF_TAG ('T','h','a','i'), /*1.1*/
+
+  TTF_SCRIPT_TIBETAN			= TTF_TAG ('T','i','b','t'), /*2.0*/
+
+  TTF_SCRIPT_BOPOMOFO			= TTF_TAG ('B','o','p','o'), /*3.0*/
+  TTF_SCRIPT_BRAILLE			= TTF_TAG ('B','r','a','i'), /*3.0*/
+  TTF_SCRIPT_CANADIAN_SYLLABICS		= TTF_TAG ('C','a','n','s'), /*3.0*/
+  TTF_SCRIPT_CHEROKEE			= TTF_TAG ('C','h','e','r'), /*3.0*/
+  TTF_SCRIPT_ETHIOPIC			= TTF_TAG ('E','t','h','i'), /*3.0*/
+  TTF_SCRIPT_KHMER			= TTF_TAG ('K','h','m','r'), /*3.0*/
+  TTF_SCRIPT_MONGOLIAN			= TTF_TAG ('M','o','n','g'), /*3.0*/
+  TTF_SCRIPT_MYANMAR			= TTF_TAG ('M','y','m','r'), /*3.0*/
+  TTF_SCRIPT_OGHAM			= TTF_TAG ('O','g','a','m'), /*3.0*/
+  TTF_SCRIPT_RUNIC			= TTF_TAG ('R','u','n','r'), /*3.0*/
+  TTF_SCRIPT_SINHALA			= TTF_TAG ('S','i','n','h'), /*3.0*/
+  TTF_SCRIPT_SYRIAC			= TTF_TAG ('S','y','r','c'), /*3.0*/
+  TTF_SCRIPT_THAANA			= TTF_TAG ('T','h','a','a'), /*3.0*/
+  TTF_SCRIPT_YI				= TTF_TAG ('Y','i','i','i'), /*3.0*/
+
+  TTF_SCRIPT_DESERET			= TTF_TAG ('D','s','r','t'), /*3.1*/
+  TTF_SCRIPT_GOTHIC			= TTF_TAG ('G','o','t','h'), /*3.1*/
+  TTF_SCRIPT_OLD_ITALIC			= TTF_TAG ('I','t','a','l'), /*3.1*/
+
+  TTF_SCRIPT_BUHID			= TTF_TAG ('B','u','h','d'), /*3.2*/
+  TTF_SCRIPT_HANUNOO			= TTF_TAG ('H','a','n','o'), /*3.2*/
+  TTF_SCRIPT_TAGALOG			= TTF_TAG ('T','g','l','g'), /*3.2*/
+  TTF_SCRIPT_TAGBANWA			= TTF_TAG ('T','a','g','b'), /*3.2*/
+
+  TTF_SCRIPT_CYPRIOT			= TTF_TAG ('C','p','r','t'), /*4.0*/
+  TTF_SCRIPT_LIMBU			= TTF_TAG ('L','i','m','b'), /*4.0*/
+  TTF_SCRIPT_LINEAR_B			= TTF_TAG ('L','i','n','b'), /*4.0*/
+  TTF_SCRIPT_OSMANYA			= TTF_TAG ('O','s','m','a'), /*4.0*/
+  TTF_SCRIPT_SHAVIAN			= TTF_TAG ('S','h','a','w'), /*4.0*/
+  TTF_SCRIPT_TAI_LE			= TTF_TAG ('T','a','l','e'), /*4.0*/
+  TTF_SCRIPT_UGARITIC			= TTF_TAG ('U','g','a','r'), /*4.0*/
+
+  TTF_SCRIPT_BUGINESE			= TTF_TAG ('B','u','g','i'), /*4.1*/
+  TTF_SCRIPT_COPTIC			= TTF_TAG ('C','o','p','t'), /*4.1*/
+  TTF_SCRIPT_GLAGOLITIC			= TTF_TAG ('G','l','a','g'), /*4.1*/
+  TTF_SCRIPT_KHAROSHTHI			= TTF_TAG ('K','h','a','r'), /*4.1*/
+  TTF_SCRIPT_NEW_TAI_LUE			= TTF_TAG ('T','a','l','u'), /*4.1*/
+  TTF_SCRIPT_OLD_PERSIAN			= TTF_TAG ('X','p','e','o'), /*4.1*/
+  TTF_SCRIPT_SYLOTI_NAGRI		= TTF_TAG ('S','y','l','o'), /*4.1*/
+  TTF_SCRIPT_TIFINAGH			= TTF_TAG ('T','f','n','g'), /*4.1*/
+
+  TTF_SCRIPT_BALINESE			= TTF_TAG ('B','a','l','i'), /*5.0*/
+  TTF_SCRIPT_CUNEIFORM			= TTF_TAG ('X','s','u','x'), /*5.0*/
+  TTF_SCRIPT_NKO				= TTF_TAG ('N','k','o','o'), /*5.0*/
+  TTF_SCRIPT_PHAGS_PA			= TTF_TAG ('P','h','a','g'), /*5.0*/
+  TTF_SCRIPT_PHOENICIAN			= TTF_TAG ('P','h','n','x'), /*5.0*/
+
+  TTF_SCRIPT_CARIAN			= TTF_TAG ('C','a','r','i'), /*5.1*/
+  TTF_SCRIPT_CHAM			= TTF_TAG ('C','h','a','m'), /*5.1*/
+  TTF_SCRIPT_KAYAH_LI			= TTF_TAG ('K','a','l','i'), /*5.1*/
+  TTF_SCRIPT_LEPCHA			= TTF_TAG ('L','e','p','c'), /*5.1*/
+  TTF_SCRIPT_LYCIAN			= TTF_TAG ('L','y','c','i'), /*5.1*/
+  TTF_SCRIPT_LYDIAN			= TTF_TAG ('L','y','d','i'), /*5.1*/
+  TTF_SCRIPT_OL_CHIKI			= TTF_TAG ('O','l','c','k'), /*5.1*/
+  TTF_SCRIPT_REJANG			= TTF_TAG ('R','j','n','g'), /*5.1*/
+  TTF_SCRIPT_SAURASHTRA			= TTF_TAG ('S','a','u','r'), /*5.1*/
+  TTF_SCRIPT_SUNDANESE			= TTF_TAG ('S','u','n','d'), /*5.1*/
+  TTF_SCRIPT_VAI				= TTF_TAG ('V','a','i','i'), /*5.1*/
+
+  TTF_SCRIPT_AVESTAN			= TTF_TAG ('A','v','s','t'), /*5.2*/
+  TTF_SCRIPT_BAMUM			= TTF_TAG ('B','a','m','u'), /*5.2*/
+  TTF_SCRIPT_EGYPTIAN_HIEROGLYPHS	= TTF_TAG ('E','g','y','p'), /*5.2*/
+  TTF_SCRIPT_IMPERIAL_ARAMAIC		= TTF_TAG ('A','r','m','i'), /*5.2*/
+  TTF_SCRIPT_INSCRIPTIONAL_PAHLAVI	= TTF_TAG ('P','h','l','i'), /*5.2*/
+  TTF_SCRIPT_INSCRIPTIONAL_PARTHIAN	= TTF_TAG ('P','r','t','i'), /*5.2*/
+  TTF_SCRIPT_JAVANESE			= TTF_TAG ('J','a','v','a'), /*5.2*/
+  TTF_SCRIPT_KAITHI			= TTF_TAG ('K','t','h','i'), /*5.2*/
+  TTF_SCRIPT_LISU			= TTF_TAG ('L','i','s','u'), /*5.2*/
+  TTF_SCRIPT_MEETEI_MAYEK		= TTF_TAG ('M','t','e','i'), /*5.2*/
+  TTF_SCRIPT_OLD_SOUTH_ARABIAN		= TTF_TAG ('S','a','r','b'), /*5.2*/
+  TTF_SCRIPT_OLD_TURKIC			= TTF_TAG ('O','r','k','h'), /*5.2*/
+  TTF_SCRIPT_SAMARITAN			= TTF_TAG ('S','a','m','r'), /*5.2*/
+  TTF_SCRIPT_TAI_THAM			= TTF_TAG ('L','a','n','a'), /*5.2*/
+  TTF_SCRIPT_TAI_VIET			= TTF_TAG ('T','a','v','t'), /*5.2*/
+
+  TTF_SCRIPT_BATAK			= TTF_TAG ('B','a','t','k'), /*6.0*/
+  TTF_SCRIPT_BRAHMI			= TTF_TAG ('B','r','a','h'), /*6.0*/
+  TTF_SCRIPT_MANDAIC			= TTF_TAG ('M','a','n','d'), /*6.0*/
+
+  TTF_SCRIPT_CHAKMA			= TTF_TAG ('C','a','k','m'), /*6.1*/
+  TTF_SCRIPT_MEROITIC_CURSIVE		= TTF_TAG ('M','e','r','c'), /*6.1*/
+  TTF_SCRIPT_MEROITIC_HIEROGLYPHS	= TTF_TAG ('M','e','r','o'), /*6.1*/
+  TTF_SCRIPT_MIAO			= TTF_TAG ('P','l','r','d'), /*6.1*/
+  TTF_SCRIPT_SHARADA			= TTF_TAG ('S','h','r','d'), /*6.1*/
+  TTF_SCRIPT_SORA_SOMPENG		= TTF_TAG ('S','o','r','a'), /*6.1*/
+  TTF_SCRIPT_TAKRI			= TTF_TAG ('T','a','k','r'), /*6.1*/
+
+  /*
+   * Since: 0.9.30
+   */
+  TTF_SCRIPT_BASSA_VAH			= TTF_TAG ('B','a','s','s'), /*7.0*/
+  TTF_SCRIPT_CAUCASIAN_ALBANIAN		= TTF_TAG ('A','g','h','b'), /*7.0*/
+  TTF_SCRIPT_DUPLOYAN			= TTF_TAG ('D','u','p','l'), /*7.0*/
+  TTF_SCRIPT_ELBASAN			= TTF_TAG ('E','l','b','a'), /*7.0*/
+  TTF_SCRIPT_GRANTHA			= TTF_TAG ('G','r','a','n'), /*7.0*/
+  TTF_SCRIPT_KHOJKI			= TTF_TAG ('K','h','o','j'), /*7.0*/
+  TTF_SCRIPT_KHUDAWADI			= TTF_TAG ('S','i','n','d'), /*7.0*/
+  TTF_SCRIPT_LINEAR_A			= TTF_TAG ('L','i','n','a'), /*7.0*/
+  TTF_SCRIPT_MAHAJANI			= TTF_TAG ('M','a','h','j'), /*7.0*/
+  TTF_SCRIPT_MANICHAEAN			= TTF_TAG ('M','a','n','i'), /*7.0*/
+  TTF_SCRIPT_MENDE_KIKAKUI		= TTF_TAG ('M','e','n','d'), /*7.0*/
+  TTF_SCRIPT_MODI			= TTF_TAG ('M','o','d','i'), /*7.0*/
+  TTF_SCRIPT_MRO				= TTF_TAG ('M','r','o','o'), /*7.0*/
+  TTF_SCRIPT_NABATAEAN			= TTF_TAG ('N','b','a','t'), /*7.0*/
+  TTF_SCRIPT_OLD_NORTH_ARABIAN		= TTF_TAG ('N','a','r','b'), /*7.0*/
+  TTF_SCRIPT_OLD_PERMIC			= TTF_TAG ('P','e','r','m'), /*7.0*/
+  TTF_SCRIPT_PAHAWH_HMONG		= TTF_TAG ('H','m','n','g'), /*7.0*/
+  TTF_SCRIPT_PALMYRENE			= TTF_TAG ('P','a','l','m'), /*7.0*/
+  TTF_SCRIPT_PAU_CIN_HAU			= TTF_TAG ('P','a','u','c'), /*7.0*/
+  TTF_SCRIPT_PSALTER_PAHLAVI		= TTF_TAG ('P','h','l','p'), /*7.0*/
+  TTF_SCRIPT_SIDDHAM			= TTF_TAG ('S','i','d','d'), /*7.0*/
+  TTF_SCRIPT_TIRHUTA			= TTF_TAG ('T','i','r','h'), /*7.0*/
+  TTF_SCRIPT_WARANG_CITI			= TTF_TAG ('W','a','r','a'), /*7.0*/
+
+  TTF_SCRIPT_AHOM			= TTF_TAG ('A','h','o','m'), /*8.0*/
+  TTF_SCRIPT_ANATOLIAN_HIEROGLYPHS	= TTF_TAG ('H','l','u','w'), /*8.0*/
+  TTF_SCRIPT_HATRAN			= TTF_TAG ('H','a','t','r'), /*8.0*/
+  TTF_SCRIPT_MULTANI			= TTF_TAG ('M','u','l','t'), /*8.0*/
+  TTF_SCRIPT_OLD_HUNGARIAN		= TTF_TAG ('H','u','n','g'), /*8.0*/
+  TTF_SCRIPT_SIGNWRITING			= TTF_TAG ('S','g','n','w'), /*8.0*/
+
+  /*
+   * Since 1.3.0
+   */
+  TTF_SCRIPT_ADLAM			= TTF_TAG ('A','d','l','m'), /*9.0*/
+  TTF_SCRIPT_BHAIKSUKI			= TTF_TAG ('B','h','k','s'), /*9.0*/
+  TTF_SCRIPT_MARCHEN			= TTF_TAG ('M','a','r','c'), /*9.0*/
+  TTF_SCRIPT_OSAGE			= TTF_TAG ('O','s','g','e'), /*9.0*/
+  TTF_SCRIPT_TANGUT			= TTF_TAG ('T','a','n','g'), /*9.0*/
+  TTF_SCRIPT_NEWA			= TTF_TAG ('N','e','w','a'), /*9.0*/
+
+  /*
+   * Since 1.6.0
+   */
+  TTF_SCRIPT_MASARAM_GONDI		= TTF_TAG ('G','o','n','m'), /*10.0*/
+  TTF_SCRIPT_NUSHU			= TTF_TAG ('N','s','h','u'), /*10.0*/
+  TTF_SCRIPT_SOYOMBO			= TTF_TAG ('S','o','y','o'), /*10.0*/
+  TTF_SCRIPT_ZANABAZAR_SQUARE		= TTF_TAG ('Z','a','n','b'), /*10.0*/
+
+  /*
+   * Since 1.8.0
+   */
+  TTF_SCRIPT_DOGRA			= TTF_TAG ('D','o','g','r'), /*11.0*/
+  TTF_SCRIPT_GUNJALA_GONDI		= TTF_TAG ('G','o','n','g'), /*11.0*/
+  TTF_SCRIPT_HANIFI_ROHINGYA		= TTF_TAG ('R','o','h','g'), /*11.0*/
+  TTF_SCRIPT_MAKASAR			= TTF_TAG ('M','a','k','a'), /*11.0*/
+  TTF_SCRIPT_MEDEFAIDRIN			= TTF_TAG ('M','e','d','f'), /*11.0*/
+  TTF_SCRIPT_OLD_SOGDIAN			= TTF_TAG ('S','o','g','o'), /*11.0*/
+  TTF_SCRIPT_SOGDIAN			= TTF_TAG ('S','o','g','d'), /*11.0*/
+
+  /*
+   * Since 2.4.0
+   */
+  TTF_SCRIPT_ELYMAIC			= TTF_TAG ('E','l','y','m'), /*12.0*/
+  TTF_SCRIPT_NANDINAGARI			= TTF_TAG ('N','a','n','d'), /*12.0*/
+  TTF_SCRIPT_NYIAKENG_PUACHUE_HMONG	= TTF_TAG ('H','m','n','p'), /*12.0*/
+  TTF_SCRIPT_WANCHO			= TTF_TAG ('W','c','h','o'), /*12.0*/
+
+  /*
+   * Since 2.6.7
+   */
+  TTF_SCRIPT_CHORASMIAN			= TTF_TAG ('C','h','r','s'), /*13.0*/
+  TTF_SCRIPT_DIVES_AKURU			= TTF_TAG ('D','i','a','k'), /*13.0*/
+  TTF_SCRIPT_KHITAN_SMALL_SCRIPT		= TTF_TAG ('K','i','t','s'), /*13.0*/
+  TTF_SCRIPT_YEZIDI			= TTF_TAG ('Y','e','z','i'), /*13.0*/
+
+  /* No script set. */
+  TTF_SCRIPT_INVALID			= TTF_TAG_NONE,
+
+  /*< private >*/
+
+  _TTF_SCRIPT_MAX_VALUE				= TTF_TAG_MAX_SIGNED, /*< skip >*/
+  _TTF_SCRIPT_MAX_VALUE_SIGNED			= TTF_TAG_MAX_SIGNED /*< skip >*/
+
+} ttf_script_t;
+
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
