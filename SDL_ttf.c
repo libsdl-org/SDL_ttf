@@ -285,7 +285,7 @@ hb_script_t TTF_to_HB(TTF_Script script)
         CASE_SCRIPT(YEZIDI)
 
         /*
-         * Since 3.0.0
+         * Since HarfBuzz 3.0.0
          */
 #if HB_VERSION_MAJOR >= 3
         CASE_SCRIPT(CYPRO_MINOAN)

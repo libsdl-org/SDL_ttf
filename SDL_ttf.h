@@ -577,7 +577,7 @@ typedef enum
   TTF_SCRIPT_YEZIDI,
 
   /*
-   * Since 3.0.0
+   * Since HarfBuzz 3.0.0
    */
   TTF_SCRIPT_CYPRO_MINOAN,
   TTF_SCRIPT_OLD_UYGHUR,
