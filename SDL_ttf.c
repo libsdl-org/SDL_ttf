@@ -284,6 +284,17 @@ hb_script_t TTF_to_HB(TTF_Script script)
         CASE_SCRIPT(KHITAN_SMALL_SCRIPT)
         CASE_SCRIPT(YEZIDI)
 
+        /*
+         * Since 3.0.0
+         */
+#if HB_VERSION_MAJOR >= 3
+        CASE_SCRIPT(CYPRO_MINOAN)
+        CASE_SCRIPT(OLD_UYGHUR)
+        CASE_SCRIPT(TANGSA)
+        CASE_SCRIPT(TOTO)
+        CASE_SCRIPT(VITHKUQI)
+#endif
+
         /* No script set. */
         CASE_SCRIPT(INVALID)
         default: 
