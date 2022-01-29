@@ -586,7 +586,7 @@ typedef enum
   TTF_SCRIPT_VITHKUQI,
 
   /* No script set. */
-  TTF_SCRIPT_INVALID
+  TTF_SCRIPT_INVALID = -1
 
 } TTF_Script;
 
