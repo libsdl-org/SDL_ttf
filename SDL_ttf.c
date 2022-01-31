@@ -903,14 +903,14 @@ static SDL_INLINE void BG_NEON(const TTF_Image *image, Uint8 *destination, Sint3
 #endif
 
 /* Underline and Strikethrough style. Draw a line at the given row. */
-static void Draw_Line(const SDL_Surface *textbuf, int row, int line_width, int line_thickness, Uint32 color, const render_mode_t render_mode)
+static void Draw_Line(TTF_Font *font, const SDL_Surface *textbuf, int row, int line_width, int line_thickness, Uint32 color, const render_mode_t render_mode)
 {
     int tmp    = row + line_thickness - textbuf->h;
     Uint8 *dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch;
 
 #if TTF_USE_HARFBUZZ
     /* No Underline/Strikethrough style if direction is vertical */
-    if (g_hb_direction == HB_DIRECTION_TTB || g_hb_direction == HB_DIRECTION_BTT) {
+    if (font->hb_direction == HB_DIRECTION_TTB || font->hb_direction == HB_DIRECTION_BTT) {
         return;
     }
 #endif
@@ -3239,11 +3239,11 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
 
     /* Apply underline or strikethrough style, if needed */
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-        Draw_Line(textbuf, ystart + font->underline_top_row, width, font->line_thickness, color, render_mode);
+        Draw_Line(font, textbuf, ystart + font->underline_top_row, width, font->line_thickness, color, render_mode);
     }
 
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-        Draw_Line(textbuf, ystart + font->strikethrough_top_row, width, font->line_thickness, color, render_mode);
+        Draw_Line(font, textbuf, ystart + font->strikethrough_top_row, width, font->line_thickness, color, render_mode);
     }
 
     if (utf8_alloc) {
@@ -3583,11 +3583,11 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
 
         /* Apply underline or strikethrough style, if needed */
         if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-            Draw_Line(textbuf, ystart + font->underline_top_row, line_width, font->line_thickness, color, render_mode);
+            Draw_Line(font, textbuf, ystart + font->underline_top_row, line_width, font->line_thickness, color, render_mode);
         }
 
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-            Draw_Line(textbuf, ystart + font->strikethrough_top_row, line_width, font->line_thickness, color, render_mode);
+            Draw_Line(font, textbuf, ystart + font->strikethrough_top_row, line_width, font->line_thickness, color, render_mode);
         }
 
         /* Remove end-of-line */
