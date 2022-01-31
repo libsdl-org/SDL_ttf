@@ -347,6 +347,10 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Blended(TTF_Font *font,
 extern DECLSPEC int SDLCALL TTF_SetDirection(int direction); /* hb_direction_t */
 extern DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_script_t */
 
+/* Set direction and script per font */
+extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, int direction); /* hb_direction_t */
+extern DECLSPEC int SDLCALL TTF_SetFontScript(TTF_Font *font, int script); /* hb_script_t */
+
 /* Close an opened font file */
 extern DECLSPEC void SDLCALL TTF_CloseFont(TTF_Font *font);
 

@@ -265,6 +265,8 @@ struct _TTF_Font {
     int render_subpixel;
 #if TTF_USE_HARFBUZZ
     hb_font_t *hb_font;
+    hb_script_t hb_script;
+    hb_direction_t hb_direction;
 #endif
     int render_sdf;
 };
@@ -1725,6 +1727,10 @@ TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, int freesrc, int ptsize, long i
      * So unless you call hb_ft_font_set_load_flags to match what flags you use for rendering,
      * you will get mismatching advances and raster. */
     hb_ft_font_set_load_flags(font->hb_font, FT_LOAD_DEFAULT | font->ft_load_target);
+
+    /* Default value script / direction */
+    TTF_SetFontScript(font, g_hb_script);
+    TTF_SetFontDirection(font, g_hb_direction);
 #endif
 
     if (TTF_SetFontSizeDPI(font, ptsize, hdpi, vdpi) < 0) {
@@ -2868,6 +2874,28 @@ int TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
     return 0;
 }
 
+int TTF_SetFontDirection(TTF_Font *font, int direction) /* hb_direction_t */
+{
+#if TTF_USE_HARFBUZZ
+    font->hb_direction = direction;
+    return 0;
+#else
+    (void) direction;
+    return -1;
+#endif
+}
+
+int TTF_SetFontScript(TTF_Font *font, int script) /* hb_script_t */
+{
+#if TTF_USE_HARFBUZZ
+    font->hb_script = script;
+    return 0;
+#else
+    (void) script;
+    return -1;
+#endif
+}
+
 static int TTF_Size_Internal(TTF_Font *font,
         const char *text, const str_type_t str_type,
         int *w, int *h, int *xstart, int *ystart,
@@ -2936,8 +2964,8 @@ static int TTF_Size_Internal(TTF_Font *font,
     }
 
     /* Set global configuration */
-    hb_buffer_set_direction(hb_buffer, g_hb_direction);
-    hb_buffer_set_script(hb_buffer, g_hb_script);
+    hb_buffer_set_direction(hb_buffer, font->hb_direction);
+    hb_buffer_set_script(hb_buffer, font->hb_script);
 
     /* Layout the text */
     hb_buffer_add_utf8(hb_buffer, text, -1, 0, -1);
