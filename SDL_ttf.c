@@ -906,6 +906,13 @@ static void Draw_Line(const SDL_Surface *textbuf, int row, int line_width, int l
     int tmp    = row + line_thickness - textbuf->h;
     Uint8 *dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch;
 
+#if TTF_USE_HARFBUZZ
+    /* No Underline/Strikethrough style if direction is vertical */
+    if (g_hb_direction == HB_DIRECTION_TTB || g_hb_direction == HB_DIRECTION_BTT) {
+        return;
+    }
+#endif
+
     /* Not needed because of "font->height = SDL_max(font->height, bottom_row);".
      * But if you patch to render textshaping and break line in middle of a cluster,
      * (which is a bad usage and a corner case), you need this to prevent out of bounds.
@@ -2867,6 +2874,7 @@ static int TTF_Size_Internal(TTF_Font *font,
         int measure_width, int *extent, int *count)
 {
     int x = 0;
+    int y = 0;
     int pos_x, pos_y;
     int minx = 0, maxx = 0;
     int miny = 0, maxy = 0;
@@ -2944,6 +2952,7 @@ static int TTF_Size_Internal(TTF_Font *font,
     {
         FT_UInt idx   = hb_glyph_info[g].codepoint;
         int x_advance = hb_glyph_position[g].x_advance;
+        int y_advance = hb_glyph_position[g].y_advance;
         int x_offset  = hb_glyph_position[g].x_offset;
         int y_offset  = hb_glyph_position[g].y_offset;
 #else
@@ -2979,8 +2988,9 @@ static int TTF_Size_Internal(TTF_Font *font,
 #if TTF_USE_HARFBUZZ
         /* Compute positions */
         pos_x  = x                     + x_offset;
-        pos_y  = F26Dot6(font->ascent) - y_offset;
+        pos_y  = y + F26Dot6(font->ascent) - y_offset;
         x     += x_advance;
+        y     += y_advance;
 #else
         /* Compute positions */
         x += prev_advance;
