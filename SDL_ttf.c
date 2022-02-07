@@ -2902,7 +2902,6 @@ static int TTF_Size_Internal(TTF_Font *font,
         int measure_width, int *extent, int *count)
 {
     int x = 0;
-    int y = 0;
     int pos_x, pos_y;
     int minx = 0, maxx = 0;
     int miny = 0, maxy = 0;
@@ -2914,6 +2913,7 @@ static int TTF_Size_Internal(TTF_Font *font,
     unsigned int glyph_count;
     hb_glyph_info_t *hb_glyph_info;
     hb_glyph_position_t *hb_glyph_position;
+    int y = 0;
 #else
     size_t textlen;
     int skip_first = 1;
