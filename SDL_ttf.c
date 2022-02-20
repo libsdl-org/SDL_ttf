@@ -210,13 +210,21 @@ typedef struct cached_glyph {
     };
 } c_glyph;
 
-/* Internal buffer to store positions computed by TTF_Size_Internal()
+/* Internal buffer element to store positions computed by TTF_Size_Internal()
  * for rendered string by Render_Line() */
 typedef struct PosBuf {
     FT_UInt index;
     int x;
     int y;
 } PosBuf_t;
+
+/* Internal buffer to store positions computed by TTF_Size_Internal()
+ * for rendered string by Render_Line() */
+typedef struct PosArray {
+    PosBuf_t *pos_buf;
+    Uint32 pos_len;
+    Uint32 pos_max;
+} PosArray_t;
 
 /* The structure used to hold internal font information */
 struct _TTF_Font {
@@ -254,11 +262,9 @@ struct _TTF_Font {
     int freesrc;
     FT_Open_Args args;
 
-    /* Internal buffer to store positions computed by TTF_Size_Internal()
+    /* Recycleable buffer to store positions computed by TTF_Size_Internal()
      * for rendered string by Render_Line() */
-    PosBuf_t *pos_buf;
-    Uint32 pos_len;
-    Uint32 pos_max;
+    /*PosArray_t pos_array;*/
 
     /* Hinting modes */
     int ft_load_target;
@@ -311,7 +317,8 @@ typedef enum {
 
 static int TTF_initFontMetrics(TTF_Font *font);
 
-static int TTF_Size_Internal(TTF_Font *font, const char *text, str_type_t str_type,
+/* pa can be NULL, this way no character layouting/allocations are done */
+static int TTF_Size_Internal(TTF_Font *font, PosArray_t *pa, const char *text, str_type_t str_type,
         int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count);
 
 #define NO_MEASUREMENT  \
@@ -1022,15 +1029,16 @@ static int Get_Alignement()
 #define BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, WB_WP_WC, WS, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) \
                                                                                                                         \
 static SDL_INLINE                                                                                                       \
-int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha)                    \
+int Render_Line_##NAME(TTF_Font *font, const PosArray_t *pa,                                                            \
+    SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha)                                                       \
 {                                                                                                                       \
     const int alignment = Get_Alignement() - 1;                                                                         \
     const int bpp = ((IS_BLENDED) ? 4 : 1);                                                                             \
     unsigned int i;                                                                                                     \
-    for (i = 0; i < font->pos_len; i++) {                                                                               \
-        FT_UInt idx = font->pos_buf[i].index;                                                                           \
-        int x       = font->pos_buf[i].x;                                                                               \
-        int y       = font->pos_buf[i].y;                                                                               \
+    for (i = 0; i < pa->pos_len; i++) {                                                                                 \
+        FT_UInt idx = pa->pos_buf[i].index;                                                                             \
+        int x       = pa->pos_buf[i].x;                                                                                 \
+        int y       = pa->pos_buf[i].y;                                                                                 \
         TTF_Image *image;                                                                                               \
                                                                                                                         \
         if (Find_GlyphByIndex(font, idx, WB_WP_WC, WS, x & 63, NULL, &image) == 0) {                                    \
@@ -1173,11 +1181,11 @@ BUILD_RENDER_LINE(8_Blended_Opaque_SP   , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaqu
 
 
 #if TTF_USE_SDF
-static int (*Render_Line_SDF_Shaded)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha) = NULL;
+static int (*Render_Line_SDF_Shaded)(TTF_Font *font, const PosArray_t *pa, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha) = NULL;
 BUILD_RENDER_LINE(SDF_Blended           , 1, 0,  COLOR, 0     ,                       , BG_Blended_SDF ,            )
 BUILD_RENDER_LINE(SDF_Blended_Opaque    , 1, 1,  COLOR, 0     , BG_Blended_Opaque_SDF ,                ,            )
-static int (*Render_Line_SDF_Solid)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha) = NULL;
-static int (*Render_Line_SDF_Shaded_SP)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha) = NULL;
+static int (*Render_Line_SDF_Solid)(TTF_Font *font, const PosArray_t *pa, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha) = NULL;
+static int (*Render_Line_SDF_Shaded_SP)(TTF_Font *font, const PosArray_t *pa, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha) = NULL;
 BUILD_RENDER_LINE(SDF_Blended_SP        , 1, 0,  COLOR, SUBPIX,                       , BG_Blended_SDF ,            )
 BUILD_RENDER_LINE(SDF_Blended_Opaque_SP , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaque_SDF ,                ,            )
 #endif
@@ -1186,7 +1194,8 @@ BUILD_RENDER_LINE(SDF_Blended_Opaque_SP , 1, 1,  COLOR, SUBPIX, BG_Blended_Opaqu
 #pragma GCC diagnostic pop
 #endif
 
-static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha)
+static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font *font, const PosArray_t *pa,
+    SDL_Surface *textbuf, int xstart, int ystart, Uint8 fg_alpha)
 {
     /* Render line (pos_buf) to textbuf at (xstart, ystart) */
 
@@ -1198,26 +1207,26 @@ static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel,
 #define Call_Specific_Render_Line(NAME)                                                                     \
         if (render_mode == RENDER_SHADED) {                                                                 \
             if (subpixel == 0) {                                                                            \
-                return Render_Line_##NAME##_Shaded(font, textbuf, xstart, ystart, 0);                       \
+                return Render_Line_##NAME##_Shaded(font, pa, textbuf, xstart, ystart, 0);                   \
             } else {                                                                                        \
-                return Render_Line_##NAME##_Shaded_SP(font, textbuf, xstart, ystart, 0);                    \
+                return Render_Line_##NAME##_Shaded_SP(font, pa, textbuf, xstart, ystart, 0);                \
             }                                                                                               \
         } else if (render_mode == RENDER_BLENDED) {                                                         \
             if (is_opaque) {                                                                                \
                 if (subpixel == 0) {                                                                        \
-                    return Render_Line_##NAME##_Blended_Opaque(font, textbuf, xstart, ystart, 0);           \
+                    return Render_Line_##NAME##_Blended_Opaque(font, pa, textbuf, xstart, ystart, 0);       \
                 } else {                                                                                    \
-                    return Render_Line_##NAME##_Blended_Opaque_SP(font, textbuf, xstart, ystart, 0);        \
+                    return Render_Line_##NAME##_Blended_Opaque_SP(font, pa, textbuf, xstart, ystart, 0);    \
                 }                                                                                           \
             } else {                                                                                        \
                 if (subpixel == 0) {                                                                        \
-                    return Render_Line_##NAME##_Blended(font, textbuf, xstart, ystart, fg_alpha);           \
+                    return Render_Line_##NAME##_Blended(font, pa, textbuf, xstart, ystart, fg_alpha);       \
                 } else {                                                                                    \
-                    return Render_Line_##NAME##_Blended_SP(font, textbuf, xstart, ystart, fg_alpha);        \
+                    return Render_Line_##NAME##_Blended_SP(font, pa, textbuf, xstart, ystart, fg_alpha);    \
                 }                                                                                           \
             }                                                                                               \
         } else {                                                                                            \
-            return Render_Line_##NAME##_Solid(font, textbuf, xstart, ystart, 0);                            \
+            return Render_Line_##NAME##_Solid(font, pa, textbuf, xstart, ystart, 0);                        \
         }
 
 #if TTF_USE_SDF
@@ -1706,14 +1715,15 @@ TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, int freesrc, int ptsize, long i
     font->ft_load_target = FT_LOAD_TARGET_NORMAL;
     TTF_SetFontKerning(font, 1);
 
-    font->pos_len = 0;
-    font->pos_max = 16;
-    font->pos_buf = (PosBuf_t *)SDL_malloc(font->pos_max * sizeof (font->pos_buf[0]));
-    if (! font->pos_buf) {
+    /*PosArray_t pa;
+    pa->pos_len = 0;
+    pa->pos_max = 16;
+    pa->pos_buf = (PosBuf_t *)SDL_malloc(pa->pos_max * sizeof (pa->pos_buf[0]));
+    if (! pa->pos_buf) {
         TTF_SetError("Out of memory");
         TTF_CloseFont(font);
         return NULL;
-    }
+    }*/
 
 #if TTF_USE_HARFBUZZ
     font->hb_font = hb_ft_font_create(face, NULL);
@@ -2556,9 +2566,9 @@ void TTF_CloseFont(TTF_Font *font)
         if (font->freesrc) {
             SDL_RWclose(font->src);
         }
-        if (font->pos_buf) {
-            SDL_free(font->pos_buf);
-        }
+        /*if (pa->pos_buf) {
+            SDL_free(pa->pos_buf);
+        }*/
         SDL_free(font);
     }
 }
@@ -2896,7 +2906,7 @@ int TTF_SetFontScript(TTF_Font *font, int script) /* hb_script_t */
 #endif
 }
 
-static int TTF_Size_Internal(TTF_Font *font,
+static int TTF_Size_Internal(TTF_Font *font, PosArray_t *pa,
         const char *text, const str_type_t str_type,
         int *w, int *h, int *xstart, int *ystart,
         int measure_width, int *extent, int *count)
@@ -2953,7 +2963,7 @@ static int TTF_Size_Internal(TTF_Font *font,
     maxy = font->height;
 
     /* Reset buffer */
-    font->pos_len = 0;
+    if(pa) pa->pos_len = 0;
 
 #if TTF_USE_HARFBUZZ
     /* Create a buffer for harfbuzz to use */
@@ -3002,15 +3012,20 @@ static int TTF_Size_Internal(TTF_Font *font,
         }
 
         /* Realloc, if needed */
-        if (font->pos_len >= font->pos_max) {
-            PosBuf_t *saved = font->pos_buf;
-            font->pos_max *= 2;
-            font->pos_buf = (PosBuf_t *)SDL_realloc(font->pos_buf, font->pos_max * sizeof (font->pos_buf[0]));
-            if (font->pos_buf == NULL) {
-                font->pos_buf = saved;
+        if (pa && pa->pos_len >= pa->pos_max) {
+            PosBuf_t *new_buf;
+            size_t new_capacity = pa->pos_max * 2;
+            if (new_capacity == 0) new_capacity = 16;
+
+            new_buf = (PosBuf_t *)SDL_realloc(pa->pos_buf, new_capacity * sizeof (new_buf[0]));
+
+            if (new_buf == NULL) {
                 TTF_SetError("Out of memory");
                 goto failure;
             }
+
+            pa->pos_buf = new_buf;
+            pa->pos_max = new_capacity;
         }
 
 #if TTF_USE_HARFBUZZ
@@ -3056,10 +3071,12 @@ static int TTF_Size_Internal(TTF_Font *font,
         pos_y = F26Dot6(font->ascent);
 #endif
         /* Store things for Render_Line() */
-        font->pos_buf[font->pos_len].x     = pos_x;
-        font->pos_buf[font->pos_len].y     = pos_y;
-        font->pos_buf[font->pos_len].index = idx;
-        font->pos_len += 1;
+        if(pa) {
+            pa->pos_buf[pa->pos_len].x     = pos_x;
+            pa->pos_buf[pa->pos_len].y     = pos_y;
+            pa->pos_buf[pa->pos_len].index = idx;
+            pa->pos_len += 1;
+        }
 
         /* Compute previsionnal global bounding box */
         pos_x = FT_FLOOR(pos_x) + glyph->sz_left;
@@ -3149,32 +3166,32 @@ failure:
 
 int TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h)
 {
-    return TTF_Size_Internal(font, text, STR_TEXT, w, h, NULL, NULL, NO_MEASUREMENT);
+    return TTF_Size_Internal(font, NULL, text, STR_TEXT, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
 int TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h)
 {
-    return TTF_Size_Internal(font, text, STR_UTF8, w, h, NULL, NULL, NO_MEASUREMENT);
+    return TTF_Size_Internal(font, NULL, text, STR_UTF8, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
 int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 {
-    return TTF_Size_Internal(font, (const char *)text, STR_UNICODE, w, h, NULL, NULL, NO_MEASUREMENT);
+    return TTF_Size_Internal(font, NULL, (const char *)text, STR_UNICODE, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
 int TTF_MeasureText(TTF_Font *font, const char *text, int width, int *extent, int *count)
 {
-    return TTF_Size_Internal(font, text, STR_TEXT, NULL, NULL, NULL, NULL, width, extent, count);
+    return TTF_Size_Internal(font, NULL, text, STR_TEXT, NULL, NULL, NULL, NULL, width, extent, count);
 }
 
 int TTF_MeasureUTF8(TTF_Font *font, const char *text, int width, int *extent, int *count)
 {
-    return TTF_Size_Internal(font, text, STR_UTF8, NULL, NULL, NULL, NULL, width, extent, count);
+    return TTF_Size_Internal(font, NULL, text, STR_UTF8, NULL, NULL, NULL, NULL, width, extent, count);
 }
 
 int TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int width, int *extent, int *count)
 {
-    return TTF_Size_Internal(font, (const char *)text, STR_UNICODE, NULL, NULL, NULL, NULL, width, extent, count);
+    return TTF_Size_Internal(font, NULL, (const char *)text, STR_UNICODE, NULL, NULL, NULL, NULL, width, extent, count);
 }
 
 static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const str_type_t str_type,
@@ -3184,6 +3201,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
     int xstart, ystart, width, height;
     SDL_Surface *textbuf = NULL;
     Uint8 *utf8_alloc = NULL;
+    PosArray_t pa = {0};
 
     TTF_CHECK_INITIALIZED(NULL);
     TTF_CHECK_POINTER(font, NULL);
@@ -3210,7 +3228,11 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
     }
 
     /* Get the dimensions of the text surface */
-    if ((TTF_Size_Internal(font, text, STR_UTF8, &width, &height, &xstart, &ystart, NO_MEASUREMENT) < 0) || !width) {
+    if ((TTF_Size_Internal(font, &pa, text, STR_UTF8, &width, &height, &xstart, &ystart, NO_MEASUREMENT) < 0)) {
+        goto failure;
+    }
+    
+    if (!width) {
         TTF_SetError("Text has zero width");
         goto failure;
     }
@@ -3233,7 +3255,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
     }
 
     /* Render one text line to textbuf at (xstart, ystart) */
-    if (Render_Line(render_mode, font->render_subpixel, font, textbuf, xstart, ystart, fg.a) < 0) {
+    if (Render_Line(render_mode, font->render_subpixel, font, &pa, textbuf, xstart, ystart, fg.a) < 0) {
         goto failure;
     }
 
@@ -3249,6 +3271,9 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
     if (utf8_alloc) {
         SDL_stack_free(utf8_alloc);
     }
+    if (pa.pos_buf) {
+        SDL_free(pa.pos_buf);
+    }
     return textbuf;
 failure:
     if (textbuf) {
@@ -3256,6 +3281,9 @@ failure:
     }
     if (utf8_alloc) {
         SDL_stack_free(utf8_alloc);
+    }
+    if (pa.pos_buf) {
+        SDL_free(pa.pos_buf);
     }
     return NULL;
 }
@@ -3364,6 +3392,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     int width, height;
     SDL_Surface *textbuf = NULL;
     Uint8 *utf8_alloc = NULL;
+    PosArray_t pa = {0};
 
     int i, numLines, rowHeight, lineskip;
     char **strLines = NULL, *text_cpy;
@@ -3569,7 +3598,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         }
 
         /* Initialize xstart, ystart and compute positions */
-        if (TTF_Size_Internal(font, text, STR_UTF8, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT) < 0) {
+        if (TTF_Size_Internal(font, &pa, text, STR_UTF8, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT) < 0) {
             goto failure;
         }
 
@@ -3577,7 +3606,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         ystart += i * lineskip;
 
         /* Render one text line to textbuf at (xstart, ystart) */
-        if (Render_Line(render_mode, font->render_subpixel, font, textbuf, xstart, ystart, fg.a) < 0) {
+        if (Render_Line(render_mode, font->render_subpixel, font, &pa, textbuf, xstart, ystart, fg.a) < 0) {
             goto failure;
         }
 
@@ -3604,6 +3633,9 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     if (utf8_alloc) {
         SDL_stack_free(utf8_alloc);
     }
+    if (pa.pos_buf) {
+        SDL_free(pa.pos_buf);
+    }
     return textbuf;
 failure:
     if (textbuf) {
@@ -3614,6 +3646,9 @@ failure:
     }
     if (utf8_alloc) {
         SDL_stack_free(utf8_alloc);
+    }
+    if (pa.pos_buf) {
+        SDL_free(pa.pos_buf);
     }
     return NULL;
 }
