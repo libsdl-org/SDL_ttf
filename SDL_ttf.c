@@ -3007,6 +3007,7 @@ static int TTF_Size_Internal(TTF_Font *font,
             font->pos_max *= 2;
             font->pos_buf = (PosBuf_t *)SDL_realloc(font->pos_buf, font->pos_max * sizeof (font->pos_buf[0]));
             if (font->pos_buf == NULL) {
+                font->pos_max /= 2;
                 font->pos_buf = saved;
                 TTF_SetError("Out of memory");
                 goto failure;
