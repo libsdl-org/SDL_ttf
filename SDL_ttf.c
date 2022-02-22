@@ -315,20 +315,28 @@ typedef enum {
     STR_UNICODE
 } str_type_t;
 
+typedef struct TTF_StringView {
+    const void* data;
+    size_t size; /* number of bytes for TEXT and UTF8, number of words for UNICODE */
+    str_type_t type;
+} TTF_StringView;
+
+
+
 static int TTF_initFontMetrics(TTF_Font *font);
 
 /* pa can be NULL, this way no character layouting/allocations are done */
-static int TTF_Size_Internal(TTF_Font *font, PosArray_t *pa, const char *text, str_type_t str_type,
-        int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count);
+static int TTF_Size_Internal(TTF_Font *font, TTF_StringView text,
+        PosArray_t *pa, int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count);
 
 #define NO_MEASUREMENT  \
         0, NULL, NULL
 
 
-static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, str_type_t str_type,
+static SDL_Surface* TTF_Render_Internal(TTF_Font *font, TTF_StringView text,
         SDL_Color fg, SDL_Color bg, render_mode_t render_mode);
 
-static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, str_type_t str_type,
+static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, TTF_StringView text,
         SDL_Color fg, SDL_Color bg, Uint32 wrapLength, render_mode_t render_mode);
 
 static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
@@ -2573,6 +2581,7 @@ void TTF_CloseFont(TTF_Font *font)
     }
 }
 
+#if 0
 /* Gets the number of bytes needed to convert a Latin-1 string to UTF-8 */
 static size_t LATIN1_to_UTF8_len(const char *text)
 {
@@ -2651,6 +2660,7 @@ static void UCS2_to_UTF8(const Uint16 *src, Uint8 *dst)
     }
     *dst = '\0';
 }
+#endif
 
 /* Convert a unicode char to a UTF-8 string */
 static SDL_bool Char_to_UTF8(Uint32 ch, Uint8 *dst)
@@ -2705,7 +2715,7 @@ static Uint32 UTF8_getch(const char *src, size_t srclen, int *inc)
     if (srclen == 0) {
         return UNKNOWN_UNICODE;
     }
-    if (p[0] >= 0xFC) {
+    if (p[0] >= 0xFC && srclen >= 6) {
         if ((p[0] & 0xFE) == 0xFC) {
             if (p[0] == 0xFC && (p[1] & 0xFC) == 0x80) {
                 overlong = SDL_TRUE;
@@ -2713,7 +2723,7 @@ static Uint32 UTF8_getch(const char *src, size_t srclen, int *inc)
             ch = (Uint32) (p[0] & 0x01);
             left = 5;
         }
-    } else if (p[0] >= 0xF8) {
+    } else if (p[0] >= 0xF8 && srclen >= 5) {
         if ((p[0] & 0xFC) == 0xF8) {
             if (p[0] == 0xF8 && (p[1] & 0xF8) == 0x80) {
                 overlong = SDL_TRUE;
@@ -2721,7 +2731,7 @@ static Uint32 UTF8_getch(const char *src, size_t srclen, int *inc)
             ch = (Uint32) (p[0] & 0x03);
             left = 4;
         }
-    } else if (p[0] >= 0xF0) {
+    } else if (p[0] >= 0xF0 && srclen >= 4) {
         if ((p[0] & 0xF8) == 0xF0) {
             if (p[0] == 0xF0 && (p[1] & 0xF0) == 0x80) {
                 overlong = SDL_TRUE;
@@ -2729,7 +2739,7 @@ static Uint32 UTF8_getch(const char *src, size_t srclen, int *inc)
             ch = (Uint32) (p[0] & 0x07);
             left = 3;
         }
-    } else if (p[0] >= 0xE0) {
+    } else if (p[0] >= 0xE0 && srclen >= 3) {
         if ((p[0] & 0xF0) == 0xE0) {
             if (p[0] == 0xE0 && (p[1] & 0xE0) == 0x80) {
                 overlong = SDL_TRUE;
@@ -2737,7 +2747,7 @@ static Uint32 UTF8_getch(const char *src, size_t srclen, int *inc)
             ch = (Uint32) (p[0] & 0x0F);
             left = 2;
         }
-    } else if (p[0] >= 0xC0) {
+    } else if (p[0] >= 0xC0 && srclen >= 2) {
         if ((p[0] & 0xE0) == 0xC0) {
             if ((p[0] & 0xDE) == 0xC0) {
                 overlong = SDL_TRUE;
@@ -2785,6 +2795,117 @@ static Uint32 UTF8_getch(const char *src, size_t srclen, int *inc)
 
     return ch;
 }
+
+static SDL_INLINE size_t TTF_UNICODE_strlen(const Uint16 *text) {
+    const Uint16* iter = text;
+    while(*iter) iter++;
+    return iter - text;
+}
+
+static TTF_StringView TTF_MakeStringView_UTF8(const char *text) {
+    TTF_StringView sv;
+    sv.data = text;
+    sv.size = text != NULL ? SDL_strlen(text) : 0;
+    sv.type = STR_UTF8;
+    return sv;
+}
+
+static TTF_StringView TTF_MakeStringView_UTF8_SZ(const char *text, size_t size_bytes) {
+    TTF_StringView sv;
+    sv.data = text;
+    sv.size = size_bytes;
+    sv.type = STR_UTF8;
+    return sv;
+}
+
+static TTF_StringView TTF_MakeStringView_TEXT(const char *text) {
+    TTF_StringView sv;
+    sv.data = text;
+    sv.size = text != NULL ? SDL_strlen(text) : 0;
+    sv.type = STR_TEXT;
+    return sv;
+}
+
+static TTF_StringView TTF_MakeStringView_TEXT_N(const char *text, size_t size) {
+    TTF_StringView sv;
+    sv.data = text;
+    sv.size = size;
+    sv.type = STR_TEXT;
+    return sv;
+}
+
+static TTF_StringView TTF_MakeStringView_UNICODE(const Uint16 *text) {
+    TTF_StringView sv;
+    sv.data = text;
+    sv.size = text != NULL ? TTF_UNICODE_strlen(text) : 0;
+    sv.type = STR_UNICODE;
+    return sv;
+}
+
+static TTF_StringView TTF_MakeStringView_UNICODE_N(const Uint16 *text, size_t size) {
+    TTF_StringView sv;
+    sv.data = text;
+    sv.size = size;
+    sv.type = STR_UNICODE;
+    return sv;
+}
+
+static SDL_bool CharacterIsDelimiter(Uint32 c)
+{
+    if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+        return SDL_TRUE;
+    }
+    return SDL_FALSE;
+}
+
+static SDL_bool CharacterIsNewLine(Uint32 c)
+{
+    if (c == '\n') {
+        return SDL_TRUE;
+    }
+    return SDL_FALSE;
+}
+
+/* Assumes that the string is not empty */
+static SDL_INLINE Uint32 TTF_StringView_SplitChar(TTF_StringView *rest)
+{
+    if (rest->type == STR_UNICODE) {
+        const Uint16* p = rest->data;
+
+        rest->data = (const void*)(p+1); /* 2 bytes */
+        rest->size--;
+
+        return p[0];
+    } else if (rest->type == STR_TEXT) {
+        const char* p = rest->data;
+
+        rest->data = (const void*)(p+1); /* 1 byte */
+        rest->size--;
+
+        return (Uint8)p[0];
+    } else { /* STR_UTF8 */
+        int inc = 0;
+        const char* p = (const char*)rest->data;
+        Uint32 c = UTF8_getch(p, rest->size, &inc);
+
+        //if(c == UNKNOWN_UNICODE) /* try to display one <?> character representing an invalid byte */
+        //    inc = 1;
+
+        rest->data = (const void*)(p+inc);
+        rest->size -= inc;
+
+        return c;
+    }
+}
+
+static SDL_INLINE int StringPointerDifference(const void* a, const void* b, str_type_t type)
+{
+    if(type == STR_UNICODE)
+        return (const Uint16*)a - (const Uint16*)b;
+    else
+        return (const char*)a - (const char*)b;
+}
+
 
 int TTF_FontHeight(const TTF_Font *font)
 {
@@ -2906,16 +3027,15 @@ int TTF_SetFontScript(TTF_Font *font, int script) /* hb_script_t */
 #endif
 }
 
-static int TTF_Size_Internal(TTF_Font *font, PosArray_t *pa,
-        const char *text, const str_type_t str_type,
-        int *w, int *h, int *xstart, int *ystart,
+static int TTF_Size_Internal(TTF_Font *font,
+        TTF_StringView text,
+        PosArray_t *pa, int *w, int *h, int *xstart, int *ystart,
         int measure_width, int *extent, int *count)
 {
     int x = 0;
     int pos_x, pos_y;
     int minx = 0, maxx = 0;
     int miny = 0, maxy = 0;
-    Uint8 *utf8_alloc = NULL;
     c_glyph *glyph;
 #if TTF_USE_HARFBUZZ
     hb_buffer_t *hb_buffer = NULL;
@@ -2938,27 +3058,6 @@ static int TTF_Size_Internal(TTF_Font *font, PosArray_t *pa,
 
     TTF_CHECK_INITIALIZED(-1);
     TTF_CHECK_POINTER(font, -1);
-    TTF_CHECK_POINTER(text, -1);
-
-    /* Convert input string to default encoding UTF-8 */
-    if (str_type == STR_TEXT) {
-        utf8_alloc = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        LATIN1_to_UTF8(text, utf8_alloc);
-        text = (const char *)utf8_alloc;
-    } else if (str_type == STR_UNICODE) {
-        const Uint16 *text16 = (const Uint16 *) text;
-        utf8_alloc = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text16));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        UCS2_to_UTF8(text16, utf8_alloc);
-        text = (const char *)utf8_alloc;
-    }
 
     maxy = font->height;
 
@@ -2978,7 +3077,14 @@ static int TTF_Size_Internal(TTF_Font *font, PosArray_t *pa,
     hb_buffer_set_script(hb_buffer, font->hb_script);
 
     /* Layout the text */
-    hb_buffer_add_utf8(hb_buffer, text, -1, 0, -1);
+    /* use the correct encoding */
+    if(text.type == STR_TEXT)
+        hb_buffer_add_latin1(hb_buffer, (const Uint8*)text.data, text.size, 0, -1);
+    else if(text.type == STR_UNICODE)
+        hb_buffer_add_utf16(hb_buffer, (const Uint16*)text.data, text.size, 0, -1);
+    else
+        hb_buffer_add_utf8(hb_buffer, (const char*)text.data, text.size, 0, -1);
+    
     hb_shape(font->hb_font, hb_buffer, NULL, 0);
 
     /* Get the result */
@@ -2995,13 +3101,10 @@ static int TTF_Size_Internal(TTF_Font *font, PosArray_t *pa,
         int y_offset  = hb_glyph_position[g].y_offset;
 #else
     /* Load each character and sum it's bounding box */
-    textlen = SDL_strlen(text);
-    while (textlen > 0) {
-        int inc = 0;
-        Uint32 c = UTF8_getch(text, textlen, &inc);
+    while (text.size > 0) {
+        Uint32 c = TTF_StringView_SplitChar(&text);
+
         FT_UInt idx = get_char_index(font, c);
-        text += inc;
-        textlen -= inc;
 
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
@@ -3148,9 +3251,6 @@ static int TTF_Size_Internal(TTF_Font *font, PosArray_t *pa,
         hb_buffer_destroy(hb_buffer);
     }
 #endif
-    if (utf8_alloc) {
-        SDL_stack_free(utf8_alloc);
-    }
     return 0;
 failure:
 #if TTF_USE_HARFBUZZ
@@ -3158,43 +3258,51 @@ failure:
         hb_buffer_destroy(hb_buffer);
     }
 #endif
-    if (utf8_alloc) {
-        SDL_stack_free(utf8_alloc);
-    }
     return -1;
 }
 
 int TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h)
 {
-    return TTF_Size_Internal(font, NULL, text, STR_TEXT, w, h, NULL, NULL, NO_MEASUREMENT);
+    TTF_CHECK_POINTER(text, -1);
+    return TTF_Size_Internal(font, TTF_MakeStringView_TEXT(text), NULL, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
 int TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h)
 {
-    return TTF_Size_Internal(font, NULL, text, STR_UTF8, w, h, NULL, NULL, NO_MEASUREMENT);
+    TTF_CHECK_POINTER(text, -1);
+    return TTF_Size_Internal(font, TTF_MakeStringView_UTF8(text), NULL, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
 int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 {
-    return TTF_Size_Internal(font, NULL, (const char *)text, STR_UNICODE, w, h, NULL, NULL, NO_MEASUREMENT);
+    TTF_CHECK_POINTER(text, -1);
+    return TTF_Size_Internal(font, TTF_MakeStringView_UNICODE(text), NULL, w, h, NULL, NULL, NO_MEASUREMENT);
+}
+
+static SDL_INLINE int TTF_Measure_Internal(TTF_Font *font, TTF_StringView text, int width, int *extent, int *count)
+{
+    return TTF_Size_Internal(font, text, NULL, NULL, NULL, NULL, NULL, width, extent, count);
 }
 
 int TTF_MeasureText(TTF_Font *font, const char *text, int width, int *extent, int *count)
 {
-    return TTF_Size_Internal(font, NULL, text, STR_TEXT, NULL, NULL, NULL, NULL, width, extent, count);
+    TTF_CHECK_POINTER(text, -1);
+    return TTF_Measure_Internal(font, TTF_MakeStringView_TEXT(text), width, extent, count);
 }
 
 int TTF_MeasureUTF8(TTF_Font *font, const char *text, int width, int *extent, int *count)
 {
-    return TTF_Size_Internal(font, NULL, text, STR_UTF8, NULL, NULL, NULL, NULL, width, extent, count);
+    TTF_CHECK_POINTER(text, -1);
+    return TTF_Measure_Internal(font, TTF_MakeStringView_UTF8(text), width, extent, count);
 }
 
 int TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int width, int *extent, int *count)
 {
-    return TTF_Size_Internal(font, NULL, (const char *)text, STR_UNICODE, NULL, NULL, NULL, NULL, width, extent, count);
+    TTF_CHECK_POINTER(text, -1);
+    return TTF_Measure_Internal(font, TTF_MakeStringView_UNICODE(text), width, extent, count);
 }
 
-static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const str_type_t str_type,
+static SDL_Surface* TTF_Render_Internal(TTF_Font *font, TTF_StringView text,
         SDL_Color fg, SDL_Color bg, const render_mode_t render_mode)
 {
     Uint32 color;
@@ -3205,30 +3313,10 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
 
     TTF_CHECK_INITIALIZED(NULL);
     TTF_CHECK_POINTER(font, NULL);
-    TTF_CHECK_POINTER(text, NULL);
 
-    /* Convert input string to default encoding UTF-8 */
-    if (str_type == STR_TEXT) {
-        utf8_alloc = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        LATIN1_to_UTF8(text, utf8_alloc);
-        text = (const char *)utf8_alloc;
-    } else if (str_type == STR_UNICODE) {
-        const Uint16 *text16 = (const Uint16 *) text;
-        utf8_alloc = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text16));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        UCS2_to_UTF8(text16, utf8_alloc);
-        text = (const char *)utf8_alloc;
-    }
 
-    /* Get the dimensions of the text surface */
-    if ((TTF_Size_Internal(font, &pa, text, STR_UTF8, &width, &height, &xstart, &ystart, NO_MEASUREMENT) < 0)) {
+    /* Get the dimensions of the text surface and layout glyphs */
+    if ((TTF_Size_Internal(font, text, &pa, &width, &height, &xstart, &ystart, NO_MEASUREMENT) < 0)) {
         goto failure;
     }
     
@@ -3290,17 +3378,20 @@ failure:
 
 SDL_Surface* TTF_RenderText_Solid(TTF_Font *font, const char *text, SDL_Color fg)
 {
-    return TTF_Render_Internal(font, text, STR_TEXT, fg, fg /* unused */, RENDER_SOLID);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_TEXT(text), fg, fg /* unused */, RENDER_SOLID);
 }
 
 SDL_Surface* TTF_RenderUTF8_Solid(TTF_Font *font, const char *text, SDL_Color fg)
 {
-    return TTF_Render_Internal(font, text, STR_UTF8, fg, fg /* unused */, RENDER_SOLID);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UTF8(text), fg, fg /* unused */, RENDER_SOLID);
 }
 
 SDL_Surface* TTF_RenderUNICODE_Solid(TTF_Font *font, const Uint16 *text, SDL_Color fg)
 {
-    return TTF_Render_Internal(font, (const char *)text, STR_UNICODE, fg, fg /* unused */, RENDER_SOLID);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UNICODE(text), fg, fg /* unused */, RENDER_SOLID);
 }
 
 SDL_Surface* TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
@@ -3323,17 +3414,20 @@ SDL_Surface* TTF_RenderGlyph32_Solid(TTF_Font *font, Uint32 ch, SDL_Color fg)
 
 SDL_Surface* TTF_RenderText_Shaded(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg)
 {
-    return TTF_Render_Internal(font, text, STR_TEXT, fg, bg, RENDER_SHADED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_TEXT(text), fg, bg, RENDER_SHADED);
 }
 
 SDL_Surface* TTF_RenderUTF8_Shaded(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg)
 {
-    return TTF_Render_Internal(font, text, STR_UTF8, fg, bg, RENDER_SHADED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UTF8(text), fg, bg, RENDER_SHADED);
 }
 
 SDL_Surface* TTF_RenderUNICODE_Shaded(TTF_Font *font, const Uint16 *text, SDL_Color fg, SDL_Color bg)
 {
-    return TTF_Render_Internal(font, (const char *)text, STR_UNICODE, fg, bg, RENDER_SHADED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UNICODE(text), fg, bg, RENDER_SHADED);
 }
 
 SDL_Surface* TTF_RenderGlyph_Shaded(TTF_Font *font, Uint16 ch, SDL_Color fg, SDL_Color bg)
@@ -3356,51 +3450,148 @@ SDL_Surface* TTF_RenderGlyph32_Shaded(TTF_Font *font, Uint32 ch, SDL_Color fg, S
 
 SDL_Surface* TTF_RenderText_Blended(TTF_Font *font, const char *text, SDL_Color fg)
 {
-    return TTF_Render_Internal(font, text, STR_TEXT, fg, fg /* unused */, RENDER_BLENDED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_TEXT(text), fg, fg /* unused */, RENDER_BLENDED);
 }
 
 SDL_Surface* TTF_RenderUTF8_Blended(TTF_Font *font, const char *text, SDL_Color fg)
 {
-    return TTF_Render_Internal(font, text, STR_UTF8, fg, fg /* unused */, RENDER_BLENDED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UTF8(text), fg, fg /* unused */, RENDER_BLENDED);
 }
 
 SDL_Surface* TTF_RenderUNICODE_Blended(TTF_Font *font, const Uint16 *text, SDL_Color fg)
 {
-    return TTF_Render_Internal(font, (const char *)text, STR_UNICODE, fg, fg /* unused */, RENDER_BLENDED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UNICODE(text), fg, fg /* unused */, RENDER_BLENDED);
 }
 
-static SDL_bool CharacterIsDelimiter(Uint32 c)
+SDL_Surface* TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 {
-    if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
-        return SDL_TRUE;
-    }
-    return SDL_FALSE;
+    return TTF_RenderGlyph32_Blended(font, ch, fg);
 }
 
-static SDL_bool CharacterIsNewLine(Uint32 c)
+SDL_Surface* TTF_RenderGlyph32_Blended(TTF_Font *font, Uint32 ch, SDL_Color fg)
 {
-    if (c == '\n') {
-        return SDL_TRUE;
+    Uint8 utf8[7];
+
+    TTF_CHECK_POINTER(font, NULL);
+
+    if (!Char_to_UTF8(ch, utf8)) {
+        return NULL;
     }
-    return SDL_FALSE;
+
+    return TTF_RenderUTF8_Blended(font, (char *)utf8, fg);
 }
 
-static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, const str_type_t str_type,
+/*return false on error; *p_lines reallocated, but owned from the outside*/
+SDL_bool TTF_SplitWrap_Lines_Internal(TTF_Font *font, TTF_StringView **p_lines, int *p_numLines, int *p_width, TTF_StringView text, Uint32 wrapLength)
+{
+    int maxNumLines = 0;
+    *p_numLines = 0;
+
+    do {
+        int extent = 0, max_count = 0, char_count = 0;
+        size_t save_textlen = (size_t)(-1);
+        const void *save_text  = NULL;
+        const void *line_start = text.data;
+
+        if (*p_numLines >= maxNumLines) {
+            TTF_StringView **new_lines;
+            if (wrapLength == 0) {
+                maxNumLines += 32;
+            } else {
+                maxNumLines += (*p_width / wrapLength) + 1;
+            }
+            new_lines = (TTF_StringView **)SDL_realloc(*p_lines, maxNumLines * sizeof (*p_lines));
+            if (new_lines == NULL) {
+                SDL_OutOfMemory();
+                return SDL_FALSE;
+            }
+            *p_lines = new_lines;
+        }
+
+        TTF_StringView *line = &(*p_lines)[*p_numLines];
+        *line = text;
+        ++*p_numLines;
+
+        if (TTF_Measure_Internal(font, text, wrapLength, &extent, &max_count) < 0) {
+            TTF_SetError("Error measure text");
+            return SDL_FALSE;
+        }
+
+        if (wrapLength != 0) {
+            if (max_count == 0) {
+                max_count = 1;
+            }
+        }
+
+        while (text.size > 0) {
+            int is_delim;
+            const void* before_char = text.data;
+            Uint32 c = TTF_StringView_SplitChar(&text);
+
+            if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
+                continue;
+            }
+
+            char_count += 1;
+
+            /* With wrapLength == 0, normal text rendering but newline aware */
+            is_delim = (wrapLength > 0) ? CharacterIsDelimiter(c) : CharacterIsNewLine(c);
+
+            /* Record last delimiter position */
+            if (is_delim) {
+                save_textlen = text.size;
+                save_text = text.data;
+                /* Break, if new line */
+                if (c == '\n' || c == '\r') {
+                    line->size = StringPointerDifference(before_char, line_start, text.type);
+                    break;
+                }
+            }
+
+            /* Break, if reach the limit */
+            if (char_count == max_count) {
+                break;
+            }
+        }
+
+        /* Cut at last delimiter/new lines, otherwise in the middle of the word */
+        if (save_text && text.size) {
+            text.data = save_text;
+            text.size = save_textlen;
+        }
+
+        /*if(wrapLength > 0)*/
+        {
+            /* when split at a character, that are not new lines, the line ends before the next character in text.
+             * Note, that if the character is a new line, the string is already split, it would exclude the new line.
+             * Thus the size is already smaller than the possible rest
+             * -> minimum of both values */
+            size_t len = StringPointerDifference(text.data, line_start, text.type);
+            line->size = SDL_min(line->size, len);
+        }
+    } while (text.size > 0);
+
+    return SDL_TRUE;
+}
+
+static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, TTF_StringView text,
         SDL_Color fg, SDL_Color bg, Uint32 wrapLength, const render_mode_t render_mode)
 {
     Uint32 color;
     int width, height;
     SDL_Surface *textbuf = NULL;
-    Uint8 *utf8_alloc = NULL;
     PosArray_t pa = {0};
 
     int i, numLines, rowHeight, lineskip;
-    char **strLines = NULL, *text_cpy;
+    TTF_StringView* lines = NULL;
 
     TTF_CHECK_INITIALIZED(NULL);
     TTF_CHECK_POINTER(font, NULL);
-    TTF_CHECK_POINTER(text, NULL);
 
+#if 0
     /* Convert input string to default encoding UTF-8 */
     if (str_type == STR_TEXT) {
         utf8_alloc = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
@@ -3430,9 +3621,10 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         SDL_memcpy(utf8_alloc, text, str_len + 1);
         text_cpy = (char *)utf8_alloc;
     }
+#endif
 
     /* Get the dimensions of the text surface */
-    if ((TTF_SizeUTF8(font, text_cpy, &width, &height) < 0) || !width) {
+    if ((TTF_Size_Internal(font, text, NULL, &width, &height, NULL, NULL, NO_MEASUREMENT) < 0) || !width) {
         TTF_SetError("Text has zero width");
         goto failure;
     }
@@ -3443,86 +3635,23 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         goto failure;
     }
 
-    numLines = 1;
 
-    if (*text_cpy) {
-        int maxNumLines = 0;
-        size_t textlen = SDL_strlen(text_cpy);
-        numLines = 0;
+    numLines = 0;
 
-        do {
-            int extent = 0, max_count = 0, char_count = 0;
-            size_t save_textlen = (size_t)(-1);
-            char *save_text  = NULL;
+    if(!TTF_SplitWrap_Lines_Internal(font, &lines, &numLines, &width, text, wrapLength))
+        goto failure;
 
-            if (numLines >= maxNumLines) {
-                char **saved = strLines;
-                if (wrapLength == 0) {
-                    maxNumLines += 32;
-                } else {
-                    maxNumLines += (width / wrapLength) + 1;
-                }
-                strLines = (char **)SDL_realloc(strLines, maxNumLines * sizeof (*strLines));
-                if (strLines == NULL) {
-                    strLines = saved;
-                    SDL_OutOfMemory();
-                    goto failure;
-                }
-            }
+    /* Debug output */
+    /*for(int i = 0; i < numLines; ++i)
+    {
+        char buf[1024];
+        text = lines[i];
+        size_t n = SDL_min(sizeof(buf)-1, text.size);
+        SDL_memcpy(buf, text.data, n);
+        buf[n] = '\0';
+        SDL_Log("Line %i: %s\n", i, buf);
+    }*/
 
-            strLines[numLines++] = text_cpy;
-
-            if (TTF_MeasureUTF8(font, text_cpy, wrapLength, &extent, &max_count) < 0) {
-                TTF_SetError("Error measure text");
-                goto failure;
-            }
-
-            if (wrapLength != 0) {
-                if (max_count == 0) {
-                    max_count = 1;
-                }
-            }
-
-            while (textlen > 0) {
-                int inc = 0;
-                int is_delim;
-                Uint32 c = UTF8_getch(text_cpy, textlen, &inc);
-                text_cpy += inc;
-                textlen -= inc;
-
-                if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
-                    continue;
-                }
-
-                char_count += 1;
-
-                /* With wrapLength == 0, normal text rendering but newline aware */
-                is_delim = (wrapLength > 0) ?  CharacterIsDelimiter(c) : CharacterIsNewLine(c);
-
-                /* Record last delimiter position */
-                if (is_delim) {
-                    save_textlen = textlen;
-                    save_text = text_cpy;
-                    /* Break, if new line */
-                    if (c == '\n' || c == '\r') {
-                        *(text_cpy - 1) = '\0';
-                        break;
-                    }
-                }
-
-                /* Break, if reach the limit */
-                if (char_count == max_count) {
-                    break;
-                }
-            }
-
-            /* Cut at last delimiter/new lines, otherwise in the middle of the word */
-            if (save_text && textlen) {
-                text_cpy = save_text;
-                textlen = save_textlen;
-            }
-        } while (textlen > 0);
-    }
 
     lineskip = TTF_FontLineSkip(font);
     rowHeight = SDL_max(height, lineskip);
@@ -3532,27 +3661,12 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         if (numLines > 1) {
             width = 0;
             for (i = 0; i < numLines; i++) {
-                char save_c = 0;
                 int w, h;
 
-                /* Add end-of-line */
-                if (strLines) {
-                    text = strLines[i];
-                    if (i + 1 < numLines) {
-                        save_c = strLines[i + 1][0];
-                        strLines[i + 1][0] = '\0';
-                    }
-                }
+                text = lines[i];
 
-                if (TTF_SizeUTF8(font, text, &w, &h) == 0) {
+                if (TTF_Size_Internal(font, text, NULL, &w, &h, NULL, NULL, NO_MEASUREMENT) == 0) {
                     width = SDL_max(w, width);
-                }
-
-                /* Remove end-of-line */
-                if (strLines) {
-                    if (i + 1 < numLines) {
-                        strLines[i + 1][0] = save_c;
-                    }
                 }
             }
         }
@@ -3586,19 +3700,11 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     /* Render each line */
     for (i = 0; i < numLines; i++) {
         int xstart, ystart, line_width;
-        char save_c = 0;
 
-        /* Add end-of-line */
-        if (strLines) {
-            text = strLines[i];
-            if (i + 1 < numLines) {
-                save_c = strLines[i + 1][0];
-                strLines[i + 1][0] = '\0';
-            }
-        }
+        text = lines[i];
 
         /* Initialize xstart, ystart and compute positions */
-        if (TTF_Size_Internal(font, &pa, text, STR_UTF8, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT) < 0) {
+        if (TTF_Size_Internal(font, text, &pa, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT) < 0) {
             goto failure;
         }
 
@@ -3618,20 +3724,10 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
             Draw_Line(font, textbuf, ystart + font->strikethrough_top_row, line_width, font->line_thickness, color, render_mode);
         }
-
-        /* Remove end-of-line */
-        if (strLines) {
-            if (i + 1 < numLines) {
-                strLines[i + 1][0] = save_c;
-            }
-        }
     }
 
-    if (strLines) {
-        SDL_free(strLines);
-    }
-    if (utf8_alloc) {
-        SDL_stack_free(utf8_alloc);
+    if (lines) {
+        SDL_free(lines);
     }
     if (pa.pos_buf) {
         SDL_free(pa.pos_buf);
@@ -3641,11 +3737,8 @@ failure:
     if (textbuf) {
         SDL_FreeSurface(textbuf);
     }
-    if (strLines) {
-        SDL_free(strLines);
-    }
-    if (utf8_alloc) {
-        SDL_stack_free(utf8_alloc);
+    if (lines) {
+        SDL_free(lines);
     }
     if (pa.pos_buf) {
         SDL_free(pa.pos_buf);
@@ -3655,65 +3748,56 @@ failure:
 
 SDL_Surface* TTF_RenderText_Solid_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, Uint32 wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, text, STR_TEXT, fg, fg /* unused */, wrapLength, RENDER_SOLID);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_TEXT(text), fg, fg /* unused */, wrapLength, RENDER_SOLID);
 }
 
 SDL_Surface* TTF_RenderUTF8_Solid_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, Uint32 wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, text, STR_UTF8, fg, fg /* unused */, wrapLength, RENDER_SOLID);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UTF8(text), fg, fg /* unused */, wrapLength, RENDER_SOLID);
 }
 
 SDL_Surface* TTF_RenderUNICODE_Solid_Wrapped(TTF_Font *font, const Uint16 *text, SDL_Color fg, Uint32 wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, (const char *)text, STR_UNICODE, fg, fg /* unused */, wrapLength, RENDER_SOLID);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UNICODE(text), fg, fg /* unused */, wrapLength, RENDER_SOLID);
 }
 
 SDL_Surface* TTF_RenderText_Shaded_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, text, STR_TEXT, fg, bg, wrapLength, RENDER_SHADED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_TEXT(text), fg, bg, wrapLength, RENDER_SHADED);
 }
 
 SDL_Surface* TTF_RenderUTF8_Shaded_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, text, STR_UTF8, fg, bg, wrapLength, RENDER_SHADED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UTF8(text), fg, bg, wrapLength, RENDER_SHADED);
 }
 
 SDL_Surface* TTF_RenderUNICODE_Shaded_Wrapped(TTF_Font *font, const Uint16 *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, (const char *)text, STR_UNICODE, fg, bg, wrapLength, RENDER_SHADED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UNICODE(text), fg, bg, wrapLength, RENDER_SHADED);
 }
 
 SDL_Surface* TTF_RenderText_Blended_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, Uint32 wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, text, STR_TEXT, fg, fg /* unused */, wrapLength, RENDER_BLENDED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_TEXT(text), fg, fg /* unused */, wrapLength, RENDER_BLENDED);
 }
 
 SDL_Surface* TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, Uint32 wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, text, STR_UTF8, fg, fg /* unused */, wrapLength, RENDER_BLENDED);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UTF8(text), fg, fg /* unused */, wrapLength, RENDER_BLENDED);
 }
 
 SDL_Surface* TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, const Uint16 *text, SDL_Color fg, Uint32 wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, (const char *)text, STR_UNICODE, fg, fg /* unused */, wrapLength, RENDER_BLENDED);
-}
-
-SDL_Surface* TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
-{
-    return TTF_RenderGlyph32_Blended(font, ch, fg);
-}
-
-SDL_Surface* TTF_RenderGlyph32_Blended(TTF_Font *font, Uint32 ch, SDL_Color fg)
-{
-    Uint8 utf8[7];
-
-    TTF_CHECK_POINTER(font, NULL);
-
-    if (!Char_to_UTF8(ch, utf8)) {
-        return NULL;
-    }
-
-    return TTF_RenderUTF8_Blended(font, (char *)utf8, fg);
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UNICODE(text), fg, fg /* unused */, wrapLength, RENDER_BLENDED);
 }
 
 void TTF_SetFontStyle(TTF_Font *font, int style)
