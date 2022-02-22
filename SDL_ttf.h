@@ -200,6 +200,10 @@ extern DECLSPEC int SDLCALL TTF_SizeText(TTF_Font *font, const char *text, int *
 extern DECLSPEC int SDLCALL TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h);
 extern DECLSPEC int SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h);
 
+extern DECLSPEC int SDLCALL TTF_SizeText_SZ(TTF_Font *font, const char *text, size_t text_size, int *w, int *h);
+extern DECLSPEC int SDLCALL TTF_SizeUTF8_SZ(TTF_Font *font, const char *text, size_t text_size, int *w, int *h);
+extern DECLSPEC int SDLCALL TTF_SizeUNICODE_SZ(TTF_Font *font, const Uint16 *text, size_t text_size, int *w, int *h);
+
 /* Get the measurement string of text without rendering
    e.g. the number of characters that can be rendered before reaching 'measure_width'
 
@@ -213,6 +217,10 @@ extern DECLSPEC int SDLCALL TTF_MeasureText(TTF_Font *font, const char *text, in
 extern DECLSPEC int SDLCALL TTF_MeasureUTF8(TTF_Font *font, const char *text, int measure_width, int *extent, int *count);
 extern DECLSPEC int SDLCALL TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int measure_width, int *extent, int *count);
 
+extern DECLSPEC int SDLCALL TTF_MeasureText_SZ(TTF_Font *font, const char *text, size_t text_size, int measure_width, int *extent, int *count);
+extern DECLSPEC int SDLCALL TTF_MeasureUTF8_SZ(TTF_Font *font, const char *text, size_t text_size, int measure_width, int *extent, int *count);
+extern DECLSPEC int SDLCALL TTF_MeasureUNICODE_SZ(TTF_Font *font, const Uint16 *text, size_t text_size, int measure_width, int *extent, int *count);
+
 /* Create an 8-bit palettized surface and render the given text at
    fast quality with the given font and color.  The 0 pixel is the
    colorkey, giving a transparent background, and the 1 pixel is set
@@ -225,6 +233,13 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid(TTF_Font *font,
                 const char *text, SDL_Color fg);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid(TTF_Font *font,
                 const Uint16 *text, SDL_Color fg);
+
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid_SZ(TTF_Font *font,
+                const Uint16 *text, size_t text_size, SDL_Color fg);
 
 /* Create an 8-bit palettized surface and render the given text at
    fast quality with the given font and color.  The 0 pixel is the
@@ -241,6 +256,13 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid_Wrapped(TTF_Font *fon
                 const char *text, SDL_Color fg, Uint32 wrapLength);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid_Wrapped(TTF_Font *font,
                 const Uint16 *text, SDL_Color fg, Uint32 wrapLength);
+
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid_Wrapped_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid_Wrapped_SZ(TTF_Font *font,
+                const Uint16 *text, size_t text_size, SDL_Color fg, Uint32 wrapLength);
 
 /* Create an 8-bit palettized surface and render the given glyph at
    fast quality with the given font and color.  The 0 pixel is the
@@ -266,6 +288,13 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded(TTF_Font *font,
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded(TTF_Font *font,
                 const Uint16 *text, SDL_Color fg, SDL_Color bg);
 
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg, SDL_Color bg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg, SDL_Color bg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded_SZ(TTF_Font *font,
+                const Uint16 *text, size_t text_size, SDL_Color fg, SDL_Color bg);
+
 /* Create an 8-bit palettized surface and render the given text at
    high quality with the given font and colors.  The 0 pixel is background,
    while other pixels have varying degrees of the foreground color.
@@ -280,6 +309,13 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded_Wrapped(TTF_Font *fo
                 const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded_Wrapped(TTF_Font *font,
                 const Uint16 *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded_Wrapped_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded_Wrapped_SZ(TTF_Font *font,
+                const Uint16 *text, size_t text_size, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
 
 /* Create an 8-bit palettized surface and render the given glyph at
    high quality with the given font and colors.  The 0 pixel is background,
@@ -304,6 +340,13 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended(TTF_Font *font,
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended(TTF_Font *font,
                 const Uint16 *text, SDL_Color fg);
 
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended_SZ(TTF_Font *font,
+                const Uint16 *text, size_t text_size, SDL_Color fg);
+
 
 /* Create a 32-bit ARGB surface and render the given text at high quality,
    using alpha blending to dither the font with the given color.
@@ -318,6 +361,13 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended_Wrapped(TTF_Font *f
                 const char *text, SDL_Color fg, Uint32 wrapLength);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font,
                 const Uint16 *text, SDL_Color fg, Uint32 wrapLength);
+
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended_Wrapped_SZ(TTF_Font *font,
+                const char *text, size_t text_size, SDL_Color fg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended_Wrapped_SZ(TTF_Font *font,
+                const Uint16 *text, size_t text_size, SDL_Color fg, Uint32 wrapLength);
 
 /* Create a 32-bit ARGB surface and render the given glyph at high quality,
    using alpha blending to dither the font with the given color.

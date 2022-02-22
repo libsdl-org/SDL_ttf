@@ -2826,7 +2826,7 @@ static TTF_StringView TTF_MakeStringView_TEXT(const char *text) {
     return sv;
 }
 
-static TTF_StringView TTF_MakeStringView_TEXT_N(const char *text, size_t size) {
+static TTF_StringView TTF_MakeStringView_TEXT_SZ(const char *text, size_t size) {
     TTF_StringView sv;
     sv.data = text;
     sv.size = size;
@@ -2842,7 +2842,7 @@ static TTF_StringView TTF_MakeStringView_UNICODE(const Uint16 *text) {
     return sv;
 }
 
-static TTF_StringView TTF_MakeStringView_UNICODE_N(const Uint16 *text, size_t size) {
+static TTF_StringView TTF_MakeStringView_UNICODE_SZ(const Uint16 *text, size_t size) {
     TTF_StringView sv;
     sv.data = text;
     sv.size = size;
@@ -3279,6 +3279,21 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
     return TTF_Size_Internal(font, TTF_MakeStringView_UNICODE(text), NULL, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
+int TTF_SizeText_SZ(TTF_Font *font, const char *text, size_t text_size, int *w, int *h)
+{
+    return TTF_Size_Internal(font, TTF_MakeStringView_TEXT_SZ(text, text_size), NULL, w, h, NULL, NULL, NO_MEASUREMENT);
+}
+
+int TTF_SizeUTF8_SZ(TTF_Font *font, const char *text, size_t text_size, int *w, int *h)
+{
+    return TTF_Size_Internal(font, TTF_MakeStringView_UTF8_SZ(text, text_size), NULL, w, h, NULL, NULL, NO_MEASUREMENT);
+}
+
+int TTF_SizeUNICODE_SZ(TTF_Font *font, const Uint16 *text, size_t text_size, int *w, int *h)
+{
+    return TTF_Size_Internal(font, TTF_MakeStringView_UNICODE_SZ(text, text_size), NULL, w, h, NULL, NULL, NO_MEASUREMENT);
+}
+
 static SDL_INLINE int TTF_Measure_Internal(TTF_Font *font, TTF_StringView text, int width, int *extent, int *count)
 {
     return TTF_Size_Internal(font, text, NULL, NULL, NULL, NULL, NULL, width, extent, count);
@@ -3300,6 +3315,21 @@ int TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int width, int *exten
 {
     TTF_CHECK_POINTER(text, -1);
     return TTF_Measure_Internal(font, TTF_MakeStringView_UNICODE(text), width, extent, count);
+}
+
+int TTF_MeasureText_SZ(TTF_Font *font, const char *text, size_t text_size, int width, int *extent, int *count)
+{
+    return TTF_Measure_Internal(font, TTF_MakeStringView_TEXT_SZ(text, text_size), width, extent, count);
+}
+
+int TTF_MeasureUTF8_SZ(TTF_Font *font, const char *text, size_t text_size, int width, int *extent, int *count)
+{
+    return TTF_Measure_Internal(font, TTF_MakeStringView_UTF8_SZ(text, text_size), width, extent, count);
+}
+
+int TTF_MeasureUNICODE_SZ(TTF_Font *font, const Uint16 *text, size_t text_size, int width, int *extent, int *count)
+{
+    return TTF_Measure_Internal(font, TTF_MakeStringView_UNICODE_SZ(text, text_size), width, extent, count);
 }
 
 static SDL_Surface* TTF_Render_Internal(TTF_Font *font, TTF_StringView text,
@@ -3394,6 +3424,24 @@ SDL_Surface* TTF_RenderUNICODE_Solid(TTF_Font *font, const Uint16 *text, SDL_Col
     return TTF_Render_Internal(font, TTF_MakeStringView_UNICODE(text), fg, fg /* unused */, RENDER_SOLID);
 }
 
+SDL_Surface* TTF_RenderText_Solid_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_TEXT_SZ(text, text_size), fg, fg /* unused */, RENDER_SOLID);
+}
+
+SDL_Surface* TTF_RenderUTF8_Solid_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UTF8_SZ(text, text_size), fg, fg /* unused */, RENDER_SOLID);
+}
+
+SDL_Surface* TTF_RenderUNICODE_Solid_SZ(TTF_Font *font, const Uint16 *text, size_t text_size, SDL_Color fg)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UNICODE_SZ(text, text_size), fg, fg /* unused */, RENDER_SOLID);
+}
+
 SDL_Surface* TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
 {
     return TTF_RenderGlyph32_Solid(font, ch, fg);
@@ -3428,6 +3476,24 @@ SDL_Surface* TTF_RenderUNICODE_Shaded(TTF_Font *font, const Uint16 *text, SDL_Co
 {
     TTF_CHECK_POINTER(text, NULL);
     return TTF_Render_Internal(font, TTF_MakeStringView_UNICODE(text), fg, bg, RENDER_SHADED);
+}
+
+SDL_Surface* TTF_RenderText_Shaded_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg, SDL_Color bg)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_TEXT_SZ(text, text_size), fg, bg, RENDER_SHADED);
+}
+
+SDL_Surface* TTF_RenderUTF8_Shaded_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg, SDL_Color bg)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UTF8_SZ(text, text_size), fg, bg, RENDER_SHADED);
+}
+
+SDL_Surface* TTF_RenderUNICODE_Shaded_SZ(TTF_Font *font, const Uint16 *text, size_t text_size, SDL_Color fg, SDL_Color bg)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UNICODE_SZ(text, text_size), fg, bg, RENDER_SHADED);
 }
 
 SDL_Surface* TTF_RenderGlyph_Shaded(TTF_Font *font, Uint16 ch, SDL_Color fg, SDL_Color bg)
@@ -3466,6 +3532,24 @@ SDL_Surface* TTF_RenderUNICODE_Blended(TTF_Font *font, const Uint16 *text, SDL_C
     return TTF_Render_Internal(font, TTF_MakeStringView_UNICODE(text), fg, fg /* unused */, RENDER_BLENDED);
 }
 
+SDL_Surface* TTF_RenderText_Blended_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_TEXT_SZ(text, text_size), fg, fg /* unused */, RENDER_BLENDED);
+}
+
+SDL_Surface* TTF_RenderUTF8_Blended_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UTF8_SZ(text, text_size), fg, fg /* unused */, RENDER_BLENDED);
+}
+
+SDL_Surface* TTF_RenderUNICODE_Blended_SZ(TTF_Font *font, const Uint16 *text, size_t text_size, SDL_Color fg)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Internal(font, TTF_MakeStringView_UNICODE_SZ(text, text_size), fg, fg /* unused */, RENDER_BLENDED);
+}
+
 SDL_Surface* TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
 {
     return TTF_RenderGlyph32_Blended(font, ch, fg);
@@ -3497,13 +3581,13 @@ SDL_bool TTF_SplitWrap_Lines_Internal(TTF_Font *font, TTF_StringView **p_lines, 
         const void *line_start = text.data;
 
         if (*p_numLines >= maxNumLines) {
-            TTF_StringView **new_lines;
+            TTF_StringView *new_lines;
             if (wrapLength == 0) {
                 maxNumLines += 32;
             } else {
                 maxNumLines += (*p_width / wrapLength) + 1;
             }
-            new_lines = (TTF_StringView **)SDL_realloc(*p_lines, maxNumLines * sizeof (*p_lines));
+            new_lines = (TTF_StringView *)SDL_realloc(*p_lines, maxNumLines * sizeof (*p_lines));
             if (new_lines == NULL) {
                 SDL_OutOfMemory();
                 return SDL_FALSE;
@@ -3590,38 +3674,6 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, TTF_StringView t
 
     TTF_CHECK_INITIALIZED(NULL);
     TTF_CHECK_POINTER(font, NULL);
-
-#if 0
-    /* Convert input string to default encoding UTF-8 */
-    if (str_type == STR_TEXT) {
-        utf8_alloc = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        LATIN1_to_UTF8(text, utf8_alloc);
-        text_cpy = (char *)utf8_alloc;
-    } else if (str_type == STR_UNICODE) {
-        const Uint16 *text16 = (const Uint16 *) text;
-        utf8_alloc = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text16));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        UCS2_to_UTF8(text16, utf8_alloc);
-        text_cpy = (char *)utf8_alloc;
-    } else {
-        /* Use a copy anyway */
-        size_t str_len = SDL_strlen(text);
-        utf8_alloc = SDL_stack_alloc(Uint8, str_len + 1);
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        SDL_memcpy(utf8_alloc, text, str_len + 1);
-        text_cpy = (char *)utf8_alloc;
-    }
-#endif
 
     /* Get the dimensions of the text surface */
     if ((TTF_Size_Internal(font, text, NULL, &width, &height, NULL, NULL, NO_MEASUREMENT) < 0) || !width) {
@@ -3764,6 +3816,24 @@ SDL_Surface* TTF_RenderUNICODE_Solid_Wrapped(TTF_Font *font, const Uint16 *text,
     return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UNICODE(text), fg, fg /* unused */, wrapLength, RENDER_SOLID);
 }
 
+SDL_Surface* TTF_RenderText_Solid_Wrapped_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg, Uint32 wrapLength)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_TEXT_SZ(text, text_size), fg, fg /* unused */, wrapLength, RENDER_SOLID);
+}
+
+SDL_Surface* TTF_RenderUTF8_Solid_Wrapped_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg, Uint32 wrapLength)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UTF8_SZ(text, text_size), fg, fg /* unused */, wrapLength, RENDER_SOLID);
+}
+
+SDL_Surface* TTF_RenderUNICODE_Solid_Wrapped_SZ(TTF_Font *font, const Uint16 *text, size_t text_size, SDL_Color fg, Uint32 wrapLength)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UNICODE_SZ(text, text_size), fg, fg /* unused */, wrapLength, RENDER_SOLID);
+}
+
 SDL_Surface* TTF_RenderText_Shaded_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
 {
     TTF_CHECK_POINTER(text, NULL);
@@ -3782,6 +3852,24 @@ SDL_Surface* TTF_RenderUNICODE_Shaded_Wrapped(TTF_Font *font, const Uint16 *text
     return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UNICODE(text), fg, bg, wrapLength, RENDER_SHADED);
 }
 
+SDL_Surface* TTF_RenderText_Shaded_Wrapped_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_TEXT_SZ(text, text_size), fg, bg, wrapLength, RENDER_SHADED);
+}
+
+SDL_Surface* TTF_RenderUTF8_Shaded_Wrapped_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UTF8_SZ(text, text_size), fg, bg, wrapLength, RENDER_SHADED);
+}
+
+SDL_Surface* TTF_RenderUNICODE_Shaded_Wrapped_SZ(TTF_Font *font, const Uint16 *text, size_t text_size, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UNICODE_SZ(text, text_size), fg, bg, wrapLength, RENDER_SHADED);
+}
+
 SDL_Surface* TTF_RenderText_Blended_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, Uint32 wrapLength)
 {
     TTF_CHECK_POINTER(text, NULL);
@@ -3798,6 +3886,24 @@ SDL_Surface* TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, const Uint16 *tex
 {
     TTF_CHECK_POINTER(text, NULL);
     return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UNICODE(text), fg, fg /* unused */, wrapLength, RENDER_BLENDED);
+}
+
+SDL_Surface* TTF_RenderText_Blended_Wrapped_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg, Uint32 wrapLength)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_TEXT_SZ(text, text_size), fg, fg /* unused */, wrapLength, RENDER_BLENDED);
+}
+
+SDL_Surface* TTF_RenderUTF8_Blended_Wrapped_SZ(TTF_Font *font, const char *text, size_t text_size, SDL_Color fg, Uint32 wrapLength)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UTF8_SZ(text, text_size), fg, fg /* unused */, wrapLength, RENDER_BLENDED);
+}
+
+SDL_Surface* TTF_RenderUNICODE_Blended_Wrapped_SZ(TTF_Font *font, const Uint16 *text, size_t text_size, SDL_Color fg, Uint32 wrapLength)
+{
+    TTF_CHECK_POINTER(text, NULL);
+    return TTF_Render_Wrapped_Internal(font, TTF_MakeStringView_UNICODE_SZ(text, text_size), fg, fg /* unused */, wrapLength, RENDER_BLENDED);
 }
 
 void TTF_SetFontStyle(TTF_Font *font, int style)
