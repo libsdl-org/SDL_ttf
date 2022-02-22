@@ -34,7 +34,7 @@
 #define HEIGHT  480
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-solid] [-shaded] [-blended] [-utf8|-unicode] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [-solid] [-shaded] [-blended] [-utf8|-unicode] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-wrap width] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
@@ -89,12 +89,14 @@ int main(int argc, char *argv[])
     int hinting;
     int kerning;
     int dump;
+    int wrap;
+    Uint32 wrapwidth;
     enum {
         RENDER_LATIN1,
         RENDER_UTF8,
         RENDER_UNICODE
     } rendertype;
-    char *message, string[128];
+    char *message, string[1024];
 
     /* Look for special execution mode */
     dump = 0;
@@ -105,6 +107,8 @@ int main(int argc, char *argv[])
     outline = 0;
     hinting = TTF_HINTING_NORMAL;
     kerning = 1;
+    wrap = 0;
+    wrapwidth = 0;
     /* Default is black and white */
     forecol = &black;
     backcol = &white;
@@ -156,6 +160,13 @@ int main(int argc, char *argv[])
         } else
         if (SDL_strcmp(argv[i], "-dump") == 0) {
             dump = 1;
+        } else
+        if (SDL_strcmp(argv[i], "-wrap") == 0) {
+            wrap = 1;
+            if(SDL_sscanf(argv[++i], "%d", &wrapwidth) < 1) {
+                SDL_Log(TTF_SHOWFONT_USAGE, argv0);
+                return(1);
+            }
         } else
         if (SDL_strcmp(argv[i], "-fgcol") == 0) {
             int r, g, b, a = 0xFF;
@@ -266,8 +277,24 @@ int main(int argc, char *argv[])
     }
 
     /* Render and center the message */
-    if (argc > 2) {
-        message = argv[2];
+    if (argc >= 2) {
+        if(wrap) // concatenate message
+        {
+            size_t start = 0;
+            size_t rest_bytes = sizeof(string);
+            
+            for(int i = 2; i < argc && rest_bytes > 0; ++i)
+            {
+                int cnt = SDL_snprintf(string+start, rest_bytes, "%s%s", (i == 2 ? "" : "\n"), argv[i]);
+                if(cnt <= 0) break;
+                rest_bytes -= cnt;
+                start += cnt;
+            }
+
+            message = string;
+        } else {
+            message = argv[2];
+        }
     } else {
         message = DEFAULT_TEXT;
     }
@@ -275,13 +302,22 @@ int main(int argc, char *argv[])
         case RENDER_LATIN1:
             switch (rendermethod) {
             case TextRenderSolid:
-                text = TTF_RenderText_Solid(font, message, *forecol);
+                if (wrap)
+                    text = TTF_RenderText_Solid_Wrapped(font, message, *forecol, wrapwidth);
+                else
+                    text = TTF_RenderText_Solid(font, message, *forecol);
                 break;
             case TextRenderShaded:
-                text = TTF_RenderText_Shaded(font, message, *forecol, *backcol);
+                if (wrap)
+                    text = TTF_RenderText_Shaded_Wrapped(font, message, *forecol, *backcol, wrapwidth);
+                else
+                    text = TTF_RenderText_Shaded(font, message, *forecol, *backcol);
                 break;
             case TextRenderBlended:
-                text = TTF_RenderText_Blended(font, message, *forecol);
+                if (wrap)
+                    text = TTF_RenderText_Blended_Wrapped(font, message, *forecol, wrapwidth);
+                else
+                    text = TTF_RenderText_Blended(font, message, *forecol);
                 break;
             }
             break;
@@ -289,13 +325,22 @@ int main(int argc, char *argv[])
         case RENDER_UTF8:
             switch (rendermethod) {
             case TextRenderSolid:
-                text = TTF_RenderUTF8_Solid(font, message, *forecol);
+                if (wrap)
+                    text = TTF_RenderUTF8_Solid_Wrapped(font, message, *forecol, wrapwidth);
+                else
+                    text = TTF_RenderUTF8_Solid(font, message, *forecol);
                 break;
             case TextRenderShaded:
-                text = TTF_RenderUTF8_Shaded(font, message, *forecol, *backcol);
+                if (wrap)
+                    text = TTF_RenderUTF8_Shaded_Wrapped(font, message, *forecol, *backcol, wrapwidth);
+                else
+                    text = TTF_RenderUTF8_Shaded(font, message, *forecol, *backcol);
                 break;
             case TextRenderBlended:
-                text = TTF_RenderUTF8_Blended(font, message, *forecol);
+                if (wrap)
+                    text = TTF_RenderUTF8_Blended_Wrapped(font, message, *forecol, wrapwidth);
+                else
+                    text = TTF_RenderUTF8_Blended(font, message, *forecol);
                 break;
             }
             break;
@@ -305,13 +350,22 @@ int main(int argc, char *argv[])
             Uint16 *unicode_text = SDL_iconv_utf8_ucs2(message);
             switch (rendermethod) {
             case TextRenderSolid:
-                text = TTF_RenderUNICODE_Solid(font, unicode_text, *forecol);
+                if (wrap)
+                    text = TTF_RenderUNICODE_Solid_Wrapped(font, unicode_text, *forecol, wrapwidth);
+                else
+                    text = TTF_RenderUNICODE_Solid(font, unicode_text, *forecol);
                 break;
             case TextRenderShaded:
-                text = TTF_RenderUNICODE_Shaded(font, unicode_text, *forecol, *backcol);
+                if (wrap)
+                    text = TTF_RenderUNICODE_Shaded_Wrapped(font, unicode_text, *forecol, *backcol, wrapwidth);
+                else
+                    text = TTF_RenderUNICODE_Shaded(font, unicode_text, *forecol, *backcol);
                 break;
             case TextRenderBlended:
-                text = TTF_RenderUNICODE_Blended(font, unicode_text, *forecol);
+                if (wrap)
+                    text = TTF_RenderUNICODE_Blended_Wrapped(font, unicode_text, *forecol, wrapwidth);
+                else
+                    text = TTF_RenderUNICODE_Blended(font, unicode_text, *forecol);
                 break;
             }
             SDL_free(unicode_text);
