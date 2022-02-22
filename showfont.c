@@ -278,12 +278,13 @@ int main(int argc, char *argv[])
 
     /* Render and center the message */
     if (argc >= 2) {
-        if(wrap) // concatenate message
+        if(wrap) /* concatenate message */
         {
             size_t start = 0;
             size_t rest_bytes = sizeof(string);
+            int i;
             
-            for(int i = 2; i < argc && rest_bytes > 0; ++i)
+            for(i = 2; i < argc && rest_bytes > 0; ++i)
             {
                 int cnt = SDL_snprintf(string+start, rest_bytes, "%s%s", (i == 2 ? "" : "\n"), argv[i]);
                 if(cnt <= 0) break;

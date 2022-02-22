@@ -117,7 +117,7 @@ int TTF_SetScript(int script) /* hb_script_t */
 #define HAVE_BLIT_GLYPH_32
 
 /* Use Duff's device to unroll loops */
-//#define USE_DUFFS_LOOP
+/*#define USE_DUFFS_LOOP*/
 
 #if defined(HAVE_SSE2_INTRINSICS)
 static SDL_INLINE int hasSSE2()
@@ -581,11 +581,11 @@ static SDL_INLINE void BG_Blended_Opaque_SSE(const TTF_Image *image, Uint32 *des
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
             /* Read 16 Uint8 at once and put into 4 __m128i */
-            s  = _mm_loadu_si128(src);          // load unaligned
-            d0 = _mm_load_si128(dst);           // load
-            d1 = _mm_load_si128(dst + 1);       // load
-            d2 = _mm_load_si128(dst + 2);       // load
-            d3 = _mm_load_si128(dst + 3);       // load
+            s  = _mm_loadu_si128(src);          /* load unaligned */
+            d0 = _mm_load_si128(dst);           /* load */
+            d1 = _mm_load_si128(dst + 1);       /* load */
+            d2 = _mm_load_si128(dst + 2);       /* load */
+            d3 = _mm_load_si128(dst + 3);       /* load */
 
             L  = _mm_unpacklo_epi8(zero, s);
             H  = _mm_unpackhi_epi8(zero, s);
@@ -594,16 +594,16 @@ static SDL_INLINE void BG_Blended_Opaque_SSE(const TTF_Image *image, Uint32 *des
             s1 = _mm_unpackhi_epi8(zero, L);
             s2 = _mm_unpacklo_epi8(zero, H);
             s3 = _mm_unpackhi_epi8(zero, H);
-                                                // already shifted by 24
-            r0 = _mm_or_si128(d0, s0);          // or
-            r1 = _mm_or_si128(d1, s1);          // or
-            r2 = _mm_or_si128(d2, s2);          // or
-            r3 = _mm_or_si128(d3, s3);          // or
+                                                /* already shifted by 24 */
+            r0 = _mm_or_si128(d0, s0);          /* or */
+            r1 = _mm_or_si128(d1, s1);          /* or */
+            r2 = _mm_or_si128(d2, s2);          /* or */
+            r3 = _mm_or_si128(d3, s3);          /* or */
 
-            _mm_store_si128(dst, r0);           // store
-            _mm_store_si128(dst + 1, r1);       // store
-            _mm_store_si128(dst + 2, r2);       // store
-            _mm_store_si128(dst + 3, r3);       // store
+            _mm_store_si128(dst, r0);           /* store */
+            _mm_store_si128(dst + 1, r1);       /* store */
+            _mm_store_si128(dst + 2, r2);       /* store */
+            _mm_store_si128(dst + 3, r3);       /* store */
 
             dst += 4;
             src += 1;
@@ -630,48 +630,48 @@ static SDL_INLINE void BG_Blended_SSE(const TTF_Image *image, Uint32 *destinatio
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
             /* Read 16 Uint8 at once and put into 4 __m128i */
-            s  = _mm_loadu_si128(src);          // load unaligned
-            d0 = _mm_load_si128(dst);           // load
-            d1 = _mm_load_si128(dst + 1);       // load
-            d2 = _mm_load_si128(dst + 2);       // load
-            d3 = _mm_load_si128(dst + 3);       // load
+            s  = _mm_loadu_si128(src);          /* load unaligned */
+            d0 = _mm_load_si128(dst);           /* load */
+            d1 = _mm_load_si128(dst + 1);       /* load */
+            d2 = _mm_load_si128(dst + 2);       /* load */
+            d3 = _mm_load_si128(dst + 3);       /* load */
 
-            L  = _mm_unpacklo_epi8(s, zero);    // interleave, no shifting
-            H  = _mm_unpackhi_epi8(s, zero);    // enough room to multiply
+            L  = _mm_unpacklo_epi8(s, zero);    /* interleave, no shifting */
+            H  = _mm_unpackhi_epi8(s, zero);    /* enough room to multiply */
 
             /* Apply: alpha_table[i] = ((i * fg.a / 255) << 24; */
             /* Divide by 255 is done as:    (x + 1 + (x >> 8)) >> 8 */
 
-            L  = _mm_mullo_epi16(L, alpha);     // x := i * fg.a
+            L  = _mm_mullo_epi16(L, alpha);     /* x := i * fg.a */
             H  = _mm_mullo_epi16(H, alpha);
 
-            Ls8 = _mm_srli_epi16(L, 8);         // x >> 8
+            Ls8 = _mm_srli_epi16(L, 8);         /* x >> 8 */
             Hs8 = _mm_srli_epi16(H, 8);
-            L = _mm_add_epi16(L, one);          // x + 1
+            L = _mm_add_epi16(L, one);          /* x + 1 */
             H = _mm_add_epi16(H, one);
-            L = _mm_add_epi16(L, Ls8);          // x + 1 + (x >> 8)
+            L = _mm_add_epi16(L, Ls8);          /* x + 1 + (x >> 8) */
             H = _mm_add_epi16(H, Hs8);
-            L = _mm_srli_epi16(L, 8);           // ((x + 1 + (x >> 8)) >> 8
+            L = _mm_srli_epi16(L, 8);           /* ((x + 1 + (x >> 8)) >> 8 */
             H = _mm_srli_epi16(H, 8);
 
-            L = _mm_slli_epi16(L, 8);           // shift << 8, so we're prepared
-            H = _mm_slli_epi16(H, 8);           // to have final format << 24
+            L = _mm_slli_epi16(L, 8);           /* shift << 8, so we're prepared */
+            H = _mm_slli_epi16(H, 8);           /* to have final format << 24 */
 
             s0 = _mm_unpacklo_epi8(zero, L);
             s1 = _mm_unpackhi_epi8(zero, L);
             s2 = _mm_unpacklo_epi8(zero, H);
             s3 = _mm_unpackhi_epi8(zero, H);
-                                                // already shifted by 24
+                                                /* already shifted by 24 */
 
-            r0 = _mm_or_si128(d0, s0);          // or
-            r1 = _mm_or_si128(d1, s1);          // or
-            r2 = _mm_or_si128(d2, s2);          // or
-            r3 = _mm_or_si128(d3, s3);          // or
+            r0 = _mm_or_si128(d0, s0);          /* or */
+            r1 = _mm_or_si128(d1, s1);          /* or */
+            r2 = _mm_or_si128(d2, s2);          /* or */
+            r3 = _mm_or_si128(d3, s3);          /* or */
 
-            _mm_store_si128(dst, r0);           // store
-            _mm_store_si128(dst + 1, r1);       // store
-            _mm_store_si128(dst + 2, r2);       // store
-            _mm_store_si128(dst + 3, r3);       // store
+            _mm_store_si128(dst, r0);           /* store */
+            _mm_store_si128(dst + 1, r1);       /* store */
+            _mm_store_si128(dst + 2, r2);       /* store */
+            _mm_store_si128(dst + 3, r3);       /* store */
 
             dst += 4;
             src += 1;
@@ -702,25 +702,25 @@ static SDL_INLINE void BG_Blended_Opaque_NEON(const TTF_Image *image, Uint32 *de
             /* Read 4 Uint32 and put 16 Uint8 into uint32x4x2_t (uint8x16x2_t)
              * takes advantage of vzipq_u8 which produces two lanes */
 
-            s   = vld1q_u32(src);               // load
-            d0  = vld1q_u32(dst);               // load
-            d1  = vld1q_u32(dst + 4);           // load
-            d2  = vld1q_u32(dst + 8);           // load
-            d3  = vld1q_u32(dst + 12);          // load
+            s   = vld1q_u32(src);               /* load */
+            d0  = vld1q_u32(dst);               /* load */
+            d1  = vld1q_u32(dst + 4);           /* load */
+            d2  = vld1q_u32(dst + 8);           /* load */
+            d3  = vld1q_u32(dst + 12);          /* load */
 
-            sx   = vzipq_u8(zero, s);           // interleave
-            sx01 = vzipq_u8(zero, sx.val[0]);   // interleave
-            sx23 = vzipq_u8(zero, sx.val[1]);   // interleave
-                                                // already shifted by 24
-            r0  = vorrq_u32(d0, sx01.val[0]);   // or
-            r1  = vorrq_u32(d1, sx01.val[1]);   // or
-            r2  = vorrq_u32(d2, sx23.val[0]);   // or
-            r3  = vorrq_u32(d3, sx23.val[1]);   // or
+            sx   = vzipq_u8(zero, s);           /* interleave */
+            sx01 = vzipq_u8(zero, sx.val[0]);   /* interleave */
+            sx23 = vzipq_u8(zero, sx.val[1]);   /* interleave */
+                                                /* already shifted by 24 */
+            r0  = vorrq_u32(d0, sx01.val[0]);   /* or */
+            r1  = vorrq_u32(d1, sx01.val[1]);   /* or */
+            r2  = vorrq_u32(d2, sx23.val[0]);   /* or */
+            r3  = vorrq_u32(d3, sx23.val[1]);   /* or */
 
-            vst1q_u32(dst, r0);                 // store
-            vst1q_u32(dst + 4, r1);             // store
-            vst1q_u32(dst + 8, r2);             // store
-            vst1q_u32(dst + 12, r3);            // store
+            vst1q_u32(dst, r0);                 /* store */
+            vst1q_u32(dst + 4, r1);             /* store */
+            vst1q_u32(dst + 8, r2);             /* store */
+            vst1q_u32(dst + 12, r3);            /* store */
 
             dst += 16;
             src += 4;
@@ -753,49 +753,49 @@ static SDL_INLINE void BG_Blended_NEON(const TTF_Image *image, Uint32 *destinati
             /* Read 4 Uint32 and put 16 Uint8 into uint32x4x2_t (uint8x16x2_t)
              * takes advantage of vzipq_u8 which produces two lanes */
 
-            s  = vld1q_u32(src);                        // load
-            d0 = vld1q_u32(dst);                        // load
-            d1 = vld1q_u32(dst + 4);                    // load
-            d2 = vld1q_u32(dst + 8);                    // load
-            d3 = vld1q_u32(dst + 12);                   // load
+            s  = vld1q_u32(src);                        /* load */
+            d0 = vld1q_u32(dst);                        /* load */
+            d1 = vld1q_u32(dst + 4);                    /* load */
+            d2 = vld1q_u32(dst + 8);                    /* load */
+            d3 = vld1q_u32(dst + 12);                   /* load */
 
-            sx = vzipq_u8(s, zero);                     // interleave, no shifting
-                                                        // enough room to multiply
+            sx = vzipq_u8(s, zero);                     /* interleave, no shifting */
+                                                        /* enough room to multiply */
 
             /* Apply: alpha_table[i] = ((i * fg.a / 255) << 24; */
             /* Divide by 255 is done as:    (x + 1 + (x >> 8)) >> 8 */
 
-            sx.val[0] = vmulq_u16(sx.val[0], alpha);    // x := i * fg.a
+            sx.val[0] = vmulq_u16(sx.val[0], alpha);    /* x := i * fg.a */
             sx.val[1] = vmulq_u16(sx.val[1], alpha);
 
-            Ls8 = vshrq_n_u16(sx.val[0], 8);            // x >> 8
+            Ls8 = vshrq_n_u16(sx.val[0], 8);            /* x >> 8 */
             Hs8 = vshrq_n_u16(sx.val[1], 8);
 
-            sx.val[0] = vaddq_u16(sx.val[0], one);      // x + 1
+            sx.val[0] = vaddq_u16(sx.val[0], one);      /* x + 1 */
             sx.val[1] = vaddq_u16(sx.val[1], one);
 
-            sx.val[0] = vaddq_u16(sx.val[0], Ls8);      // x + 1 + (x >> 8)
+            sx.val[0] = vaddq_u16(sx.val[0], Ls8);      /* x + 1 + (x >> 8) */
             sx.val[1] = vaddq_u16(sx.val[1], Hs8);
 
-            sx.val[0] = vshrq_n_u16(sx.val[0], 8);      // ((x + 1 + (x >> 8)) >> 8
+            sx.val[0] = vshrq_n_u16(sx.val[0], 8);      /* ((x + 1 + (x >> 8)) >> 8 */
             sx.val[1] = vshrq_n_u16(sx.val[1], 8);
 
-            sx.val[0] = vshlq_n_u16(sx.val[0], 8);      // shift << 8, so we're prepared
-            sx.val[1] = vshlq_n_u16(sx.val[1], 8);      // to have final format << 24
+            sx.val[0] = vshlq_n_u16(sx.val[0], 8);      /* shift << 8, so we're prepared */
+            sx.val[1] = vshlq_n_u16(sx.val[1], 8);      /* to have final format << 24 */
 
-            sx01 = vzipq_u8(zero, sx.val[0]);           // interleave
-            sx23 = vzipq_u8(zero, sx.val[1]);           // interleave
-                                                        // already shifted by 24
+            sx01 = vzipq_u8(zero, sx.val[0]);           /* interleave */
+            sx23 = vzipq_u8(zero, sx.val[1]);           /* interleave */
+                                                        /* already shifted by 24 */
 
-            r0  = vorrq_u32(d0, sx01.val[0]);           // or
-            r1  = vorrq_u32(d1, sx01.val[1]);           // or
-            r2  = vorrq_u32(d2, sx23.val[0]);           // or
-            r3  = vorrq_u32(d3, sx23.val[1]);           // or
+            r0  = vorrq_u32(d0, sx01.val[0]);           /* or */
+            r1  = vorrq_u32(d1, sx01.val[1]);           /* or */
+            r2  = vorrq_u32(d2, sx23.val[0]);           /* or */
+            r3  = vorrq_u32(d3, sx23.val[1]);           /* or */
 
-            vst1q_u32(dst, r0);                         // store
-            vst1q_u32(dst + 4, r1);                     // store
-            vst1q_u32(dst + 8, r2);                     // store
-            vst1q_u32(dst + 12, r3);                    // store
+            vst1q_u32(dst, r0);                         /* store */
+            vst1q_u32(dst + 4, r1);                     /* store */
+            vst1q_u32(dst + 8, r2);                     /* store */
+            vst1q_u32(dst + 12, r3);                    /* store */
 
             dst += 16;
             src += 4;
@@ -876,10 +876,10 @@ static SDL_INLINE void BG_SSE(const TTF_Image *image, Uint8 *destination, Sint32
     while (height--) {
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-            s = _mm_loadu_si128(src);   // load unaligned
-            d = _mm_load_si128(dst);    // load
-            r = _mm_or_si128(d, s);     // or
-            _mm_store_si128(dst, r);    // store
+            s = _mm_loadu_si128(src);   /* load unaligned */
+            d = _mm_load_si128(dst);    /* load */
+            r = _mm_or_si128(d, s);     /* or */
+            _mm_store_si128(dst, r);    /* store */
             src += 1;
             dst += 1;
         , width);
@@ -903,10 +903,10 @@ static SDL_INLINE void BG_NEON(const TTF_Image *image, Uint8 *destination, Sint3
     while (height--) {
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-            s = vld1q_u8(src);  // load
-            d = vld1q_u8(dst);  // load
-            r = vorrq_u8(d, s); // or
-            vst1q_u8(dst, r);   // store
+            s = vld1q_u8(src);  /* load */
+            d = vld1q_u8(dst);  /* load */
+            r = vorrq_u8(d, s); /* or */
+            vst1q_u8(dst, r);   /* store */
             src += 16;
             dst += 16;
         , width);
@@ -2337,7 +2337,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                     if (ft_render_mode != FT_RENDER_MODE_SDF) {
                         SDL_memcpy(dstp, srcp, src->width);
                     } else {
-                        int x;
+                        unsigned int x;
                         for (x = 0; x < src->width; x++) {
                             Uint8 s = srcp[x];
                             Uint8 d;
@@ -2888,9 +2888,6 @@ static SDL_INLINE Uint32 TTF_StringView_SplitChar(TTF_StringView *rest)
         const char* p = (const char*)rest->data;
         Uint32 c = UTF8_getch(p, rest->size, &inc);
 
-        //if(c == UNKNOWN_UNICODE) /* try to display one <?> character representing an invalid byte */
-        //    inc = 1;
-
         rest->data = (const void*)(p+inc);
         rest->size -= inc;
 
@@ -3045,7 +3042,6 @@ static int TTF_Size_Internal(TTF_Font *font,
     hb_glyph_position_t *hb_glyph_position;
     int y = 0;
 #else
-    size_t textlen;
     int skip_first = 1;
     FT_UInt prev_index = 0;
     FT_Pos  prev_delta = 0;
@@ -3579,6 +3575,7 @@ SDL_bool TTF_SplitWrap_Lines_Internal(TTF_Font *font, TTF_StringView **p_lines, 
         size_t save_textlen = (size_t)(-1);
         const void *save_text  = NULL;
         const void *line_start = text.data;
+        TTF_StringView *line;
 
         if (*p_numLines >= maxNumLines) {
             TTF_StringView *new_lines;
@@ -3595,7 +3592,7 @@ SDL_bool TTF_SplitWrap_Lines_Internal(TTF_Font *font, TTF_StringView **p_lines, 
             *p_lines = new_lines;
         }
 
-        TTF_StringView *line = &(*p_lines)[*p_numLines];
+        line = &(*p_lines)[*p_numLines];
         *line = text;
         ++*p_numLines;
 
