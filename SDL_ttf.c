@@ -316,9 +316,12 @@ typedef enum {
 } str_type_t;
 
 typedef struct TTF_StringView {
-    const void* data;
+    const void* data; /* points to the contents of the string,
+                       * invariant: never points to a BOM at position 0 in UNICODE,
+                       * this way an empty string always means size == 0 */
     size_t size; /* number of bytes for TEXT and UTF8, number of words for UNICODE */
     str_type_t type;
+    SDL_bool swap; /* characters until the next BOM are byteswapped */
 } TTF_StringView;
 
 
@@ -2802,52 +2805,59 @@ static SDL_INLINE size_t TTF_UNICODE_strlen(const Uint16 *text) {
     return iter - text;
 }
 
-static TTF_StringView TTF_MakeStringView_UTF8(const char *text) {
-    TTF_StringView sv;
-    sv.data = text;
-    sv.size = text != NULL ? SDL_strlen(text) : 0;
-    sv.type = STR_UTF8;
-    return sv;
+/* RETURN: number of skipped BOMs, write to p_swapped if it needs to be swapped*/
+static SDL_INLINE size_t TTF_UNICODE_SkipBOM(const Uint16 *text, size_t text_size, SDL_bool* p_swapped) {
+    size_t i = 0;
+    for(; i < text_size; ++i) {
+        if(text[i] == UNICODE_BOM_NATIVE)
+            *p_swapped = SDL_FALSE;
+        else if(text[i] == UNICODE_BOM_SWAPPED)
+            *p_swapped = SDL_TRUE;
+        else
+            break;
+    }
+    return i;
 }
 
-static TTF_StringView TTF_MakeStringView_UTF8_SZ(const char *text, size_t size_bytes) {
+static SDL_INLINE TTF_StringView TTF_MakeStringView_UTF8_SZ(const char *text, size_t size_bytes) {
     TTF_StringView sv;
     sv.data = text;
     sv.size = size_bytes;
     sv.type = STR_UTF8;
+    sv.swap = SDL_FALSE;
     return sv;
 }
 
-static TTF_StringView TTF_MakeStringView_TEXT(const char *text) {
-    TTF_StringView sv;
-    sv.data = text;
-    sv.size = text != NULL ? SDL_strlen(text) : 0;
-    sv.type = STR_TEXT;
-    return sv;
+static SDL_INLINE TTF_StringView TTF_MakeStringView_UTF8(const char *text) {
+    return TTF_MakeStringView_UTF8_SZ(text, text != NULL ? SDL_strlen(text) : 0);
 }
 
-static TTF_StringView TTF_MakeStringView_TEXT_SZ(const char *text, size_t size) {
+static SDL_INLINE TTF_StringView TTF_MakeStringView_TEXT_SZ(const char *text, size_t size) {
     TTF_StringView sv;
     sv.data = text;
     sv.size = size;
     sv.type = STR_TEXT;
+    sv.swap = SDL_FALSE;
     return sv;
 }
 
-static TTF_StringView TTF_MakeStringView_UNICODE(const Uint16 *text) {
+static SDL_INLINE TTF_StringView TTF_MakeStringView_TEXT(const char *text) {
+    return TTF_MakeStringView_TEXT_SZ(text, text != NULL ? SDL_strlen(text) : 0);
+}
+
+static SDL_INLINE TTF_StringView TTF_MakeStringView_UNICODE_SZ(const Uint16 *text, size_t size) {
     TTF_StringView sv;
-    sv.data = text;
-    sv.size = text != NULL ? TTF_UNICODE_strlen(text) : 0;
+    size_t skip;
+    sv.swap = TTF_byteswapped;
+    skip = TTF_UNICODE_SkipBOM(text, size, &sv.swap);
+    sv.data = text+skip;
+    sv.size = size-skip;
     sv.type = STR_UNICODE;
     return sv;
 }
 
-static TTF_StringView TTF_MakeStringView_UNICODE_SZ(const Uint16 *text, size_t size) {
-    TTF_StringView sv;
-    sv.data = text;
-    sv.size = size;
-    sv.type = STR_UNICODE;
-    return sv;
+static SDL_INLINE TTF_StringView TTF_MakeStringView_UNICODE(const Uint16 *text) {
+    return TTF_MakeStringView_UNICODE_SZ(text, text != NULL ? TTF_UNICODE_strlen(text) : 0);
 }
 
 static SDL_bool CharacterIsDelimiter(Uint32 c)
@@ -2871,11 +2881,18 @@ static SDL_INLINE Uint32 TTF_StringView_SplitChar(TTF_StringView *rest)
 {
     if (rest->type == STR_UNICODE) {
         const Uint16* p = rest->data;
+        Uint16 c = *p;
+        size_t skip = 0;
 
-        rest->data = (const void*)(p+1); /* 2 bytes */
-        rest->size--;
+        if(rest->swap) c = SDL_Swap16(c);
 
-        return p[0];
+        /* Keep invariant: UNICODE-StringView never starts with a BOM */
+        skip = TTF_UNICODE_SkipBOM(p+1, rest->size-1, &rest->swap);
+
+        rest->data = (const void*)(p+1+skip); /* 2 bytes */
+        rest->size -= 1+skip;
+
+        return c;
     } else if (rest->type == STR_TEXT) {
         const char* p = rest->data;
 
@@ -3077,7 +3094,15 @@ static int TTF_Size_Internal(TTF_Font *font,
     if(text.type == STR_TEXT)
         hb_buffer_add_latin1(hb_buffer, (const Uint8*)text.data, text.size, 0, -1);
     else if(text.type == STR_UNICODE)
-        hb_buffer_add_utf16(hb_buffer, (const Uint16*)text.data, text.size, 0, -1);
+    {
+        /*hb_buffer_add_utf16(hb_buffer, (const Uint16*)text.data, text.size, 0, -1);*/
+        TTF_StringView iter = text;
+        while (iter.size > 0) {
+            Uint16 c = (Uint16)TTF_StringView_SplitChar(&iter);
+
+            hb_buffer_add_utf16(hb_buffer, &c, 1, 0, -1);
+        }
+    }
     else
         hb_buffer_add_utf8(hb_buffer, (const char*)text.data, text.size, 0, -1);
     
@@ -3574,7 +3599,6 @@ SDL_bool TTF_SplitWrap_Lines_Internal(TTF_Font *font, TTF_StringView **p_lines, 
         int extent = 0, max_count = 0, char_count = 0;
         size_t save_textlen = (size_t)(-1);
         const void *save_text  = NULL;
-        const void *line_start = text.data;
         TTF_StringView *line;
 
         if (*p_numLines >= maxNumLines) {
@@ -3584,7 +3608,7 @@ SDL_bool TTF_SplitWrap_Lines_Internal(TTF_Font *font, TTF_StringView **p_lines, 
             } else {
                 maxNumLines += (*p_width / wrapLength) + 1;
             }
-            new_lines = (TTF_StringView *)SDL_realloc(*p_lines, maxNumLines * sizeof (*p_lines));
+            new_lines = (TTF_StringView *)SDL_realloc(*p_lines, maxNumLines * sizeof (*new_lines));
             if (new_lines == NULL) {
                 SDL_OutOfMemory();
                 return SDL_FALSE;
@@ -3627,7 +3651,7 @@ SDL_bool TTF_SplitWrap_Lines_Internal(TTF_Font *font, TTF_StringView **p_lines, 
                 save_text = text.data;
                 /* Break, if new line */
                 if (c == '\n' || c == '\r') {
-                    line->size = StringPointerDifference(before_char, line_start, text.type);
+                    line->size = StringPointerDifference(before_char, line->data, text.type);
                     break;
                 }
             }
@@ -3650,7 +3674,7 @@ SDL_bool TTF_SplitWrap_Lines_Internal(TTF_Font *font, TTF_StringView **p_lines, 
              * Note, that if the character is a new line, the string is already split, it would exclude the new line.
              * Thus the size is already smaller than the possible rest
              * -> minimum of both values */
-            size_t len = StringPointerDifference(text.data, line_start, text.type);
+            size_t len = StringPointerDifference(text.data, line->data, text.type);
             line->size = SDL_min(line->size, len);
         }
     } while (text.size > 0);
