@@ -61,14 +61,6 @@ fi
 AC_CHECK_PROGS(WINDRES, [windres $hostaliaswindres $host_os-windres])
 
 case "$host" in
-    *-*-cygwin* | *-*-mingw*)
-        ;;
-
-    *)  AC_FUNC_ALLOCA
-        ;;
-esac
-
-case "$host" in
     *-*-beos*)
         ac_default_prefix=/boot/develop/tools/gnupro
         ;;
