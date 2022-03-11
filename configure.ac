@@ -33,7 +33,7 @@ AC_SUBST([PATCH_VERSION], PATCH_VERSION_MACRO)
 AC_SUBST([INTERFACE_AGE], INTERFACE_AGE_MACRO)
 AC_SUBST([BINARY_AGE], BINARY_AGE_MACRO)
 
-# libtool versioning
+dnl libtool versioning
 LT_INIT([win32-dll])
 
 LT_RELEASE=$MAJOR_VERSION.$MINOR_VERSION
@@ -64,14 +64,6 @@ fi
 AC_CHECK_PROGS(WINDRES, [windres $hostaliaswindres $host_os-windres])
 
 case "$host" in
-    *-*-cygwin* | *-*-mingw*)
-        ;;
-
-    *)  AC_FUNC_ALLOCA
-        ;;
-esac
-
-case "$host" in
     *-*-beos*)
         ac_default_prefix=/boot/develop/tools/gnupro
         ;;
@@ -91,16 +83,6 @@ case "$host" in
         ;;
 esac
 AM_CONDITIONAL(USE_VERSION_RC, test x$use_version_rc = xtrue)
-
-dnl Check for SDL
-SDL_VERSION=1.2.4
-AC_SUBST(SDL_VERSION)
-AM_PATH_SDL($SDL_VERSION,
-            :,
-	    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
-)
-CFLAGS="$CFLAGS $SDL_CFLAGS"
-LIBS="$LIBS $SDL_LIBS"
 
 dnl See if GCC's -Wall is supported.
 CheckWarnAll()
@@ -165,6 +147,19 @@ CheckWarnAll
 
 dnl check for GCC visibility attributes
 CheckVisibilityHidden
+
+dnl check for alloca()
+AC_FUNC_ALLOCA
+
+dnl Check for SDL
+SDL_VERSION=1.2.4
+AC_SUBST(SDL_VERSION)
+AM_PATH_SDL($SDL_VERSION,
+            :,
+	    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+)
+CFLAGS="$CFLAGS $SDL_CFLAGS"
+LIBS="$LIBS $SDL_LIBS"
 
 dnl Check for the FreeType 2 library
 PKG_CHECK_MODULES([FT2], [freetype2 >= 7.0.1], [
