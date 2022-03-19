@@ -1257,7 +1257,7 @@ static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Ui
      */
     void *pixels, *ptr;
     /* Worse case at the end of line pulling 'alignment' extra blank pixels */
-    Sint64 pitch = width + alignment;
+    Sint64 pitch = (Sint64)width + (Sint64)alignment;
     pitch += alignment;
     pitch &= ~alignment;
     size = height * pitch + sizeof (void *) + alignment;
@@ -1321,7 +1321,7 @@ static SDL_Surface* Create_Surface_Shaded(int width, int height, SDL_Color fg, S
      */
     void *pixels, *ptr;
     /* Worse case at the end of line pulling 'alignment' extra blank pixels */
-    Sint64 pitch = width + alignment;
+    Sint64 pitch = (Sint64)width + (Sint64)alignment;
     pitch += alignment;
     pitch &= ~alignment;
     size = height * pitch + sizeof (void *) + alignment;
@@ -1418,7 +1418,7 @@ static SDL_Surface *Create_Surface_Blended(int width, int height, SDL_Color fg, 
         Sint64 size;
         void *pixels, *ptr;
         /* Worse case at the end of line pulling 'alignment' extra blank pixels */
-        Sint64 pitch = (width + alignment) * 4;
+        Sint64 pitch = ((Sint64)width + (Sint64)alignment) * 4;
         pitch += alignment;
         pitch &= ~alignment;
         size = height * pitch + sizeof (void *) + alignment;
