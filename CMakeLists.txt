@@ -93,6 +93,9 @@ target_include_directories(SDL2_ttf
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
 
+option(SDL2_TTF_DISABLE_INSTALL "Disable installing SDL2_ttf" OFF)
+if (NOT SDL2_TTF_DISABLE_INSTALL)
+
 install(
   TARGETS SDL2_ttf
   EXPORT SDL2_ttfTargets
@@ -153,5 +156,7 @@ if (PKG_CONFIG_FOUND)
       DESTINATION "lib${LIB_SUFFIX}/pkgconfig")
   endif ()
 endif ()
+
+endif (NOT SDL2_TTF_DISABLE_INSTALL)
 
 endif()
