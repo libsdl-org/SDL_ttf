@@ -153,7 +153,7 @@ static SDL_INLINE int hasNEON()
 #define GLYPH_ITALICS  0x0366AL
 
 /* Handy routines for converting from fixed point 26.6 */
-#define FT_FLOOR(X) (((X) & -64) / 64)
+#define FT_FLOOR(X) (int)(((X) & -64) / 64)
 #define FT_CEIL(X)  FT_FLOOR((X) + 63)
 
 /* Handy routine for converting to fixed point 26.6 */
@@ -1275,7 +1275,7 @@ static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Ui
     pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
     ((void **)pixels)[-1] = ptr;
 
-    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_INDEX8);
+    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, (int)pitch, SDL_PIXELFORMAT_INDEX8);
     if (textbuf == NULL) {
         SDL_free(ptr);
         return NULL;
@@ -1339,7 +1339,7 @@ static SDL_Surface* Create_Surface_Shaded(int width, int height, SDL_Color fg, S
     pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
     ((void **)pixels)[-1] = ptr;
 
-    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_INDEX8);
+    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, (int)pitch, SDL_PIXELFORMAT_INDEX8);
     if (textbuf == NULL) {
         SDL_free(ptr);
         return NULL;
@@ -1436,7 +1436,7 @@ static SDL_Surface *Create_Surface_Blended(int width, int height, SDL_Color fg, 
         pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
         ((void **)pixels)[-1] = ptr;
 
-        textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_ARGB8888);
+        textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, (int)pitch, SDL_PIXELFORMAT_ARGB8888);
         if (textbuf == NULL) {
             SDL_free(ptr);
             return NULL;
