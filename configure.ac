@@ -53,12 +53,7 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-if test -z "$host_alias"; then
-    hostaliaswindres=
-else
-    hostaliaswindres="$host_alias-windres"
-fi
-AC_CHECK_PROGS(WINDRES, [windres $hostaliaswindres $host_os-windres])
+LT_PROG_RC
 
 case "$host" in
     *-*-beos*)
@@ -74,9 +69,8 @@ case "$host" in
                 ac_default_prefix=$BUILD_PREFIX
             fi
         fi
-        if test x$WINDRES != x; then
-            use_version_rc=true
-        fi
+        use_version_rc=true
+        LT_EXTRA="-Wl,version.o"
         ;;
     *-*-os2*)
         # disable static builds on os/2
@@ -320,7 +314,6 @@ else
 fi
 AC_SUBST([GL_LIBS])
 AC_SUBST([MATHLIB])
-AC_SUBST([WINDRES])
 AC_SUBST([TTF_CFLAGS])
 AC_SUBST([TTF_LIBS])
 AC_SUBST([PC_REQUIRES])

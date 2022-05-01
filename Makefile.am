@@ -122,17 +122,12 @@ else
 LINKER = $(LINK)
 endif
 
-if USE_VERSION_RC
-libSDL2_ttf_la_LDFLAGS = 	\
-	-no-undefined		\
-	-release $(LT_RELEASE)	\
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -Wl,version.o
-libSDL2_ttf_la_DEPENDENCIES = version.o
-else
 libSDL2_ttf_la_LDFLAGS = 	\
 	-no-undefined		\
 	-release $(LT_RELEASE)	\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) $(LT_EXTRA)
+if USE_VERSION_RC
+libSDL2_ttf_la_DEPENDENCIES = version.o
 endif
 libSDL2_ttf_la_LINK = $(LINKER) $(libSDL2_ttf_la_LDFLAGS)
 libSDL2_ttf_la_LIBADD = $(TTF_LIBS) @MATHLIB@
@@ -140,8 +135,8 @@ libSDL2_ttf_la_LIBADD = $(TTF_LIBS) @MATHLIB@
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = SDL2_ttf.pc
 
-%.o : %.rc
-	$(WINDRES) $< $@
+.rc.o:
+	$(RC) $< $@
 
 EXTRA_DIST = CHANGES.txt COPYING.txt README.txt \
 	Android.mk		\

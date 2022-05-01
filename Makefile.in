@@ -615,6 +615,7 @@ PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
+RC = @RC@
 SDL2_CONFIG = @SDL2_CONFIG@
 SDL_CFLAGS = @SDL_CFLAGS@
 SDL_LIBS = @SDL_LIBS@
@@ -626,7 +627,6 @@ STRIP = @STRIP@
 TTF_CFLAGS = @TTF_CFLAGS@
 TTF_LIBS = @TTF_LIBS@
 VERSION = @VERSION@
-WINDRES = @WINDRES@
 XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
@@ -798,15 +798,10 @@ HARFBUZZ_SOURCES = \
 @OS_WIN32_FALSE@@USE_BUILTIN_HARFBUZZ_TRUE@LINKER = $(LINK)
 @OS_WIN32_TRUE@@USE_BUILTIN_HARFBUZZ_TRUE@LINKER = $(CXXLINK)
 @USE_BUILTIN_HARFBUZZ_FALSE@LINKER = $(LINK)
-@USE_VERSION_RC_FALSE@libSDL2_ttf_la_LDFLAGS = \
-@USE_VERSION_RC_FALSE@	-no-undefined		\
-@USE_VERSION_RC_FALSE@	-release $(LT_RELEASE)	\
-@USE_VERSION_RC_FALSE@	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) $(LT_EXTRA)
-
-@USE_VERSION_RC_TRUE@libSDL2_ttf_la_LDFLAGS = \
-@USE_VERSION_RC_TRUE@	-no-undefined		\
-@USE_VERSION_RC_TRUE@	-release $(LT_RELEASE)	\
-@USE_VERSION_RC_TRUE@	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -Wl,version.o
+libSDL2_ttf_la_LDFLAGS = \
+	-no-undefined		\
+	-release $(LT_RELEASE)	\
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) $(LT_EXTRA)
 
 @USE_VERSION_RC_TRUE@libSDL2_ttf_la_DEPENDENCIES = version.o
 libSDL2_ttf_la_LINK = $(LINKER) $(libSDL2_ttf_la_LDFLAGS)
@@ -831,7 +826,7 @@ glfont_LDADD = libSDL2_ttf.la @GL_LIBS@ @MATHLIB@
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cc .lo .o .obj
+.SUFFIXES: .c .cc .lo .o .obj .rc
 am--refresh: Makefile
 	@:
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
@@ -2807,8 +2802,8 @@ uninstall-am: uninstall-libLTLIBRARIES \
 .PRECIOUS: Makefile
 
 
-%.o : %.rc
-	$(WINDRES) $< $@
+.rc.o:
+	$(RC) $< $@
 
 # Rule to build tar-gzipped distribution package
 $(PACKAGE)-$(VERSION).tar.gz: distcheck
