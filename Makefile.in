@@ -209,6 +209,7 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 LT_AGE = @LT_AGE@
 LT_CURRENT = @LT_CURRENT@
+LT_EXTRA = @LT_EXTRA@
 LT_RELEASE = @LT_RELEASE@
 LT_REVISION = @LT_REVISION@
 MAJOR_VERSION = @MAJOR_VERSION@
@@ -238,6 +239,7 @@ PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
+RC = @RC@
 SDL_CFLAGS = @SDL_CFLAGS@
 SDL_CONFIG = @SDL_CONFIG@
 SDL_LIBS = @SDL_LIBS@
@@ -247,7 +249,6 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
-WINDRES = @WINDRES@
 XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
@@ -331,15 +332,10 @@ EXTRA_DIST = \
 	gcc-fat.sh		\
 	autogen.sh
 
-@USE_VERSION_RC_FALSE@libSDL_ttf_la_LDFLAGS = \
-@USE_VERSION_RC_FALSE@	-no-undefined		\
-@USE_VERSION_RC_FALSE@	-release $(LT_RELEASE)	\
-@USE_VERSION_RC_FALSE@	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
-
-@USE_VERSION_RC_TRUE@libSDL_ttf_la_LDFLAGS = \
-@USE_VERSION_RC_TRUE@	-no-undefined		\
-@USE_VERSION_RC_TRUE@	-release $(LT_RELEASE)	\
-@USE_VERSION_RC_TRUE@	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -Wl,version.o
+libSDL_ttf_la_LDFLAGS = \
+	-no-undefined		\
+	-release $(LT_RELEASE)	\
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) $(LT_EXTRA)
 
 @USE_VERSION_RC_TRUE@libSDL_ttf_la_DEPENDENCIES = version.o
 libSDL_ttf_la_LIBADD = @MATHLIB@
@@ -350,7 +346,7 @@ glfont_LDADD = libSDL_ttf.la @GL_LIBS@ @MATHLIB@
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .o .obj
+.SUFFIXES: .c .lo .o .obj .rc
 am--refresh: Makefile
 	@:
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
@@ -870,8 +866,8 @@ uninstall-am: uninstall-libLTLIBRARIES \
 	uninstall-libSDL_ttfincludeHEADERS uninstall-pkgconfigDATA
 
 
-%.o : %.rc
-	$(WINDRES) $< $@
+.rc.o:
+	$(RC) $< $@
 
 # Rule to build tar-gzipped distribution package
 $(PACKAGE)-$(VERSION).tar.gz: distcheck
