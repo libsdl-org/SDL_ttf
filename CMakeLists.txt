@@ -125,6 +125,17 @@ if (NOT TARGET SDL2::SDL2)
     IMPORTED_LOCATION "${SDL2_LIBRARY}")
 endif()
 
+if (APPLE)
+  # TODO: Use DYLIB_COMPATIBILITY_VERSION, DYLIB_CURRENT_VERSION here
+elseif (UNIX AND NOT ANDROID)
+  # This is compatible with the libtool build
+  set_target_properties(SDL2_ttf PROPERTIES
+    VERSION ${LT_VERSION}
+    SOVERSION ${LT_MAJOR}
+    OUTPUT_NAME "SDL2_ttf-${LT_RELEASE}"
+  )
+endif()
+
 if (BUILD_SHARED_LIBS)
   target_link_libraries(SDL2_ttf SDL2::SDL2)
   if (WIN32 OR CYGWIN)
