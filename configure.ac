@@ -51,9 +51,9 @@ AM_INIT_AUTOMAKE([1.16 foreign subdir-objects tar-ustar])
 dnl Check for tools
 AC_PROG_CC
 AC_PROG_CXX
+AC_CHECK_TOOL(RC,[windres],[:])
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-LT_PROG_RC
 
 case "$host" in
     *-*-beos*)
