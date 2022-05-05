@@ -33,6 +33,12 @@
 #include FT_TRUETYPE_IDS_H
 #include FT_IMAGE_H
 
+
+/* SDL_SIMD_ALIGNED is defined in SDL 2.0.12 and newer */
+#ifndef SDL_SIMD_ALIGNED
+#define SDL_SIMD_ALIGNED 0
+#endif
+
 /* Enable rendering with color
  * Freetype may need to be compiled with FT_CONFIG_OPTION_USE_PNG */
 #if defined(FT_HAS_COLOR)
