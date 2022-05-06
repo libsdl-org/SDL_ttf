@@ -16021,7 +16021,7 @@ fi
 
 SUMMARY="\nSDL2_ttf Configure Summary:\n"
 
-SDL_VERSION=2.0.8
+SDL_VERSION=2.0.12
 
 
 

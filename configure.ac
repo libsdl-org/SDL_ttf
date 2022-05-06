@@ -86,7 +86,7 @@ AM_CONDITIONAL(USE_VERSION_RC, test x$use_version_rc = xtrue)
 SUMMARY="\nSDL2_ttf Configure Summary:\n"
 
 dnl Check for SDL
-SDL_VERSION=2.0.8
+SDL_VERSION=2.0.12
 AC_SUBST(SDL_VERSION)
 AM_PATH_SDL2($SDL_VERSION,
             :,
