@@ -45,6 +45,8 @@ jobs:
           autoconf \
           automake \
           cmake \
+          file \
+          fonts-dejavu-core \
           libfreetype-dev \
           libharfbuzz-dev \
           libsdl2-dev \
@@ -87,6 +89,13 @@ jobs:
         set -eu
         parallel="$(getconf _NPROCESSORS_ONLN)"
         make -j"${parallel}" -C build-autotools V=1
+    - name: Test using showfont
+      if: "runner.os == 'Linux' && ! matrix.platform.cmake"
+      run: |
+        # Just check that it doesn't crash, we can't really test the results...
+        env -C build-autotools SDL_VIDEODRIVER=dummy ./showfont -dump /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+        # ... but we can at least assert that it outputs a .bmp
+        file build-autotools/glyph-100.bmp
     - name: Install with Autotools
       if: "! matrix.platform.cmake"
       run: |
