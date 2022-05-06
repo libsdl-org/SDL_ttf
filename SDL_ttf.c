@@ -2046,7 +2046,6 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             cached->sz_rows  += 2 * 8;
         }
 
-
         cached->stored |= CACHED_METRICS;
     }
 
@@ -2215,7 +2214,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                 }
 
 /* FT_RENDER_MODE_MONO and src->pixel_mode MONO */
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma warning(push, 1)
 #pragma warning(disable:4127)
 #endif
@@ -2290,8 +2289,6 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                     }                                                       \
                 }
 
-
-
                 if (mono) {
                     if (src->pixel_mode == FT_PIXEL_MODE_MONO) {
                         while (quotient--) {
@@ -2364,7 +2361,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                 }
             }
         }
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma warning(pop)
 #endif
 
