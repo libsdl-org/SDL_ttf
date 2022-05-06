@@ -70,6 +70,21 @@ set(SDL_TTF_VERSION "${SDL_TTF_MAJOR_VERSION}.${SDL_TTF_MINOR_VERSION}.${SDL_TTF
 
 ##### library generation #####
 add_library(SDL2_ttf SDL_ttf.c SDL_ttf.h)
+
+# Workaround for Ubuntu 20.04's SDL being older than
+# https://github.com/libsdl-org/SDL/issues/3531
+if (NOT TARGET SDL2::SDL2)
+  add_library(SDL2::SDL2 SHARED IMPORTED)
+  find_library(SDL2_LIBRARY
+    NAMES SDL2
+    HINTS "${SDL2_EXEC_PREFIX}"
+    REQUIRED)
+  set_target_properties(SDL2::SDL2 PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIRS}"
+    IMPORTED_LINK_INTERFACE_LANGUAGES "C"
+    IMPORTED_LOCATION "${SDL2_LIBRARY}")
+endif()
+
 if (BUILD_SHARED_LIBS)
   target_link_libraries(SDL2_ttf SDL2::SDL2)
   if (WIN32 OR CYGWIN)
