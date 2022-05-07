@@ -185,6 +185,7 @@ am__libSDL2_ttf_la_SOURCES_DIST = SDL_ttf.c \
 	$(FREETYPE_PATH)/src/sdf/sdf.c \
 	$(FREETYPE_PATH)/src/sfnt/sfnt.c \
 	$(FREETYPE_PATH)/src/smooth/smooth.c \
+	$(FREETYPE_PATH)/src/svg/svg.c \
 	$(FREETYPE_PATH)/src/truetype/truetype.c \
 	$(FREETYPE_PATH)/src/type1/type1.c \
 	$(FREETYPE_PATH)/src/type42/type42.c \
@@ -273,6 +274,7 @@ am__objects_1 =  \
 	$(FREETYPE_PATH)/src/sdf/libSDL2_ttf_la-sdf.lo \
 	$(FREETYPE_PATH)/src/sfnt/libSDL2_ttf_la-sfnt.lo \
 	$(FREETYPE_PATH)/src/smooth/libSDL2_ttf_la-smooth.lo \
+	$(FREETYPE_PATH)/src/svg/libSDL2_ttf_la-svg.lo \
 	$(FREETYPE_PATH)/src/truetype/libSDL2_ttf_la-truetype.lo \
 	$(FREETYPE_PATH)/src/type1/libSDL2_ttf_la-type1.lo \
 	$(FREETYPE_PATH)/src/type42/libSDL2_ttf_la-type42.lo \
@@ -390,6 +392,7 @@ am__depfiles_remade = $(FREETYPE_PATH)/src/autofit/$(DEPDIR)/libSDL2_ttf_la-auto
 	$(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Plo \
 	$(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/libSDL2_ttf_la-sfnt.Plo \
 	$(FREETYPE_PATH)/src/smooth/$(DEPDIR)/libSDL2_ttf_la-smooth.Plo \
+	$(FREETYPE_PATH)/src/svg/$(DEPDIR)/libSDL2_ttf_la-svg.Plo \
 	$(FREETYPE_PATH)/src/truetype/$(DEPDIR)/libSDL2_ttf_la-truetype.Plo \
 	$(FREETYPE_PATH)/src/type1/$(DEPDIR)/libSDL2_ttf_la-type1.Plo \
 	$(FREETYPE_PATH)/src/type42/$(DEPDIR)/libSDL2_ttf_la-type42.Plo \
@@ -735,6 +738,7 @@ FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/sdf/sdf.c \
 	$(FREETYPE_PATH)/src/sfnt/sfnt.c \
 	$(FREETYPE_PATH)/src/smooth/smooth.c \
+	$(FREETYPE_PATH)/src/svg/svg.c \
 	$(FREETYPE_PATH)/src/truetype/truetype.c \
 	$(FREETYPE_PATH)/src/type1/type1.c \
 	$(FREETYPE_PATH)/src/type42/type42.c \
@@ -1125,6 +1129,15 @@ $(FREETYPE_PATH)/src/smooth/$(DEPDIR)/$(am__dirstamp):
 $(FREETYPE_PATH)/src/smooth/libSDL2_ttf_la-smooth.lo:  \
 	$(FREETYPE_PATH)/src/smooth/$(am__dirstamp) \
 	$(FREETYPE_PATH)/src/smooth/$(DEPDIR)/$(am__dirstamp)
+$(FREETYPE_PATH)/src/svg/$(am__dirstamp):
+	@$(MKDIR_P) $(FREETYPE_PATH)/src/svg
+	@: > $(FREETYPE_PATH)/src/svg/$(am__dirstamp)
+$(FREETYPE_PATH)/src/svg/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) $(FREETYPE_PATH)/src/svg/$(DEPDIR)
+	@: > $(FREETYPE_PATH)/src/svg/$(DEPDIR)/$(am__dirstamp)
+$(FREETYPE_PATH)/src/svg/libSDL2_ttf_la-svg.lo:  \
+	$(FREETYPE_PATH)/src/svg/$(am__dirstamp) \
+	$(FREETYPE_PATH)/src/svg/$(DEPDIR)/$(am__dirstamp)
 $(FREETYPE_PATH)/src/truetype/$(am__dirstamp):
 	@$(MKDIR_P) $(FREETYPE_PATH)/src/truetype
 	@: > $(FREETYPE_PATH)/src/truetype/$(am__dirstamp)
@@ -1355,6 +1368,8 @@ mostlyclean-compile:
 	-rm -f $(FREETYPE_PATH)/src/sfnt/*.lo
 	-rm -f $(FREETYPE_PATH)/src/smooth/*.$(OBJEXT)
 	-rm -f $(FREETYPE_PATH)/src/smooth/*.lo
+	-rm -f $(FREETYPE_PATH)/src/svg/*.$(OBJEXT)
+	-rm -f $(FREETYPE_PATH)/src/svg/*.lo
 	-rm -f $(FREETYPE_PATH)/src/truetype/*.$(OBJEXT)
 	-rm -f $(FREETYPE_PATH)/src/truetype/*.lo
 	-rm -f $(FREETYPE_PATH)/src/type1/*.$(OBJEXT)
@@ -1406,6 +1421,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/libSDL2_ttf_la-sfnt.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/smooth/$(DEPDIR)/libSDL2_ttf_la-smooth.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/svg/$(DEPDIR)/libSDL2_ttf_la-svg.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/truetype/$(DEPDIR)/libSDL2_ttf_la-truetype.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/type1/$(DEPDIR)/libSDL2_ttf_la-type1.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(FREETYPE_PATH)/src/type42/$(DEPDIR)/libSDL2_ttf_la-type42.Plo@am__quote@ # am--include-marker
@@ -1755,6 +1771,13 @@ $(FREETYPE_PATH)/src/smooth/libSDL2_ttf_la-smooth.lo: $(FREETYPE_PATH)/src/smoot
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(FREETYPE_PATH)/src/smooth/smooth.c' object='$(FREETYPE_PATH)/src/smooth/libSDL2_ttf_la-smooth.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o $(FREETYPE_PATH)/src/smooth/libSDL2_ttf_la-smooth.lo `test -f '$(FREETYPE_PATH)/src/smooth/smooth.c' || echo '$(srcdir)/'`$(FREETYPE_PATH)/src/smooth/smooth.c
+
+$(FREETYPE_PATH)/src/svg/libSDL2_ttf_la-svg.lo: $(FREETYPE_PATH)/src/svg/svg.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT $(FREETYPE_PATH)/src/svg/libSDL2_ttf_la-svg.lo -MD -MP -MF $(FREETYPE_PATH)/src/svg/$(DEPDIR)/libSDL2_ttf_la-svg.Tpo -c -o $(FREETYPE_PATH)/src/svg/libSDL2_ttf_la-svg.lo `test -f '$(FREETYPE_PATH)/src/svg/svg.c' || echo '$(srcdir)/'`$(FREETYPE_PATH)/src/svg/svg.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(FREETYPE_PATH)/src/svg/$(DEPDIR)/libSDL2_ttf_la-svg.Tpo $(FREETYPE_PATH)/src/svg/$(DEPDIR)/libSDL2_ttf_la-svg.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(FREETYPE_PATH)/src/svg/svg.c' object='$(FREETYPE_PATH)/src/svg/libSDL2_ttf_la-svg.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o $(FREETYPE_PATH)/src/svg/libSDL2_ttf_la-svg.lo `test -f '$(FREETYPE_PATH)/src/svg/svg.c' || echo '$(srcdir)/'`$(FREETYPE_PATH)/src/svg/svg.c
 
 $(FREETYPE_PATH)/src/truetype/libSDL2_ttf_la-truetype.lo: $(FREETYPE_PATH)/src/truetype/truetype.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT $(FREETYPE_PATH)/src/truetype/libSDL2_ttf_la-truetype.lo -MD -MP -MF $(FREETYPE_PATH)/src/truetype/$(DEPDIR)/libSDL2_ttf_la-truetype.Tpo -c -o $(FREETYPE_PATH)/src/truetype/libSDL2_ttf_la-truetype.lo `test -f '$(FREETYPE_PATH)/src/truetype/truetype.c' || echo '$(srcdir)/'`$(FREETYPE_PATH)/src/truetype/truetype.c
@@ -2152,6 +2175,7 @@ clean-libtool:
 	-rm -rf $(FREETYPE_PATH)/src/sdf/.libs $(FREETYPE_PATH)/src/sdf/_libs
 	-rm -rf $(FREETYPE_PATH)/src/sfnt/.libs $(FREETYPE_PATH)/src/sfnt/_libs
 	-rm -rf $(FREETYPE_PATH)/src/smooth/.libs $(FREETYPE_PATH)/src/smooth/_libs
+	-rm -rf $(FREETYPE_PATH)/src/svg/.libs $(FREETYPE_PATH)/src/svg/_libs
 	-rm -rf $(FREETYPE_PATH)/src/truetype/.libs $(FREETYPE_PATH)/src/truetype/_libs
 	-rm -rf $(FREETYPE_PATH)/src/type1/.libs $(FREETYPE_PATH)/src/type1/_libs
 	-rm -rf $(FREETYPE_PATH)/src/type42/.libs $(FREETYPE_PATH)/src/type42/_libs
@@ -2506,6 +2530,8 @@ distclean-generic:
 	-test -z "$(FREETYPE_PATH)/src/sfnt/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/sfnt/$(am__dirstamp)
 	-test -z "$(FREETYPE_PATH)/src/smooth/$(DEPDIR)/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/smooth/$(DEPDIR)/$(am__dirstamp)
 	-test -z "$(FREETYPE_PATH)/src/smooth/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/smooth/$(am__dirstamp)
+	-test -z "$(FREETYPE_PATH)/src/svg/$(DEPDIR)/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/svg/$(DEPDIR)/$(am__dirstamp)
+	-test -z "$(FREETYPE_PATH)/src/svg/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/svg/$(am__dirstamp)
 	-test -z "$(FREETYPE_PATH)/src/truetype/$(DEPDIR)/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/truetype/$(DEPDIR)/$(am__dirstamp)
 	-test -z "$(FREETYPE_PATH)/src/truetype/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/truetype/$(am__dirstamp)
 	-test -z "$(FREETYPE_PATH)/src/type1/$(DEPDIR)/$(am__dirstamp)" || rm -f $(FREETYPE_PATH)/src/type1/$(DEPDIR)/$(am__dirstamp)
@@ -2564,6 +2590,7 @@ distclean: distclean-am
 	-rm -f $(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Plo
 	-rm -f $(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/libSDL2_ttf_la-sfnt.Plo
 	-rm -f $(FREETYPE_PATH)/src/smooth/$(DEPDIR)/libSDL2_ttf_la-smooth.Plo
+	-rm -f $(FREETYPE_PATH)/src/svg/$(DEPDIR)/libSDL2_ttf_la-svg.Plo
 	-rm -f $(FREETYPE_PATH)/src/truetype/$(DEPDIR)/libSDL2_ttf_la-truetype.Plo
 	-rm -f $(FREETYPE_PATH)/src/type1/$(DEPDIR)/libSDL2_ttf_la-type1.Plo
 	-rm -f $(FREETYPE_PATH)/src/type42/$(DEPDIR)/libSDL2_ttf_la-type42.Plo
@@ -2702,6 +2729,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f $(FREETYPE_PATH)/src/sdf/$(DEPDIR)/libSDL2_ttf_la-sdf.Plo
 	-rm -f $(FREETYPE_PATH)/src/sfnt/$(DEPDIR)/libSDL2_ttf_la-sfnt.Plo
 	-rm -f $(FREETYPE_PATH)/src/smooth/$(DEPDIR)/libSDL2_ttf_la-smooth.Plo
+	-rm -f $(FREETYPE_PATH)/src/svg/$(DEPDIR)/libSDL2_ttf_la-svg.Plo
 	-rm -f $(FREETYPE_PATH)/src/truetype/$(DEPDIR)/libSDL2_ttf_la-truetype.Plo
 	-rm -f $(FREETYPE_PATH)/src/type1/$(DEPDIR)/libSDL2_ttf_la-type1.Plo
 	-rm -f $(FREETYPE_PATH)/src/type42/$(DEPDIR)/libSDL2_ttf_la-type42.Plo

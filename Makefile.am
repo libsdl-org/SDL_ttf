@@ -51,6 +51,7 @@ FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/sdf/sdf.c \
 	$(FREETYPE_PATH)/src/sfnt/sfnt.c \
 	$(FREETYPE_PATH)/src/smooth/smooth.c \
+	$(FREETYPE_PATH)/src/svg/svg.c \
 	$(FREETYPE_PATH)/src/truetype/truetype.c \
 	$(FREETYPE_PATH)/src/type1/type1.c \
 	$(FREETYPE_PATH)/src/type42/type42.c \
