@@ -126,6 +126,9 @@
     <ClCompile Include="..\external\freetype\src\sfnt\sfnt.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
+    <ClCompile Include="..\external\freetype\src\svg\svg.c">
+      <Filter>Sources\FreeType</Filter>
+    </ClCompile>
     <ClCompile Include="..\external\freetype\src\smooth\smooth.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>

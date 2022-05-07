@@ -292,6 +292,7 @@
     <ClCompile Include="..\external\freetype\src\raster\raster.c" />
     <ClCompile Include="..\external\freetype\src\sdf\sdf.c" />
     <ClCompile Include="..\external\freetype\src\sfnt\sfnt.c" />
+    <ClCompile Include="..\external\freetype\src\svg\svg.c" />
     <ClCompile Include="..\external\freetype\src\smooth\smooth.c" />
     <ClCompile Include="..\external\freetype\src\truetype\truetype.c" />
     <ClCompile Include="..\external\freetype\src\type1\type1.c" />
