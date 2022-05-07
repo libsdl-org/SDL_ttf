@@ -12,7 +12,7 @@ libSDL2_ttf_la_SOURCES =		\
 
 libSDL2_ttf_la_CPPFLAGS = $(TTF_CFLAGS) $(LOCAL_FT2_FLAGS) $(LOCAL_HB_FLAGS)
 
-FREETYPE_PATH = external/freetype-2.11.1
+FREETYPE_PATH = external/freetype
 FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/autofit/autofit.c \
 	$(FREETYPE_PATH)/src/base/ftbase.c \
@@ -61,7 +61,7 @@ LOCAL_FT2_FLAGS = -I$(srcdir)/$(FREETYPE_PATH)/include -DFT2_BUILD_LIBRARY -DFT_
 LOCAL_FT2_SOURCES = $(FREETYPE_SOURCES)
 endif
 
-HARFBUZZ_PATH = external/harfbuzz-2.8.0
+HARFBUZZ_PATH = external/harfbuzz
 HARFBUZZ_SOURCES = \
 	$(HARFBUZZ_PATH)/src/hb-aat-layout.cc \
 	$(HARFBUZZ_PATH)/src/hb-aat-map.cc \

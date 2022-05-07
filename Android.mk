@@ -3,9 +3,9 @@ SDL_TTF_LOCAL_PATH := $(call my-dir)
 
 # Enable this if you want to use HarfBuzz
 SUPPORT_HARFBUZZ ?= true
-HARFBUZZ_LIBRARY_PATH := external/harfbuzz-2.8.0
+HARFBUZZ_LIBRARY_PATH := external/harfbuzz
 
-FREETYPE_LIBRARY_PATH := external/freetype-2.11.1
+FREETYPE_LIBRARY_PATH := external/freetype
 
 # Build freetype library
 ifneq ($(FREETYPE_LIBRARY_PATH),)
