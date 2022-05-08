@@ -166,5 +166,9 @@ rpm: $(PACKAGE)-$(VERSION).tar.gz
 
 distclean-local:
 	-rm -rf `find $(srcdir) -name .deps`
+
 dist-hook:
 	-rm -rf `find $(distdir) -name .deps`
+	-rm -rf `find $(distdir)/external -name .git*`
+	-rm -rf `find $(distdir)/external -name .ci*`
+	-rm -rf `find $(distdir)/external/harfbuzz/test`
