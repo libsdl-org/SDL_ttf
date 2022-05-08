@@ -200,6 +200,7 @@ am__libSDL2_ttf_la_SOURCES_DIST = SDL_ttf.c \
 	$(HARFBUZZ_PATH)/src/hb-fallback-shape.cc \
 	$(HARFBUZZ_PATH)/src/hb-font.cc $(HARFBUZZ_PATH)/src/hb-ft.cc \
 	$(HARFBUZZ_PATH)/src/hb-number.cc \
+	$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff2-table.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-face.cc \
@@ -291,6 +292,7 @@ am__objects_3 = $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-aat-layout.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-font.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ft.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-number.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff1-table.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff2-table.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-face.lo \
@@ -409,6 +411,7 @@ am__depfiles_remade = $(FREETYPE_PATH)/src/autofit/$(DEPDIR)/libSDL2_ttf_la-auto
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo \
@@ -759,6 +762,7 @@ HARFBUZZ_SOURCES = \
 	$(HARFBUZZ_PATH)/src/hb-font.cc \
 	$(HARFBUZZ_PATH)/src/hb-ft.cc \
 	$(HARFBUZZ_PATH)/src/hb-number.cc \
+	$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff2-table.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-face.cc \
@@ -1213,6 +1217,9 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ft.lo:  \
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-number.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff1-table.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
@@ -1438,6 +1445,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo@am__quote@ # am--include-marker
@@ -1907,6 +1915,13 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-number.lo: $(HARFBUZZ_PATH)/src/hb-number
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-number.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-number.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-number.lo `test -f '$(HARFBUZZ_PATH)/src/hb-number.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-number.cc
+
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo: $(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc
 
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff1-table.lo: $(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff1-table.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff1-table.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc
@@ -2607,6 +2622,7 @@ distclean: distclean-am
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo
@@ -2746,6 +2762,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo

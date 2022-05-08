@@ -5,4 +5,4 @@
 [submodule "external/harfbuzz"]
 	path = external/harfbuzz
 	url = https://github.com/libsdl-org/harfbuzz.git
-	branch = 2.8.2-SDL
+	branch = 2.9.1-SDL
