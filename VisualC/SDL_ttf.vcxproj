@@ -309,6 +309,7 @@
     <ClCompile Include="..\external\harfbuzz\src\hb-font.cc" />
     <ClCompile Include="..\external\harfbuzz\src\hb-ft.cc" />
     <ClCompile Include="..\external\harfbuzz\src\hb-number.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ms-feature-ranges.cc" />
     <ClCompile Include="..\external\harfbuzz\src\hb-ot-cff1-table.cc" />
     <ClCompile Include="..\external\harfbuzz\src\hb-ot-cff2-table.cc" />
     <ClCompile Include="..\external\harfbuzz\src\hb-ot-face.cc" />

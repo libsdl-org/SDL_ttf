@@ -13,6 +13,8 @@
 		BE48FD8407AFA29000BB41DA /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FD8307AFA29000BB41DA /* SDL2.framework */; };
 		F307EE29282738F8003915D7 /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = F307EE28282738F8003915D7 /* svg.c */; };
 		F307EE2A282738F8003915D7 /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = F307EE28282738F8003915D7 /* svg.c */; };
+		F307EE2C282807EB003915D7 /* hb-ms-feature-ranges.cc in Sources */ = {isa = PBXBuildFile; fileRef = F307EE2B282807EB003915D7 /* hb-ms-feature-ranges.cc */; };
+		F307EE2D282807EB003915D7 /* hb-ms-feature-ranges.cc in Sources */ = {isa = PBXBuildFile; fileRef = F307EE2B282807EB003915D7 /* hb-ms-feature-ranges.cc */; };
 		F364A5B82620E1A200325ECE /* FTL.TXT in Resources */ = {isa = PBXBuildFile; fileRef = F364A5B72620E1A200325ECE /* FTL.TXT */; };
 		F364A5C42620E22400325ECE /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = F364A5C32620E22400325ECE /* ReadMe.txt */; };
 		F3696FE4278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
@@ -220,6 +222,7 @@
 		BE48FD7207AFA17000BB41DA /* Create DMG */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Create DMG"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD8307AFA29000BB41DA /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 		F307EE28282738F8003915D7 /* svg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = svg.c; path = ../external/freetype/src/svg/svg.c; sourceTree = "<group>"; };
+		F307EE2B282807EB003915D7 /* hb-ms-feature-ranges.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ms-feature-ranges.cc"; path = "../external/harfbuzz/src/hb-ms-feature-ranges.cc"; sourceTree = "<group>"; };
 		F364A5B72620E1A200325ECE /* FTL.TXT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FTL.TXT; path = ../../../external/freetype/docs/FTL.TXT; sourceTree = "<group>"; };
 		F364A5C32620E22400325ECE /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		F3696FE3278F7107003A7F94 /* sdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdf.c; path = ../external/freetype/src/sdf/sdf.c; sourceTree = "<group>"; };
@@ -484,6 +487,7 @@
 				F384BE47261EC9470028A248 /* hb-fallback-shape.cc */,
 				F384BD1A261EC7650028A248 /* hb-font.cc */,
 				F384BD28261EC7650028A248 /* hb-ft.cc */,
+				F307EE2B282807EB003915D7 /* hb-ms-feature-ranges.cc */,
 				F384BD11261EC7640028A248 /* hb-number.cc */,
 				F384BD24261EC7650028A248 /* hb-ot-cff1-table.cc */,
 				F384BD1E261EC7650028A248 /* hb-ot-cff2-table.cc */,
@@ -778,6 +782,7 @@
 				F384BE01261EC7650028A248 /* hb-ft.cc in Sources */,
 				F384BE19261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */,
 				F384BD95261EC7650028A248 /* hb-ot-layout.cc in Sources */,
+				F307EE2C282807EB003915D7 /* hb-ms-feature-ranges.cc in Sources */,
 				F384BC0E261EC0F90028A248 /* bdf.c in Sources */,
 				F384BC87261EC23B0028A248 /* psmodule.c in Sources */,
 				F384BE0D261EC7650028A248 /* hb-ot-var.cc in Sources */,
@@ -871,6 +876,7 @@
 				F384BE04261EC7650028A248 /* hb-ft.cc in Sources */,
 				F384BE1C261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */,
 				F384BD98261EC7650028A248 /* hb-ot-layout.cc in Sources */,
+				F307EE2D282807EB003915D7 /* hb-ms-feature-ranges.cc in Sources */,
 				F384BC11261EC0F90028A248 /* bdf.c in Sources */,
 				F384BC8A261EC23B0028A248 /* psmodule.c in Sources */,
 				F384BE10261EC7650028A248 /* hb-ot-var.cc in Sources */,

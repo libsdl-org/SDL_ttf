@@ -177,6 +177,9 @@
     <ClCompile Include="..\external\harfbuzz\src\hb-number.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ms-feature-ranges.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
     <ClCompile Include="..\external\harfbuzz\src\hb-ot-cff1-table.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
