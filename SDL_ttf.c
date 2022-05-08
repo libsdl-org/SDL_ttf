@@ -439,11 +439,11 @@ static SDL_INLINE void BG_Blended_LCD(const TTF_Image *image, Uint32 *destinatio
     Uint8 bg_r, bg_g, bg_b;
     Uint32 bg_a;
 
+    int x, y = 0;
+
     fg_r = fg->r;
     fg_g = fg->g;
     fg_b = fg->b;
-
-    int x, y = 0;
 
     while (height--) {
         y++;
@@ -454,7 +454,6 @@ static SDL_INLINE void BG_Blended_LCD(const TTF_Image *image, Uint32 *destinatio
                 tmp = *src++;
 
                 if (tmp) {
-
                     bg = *dst;
 
                     bg_a = bg & 0xff000000;
