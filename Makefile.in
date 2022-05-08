@@ -815,16 +815,10 @@ libSDL2_ttf_la_LIBADD = $(TTF_LIBS) @MATHLIB@
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = SDL2_ttf.pc
 EXTRA_DIST = CHANGES.txt COPYING.txt README.txt \
-	Android.mk		\
-	Makefile.os2		\
-	Xcode			\
-	VisualC			\
-	VisualC-WinRT		\
-	version.rc		\
-	external		\
-	SDL2_ttf.spec		\
-	SDL2_ttf.spec.in	\
-	SDL2_ttfConfig.cmake	\
+	Android.mk Makefile.os2 version.rc	\
+	VisualC VisualC-WinRT Xcode external	\
+	SDL2_ttf.spec SDL2_ttf.spec.in		\
+	SDL2_ttfConfig.cmake			\
 	autogen.sh gcc-fat.sh
 
 showfont_LDADD = libSDL2_ttf.la
@@ -2857,12 +2851,12 @@ rpm: $(PACKAGE)-$(VERSION).tar.gz
 
 distclean-local:
 	-rm -rf `find $(srcdir) -name .deps`
-
 dist-hook:
 	-rm -rf `find $(distdir) -name .deps`
-	-rm -rf `find $(distdir)/external -name .git*`
-	-rm -rf `find $(distdir)/external -name .ci*`
-	-rm -rf `find $(distdir)/external/harfbuzz/test`
+	-rm -rf `find $(distdir)/external -name '.git*'`
+	-rm -rf `find $(distdir)/external -name '.ci*'`
+	-rm -rf `find $(distdir)/external -name .dirstamp`
+	-rm -rf $(distdir)/external/harfbuzz/test
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
