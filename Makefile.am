@@ -75,6 +75,7 @@ HARFBUZZ_SOURCES = \
 	$(HARFBUZZ_PATH)/src/hb-font.cc \
 	$(HARFBUZZ_PATH)/src/hb-ft.cc \
 	$(HARFBUZZ_PATH)/src/hb-number.cc \
+	$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff2-table.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-face.cc \
