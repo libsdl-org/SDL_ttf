@@ -1615,7 +1615,7 @@ static SDL_Surface* Create_Surface_LCD(int width, int height, SDL_Color fg, SDL_
         }
 
         /* address is aligned */
-        pixels = (void *)(((size_t)ptr + sizeof(void *) + alignment) & ~alignment);
+        pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
         ((void **)pixels)[-1] = ptr;
 
         textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_ARGB8888);
