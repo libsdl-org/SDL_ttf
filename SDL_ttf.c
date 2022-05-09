@@ -1366,6 +1366,36 @@ static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel,
 #endif
 }
 
+#ifndef SIZE_MAX
+# define SIZE_MAX ((size_t) -1)
+#endif
+
+#if !SDL_VERSION_ATLEAST(2, 23, 1)
+SDL_FORCE_INLINE int compat_size_add_overflow (size_t a,
+                                               size_t b,
+                                               size_t *ret)
+{
+    if (b > SIZE_MAX - a) {
+        return -1;
+    }
+    *ret = a + b;
+    return 0;
+}
+
+SDL_FORCE_INLINE int compat_size_mul_overflow (size_t a,
+                                               size_t b,
+                                               size_t *ret)
+{
+    if (a != 0 && b > SIZE_MAX / a) {
+        return -1;
+    }
+    *ret = a * b;
+    return 0;
+}
+
+#define SDL_size_add_overflow(a, b, r) compat_size_add_overflow(a, b, r)
+#define SDL_size_mul_overflow(a, b, r) compat_size_mul_overflow(a, b, r)
+#endif /* SDL < 2.23.1 */
 
 /* Create a surface with memory:
  * - pitch is rounded to alignment
@@ -1377,25 +1407,35 @@ static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel,
  * Otherwise, the low byte of format is used to initialize each byte
  * in the image data.
  */
-static SDL_Surface *AllocateAlignedPixels(int width, int height, SDL_PixelFormatEnum format, Uint32 bgcolor)
+static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_PixelFormatEnum format, Uint32 bgcolor)
 {
-    const int alignment = Get_Alignement() - 1;
-    const int bytes_per_pixel = SDL_BYTESPERPIXEL(format);
+    const size_t alignment = Get_Alignement() - 1;
+    const size_t bytes_per_pixel = SDL_BYTESPERPIXEL(format);
     SDL_Surface *textbuf = NULL;
-    Sint64 size;
+    size_t size;
+    size_t data_bytes;
     void *pixels, *ptr;
-    /* Worst case at the end of line pulling 'alignment' extra blank pixels */
-    Sint64 pitch = ((Sint64)width + (Sint64)alignment) * bytes_per_pixel;
+    size_t pitch;
 
-    pitch += alignment;
+    /* Worst case at the end of line pulling 'alignment' extra blank pixels */
+    if (width > SDL_MAX_SINT32 ||
+        height > SDL_MAX_SINT32 ||
+        SDL_size_add_overflow(width, alignment, &pitch) ||
+        SDL_size_mul_overflow(pitch, bytes_per_pixel, &pitch) ||
+        SDL_size_add_overflow(pitch, alignment, &pitch) ||
+        pitch > SDL_MAX_SINT32) {
+        return NULL;
+    }
     pitch &= ~alignment;
-    size = height * pitch + sizeof (void *) + alignment;
-    if (size < 0 || size > SDL_MAX_SINT32) {
+
+    if (SDL_size_mul_overflow(height, pitch, &data_bytes) ||
+        SDL_size_add_overflow(data_bytes, sizeof (void *) + alignment, &size) ||
+        size > SDL_MAX_SINT32) {
         /* Overflow... */
         return NULL;
     }
 
-    ptr = SDL_malloc((size_t)size);
+    ptr = SDL_malloc(size);
     if (ptr == NULL) {
         return NULL;
     }
@@ -1404,7 +1444,7 @@ static SDL_Surface *AllocateAlignedPixels(int width, int height, SDL_PixelFormat
     pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
     ((void **)pixels)[-1] = ptr;
 
-    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, (int)pitch, format);
+    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, (int)width, (int)height, 0, (int)pitch, format);
     if (textbuf == NULL) {
         SDL_free(ptr);
         return NULL;
@@ -1415,10 +1455,10 @@ static SDL_Surface *AllocateAlignedPixels(int width, int height, SDL_PixelFormat
     textbuf->flags |= SDL_SIMD_ALIGNED;
 
     if (bytes_per_pixel == 4) {
-        SDL_memset4(pixels, bgcolor, (height * pitch) / 4);
+        SDL_memset4(pixels, bgcolor, data_bytes / 4);
     }
     else {
-        SDL_memset(pixels, (bgcolor & 0xff), height * pitch);
+        SDL_memset(pixels, (bgcolor & 0xff), data_bytes);
     }
 
     return textbuf;
