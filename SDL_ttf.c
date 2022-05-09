@@ -1366,19 +1366,27 @@ static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel,
 #endif
 }
 
-static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Uint32 *color)
+
+/* Create a surface with memory:
+ * - pitch is rounded to alignment
+ * - address is aligned
+ *
+ * If format is 4 bytes per pixel, bgcolor is used to initialize each
+ * 4-byte word in the image data.
+ *
+ * Otherwise, the low byte of format is used to initialize each byte
+ * in the image data.
+ */
+static SDL_Surface *AllocateAlignedPixels(int width, int height, SDL_PixelFormatEnum format, Uint32 bgcolor)
 {
     const int alignment = Get_Alignement() - 1;
-    SDL_Surface *textbuf;
+    const int bytes_per_pixel = SDL_BYTESPERPIXEL(format);
+    SDL_Surface *textbuf = NULL;
     Sint64 size;
-
-    /* Create a surface with memory:
-     * - pitch is rounded to alignment
-     * - adress is aligned
-     */
     void *pixels, *ptr;
-    /* Worse case at the end of line pulling 'alignment' extra blank pixels */
-    Sint64 pitch = (Sint64)width + (Sint64)alignment;
+    /* Worst case at the end of line pulling 'alignment' extra blank pixels */
+    Sint64 pitch = ((Sint64)width + (Sint64)alignment) * bytes_per_pixel;
+
     pitch += alignment;
     pitch &= ~alignment;
     size = height * pitch + sizeof (void *) + alignment;
@@ -1396,7 +1404,7 @@ static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Ui
     pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
     ((void **)pixels)[-1] = ptr;
 
-    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, (int)pitch, SDL_PIXELFORMAT_INDEX8);
+    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, (int)pitch, format);
     if (textbuf == NULL) {
         SDL_free(ptr);
         return NULL;
@@ -1406,8 +1414,22 @@ static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Ui
     textbuf->flags &= ~SDL_PREALLOC;
     textbuf->flags |= SDL_SIMD_ALIGNED;
 
-    /* Initialize with background to 0 */
-    SDL_memset(pixels, 0, height * pitch);
+    if (bytes_per_pixel == 4) {
+        SDL_memset4(pixels, bgcolor, (height * pitch) / 4);
+    }
+    else {
+        SDL_memset(pixels, (bgcolor & 0xff), height * pitch);
+    }
+
+    return textbuf;
+}
+
+static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Uint32 *color)
+{
+    SDL_Surface *textbuf = AllocateAlignedPixels(width, height, SDL_PIXELFORMAT_INDEX8, 0);
+    if (textbuf == NULL) {
+        return NULL;
+    }
 
     /* Underline/Strikethrough color style */
     *color = 1;
@@ -1431,47 +1453,11 @@ static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Ui
 
 static SDL_Surface* Create_Surface_Shaded(int width, int height, SDL_Color fg, SDL_Color bg, Uint32 *color)
 {
-    const int alignment = Get_Alignement() - 1;
-    SDL_Surface *textbuf;
-    Sint64 size;
+    SDL_Surface *textbuf = AllocateAlignedPixels(width, height, SDL_PIXELFORMAT_INDEX8, 0);
     Uint8 bg_alpha = bg.a;
-
-    /* Create a surface with memory:
-     * - pitch is rounded to alignment
-     * - adress is aligned
-     */
-    void *pixels, *ptr;
-    /* Worse case at the end of line pulling 'alignment' extra blank pixels */
-    Sint64 pitch = (Sint64)width + (Sint64)alignment;
-    pitch += alignment;
-    pitch &= ~alignment;
-    size = height * pitch + sizeof (void *) + alignment;
-    if (size < 0 || size > SDL_MAX_SINT32) {
-        /* Overflow... */
-        return NULL;
-    }
-
-    ptr = SDL_malloc((size_t)size);
-    if (ptr == NULL) {
-        return NULL;
-    }
-
-    /* address is aligned */
-    pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
-    ((void **)pixels)[-1] = ptr;
-
-    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, (int)pitch, SDL_PIXELFORMAT_INDEX8);
     if (textbuf == NULL) {
-        SDL_free(ptr);
         return NULL;
     }
-
-    /* Let SDL handle the memory allocation */
-    textbuf->flags &= ~SDL_PREALLOC;
-    textbuf->flags |= SDL_SIMD_ALIGNED;
-
-    /* Initialize with background to 0 */
-    SDL_memset(pixels, 0, height * pitch);
 
     /* Underline/Strikethrough color style */
     *color = NUM_GRAYS - 1;
@@ -1520,11 +1506,10 @@ static SDL_Surface* Create_Surface_Shaded(int width, int height, SDL_Color fg, S
 
 static SDL_Surface *Create_Surface_Blended(int width, int height, SDL_Color fg, Uint32 *color)
 {
-    const int alignment = Get_Alignement() - 1;
     SDL_Surface *textbuf = NULL;
     Uint32 bgcolor;
 
-    /* Background color */
+    /* Background color: initialize with fg and 0 alpha */
     bgcolor = (fg.r << 16) | (fg.g << 8) | fg.b;
 
     /* Underline/Strikethrough color style */
@@ -1532,43 +1517,10 @@ static SDL_Surface *Create_Surface_Blended(int width, int height, SDL_Color fg, 
 
     /* Create the target surface if required */
     if (width != 0) {
-        /* Create a surface with memory:
-         * - pitch is rounded to alignment
-         * - adress is aligned
-         */
-        Sint64 size;
-        void *pixels, *ptr;
-        /* Worse case at the end of line pulling 'alignment' extra blank pixels */
-        Sint64 pitch = ((Sint64)width + (Sint64)alignment) * 4;
-        pitch += alignment;
-        pitch &= ~alignment;
-        size = height * pitch + sizeof (void *) + alignment;
-        if (size < 0 || size > SDL_MAX_SINT32) {
-            /* Overflow... */
-            return NULL;
-        }
-
-        ptr = SDL_malloc((size_t)size);
-        if (ptr == NULL) {
-            return NULL;
-        }
-
-        /* address is aligned */
-        pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
-        ((void **)pixels)[-1] = ptr;
-
-        textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, (int)pitch, SDL_PIXELFORMAT_ARGB8888);
+        textbuf = AllocateAlignedPixels(width, height, SDL_PIXELFORMAT_ARGB8888, bgcolor);
         if (textbuf == NULL) {
-            SDL_free(ptr);
             return NULL;
         }
-
-        /* Let SDL handle the memory allocation */
-        textbuf->flags &= ~SDL_PREALLOC;
-        textbuf->flags |= SDL_SIMD_ALIGNED;
-
-        /* Initialize with fg and 0 alpha */
-        SDL_memset4(pixels, bgcolor, (height * pitch) / 4);
 
         /* Support alpha blending */
         if (fg.a != SDL_ALPHA_OPAQUE) {
@@ -1581,7 +1533,6 @@ static SDL_Surface *Create_Surface_Blended(int width, int height, SDL_Color fg, 
 
 static SDL_Surface* Create_Surface_LCD(int width, int height, SDL_Color fg, SDL_Color bg, Uint32 *color)
 {
-    const int alignment = Get_Alignement() - 1;
     SDL_Surface *textbuf = NULL;
     Uint32 bgcolor;
 
@@ -1593,43 +1544,10 @@ static SDL_Surface* Create_Surface_LCD(int width, int height, SDL_Color fg, SDL_
 
     /* Create the target surface if required */
     if (width != 0) {
-        /* Create a surface with memory:
-         * - pitch is rounded to alignment
-         * - adress is aligned
-         */
-        Sint64 size;
-        void *pixels, *ptr;
-        /* Worse case at the end of line pulling 'alignment' extra blank pixels */
-        Sint64 pitch = ((Sint64)width + (Sint64)alignment) * 4;
-        pitch += alignment;
-        pitch &= ~alignment;
-        size = height * pitch + sizeof (void *) + alignment;
-        if (size < 0 || size > SDL_MAX_SINT32) {
-            /* Overflow... */
-            return NULL;
-        }
-
-        ptr = SDL_malloc((size_t)size);
-        if (ptr == NULL) {
-            return NULL;
-        }
-
-        /* address is aligned */
-        pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
-        ((void **)pixels)[-1] = ptr;
-
-        textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, width, height, 0, pitch, SDL_PIXELFORMAT_ARGB8888);
+        textbuf = AllocateAlignedPixels(width, height, SDL_PIXELFORMAT_ARGB8888, bgcolor);
         if (textbuf == NULL) {
-            SDL_free(ptr);
             return NULL;
         }
-
-        /* Let SDL handle the memory allocation */
-        textbuf->flags &= ~SDL_PREALLOC;
-        textbuf->flags |= SDL_SIMD_ALIGNED;
-
-        /* Initialize with fg and 0 alpha */
-        SDL_memset4(pixels, bgcolor, (height * pitch) / 4);
 
         /* Support alpha blending */
         if (bg.a != SDL_ALPHA_OPAQUE) {
