@@ -1600,7 +1600,7 @@ static SDL_Surface* Create_Surface_LCD(int width, int height, SDL_Color fg, SDL_
         Sint64 size;
         void *pixels, *ptr;
         /* Worse case at the end of line pulling 'alignment' extra blank pixels */
-        int pitch = (width + alignment) * 4;
+        Sint64 pitch = ((Sint64)width + (Sint64)alignment) * 4;
         pitch += alignment;
         pitch &= ~alignment;
         size = height * pitch + sizeof (void *) + alignment;
