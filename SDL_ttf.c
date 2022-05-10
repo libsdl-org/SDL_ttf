@@ -91,14 +91,10 @@ static hb_script_t    g_hb_script = HB_SCRIPT_UNKNOWN;
 #endif
 
 /* Harfbuzz */
-int TTF_SetDirection(int direction)
+int TTF_SetDirection(int direction) /* hb_direction_t */
 {
 #if TTF_USE_HARFBUZZ
-    if (direction == TTF_DIRECTION_RTL) {
-        g_hb_direction = HB_DIRECTION_RTL;
-    } else {
-        g_hb_direction = HB_DIRECTION_LTR;
-    }
+    g_hb_direction = direction;
     return 0;
 #else
     (void) direction;
@@ -326,10 +322,10 @@ hb_script_t TTF_to_HB(TTF_Script script)
 #undef CASE_SCRIPT
 }
 
-int TTF_SetScript(int script)
+int TTF_SetScript(int script) /* hb_script_t */
 {
 #if TTF_USE_HARFBUZZ
-    g_hb_script = TTF_to_HB(script);
+    g_hb_script = script;
     return 0;
 #else
     (void) script;
