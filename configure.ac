@@ -1,18 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 
 dnl Set various version strings - taken gratefully from the GTk sources
-# Making releases:
-#   MICRO_VERSION_MACRO += 1;
-#   INTERFACE_AGE_MACRO += 1;
-#   BINARY_AGE_MACRO += 1;
-# if any functions have been added, set INTERFACE_AGE_MACRO to 0.
-# if backwards compatibility has been broken,
-# set BINARY_AGE_MACRO and INTERFACE_AGE_MACRO to 0.
+# See docs/release_checklist.md
 m4_define([MAJOR_VERSION_MACRO], [2])
-m4_define([MINOR_VERSION_MACRO], [0])
-m4_define([MICRO_VERSION_MACRO], [18])
-m4_define([INTERFACE_AGE_MACRO], [0])
-m4_define([BINARY_AGE_MACRO], [18])
+m4_define([MINOR_VERSION_MACRO], [19])
+m4_define([MICRO_VERSION_MACRO], [0])
 
 AC_INIT([SDL2_ttf],
         MAJOR_VERSION_MACRO.MINOR_VERSION_MACRO.MICRO_VERSION_MACRO,
@@ -24,16 +16,33 @@ AC_CONFIG_SRCDIR([SDL_ttf.c])
 AC_SUBST([MAJOR_VERSION], MAJOR_VERSION_MACRO)
 AC_SUBST([MINOR_VERSION], MINOR_VERSION_MACRO)
 AC_SUBST([MICRO_VERSION], MICRO_VERSION_MACRO)
-AC_SUBST([INTERFACE_AGE], INTERFACE_AGE_MACRO)
-AC_SUBST([BINARY_AGE], BINARY_AGE_MACRO)
+
+BINARY_AGE=`expr $MINOR_VERSION \* 100 + $MICRO_VERSION`
+AS_CASE(["$MINOR_VERSION"],
+  [*@<:@02468@:>@],
+    dnl Stable branch, 2.20.1 -> libSDL2_ttf-2.0.so.0.2000.1
+    [INTERFACE_AGE="$MICRO_VERSION"],
+  [*],
+    dnl Development branch, 2.19.1 -> libSDL2_ttf-2.0.so.0.1901.0
+    [INTERFACE_AGE=0])
 
 dnl libtool versioning
 LT_INIT([win32-dll])
 
-LT_RELEASE=$MAJOR_VERSION.$MINOR_VERSION
-LT_CURRENT=`expr $MICRO_VERSION - $INTERFACE_AGE`
-LT_REVISION=$INTERFACE_AGE
+# For historical reasons, the library name redundantly includes the major
+# version twice: libSDL2_ttf-2.0.so.0.
+# TODO: in SDL 3, stop using -release, which will simplify it to
+# libSDL3_ttf.so.0
+LT_RELEASE=2.0
+# Increment this if there is an incompatible change - but if that happens,
+# we should rename the library from SDL2 to SDL3, at which point this would
+# reset to 0 anyway.
+LT_MAJOR=0
 LT_AGE=`expr $BINARY_AGE - $INTERFACE_AGE`
+LT_CURRENT=`expr $LT_MAJOR + $LT_AGE`
+LT_REVISION=$INTERFACE_AGE
+m4_pattern_allow([^LT_MAJOR$])
+
 LT_EXTRA="" dnl for OS2 dll name
 
 AC_SUBST(LT_RELEASE)
@@ -41,6 +50,11 @@ AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 AC_SUBST(LT_EXTRA)
+
+dnl For use in static assertions
+AC_DEFINE_UNQUOTED([SDL_BUILD_MAJOR_VERSION], $MAJOR_VERSION, [ ])
+AC_DEFINE_UNQUOTED([SDL_BUILD_MINOR_VERSION], $MINOR_VERSION, [ ])
+AC_DEFINE_UNQUOTED([SDL_BUILD_MICRO_VERSION], $MICRO_VERSION, [ ])
 
 dnl Detect the canonical build and host environments
 AC_CANONICAL_HOST
@@ -51,22 +65,9 @@ AM_INIT_AUTOMAKE([1.16 foreign subdir-objects tar-ustar])
 dnl Check for tools
 AC_PROG_CC
 AC_PROG_CXX
+AC_CHECK_TOOL(RC,[windres],[:])
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-if test -z "$host_alias"; then
-    hostaliaswindres=
-else
-    hostaliaswindres="$host_alias-windres"
-fi
-AC_CHECK_PROGS(WINDRES, [windres $hostaliaswindres $host_os-windres])
-
-case "$host" in
-    *-*-cygwin* | *-*-mingw*)
-        ;;
-
-    *)  AC_FUNC_ALLOCA
-        ;;
-esac
 
 case "$host" in
     *-*-beos*)
@@ -82,9 +83,8 @@ case "$host" in
                 ac_default_prefix=$BUILD_PREFIX
             fi
         fi
-        if test x$WINDRES != x; then
-            use_version_rc=true
-        fi
+        use_version_rc=true
+        LT_EXTRA="-Wl,version.o"
         ;;
     *-*-os2*)
         # disable static builds on os/2
@@ -100,7 +100,7 @@ AM_CONDITIONAL(USE_VERSION_RC, test x$use_version_rc = xtrue)
 SUMMARY="\nSDL2_ttf Configure Summary:\n"
 
 dnl Check for SDL
-SDL_VERSION=2.0.12
+SDL_VERSION=2.0.10
 AC_SUBST(SDL_VERSION)
 AM_PATH_SDL2($SDL_VERSION,
             :,
@@ -220,6 +220,7 @@ if test x$enable_harfbuzz = xyes; then
 			CFLAGS="$CFLAGS -static-libgcc"
 			# for uniscribe support:
 			TTF_LIBS="$TTF_LIBS -lusp10 -lgdi32 -lrpcrt4"
+			PC_LIBS="$PC_LIBS -lusp10 -lgdi32 -lrpcrt4"
 		  ;;
 		esac
 		case "$host" in
@@ -229,9 +230,9 @@ if test x$enable_harfbuzz = xyes; then
 		    fi
 		  ;;
 		esac
-		dnl silence a lot of harfbuzz warnings:
+		# silence a lot of harfbuzz warnings:
 		CXXFLAGS="$CXXFLAGS -Wno-unused-result"
-		dnl prevent linking to libstdc++:
+		# prevent linking to libstdc++ :
 		CXXFLAGS="$CXXFLAGS -fno-rtti -fno-exceptions -fno-threadsafe-statics"
 	else
 		SUMMARY="${SUMMARY}Using included HarfBuzz : NO\n"
@@ -327,7 +328,6 @@ else
 fi
 AC_SUBST([GL_LIBS])
 AC_SUBST([MATHLIB])
-AC_SUBST([WINDRES])
 AC_SUBST([TTF_CFLAGS])
 AC_SUBST([TTF_LIBS])
 AC_SUBST([PC_REQUIRES])

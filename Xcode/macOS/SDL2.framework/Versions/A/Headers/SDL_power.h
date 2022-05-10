@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2021 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2022 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,9 +28,9 @@
  *  Header for the SDL power management routines.
  */
 
-#include "SDL_stdinc.h"
+#include <SDL2/SDL_stdinc.h>
 
-#include "begin_code.h"
+#include <SDL2/begin_code.h>
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
@@ -72,6 +72,8 @@ typedef enum
  *            a NULL here if you don't care, will return -1 if we can't
  *            determine a value, or we're not running on a battery
  * \returns an SDL_PowerState enum representing the current battery state.
+ *
+ * \since This function is available since SDL 2.0.0.
  */
 extern DECLSPEC SDL_PowerState SDLCALL SDL_GetPowerInfo(int *secs, int *pct);
 
@@ -79,7 +81,7 @@ extern DECLSPEC SDL_PowerState SDLCALL SDL_GetPowerInfo(int *secs, int *pct);
 #ifdef __cplusplus
 }
 #endif
-#include "close_code.h"
+#include <SDL2/close_code.h>
 
 #endif /* SDL_power_h_ */
 

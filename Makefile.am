@@ -12,7 +12,7 @@ libSDL2_ttf_la_SOURCES =		\
 
 libSDL2_ttf_la_CPPFLAGS = $(TTF_CFLAGS) $(LOCAL_FT2_FLAGS) $(LOCAL_HB_FLAGS)
 
-FREETYPE_PATH = external/freetype-2.11.1
+FREETYPE_PATH = external/freetype
 FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/autofit/autofit.c \
 	$(FREETYPE_PATH)/src/base/ftbase.c \
@@ -51,6 +51,7 @@ FREETYPE_SOURCES = \
 	$(FREETYPE_PATH)/src/sdf/sdf.c \
 	$(FREETYPE_PATH)/src/sfnt/sfnt.c \
 	$(FREETYPE_PATH)/src/smooth/smooth.c \
+	$(FREETYPE_PATH)/src/svg/svg.c \
 	$(FREETYPE_PATH)/src/truetype/truetype.c \
 	$(FREETYPE_PATH)/src/type1/type1.c \
 	$(FREETYPE_PATH)/src/type42/type42.c \
@@ -61,7 +62,7 @@ LOCAL_FT2_FLAGS = -I$(srcdir)/$(FREETYPE_PATH)/include -DFT2_BUILD_LIBRARY -DFT_
 LOCAL_FT2_SOURCES = $(FREETYPE_SOURCES)
 endif
 
-HARFBUZZ_PATH = external/harfbuzz-2.8.0
+HARFBUZZ_PATH = external/harfbuzz
 HARFBUZZ_SOURCES = \
 	$(HARFBUZZ_PATH)/src/hb-aat-layout.cc \
 	$(HARFBUZZ_PATH)/src/hb-aat-map.cc \
@@ -74,6 +75,7 @@ HARFBUZZ_SOURCES = \
 	$(HARFBUZZ_PATH)/src/hb-font.cc \
 	$(HARFBUZZ_PATH)/src/hb-ft.cc \
 	$(HARFBUZZ_PATH)/src/hb-number.cc \
+	$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff2-table.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-face.cc \
@@ -122,17 +124,12 @@ else
 LINKER = $(LINK)
 endif
 
-if USE_VERSION_RC
-libSDL2_ttf_la_LDFLAGS = 	\
-	-no-undefined		\
-	-release $(LT_RELEASE)	\
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -Wl,version.o
-libSDL2_ttf_la_DEPENDENCIES = version.o
-else
 libSDL2_ttf_la_LDFLAGS = 	\
 	-no-undefined		\
 	-release $(LT_RELEASE)	\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) $(LT_EXTRA)
+if USE_VERSION_RC
+libSDL2_ttf_la_DEPENDENCIES = version.o
 endif
 libSDL2_ttf_la_LINK = $(LINKER) $(libSDL2_ttf_la_LDFLAGS)
 libSDL2_ttf_la_LIBADD = $(TTF_LIBS) @MATHLIB@
@@ -140,20 +137,14 @@ libSDL2_ttf_la_LIBADD = $(TTF_LIBS) @MATHLIB@
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = SDL2_ttf.pc
 
-%.o : %.rc
-	$(WINDRES) $< $@
+.rc.o:
+	$(RC) $< $@
 
 EXTRA_DIST = CHANGES.txt COPYING.txt README.txt \
-	Android.mk		\
-	Makefile.os2		\
-	Xcode			\
-	VisualC			\
-	VisualC-WinRT		\
-	version.rc		\
-	external		\
-	SDL2_ttf.spec		\
-	SDL2_ttf.spec.in	\
-	SDL2_ttfConfig.cmake	\
+	Android.mk Makefile.os2 version.rc	\
+	VisualC VisualC-WinRT Xcode external	\
+	SDL2_ttf.spec SDL2_ttf.spec.in		\
+	SDL2_ttfConfig.cmake			\
 	autogen.sh gcc-fat.sh
 
 noinst_PROGRAMS = showfont glfont
@@ -172,3 +163,7 @@ distclean-local:
 	-rm -rf `find $(srcdir) -name .deps`
 dist-hook:
 	-rm -rf `find $(distdir) -name .deps`
+	-rm -rf `find $(distdir)/external -name '.git*'`
+	-rm -rf `find $(distdir)/external -name '.ci*'`
+	-rm -rf `find $(distdir)/external -name .dirstamp`
+	-rm -rf $(distdir)/external/harfbuzz/test

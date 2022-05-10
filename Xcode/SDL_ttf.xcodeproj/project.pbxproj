@@ -7,534 +7,186 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A75FDAE523E3582C00529352 /* SDL_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1014BAEA010A4B677F000001 /* SDL_ttf.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A75FDAE823E3582C00529352 /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
-		A75FDAFE23E36B4300529352 /* SDL_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1014BAEA010A4B677F000001 /* SDL_ttf.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A75FDB0123E36B4300529352 /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
-		A75FDB0E23E37ED200529352 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A75FDB0C23E37ED200529352 /* SDL2.framework */; };
-		A75FDB1223E37EE400529352 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A75FDB1023E37EE400529352 /* SDL2.framework */; };
-		A75FDB2823E3825200529352 /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
-		A75FDB3323E3827100529352 /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		BE48FD5F07AFA17000BB41DA /* SDL_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1014BAEA010A4B677F000001 /* SDL_ttf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE48FD6207AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		BE48FD6B07AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		BE48FD8407AFA29000BB41DA /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FD8307AFA29000BB41DA /* SDL2.framework */; };
+		F307EE29282738F8003915D7 /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = F307EE28282738F8003915D7 /* svg.c */; };
+		F307EE2A282738F8003915D7 /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = F307EE28282738F8003915D7 /* svg.c */; };
+		F307EE2C282807EB003915D7 /* hb-ms-feature-ranges.cc in Sources */ = {isa = PBXBuildFile; fileRef = F307EE2B282807EB003915D7 /* hb-ms-feature-ranges.cc */; };
+		F307EE2D282807EB003915D7 /* hb-ms-feature-ranges.cc in Sources */ = {isa = PBXBuildFile; fileRef = F307EE2B282807EB003915D7 /* hb-ms-feature-ranges.cc */; };
 		F364A5B82620E1A200325ECE /* FTL.TXT in Resources */ = {isa = PBXBuildFile; fileRef = F364A5B72620E1A200325ECE /* FTL.TXT */; };
-		F364A5B92620E1A200325ECE /* FTL.TXT in Resources */ = {isa = PBXBuildFile; fileRef = F364A5B72620E1A200325ECE /* FTL.TXT */; };
-		F364A5BA2620E1A200325ECE /* FTL.TXT in Resources */ = {isa = PBXBuildFile; fileRef = F364A5B72620E1A200325ECE /* FTL.TXT */; };
 		F364A5C42620E22400325ECE /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = F364A5C32620E22400325ECE /* ReadMe.txt */; };
-		F364A5C52620E22400325ECE /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = F364A5C32620E22400325ECE /* ReadMe.txt */; };
-		F364A5C62620E22400325ECE /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = F364A5C32620E22400325ECE /* ReadMe.txt */; };
 		F3696FE4278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
-		F3696FE5278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
-		F3696FE6278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
 		F3696FE7278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
-		F3696FE8278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
-		F3696FE9278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
 		F384BB6C261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
-		F384BB6D261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
-		F384BB6E261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
 		F384BB6F261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
-		F384BB70261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
-		F384BB71261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
 		F384BB8B261EC0DE0028A248 /* ftbdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB76261EC0DD0028A248 /* ftbdf.c */; };
-		F384BB8C261EC0DE0028A248 /* ftbdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB76261EC0DD0028A248 /* ftbdf.c */; };
-		F384BB8D261EC0DE0028A248 /* ftbdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB76261EC0DD0028A248 /* ftbdf.c */; };
 		F384BB8E261EC0DE0028A248 /* ftbdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB76261EC0DD0028A248 /* ftbdf.c */; };
-		F384BB8F261EC0DE0028A248 /* ftbdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB76261EC0DD0028A248 /* ftbdf.c */; };
-		F384BB90261EC0DE0028A248 /* ftbdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB76261EC0DD0028A248 /* ftbdf.c */; };
 		F384BB91261EC0DE0028A248 /* ftgasp.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB77261EC0DD0028A248 /* ftgasp.c */; };
-		F384BB92261EC0DE0028A248 /* ftgasp.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB77261EC0DD0028A248 /* ftgasp.c */; };
-		F384BB93261EC0DE0028A248 /* ftgasp.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB77261EC0DD0028A248 /* ftgasp.c */; };
 		F384BB94261EC0DE0028A248 /* ftgasp.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB77261EC0DD0028A248 /* ftgasp.c */; };
-		F384BB95261EC0DE0028A248 /* ftgasp.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB77261EC0DD0028A248 /* ftgasp.c */; };
-		F384BB96261EC0DE0028A248 /* ftgasp.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB77261EC0DD0028A248 /* ftgasp.c */; };
 		F384BB97261EC0DE0028A248 /* ftgxval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB78261EC0DD0028A248 /* ftgxval.c */; };
-		F384BB98261EC0DE0028A248 /* ftgxval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB78261EC0DD0028A248 /* ftgxval.c */; };
-		F384BB99261EC0DE0028A248 /* ftgxval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB78261EC0DD0028A248 /* ftgxval.c */; };
 		F384BB9A261EC0DE0028A248 /* ftgxval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB78261EC0DD0028A248 /* ftgxval.c */; };
-		F384BB9B261EC0DE0028A248 /* ftgxval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB78261EC0DD0028A248 /* ftgxval.c */; };
-		F384BB9C261EC0DE0028A248 /* ftgxval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB78261EC0DD0028A248 /* ftgxval.c */; };
 		F384BB9D261EC0DE0028A248 /* ftstroke.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB79261EC0DD0028A248 /* ftstroke.c */; };
-		F384BB9E261EC0DE0028A248 /* ftstroke.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB79261EC0DD0028A248 /* ftstroke.c */; };
-		F384BB9F261EC0DE0028A248 /* ftstroke.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB79261EC0DD0028A248 /* ftstroke.c */; };
 		F384BBA0261EC0DE0028A248 /* ftstroke.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB79261EC0DD0028A248 /* ftstroke.c */; };
-		F384BBA1261EC0DE0028A248 /* ftstroke.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB79261EC0DD0028A248 /* ftstroke.c */; };
-		F384BBA2261EC0DE0028A248 /* ftstroke.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB79261EC0DD0028A248 /* ftstroke.c */; };
 		F384BBA3261EC0DE0028A248 /* ftdebug.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7A261EC0DD0028A248 /* ftdebug.c */; };
-		F384BBA4261EC0DE0028A248 /* ftdebug.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7A261EC0DD0028A248 /* ftdebug.c */; };
-		F384BBA5261EC0DE0028A248 /* ftdebug.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7A261EC0DD0028A248 /* ftdebug.c */; };
 		F384BBA6261EC0DE0028A248 /* ftdebug.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7A261EC0DD0028A248 /* ftdebug.c */; };
-		F384BBA7261EC0DE0028A248 /* ftdebug.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7A261EC0DD0028A248 /* ftdebug.c */; };
-		F384BBA8261EC0DE0028A248 /* ftdebug.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7A261EC0DD0028A248 /* ftdebug.c */; };
 		F384BBA9261EC0DE0028A248 /* ftbbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7B261EC0DD0028A248 /* ftbbox.c */; };
-		F384BBAA261EC0DE0028A248 /* ftbbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7B261EC0DD0028A248 /* ftbbox.c */; };
-		F384BBAB261EC0DE0028A248 /* ftbbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7B261EC0DD0028A248 /* ftbbox.c */; };
 		F384BBAC261EC0DE0028A248 /* ftbbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7B261EC0DD0028A248 /* ftbbox.c */; };
-		F384BBAD261EC0DE0028A248 /* ftbbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7B261EC0DD0028A248 /* ftbbox.c */; };
-		F384BBAE261EC0DE0028A248 /* ftbbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7B261EC0DD0028A248 /* ftbbox.c */; };
 		F384BBAF261EC0DE0028A248 /* ftbase.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7C261EC0DD0028A248 /* ftbase.c */; };
-		F384BBB0261EC0DE0028A248 /* ftbase.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7C261EC0DD0028A248 /* ftbase.c */; };
-		F384BBB1261EC0DE0028A248 /* ftbase.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7C261EC0DD0028A248 /* ftbase.c */; };
 		F384BBB2261EC0DE0028A248 /* ftbase.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7C261EC0DD0028A248 /* ftbase.c */; };
-		F384BBB3261EC0DE0028A248 /* ftbase.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7C261EC0DD0028A248 /* ftbase.c */; };
-		F384BBB4261EC0DE0028A248 /* ftbase.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7C261EC0DD0028A248 /* ftbase.c */; };
 		F384BBB5261EC0DE0028A248 /* ftpatent.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7D261EC0DD0028A248 /* ftpatent.c */; };
-		F384BBB6261EC0DE0028A248 /* ftpatent.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7D261EC0DD0028A248 /* ftpatent.c */; };
-		F384BBB7261EC0DE0028A248 /* ftpatent.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7D261EC0DD0028A248 /* ftpatent.c */; };
 		F384BBB8261EC0DE0028A248 /* ftpatent.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7D261EC0DD0028A248 /* ftpatent.c */; };
-		F384BBB9261EC0DE0028A248 /* ftpatent.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7D261EC0DD0028A248 /* ftpatent.c */; };
-		F384BBBA261EC0DE0028A248 /* ftpatent.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7D261EC0DD0028A248 /* ftpatent.c */; };
 		F384BBBB261EC0DE0028A248 /* ftglyph.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7E261EC0DD0028A248 /* ftglyph.c */; };
-		F384BBBC261EC0DE0028A248 /* ftglyph.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7E261EC0DD0028A248 /* ftglyph.c */; };
-		F384BBBD261EC0DE0028A248 /* ftglyph.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7E261EC0DD0028A248 /* ftglyph.c */; };
 		F384BBBE261EC0DE0028A248 /* ftglyph.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7E261EC0DD0028A248 /* ftglyph.c */; };
-		F384BBBF261EC0DE0028A248 /* ftglyph.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7E261EC0DD0028A248 /* ftglyph.c */; };
-		F384BBC0261EC0DE0028A248 /* ftglyph.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7E261EC0DD0028A248 /* ftglyph.c */; };
 		F384BBC1261EC0DE0028A248 /* ftsynth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7F261EC0DD0028A248 /* ftsynth.c */; };
-		F384BBC2261EC0DE0028A248 /* ftsynth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7F261EC0DD0028A248 /* ftsynth.c */; };
-		F384BBC3261EC0DE0028A248 /* ftsynth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7F261EC0DD0028A248 /* ftsynth.c */; };
 		F384BBC4261EC0DE0028A248 /* ftsynth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7F261EC0DD0028A248 /* ftsynth.c */; };
-		F384BBC5261EC0DE0028A248 /* ftsynth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7F261EC0DD0028A248 /* ftsynth.c */; };
-		F384BBC6261EC0DE0028A248 /* ftsynth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB7F261EC0DD0028A248 /* ftsynth.c */; };
 		F384BBC7261EC0DE0028A248 /* ftbitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB80261EC0DD0028A248 /* ftbitmap.c */; };
-		F384BBC8261EC0DE0028A248 /* ftbitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB80261EC0DD0028A248 /* ftbitmap.c */; };
-		F384BBC9261EC0DE0028A248 /* ftbitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB80261EC0DD0028A248 /* ftbitmap.c */; };
 		F384BBCA261EC0DE0028A248 /* ftbitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB80261EC0DD0028A248 /* ftbitmap.c */; };
-		F384BBCB261EC0DE0028A248 /* ftbitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB80261EC0DD0028A248 /* ftbitmap.c */; };
-		F384BBCC261EC0DE0028A248 /* ftbitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB80261EC0DD0028A248 /* ftbitmap.c */; };
 		F384BBCD261EC0DE0028A248 /* ftinit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB81261EC0DD0028A248 /* ftinit.c */; };
-		F384BBCE261EC0DE0028A248 /* ftinit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB81261EC0DD0028A248 /* ftinit.c */; };
-		F384BBCF261EC0DE0028A248 /* ftinit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB81261EC0DD0028A248 /* ftinit.c */; };
 		F384BBD0261EC0DE0028A248 /* ftinit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB81261EC0DD0028A248 /* ftinit.c */; };
-		F384BBD1261EC0DE0028A248 /* ftinit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB81261EC0DD0028A248 /* ftinit.c */; };
-		F384BBD2261EC0DE0028A248 /* ftinit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB81261EC0DD0028A248 /* ftinit.c */; };
 		F384BBD3261EC0DE0028A248 /* ftmm.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB82261EC0DD0028A248 /* ftmm.c */; };
-		F384BBD4261EC0DE0028A248 /* ftmm.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB82261EC0DD0028A248 /* ftmm.c */; };
-		F384BBD5261EC0DE0028A248 /* ftmm.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB82261EC0DD0028A248 /* ftmm.c */; };
 		F384BBD6261EC0DE0028A248 /* ftmm.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB82261EC0DD0028A248 /* ftmm.c */; };
-		F384BBD7261EC0DE0028A248 /* ftmm.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB82261EC0DD0028A248 /* ftmm.c */; };
-		F384BBD8261EC0DE0028A248 /* ftmm.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB82261EC0DD0028A248 /* ftmm.c */; };
 		F384BBD9261EC0DE0028A248 /* ftcid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB83261EC0DD0028A248 /* ftcid.c */; };
-		F384BBDA261EC0DE0028A248 /* ftcid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB83261EC0DD0028A248 /* ftcid.c */; };
-		F384BBDB261EC0DE0028A248 /* ftcid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB83261EC0DD0028A248 /* ftcid.c */; };
 		F384BBDC261EC0DE0028A248 /* ftcid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB83261EC0DD0028A248 /* ftcid.c */; };
-		F384BBDD261EC0DE0028A248 /* ftcid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB83261EC0DD0028A248 /* ftcid.c */; };
-		F384BBDE261EC0DE0028A248 /* ftcid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB83261EC0DD0028A248 /* ftcid.c */; };
 		F384BBDF261EC0DE0028A248 /* ftpfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB84261EC0DD0028A248 /* ftpfr.c */; };
-		F384BBE0261EC0DE0028A248 /* ftpfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB84261EC0DD0028A248 /* ftpfr.c */; };
-		F384BBE1261EC0DE0028A248 /* ftpfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB84261EC0DD0028A248 /* ftpfr.c */; };
 		F384BBE2261EC0DE0028A248 /* ftpfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB84261EC0DD0028A248 /* ftpfr.c */; };
-		F384BBE3261EC0DE0028A248 /* ftpfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB84261EC0DD0028A248 /* ftpfr.c */; };
-		F384BBE4261EC0DE0028A248 /* ftpfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB84261EC0DD0028A248 /* ftpfr.c */; };
 		F384BBE5261EC0DE0028A248 /* ftotval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB85261EC0DE0028A248 /* ftotval.c */; };
-		F384BBE6261EC0DE0028A248 /* ftotval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB85261EC0DE0028A248 /* ftotval.c */; };
-		F384BBE7261EC0DE0028A248 /* ftotval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB85261EC0DE0028A248 /* ftotval.c */; };
 		F384BBE8261EC0DE0028A248 /* ftotval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB85261EC0DE0028A248 /* ftotval.c */; };
-		F384BBE9261EC0DE0028A248 /* ftotval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB85261EC0DE0028A248 /* ftotval.c */; };
-		F384BBEA261EC0DE0028A248 /* ftotval.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB85261EC0DE0028A248 /* ftotval.c */; };
 		F384BBEB261EC0DE0028A248 /* ftfstype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB86261EC0DE0028A248 /* ftfstype.c */; };
-		F384BBEC261EC0DE0028A248 /* ftfstype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB86261EC0DE0028A248 /* ftfstype.c */; };
-		F384BBED261EC0DE0028A248 /* ftfstype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB86261EC0DE0028A248 /* ftfstype.c */; };
 		F384BBEE261EC0DE0028A248 /* ftfstype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB86261EC0DE0028A248 /* ftfstype.c */; };
-		F384BBEF261EC0DE0028A248 /* ftfstype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB86261EC0DE0028A248 /* ftfstype.c */; };
-		F384BBF0261EC0DE0028A248 /* ftfstype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB86261EC0DE0028A248 /* ftfstype.c */; };
 		F384BBF1261EC0DE0028A248 /* ftsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB87261EC0DE0028A248 /* ftsystem.c */; };
-		F384BBF2261EC0DE0028A248 /* ftsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB87261EC0DE0028A248 /* ftsystem.c */; };
-		F384BBF3261EC0DE0028A248 /* ftsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB87261EC0DE0028A248 /* ftsystem.c */; };
 		F384BBF4261EC0DE0028A248 /* ftsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB87261EC0DE0028A248 /* ftsystem.c */; };
-		F384BBF5261EC0DE0028A248 /* ftsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB87261EC0DE0028A248 /* ftsystem.c */; };
-		F384BBF6261EC0DE0028A248 /* ftsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB87261EC0DE0028A248 /* ftsystem.c */; };
 		F384BBF7261EC0DE0028A248 /* ftwinfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB88261EC0DE0028A248 /* ftwinfnt.c */; };
-		F384BBF8261EC0DE0028A248 /* ftwinfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB88261EC0DE0028A248 /* ftwinfnt.c */; };
-		F384BBF9261EC0DE0028A248 /* ftwinfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB88261EC0DE0028A248 /* ftwinfnt.c */; };
 		F384BBFA261EC0DE0028A248 /* ftwinfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB88261EC0DE0028A248 /* ftwinfnt.c */; };
-		F384BBFB261EC0DE0028A248 /* ftwinfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB88261EC0DE0028A248 /* ftwinfnt.c */; };
-		F384BBFC261EC0DE0028A248 /* ftwinfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB88261EC0DE0028A248 /* ftwinfnt.c */; };
 		F384BC03261EC0DE0028A248 /* fttype1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB8A261EC0DE0028A248 /* fttype1.c */; };
-		F384BC04261EC0DE0028A248 /* fttype1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB8A261EC0DE0028A248 /* fttype1.c */; };
-		F384BC05261EC0DE0028A248 /* fttype1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB8A261EC0DE0028A248 /* fttype1.c */; };
 		F384BC06261EC0DE0028A248 /* fttype1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB8A261EC0DE0028A248 /* fttype1.c */; };
-		F384BC07261EC0DE0028A248 /* fttype1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB8A261EC0DE0028A248 /* fttype1.c */; };
-		F384BC08261EC0DE0028A248 /* fttype1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB8A261EC0DE0028A248 /* fttype1.c */; };
 		F384BC0E261EC0F90028A248 /* bdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC0D261EC0F90028A248 /* bdf.c */; };
-		F384BC0F261EC0F90028A248 /* bdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC0D261EC0F90028A248 /* bdf.c */; };
-		F384BC10261EC0F90028A248 /* bdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC0D261EC0F90028A248 /* bdf.c */; };
 		F384BC11261EC0F90028A248 /* bdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC0D261EC0F90028A248 /* bdf.c */; };
-		F384BC12261EC0F90028A248 /* bdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC0D261EC0F90028A248 /* bdf.c */; };
-		F384BC13261EC0F90028A248 /* bdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC0D261EC0F90028A248 /* bdf.c */; };
 		F384BC19261EC1440028A248 /* ftbzip2.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC18261EC1440028A248 /* ftbzip2.c */; };
-		F384BC1A261EC1440028A248 /* ftbzip2.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC18261EC1440028A248 /* ftbzip2.c */; };
-		F384BC1B261EC1440028A248 /* ftbzip2.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC18261EC1440028A248 /* ftbzip2.c */; };
 		F384BC1C261EC1440028A248 /* ftbzip2.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC18261EC1440028A248 /* ftbzip2.c */; };
-		F384BC1D261EC1440028A248 /* ftbzip2.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC18261EC1440028A248 /* ftbzip2.c */; };
-		F384BC1E261EC1440028A248 /* ftbzip2.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC18261EC1440028A248 /* ftbzip2.c */; };
 		F384BC2F261EC1710028A248 /* cff.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC2E261EC1710028A248 /* cff.c */; };
-		F384BC30261EC1710028A248 /* cff.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC2E261EC1710028A248 /* cff.c */; };
-		F384BC31261EC1710028A248 /* cff.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC2E261EC1710028A248 /* cff.c */; };
 		F384BC32261EC1710028A248 /* cff.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC2E261EC1710028A248 /* cff.c */; };
-		F384BC33261EC1710028A248 /* cff.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC2E261EC1710028A248 /* cff.c */; };
-		F384BC34261EC1710028A248 /* cff.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC2E261EC1710028A248 /* cff.c */; };
 		F384BC3A261EC1890028A248 /* type1cid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC39261EC1890028A248 /* type1cid.c */; };
-		F384BC3B261EC1890028A248 /* type1cid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC39261EC1890028A248 /* type1cid.c */; };
-		F384BC3C261EC1890028A248 /* type1cid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC39261EC1890028A248 /* type1cid.c */; };
 		F384BC3D261EC1890028A248 /* type1cid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC39261EC1890028A248 /* type1cid.c */; };
-		F384BC3E261EC1890028A248 /* type1cid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC39261EC1890028A248 /* type1cid.c */; };
-		F384BC3F261EC1890028A248 /* type1cid.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC39261EC1890028A248 /* type1cid.c */; };
 		F384BC45261EC1A30028A248 /* ftgzip.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC44261EC1A30028A248 /* ftgzip.c */; };
-		F384BC46261EC1A30028A248 /* ftgzip.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC44261EC1A30028A248 /* ftgzip.c */; };
-		F384BC47261EC1A30028A248 /* ftgzip.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC44261EC1A30028A248 /* ftgzip.c */; };
 		F384BC48261EC1A30028A248 /* ftgzip.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC44261EC1A30028A248 /* ftgzip.c */; };
-		F384BC49261EC1A30028A248 /* ftgzip.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC44261EC1A30028A248 /* ftgzip.c */; };
-		F384BC4A261EC1A30028A248 /* ftgzip.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC44261EC1A30028A248 /* ftgzip.c */; };
 		F384BC50261EC1B90028A248 /* ftlzw.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC4F261EC1B90028A248 /* ftlzw.c */; };
-		F384BC51261EC1B90028A248 /* ftlzw.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC4F261EC1B90028A248 /* ftlzw.c */; };
-		F384BC52261EC1B90028A248 /* ftlzw.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC4F261EC1B90028A248 /* ftlzw.c */; };
 		F384BC53261EC1B90028A248 /* ftlzw.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC4F261EC1B90028A248 /* ftlzw.c */; };
-		F384BC54261EC1B90028A248 /* ftlzw.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC4F261EC1B90028A248 /* ftlzw.c */; };
-		F384BC55261EC1B90028A248 /* ftlzw.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC4F261EC1B90028A248 /* ftlzw.c */; };
 		F384BC5B261EC1DF0028A248 /* pcf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC5A261EC1DF0028A248 /* pcf.c */; };
-		F384BC5C261EC1DF0028A248 /* pcf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC5A261EC1DF0028A248 /* pcf.c */; };
-		F384BC5D261EC1DF0028A248 /* pcf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC5A261EC1DF0028A248 /* pcf.c */; };
 		F384BC5E261EC1DF0028A248 /* pcf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC5A261EC1DF0028A248 /* pcf.c */; };
-		F384BC5F261EC1DF0028A248 /* pcf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC5A261EC1DF0028A248 /* pcf.c */; };
-		F384BC60261EC1DF0028A248 /* pcf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC5A261EC1DF0028A248 /* pcf.c */; };
 		F384BC66261EC1F30028A248 /* pfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC65261EC1F30028A248 /* pfr.c */; };
-		F384BC67261EC1F30028A248 /* pfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC65261EC1F30028A248 /* pfr.c */; };
-		F384BC68261EC1F30028A248 /* pfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC65261EC1F30028A248 /* pfr.c */; };
 		F384BC69261EC1F30028A248 /* pfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC65261EC1F30028A248 /* pfr.c */; };
-		F384BC6A261EC1F30028A248 /* pfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC65261EC1F30028A248 /* pfr.c */; };
-		F384BC6B261EC1F30028A248 /* pfr.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC65261EC1F30028A248 /* pfr.c */; };
 		F384BC71261EC2050028A248 /* psaux.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC70261EC2050028A248 /* psaux.c */; };
-		F384BC72261EC2050028A248 /* psaux.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC70261EC2050028A248 /* psaux.c */; };
-		F384BC73261EC2050028A248 /* psaux.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC70261EC2050028A248 /* psaux.c */; };
 		F384BC74261EC2050028A248 /* psaux.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC70261EC2050028A248 /* psaux.c */; };
-		F384BC75261EC2050028A248 /* psaux.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC70261EC2050028A248 /* psaux.c */; };
-		F384BC76261EC2050028A248 /* psaux.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC70261EC2050028A248 /* psaux.c */; };
 		F384BC7C261EC2180028A248 /* pshinter.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC7B261EC2180028A248 /* pshinter.c */; };
-		F384BC7D261EC2180028A248 /* pshinter.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC7B261EC2180028A248 /* pshinter.c */; };
-		F384BC7E261EC2180028A248 /* pshinter.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC7B261EC2180028A248 /* pshinter.c */; };
 		F384BC7F261EC2180028A248 /* pshinter.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC7B261EC2180028A248 /* pshinter.c */; };
-		F384BC80261EC2180028A248 /* pshinter.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC7B261EC2180028A248 /* pshinter.c */; };
-		F384BC81261EC2180028A248 /* pshinter.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC7B261EC2180028A248 /* pshinter.c */; };
 		F384BC87261EC23B0028A248 /* psmodule.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC86261EC23B0028A248 /* psmodule.c */; };
-		F384BC88261EC23B0028A248 /* psmodule.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC86261EC23B0028A248 /* psmodule.c */; };
-		F384BC89261EC23B0028A248 /* psmodule.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC86261EC23B0028A248 /* psmodule.c */; };
 		F384BC8A261EC23B0028A248 /* psmodule.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC86261EC23B0028A248 /* psmodule.c */; };
-		F384BC8B261EC23B0028A248 /* psmodule.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC86261EC23B0028A248 /* psmodule.c */; };
-		F384BC8C261EC23B0028A248 /* psmodule.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC86261EC23B0028A248 /* psmodule.c */; };
 		F384BC92261EC2560028A248 /* raster.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC91261EC2560028A248 /* raster.c */; };
-		F384BC93261EC2560028A248 /* raster.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC91261EC2560028A248 /* raster.c */; };
-		F384BC94261EC2560028A248 /* raster.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC91261EC2560028A248 /* raster.c */; };
 		F384BC95261EC2560028A248 /* raster.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC91261EC2560028A248 /* raster.c */; };
-		F384BC96261EC2560028A248 /* raster.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC91261EC2560028A248 /* raster.c */; };
-		F384BC97261EC2560028A248 /* raster.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC91261EC2560028A248 /* raster.c */; };
 		F384BC9D261EC2680028A248 /* sfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC9C261EC2680028A248 /* sfnt.c */; };
-		F384BC9E261EC2680028A248 /* sfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC9C261EC2680028A248 /* sfnt.c */; };
-		F384BC9F261EC2680028A248 /* sfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC9C261EC2680028A248 /* sfnt.c */; };
 		F384BCA0261EC2680028A248 /* sfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC9C261EC2680028A248 /* sfnt.c */; };
-		F384BCA1261EC2680028A248 /* sfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC9C261EC2680028A248 /* sfnt.c */; };
-		F384BCA2261EC2680028A248 /* sfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BC9C261EC2680028A248 /* sfnt.c */; };
 		F384BCA8261EC2770028A248 /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCA7261EC2770028A248 /* smooth.c */; };
-		F384BCA9261EC2770028A248 /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCA7261EC2770028A248 /* smooth.c */; };
-		F384BCAA261EC2770028A248 /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCA7261EC2770028A248 /* smooth.c */; };
 		F384BCAB261EC2770028A248 /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCA7261EC2770028A248 /* smooth.c */; };
-		F384BCAC261EC2770028A248 /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCA7261EC2770028A248 /* smooth.c */; };
-		F384BCAD261EC2770028A248 /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCA7261EC2770028A248 /* smooth.c */; };
 		F384BCBE261EC2980028A248 /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCBD261EC2980028A248 /* truetype.c */; };
-		F384BCBF261EC2980028A248 /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCBD261EC2980028A248 /* truetype.c */; };
-		F384BCC0261EC2980028A248 /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCBD261EC2980028A248 /* truetype.c */; };
 		F384BCC1261EC2980028A248 /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCBD261EC2980028A248 /* truetype.c */; };
-		F384BCC2261EC2980028A248 /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCBD261EC2980028A248 /* truetype.c */; };
-		F384BCC3261EC2980028A248 /* truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCBD261EC2980028A248 /* truetype.c */; };
 		F384BCC9261EC2AE0028A248 /* type1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCC8261EC2AE0028A248 /* type1.c */; };
-		F384BCCA261EC2AE0028A248 /* type1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCC8261EC2AE0028A248 /* type1.c */; };
-		F384BCCB261EC2AE0028A248 /* type1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCC8261EC2AE0028A248 /* type1.c */; };
 		F384BCCC261EC2AE0028A248 /* type1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCC8261EC2AE0028A248 /* type1.c */; };
-		F384BCCD261EC2AE0028A248 /* type1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCC8261EC2AE0028A248 /* type1.c */; };
-		F384BCCE261EC2AE0028A248 /* type1.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCC8261EC2AE0028A248 /* type1.c */; };
 		F384BCD4261EC2BE0028A248 /* type42.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCD3261EC2BE0028A248 /* type42.c */; };
-		F384BCD5261EC2BE0028A248 /* type42.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCD3261EC2BE0028A248 /* type42.c */; };
-		F384BCD6261EC2BE0028A248 /* type42.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCD3261EC2BE0028A248 /* type42.c */; };
 		F384BCD7261EC2BE0028A248 /* type42.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCD3261EC2BE0028A248 /* type42.c */; };
-		F384BCD8261EC2BE0028A248 /* type42.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCD3261EC2BE0028A248 /* type42.c */; };
-		F384BCD9261EC2BE0028A248 /* type42.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCD3261EC2BE0028A248 /* type42.c */; };
 		F384BCDF261EC2CF0028A248 /* winfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCDE261EC2CF0028A248 /* winfnt.c */; };
-		F384BCE0261EC2CF0028A248 /* winfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCDE261EC2CF0028A248 /* winfnt.c */; };
-		F384BCE1261EC2CF0028A248 /* winfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCDE261EC2CF0028A248 /* winfnt.c */; };
 		F384BCE2261EC2CF0028A248 /* winfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCDE261EC2CF0028A248 /* winfnt.c */; };
-		F384BCE3261EC2CF0028A248 /* winfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCDE261EC2CF0028A248 /* winfnt.c */; };
-		F384BCE4261EC2CF0028A248 /* winfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCDE261EC2CF0028A248 /* winfnt.c */; };
 		F384BCF2261EC5130028A248 /* ftcache.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCF1261EC5130028A248 /* ftcache.c */; };
-		F384BCF3261EC5130028A248 /* ftcache.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCF1261EC5130028A248 /* ftcache.c */; };
-		F384BCF4261EC5130028A248 /* ftcache.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCF1261EC5130028A248 /* ftcache.c */; };
 		F384BCF5261EC5130028A248 /* ftcache.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCF1261EC5130028A248 /* ftcache.c */; };
-		F384BCF6261EC5130028A248 /* ftcache.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCF1261EC5130028A248 /* ftcache.c */; };
-		F384BCF7261EC5130028A248 /* ftcache.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCF1261EC5130028A248 /* ftcache.c */; };
 		F384BD2F261EC7650028A248 /* hb-ot-shape-complex-default.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD05261EC7640028A248 /* hb-ot-shape-complex-default.cc */; };
-		F384BD30261EC7650028A248 /* hb-ot-shape-complex-default.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD05261EC7640028A248 /* hb-ot-shape-complex-default.cc */; };
-		F384BD31261EC7650028A248 /* hb-ot-shape-complex-default.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD05261EC7640028A248 /* hb-ot-shape-complex-default.cc */; };
 		F384BD32261EC7650028A248 /* hb-ot-shape-complex-default.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD05261EC7640028A248 /* hb-ot-shape-complex-default.cc */; };
-		F384BD33261EC7650028A248 /* hb-ot-shape-complex-default.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD05261EC7640028A248 /* hb-ot-shape-complex-default.cc */; };
-		F384BD34261EC7650028A248 /* hb-ot-shape-complex-default.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD05261EC7640028A248 /* hb-ot-shape-complex-default.cc */; };
 		F384BD35261EC7650028A248 /* hb-set.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD06261EC7640028A248 /* hb-set.cc */; };
-		F384BD36261EC7650028A248 /* hb-set.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD06261EC7640028A248 /* hb-set.cc */; };
-		F384BD37261EC7650028A248 /* hb-set.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD06261EC7640028A248 /* hb-set.cc */; };
 		F384BD38261EC7650028A248 /* hb-set.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD06261EC7640028A248 /* hb-set.cc */; };
-		F384BD39261EC7650028A248 /* hb-set.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD06261EC7640028A248 /* hb-set.cc */; };
-		F384BD3A261EC7650028A248 /* hb-set.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD06261EC7640028A248 /* hb-set.cc */; };
 		F384BD3B261EC7650028A248 /* hb-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD07261EC7640028A248 /* hb-shape.cc */; };
-		F384BD3C261EC7650028A248 /* hb-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD07261EC7640028A248 /* hb-shape.cc */; };
-		F384BD3D261EC7650028A248 /* hb-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD07261EC7640028A248 /* hb-shape.cc */; };
 		F384BD3E261EC7650028A248 /* hb-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD07261EC7640028A248 /* hb-shape.cc */; };
-		F384BD3F261EC7650028A248 /* hb-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD07261EC7640028A248 /* hb-shape.cc */; };
-		F384BD40261EC7650028A248 /* hb-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD07261EC7640028A248 /* hb-shape.cc */; };
 		F384BD41261EC7650028A248 /* hb-static.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD08261EC7640028A248 /* hb-static.cc */; };
-		F384BD42261EC7650028A248 /* hb-static.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD08261EC7640028A248 /* hb-static.cc */; };
-		F384BD43261EC7650028A248 /* hb-static.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD08261EC7640028A248 /* hb-static.cc */; };
 		F384BD44261EC7650028A248 /* hb-static.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD08261EC7640028A248 /* hb-static.cc */; };
-		F384BD45261EC7650028A248 /* hb-static.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD08261EC7640028A248 /* hb-static.cc */; };
-		F384BD46261EC7650028A248 /* hb-static.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD08261EC7640028A248 /* hb-static.cc */; };
 		F384BD47261EC7650028A248 /* hb-ot-shape-complex-hebrew.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD09261EC7640028A248 /* hb-ot-shape-complex-hebrew.cc */; };
-		F384BD48261EC7650028A248 /* hb-ot-shape-complex-hebrew.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD09261EC7640028A248 /* hb-ot-shape-complex-hebrew.cc */; };
-		F384BD49261EC7650028A248 /* hb-ot-shape-complex-hebrew.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD09261EC7640028A248 /* hb-ot-shape-complex-hebrew.cc */; };
 		F384BD4A261EC7650028A248 /* hb-ot-shape-complex-hebrew.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD09261EC7640028A248 /* hb-ot-shape-complex-hebrew.cc */; };
-		F384BD4B261EC7650028A248 /* hb-ot-shape-complex-hebrew.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD09261EC7640028A248 /* hb-ot-shape-complex-hebrew.cc */; };
-		F384BD4C261EC7650028A248 /* hb-ot-shape-complex-hebrew.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD09261EC7640028A248 /* hb-ot-shape-complex-hebrew.cc */; };
 		F384BD4D261EC7650028A248 /* hb-ucd.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0A261EC7640028A248 /* hb-ucd.cc */; };
-		F384BD4E261EC7650028A248 /* hb-ucd.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0A261EC7640028A248 /* hb-ucd.cc */; };
-		F384BD4F261EC7650028A248 /* hb-ucd.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0A261EC7640028A248 /* hb-ucd.cc */; };
 		F384BD50261EC7650028A248 /* hb-ucd.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0A261EC7640028A248 /* hb-ucd.cc */; };
-		F384BD51261EC7650028A248 /* hb-ucd.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0A261EC7640028A248 /* hb-ucd.cc */; };
-		F384BD52261EC7650028A248 /* hb-ucd.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0A261EC7640028A248 /* hb-ucd.cc */; };
 		F384BD53261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0B261EC7640028A248 /* hb-ot-shape-complex-indic-table.cc */; };
-		F384BD54261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0B261EC7640028A248 /* hb-ot-shape-complex-indic-table.cc */; };
-		F384BD55261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0B261EC7640028A248 /* hb-ot-shape-complex-indic-table.cc */; };
 		F384BD56261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0B261EC7640028A248 /* hb-ot-shape-complex-indic-table.cc */; };
-		F384BD57261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0B261EC7640028A248 /* hb-ot-shape-complex-indic-table.cc */; };
-		F384BD58261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0B261EC7640028A248 /* hb-ot-shape-complex-indic-table.cc */; };
 		F384BD59261EC7650028A248 /* hb-ot-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0C261EC7640028A248 /* hb-ot-map.cc */; };
-		F384BD5A261EC7650028A248 /* hb-ot-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0C261EC7640028A248 /* hb-ot-map.cc */; };
-		F384BD5B261EC7650028A248 /* hb-ot-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0C261EC7640028A248 /* hb-ot-map.cc */; };
 		F384BD5C261EC7650028A248 /* hb-ot-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0C261EC7640028A248 /* hb-ot-map.cc */; };
-		F384BD5D261EC7650028A248 /* hb-ot-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0C261EC7640028A248 /* hb-ot-map.cc */; };
-		F384BD5E261EC7650028A248 /* hb-ot-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0C261EC7640028A248 /* hb-ot-map.cc */; };
 		F384BD5F261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0D261EC7640028A248 /* hb-ot-shape-complex-hangul.cc */; };
-		F384BD60261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0D261EC7640028A248 /* hb-ot-shape-complex-hangul.cc */; };
-		F384BD61261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0D261EC7640028A248 /* hb-ot-shape-complex-hangul.cc */; };
 		F384BD62261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0D261EC7640028A248 /* hb-ot-shape-complex-hangul.cc */; };
-		F384BD63261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0D261EC7640028A248 /* hb-ot-shape-complex-hangul.cc */; };
-		F384BD64261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0D261EC7640028A248 /* hb-ot-shape-complex-hangul.cc */; };
 		F384BD65261EC7650028A248 /* hb-ot-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0E261EC7640028A248 /* hb-ot-font.cc */; };
-		F384BD66261EC7650028A248 /* hb-ot-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0E261EC7640028A248 /* hb-ot-font.cc */; };
-		F384BD67261EC7650028A248 /* hb-ot-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0E261EC7640028A248 /* hb-ot-font.cc */; };
 		F384BD68261EC7650028A248 /* hb-ot-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0E261EC7640028A248 /* hb-ot-font.cc */; };
-		F384BD69261EC7650028A248 /* hb-ot-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0E261EC7640028A248 /* hb-ot-font.cc */; };
-		F384BD6A261EC7650028A248 /* hb-ot-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0E261EC7640028A248 /* hb-ot-font.cc */; };
 		F384BD6B261EC7650028A248 /* hb-shape-plan.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0F261EC7640028A248 /* hb-shape-plan.cc */; };
-		F384BD6C261EC7650028A248 /* hb-shape-plan.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0F261EC7640028A248 /* hb-shape-plan.cc */; };
-		F384BD6D261EC7650028A248 /* hb-shape-plan.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0F261EC7640028A248 /* hb-shape-plan.cc */; };
 		F384BD6E261EC7650028A248 /* hb-shape-plan.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0F261EC7640028A248 /* hb-shape-plan.cc */; };
-		F384BD6F261EC7650028A248 /* hb-shape-plan.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0F261EC7640028A248 /* hb-shape-plan.cc */; };
-		F384BD70261EC7650028A248 /* hb-shape-plan.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD0F261EC7640028A248 /* hb-shape-plan.cc */; };
 		F384BD71261EC7650028A248 /* hb-ot-tag.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD10261EC7640028A248 /* hb-ot-tag.cc */; };
-		F384BD72261EC7650028A248 /* hb-ot-tag.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD10261EC7640028A248 /* hb-ot-tag.cc */; };
-		F384BD73261EC7650028A248 /* hb-ot-tag.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD10261EC7640028A248 /* hb-ot-tag.cc */; };
 		F384BD74261EC7650028A248 /* hb-ot-tag.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD10261EC7640028A248 /* hb-ot-tag.cc */; };
-		F384BD75261EC7650028A248 /* hb-ot-tag.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD10261EC7640028A248 /* hb-ot-tag.cc */; };
-		F384BD76261EC7650028A248 /* hb-ot-tag.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD10261EC7640028A248 /* hb-ot-tag.cc */; };
 		F384BD77261EC7650028A248 /* hb-number.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD11261EC7640028A248 /* hb-number.cc */; };
-		F384BD78261EC7650028A248 /* hb-number.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD11261EC7640028A248 /* hb-number.cc */; };
-		F384BD79261EC7650028A248 /* hb-number.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD11261EC7640028A248 /* hb-number.cc */; };
 		F384BD7A261EC7650028A248 /* hb-number.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD11261EC7640028A248 /* hb-number.cc */; };
-		F384BD7B261EC7650028A248 /* hb-number.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD11261EC7640028A248 /* hb-number.cc */; };
-		F384BD7C261EC7650028A248 /* hb-number.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD11261EC7640028A248 /* hb-number.cc */; };
 		F384BD7D261EC7650028A248 /* hb-ot-metrics.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD12261EC7640028A248 /* hb-ot-metrics.cc */; };
-		F384BD7E261EC7650028A248 /* hb-ot-metrics.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD12261EC7640028A248 /* hb-ot-metrics.cc */; };
-		F384BD7F261EC7650028A248 /* hb-ot-metrics.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD12261EC7640028A248 /* hb-ot-metrics.cc */; };
 		F384BD80261EC7650028A248 /* hb-ot-metrics.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD12261EC7640028A248 /* hb-ot-metrics.cc */; };
-		F384BD81261EC7650028A248 /* hb-ot-metrics.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD12261EC7640028A248 /* hb-ot-metrics.cc */; };
-		F384BD82261EC7650028A248 /* hb-ot-metrics.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD12261EC7640028A248 /* hb-ot-metrics.cc */; };
 		F384BD83261EC7650028A248 /* hb-shaper.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD13261EC7650028A248 /* hb-shaper.cc */; };
-		F384BD84261EC7650028A248 /* hb-shaper.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD13261EC7650028A248 /* hb-shaper.cc */; };
-		F384BD85261EC7650028A248 /* hb-shaper.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD13261EC7650028A248 /* hb-shaper.cc */; };
 		F384BD86261EC7650028A248 /* hb-shaper.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD13261EC7650028A248 /* hb-shaper.cc */; };
-		F384BD87261EC7650028A248 /* hb-shaper.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD13261EC7650028A248 /* hb-shaper.cc */; };
-		F384BD88261EC7650028A248 /* hb-shaper.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD13261EC7650028A248 /* hb-shaper.cc */; };
 		F384BD89261EC7650028A248 /* hb-ot-shape-complex-arabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD14261EC7650028A248 /* hb-ot-shape-complex-arabic.cc */; };
-		F384BD8A261EC7650028A248 /* hb-ot-shape-complex-arabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD14261EC7650028A248 /* hb-ot-shape-complex-arabic.cc */; };
-		F384BD8B261EC7650028A248 /* hb-ot-shape-complex-arabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD14261EC7650028A248 /* hb-ot-shape-complex-arabic.cc */; };
 		F384BD8C261EC7650028A248 /* hb-ot-shape-complex-arabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD14261EC7650028A248 /* hb-ot-shape-complex-arabic.cc */; };
-		F384BD8D261EC7650028A248 /* hb-ot-shape-complex-arabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD14261EC7650028A248 /* hb-ot-shape-complex-arabic.cc */; };
-		F384BD8E261EC7650028A248 /* hb-ot-shape-complex-arabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD14261EC7650028A248 /* hb-ot-shape-complex-arabic.cc */; };
 		F384BD8F261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD15261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc */; };
-		F384BD90261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD15261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc */; };
-		F384BD91261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD15261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc */; };
 		F384BD92261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD15261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc */; };
-		F384BD93261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD15261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc */; };
-		F384BD94261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD15261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc */; };
 		F384BD95261EC7650028A248 /* hb-ot-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD16261EC7650028A248 /* hb-ot-layout.cc */; };
-		F384BD96261EC7650028A248 /* hb-ot-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD16261EC7650028A248 /* hb-ot-layout.cc */; };
-		F384BD97261EC7650028A248 /* hb-ot-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD16261EC7650028A248 /* hb-ot-layout.cc */; };
 		F384BD98261EC7650028A248 /* hb-ot-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD16261EC7650028A248 /* hb-ot-layout.cc */; };
-		F384BD99261EC7650028A248 /* hb-ot-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD16261EC7650028A248 /* hb-ot-layout.cc */; };
-		F384BD9A261EC7650028A248 /* hb-ot-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD16261EC7650028A248 /* hb-ot-layout.cc */; };
 		F384BD9B261EC7650028A248 /* hb-ot-shape-complex-thai.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD17261EC7650028A248 /* hb-ot-shape-complex-thai.cc */; };
-		F384BD9C261EC7650028A248 /* hb-ot-shape-complex-thai.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD17261EC7650028A248 /* hb-ot-shape-complex-thai.cc */; };
-		F384BD9D261EC7650028A248 /* hb-ot-shape-complex-thai.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD17261EC7650028A248 /* hb-ot-shape-complex-thai.cc */; };
 		F384BD9E261EC7650028A248 /* hb-ot-shape-complex-thai.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD17261EC7650028A248 /* hb-ot-shape-complex-thai.cc */; };
-		F384BD9F261EC7650028A248 /* hb-ot-shape-complex-thai.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD17261EC7650028A248 /* hb-ot-shape-complex-thai.cc */; };
-		F384BDA0261EC7650028A248 /* hb-ot-shape-complex-thai.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD17261EC7650028A248 /* hb-ot-shape-complex-thai.cc */; };
 		F384BDA1261EC7650028A248 /* hb-ot-shape-complex-indic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD18261EC7650028A248 /* hb-ot-shape-complex-indic.cc */; };
-		F384BDA2261EC7650028A248 /* hb-ot-shape-complex-indic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD18261EC7650028A248 /* hb-ot-shape-complex-indic.cc */; };
-		F384BDA3261EC7650028A248 /* hb-ot-shape-complex-indic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD18261EC7650028A248 /* hb-ot-shape-complex-indic.cc */; };
 		F384BDA4261EC7650028A248 /* hb-ot-shape-complex-indic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD18261EC7650028A248 /* hb-ot-shape-complex-indic.cc */; };
-		F384BDA5261EC7650028A248 /* hb-ot-shape-complex-indic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD18261EC7650028A248 /* hb-ot-shape-complex-indic.cc */; };
-		F384BDA6261EC7650028A248 /* hb-ot-shape-complex-indic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD18261EC7650028A248 /* hb-ot-shape-complex-indic.cc */; };
 		F384BDA7261EC7650028A248 /* hb-buffer-serialize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD19261EC7650028A248 /* hb-buffer-serialize.cc */; };
-		F384BDA8261EC7650028A248 /* hb-buffer-serialize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD19261EC7650028A248 /* hb-buffer-serialize.cc */; };
-		F384BDA9261EC7650028A248 /* hb-buffer-serialize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD19261EC7650028A248 /* hb-buffer-serialize.cc */; };
 		F384BDAA261EC7650028A248 /* hb-buffer-serialize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD19261EC7650028A248 /* hb-buffer-serialize.cc */; };
-		F384BDAB261EC7650028A248 /* hb-buffer-serialize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD19261EC7650028A248 /* hb-buffer-serialize.cc */; };
-		F384BDAC261EC7650028A248 /* hb-buffer-serialize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD19261EC7650028A248 /* hb-buffer-serialize.cc */; };
 		F384BDAD261EC7650028A248 /* hb-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1A261EC7650028A248 /* hb-font.cc */; };
-		F384BDAE261EC7650028A248 /* hb-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1A261EC7650028A248 /* hb-font.cc */; };
-		F384BDAF261EC7650028A248 /* hb-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1A261EC7650028A248 /* hb-font.cc */; };
 		F384BDB0261EC7650028A248 /* hb-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1A261EC7650028A248 /* hb-font.cc */; };
-		F384BDB1261EC7650028A248 /* hb-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1A261EC7650028A248 /* hb-font.cc */; };
-		F384BDB2261EC7650028A248 /* hb-font.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1A261EC7650028A248 /* hb-font.cc */; };
 		F384BDB3261EC7650028A248 /* hb-ot-shape-complex-use.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1B261EC7650028A248 /* hb-ot-shape-complex-use.cc */; };
-		F384BDB4261EC7650028A248 /* hb-ot-shape-complex-use.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1B261EC7650028A248 /* hb-ot-shape-complex-use.cc */; };
-		F384BDB5261EC7650028A248 /* hb-ot-shape-complex-use.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1B261EC7650028A248 /* hb-ot-shape-complex-use.cc */; };
 		F384BDB6261EC7650028A248 /* hb-ot-shape-complex-use.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1B261EC7650028A248 /* hb-ot-shape-complex-use.cc */; };
-		F384BDB7261EC7650028A248 /* hb-ot-shape-complex-use.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1B261EC7650028A248 /* hb-ot-shape-complex-use.cc */; };
-		F384BDB8261EC7650028A248 /* hb-ot-shape-complex-use.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1B261EC7650028A248 /* hb-ot-shape-complex-use.cc */; };
 		F384BDB9261EC7650028A248 /* hb-unicode.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1C261EC7650028A248 /* hb-unicode.cc */; };
-		F384BDBA261EC7650028A248 /* hb-unicode.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1C261EC7650028A248 /* hb-unicode.cc */; };
-		F384BDBB261EC7650028A248 /* hb-unicode.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1C261EC7650028A248 /* hb-unicode.cc */; };
 		F384BDBC261EC7650028A248 /* hb-unicode.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1C261EC7650028A248 /* hb-unicode.cc */; };
-		F384BDBD261EC7650028A248 /* hb-unicode.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1C261EC7650028A248 /* hb-unicode.cc */; };
-		F384BDBE261EC7650028A248 /* hb-unicode.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1C261EC7650028A248 /* hb-unicode.cc */; };
 		F384BDBF261EC7650028A248 /* hb-buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1D261EC7650028A248 /* hb-buffer.cc */; };
-		F384BDC0261EC7650028A248 /* hb-buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1D261EC7650028A248 /* hb-buffer.cc */; };
-		F384BDC1261EC7650028A248 /* hb-buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1D261EC7650028A248 /* hb-buffer.cc */; };
 		F384BDC2261EC7650028A248 /* hb-buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1D261EC7650028A248 /* hb-buffer.cc */; };
-		F384BDC3261EC7650028A248 /* hb-buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1D261EC7650028A248 /* hb-buffer.cc */; };
-		F384BDC4261EC7650028A248 /* hb-buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1D261EC7650028A248 /* hb-buffer.cc */; };
 		F384BDC5261EC7650028A248 /* hb-ot-cff2-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1E261EC7650028A248 /* hb-ot-cff2-table.cc */; };
-		F384BDC6261EC7650028A248 /* hb-ot-cff2-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1E261EC7650028A248 /* hb-ot-cff2-table.cc */; };
-		F384BDC7261EC7650028A248 /* hb-ot-cff2-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1E261EC7650028A248 /* hb-ot-cff2-table.cc */; };
 		F384BDC8261EC7650028A248 /* hb-ot-cff2-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1E261EC7650028A248 /* hb-ot-cff2-table.cc */; };
-		F384BDC9261EC7650028A248 /* hb-ot-cff2-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1E261EC7650028A248 /* hb-ot-cff2-table.cc */; };
-		F384BDCA261EC7650028A248 /* hb-ot-cff2-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1E261EC7650028A248 /* hb-ot-cff2-table.cc */; };
 		F384BDCB261EC7650028A248 /* hb-ot-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1F261EC7650028A248 /* hb-ot-face.cc */; };
-		F384BDCC261EC7650028A248 /* hb-ot-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1F261EC7650028A248 /* hb-ot-face.cc */; };
-		F384BDCD261EC7650028A248 /* hb-ot-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1F261EC7650028A248 /* hb-ot-face.cc */; };
 		F384BDCE261EC7650028A248 /* hb-ot-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1F261EC7650028A248 /* hb-ot-face.cc */; };
-		F384BDCF261EC7650028A248 /* hb-ot-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1F261EC7650028A248 /* hb-ot-face.cc */; };
-		F384BDD0261EC7650028A248 /* hb-ot-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD1F261EC7650028A248 /* hb-ot-face.cc */; };
 		F384BDD1261EC7650028A248 /* hb-ot-shape-complex-khmer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD20261EC7650028A248 /* hb-ot-shape-complex-khmer.cc */; };
-		F384BDD2261EC7650028A248 /* hb-ot-shape-complex-khmer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD20261EC7650028A248 /* hb-ot-shape-complex-khmer.cc */; };
-		F384BDD3261EC7650028A248 /* hb-ot-shape-complex-khmer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD20261EC7650028A248 /* hb-ot-shape-complex-khmer.cc */; };
 		F384BDD4261EC7650028A248 /* hb-ot-shape-complex-khmer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD20261EC7650028A248 /* hb-ot-shape-complex-khmer.cc */; };
-		F384BDD5261EC7650028A248 /* hb-ot-shape-complex-khmer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD20261EC7650028A248 /* hb-ot-shape-complex-khmer.cc */; };
-		F384BDD6261EC7650028A248 /* hb-ot-shape-complex-khmer.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD20261EC7650028A248 /* hb-ot-shape-complex-khmer.cc */; };
 		F384BDD7261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD21261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc */; };
-		F384BDD8261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD21261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc */; };
-		F384BDD9261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD21261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc */; };
 		F384BDDA261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD21261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc */; };
-		F384BDDB261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD21261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc */; };
-		F384BDDC261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD21261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc */; };
 		F384BDDD261EC7650028A248 /* hb-aat-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD22261EC7650028A248 /* hb-aat-layout.cc */; };
-		F384BDDE261EC7650028A248 /* hb-aat-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD22261EC7650028A248 /* hb-aat-layout.cc */; };
-		F384BDDF261EC7650028A248 /* hb-aat-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD22261EC7650028A248 /* hb-aat-layout.cc */; };
 		F384BDE0261EC7650028A248 /* hb-aat-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD22261EC7650028A248 /* hb-aat-layout.cc */; };
-		F384BDE1261EC7650028A248 /* hb-aat-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD22261EC7650028A248 /* hb-aat-layout.cc */; };
-		F384BDE2261EC7650028A248 /* hb-aat-layout.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD22261EC7650028A248 /* hb-aat-layout.cc */; };
 		F384BDE3261EC7650028A248 /* hb-common.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD23261EC7650028A248 /* hb-common.cc */; };
-		F384BDE4261EC7650028A248 /* hb-common.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD23261EC7650028A248 /* hb-common.cc */; };
-		F384BDE5261EC7650028A248 /* hb-common.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD23261EC7650028A248 /* hb-common.cc */; };
 		F384BDE6261EC7650028A248 /* hb-common.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD23261EC7650028A248 /* hb-common.cc */; };
-		F384BDE7261EC7650028A248 /* hb-common.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD23261EC7650028A248 /* hb-common.cc */; };
-		F384BDE8261EC7650028A248 /* hb-common.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD23261EC7650028A248 /* hb-common.cc */; };
 		F384BDE9261EC7650028A248 /* hb-ot-cff1-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD24261EC7650028A248 /* hb-ot-cff1-table.cc */; };
-		F384BDEA261EC7650028A248 /* hb-ot-cff1-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD24261EC7650028A248 /* hb-ot-cff1-table.cc */; };
-		F384BDEB261EC7650028A248 /* hb-ot-cff1-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD24261EC7650028A248 /* hb-ot-cff1-table.cc */; };
 		F384BDEC261EC7650028A248 /* hb-ot-cff1-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD24261EC7650028A248 /* hb-ot-cff1-table.cc */; };
-		F384BDED261EC7650028A248 /* hb-ot-cff1-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD24261EC7650028A248 /* hb-ot-cff1-table.cc */; };
-		F384BDEE261EC7650028A248 /* hb-ot-cff1-table.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD24261EC7650028A248 /* hb-ot-cff1-table.cc */; };
 		F384BDEF261EC7650028A248 /* hb-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD25261EC7650028A248 /* hb-face.cc */; };
-		F384BDF0261EC7650028A248 /* hb-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD25261EC7650028A248 /* hb-face.cc */; };
-		F384BDF1261EC7650028A248 /* hb-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD25261EC7650028A248 /* hb-face.cc */; };
 		F384BDF2261EC7650028A248 /* hb-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD25261EC7650028A248 /* hb-face.cc */; };
-		F384BDF3261EC7650028A248 /* hb-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD25261EC7650028A248 /* hb-face.cc */; };
-		F384BDF4261EC7650028A248 /* hb-face.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD25261EC7650028A248 /* hb-face.cc */; };
 		F384BDF5261EC7650028A248 /* hb-blob.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD26261EC7650028A248 /* hb-blob.cc */; };
-		F384BDF6261EC7650028A248 /* hb-blob.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD26261EC7650028A248 /* hb-blob.cc */; };
-		F384BDF7261EC7650028A248 /* hb-blob.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD26261EC7650028A248 /* hb-blob.cc */; };
 		F384BDF8261EC7650028A248 /* hb-blob.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD26261EC7650028A248 /* hb-blob.cc */; };
-		F384BDF9261EC7650028A248 /* hb-blob.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD26261EC7650028A248 /* hb-blob.cc */; };
-		F384BDFA261EC7650028A248 /* hb-blob.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD26261EC7650028A248 /* hb-blob.cc */; };
 		F384BDFB261EC7650028A248 /* hb-aat-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD27261EC7650028A248 /* hb-aat-map.cc */; };
-		F384BDFC261EC7650028A248 /* hb-aat-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD27261EC7650028A248 /* hb-aat-map.cc */; };
-		F384BDFD261EC7650028A248 /* hb-aat-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD27261EC7650028A248 /* hb-aat-map.cc */; };
 		F384BDFE261EC7650028A248 /* hb-aat-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD27261EC7650028A248 /* hb-aat-map.cc */; };
-		F384BDFF261EC7650028A248 /* hb-aat-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD27261EC7650028A248 /* hb-aat-map.cc */; };
-		F384BE00261EC7650028A248 /* hb-aat-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD27261EC7650028A248 /* hb-aat-map.cc */; };
 		F384BE01261EC7650028A248 /* hb-ft.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD28261EC7650028A248 /* hb-ft.cc */; };
-		F384BE02261EC7650028A248 /* hb-ft.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD28261EC7650028A248 /* hb-ft.cc */; };
-		F384BE03261EC7650028A248 /* hb-ft.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD28261EC7650028A248 /* hb-ft.cc */; };
 		F384BE04261EC7650028A248 /* hb-ft.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD28261EC7650028A248 /* hb-ft.cc */; };
-		F384BE05261EC7650028A248 /* hb-ft.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD28261EC7650028A248 /* hb-ft.cc */; };
-		F384BE06261EC7650028A248 /* hb-ft.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD28261EC7650028A248 /* hb-ft.cc */; };
 		F384BE07261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD29261EC7650028A248 /* hb-ot-shape-normalize.cc */; };
-		F384BE08261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD29261EC7650028A248 /* hb-ot-shape-normalize.cc */; };
-		F384BE09261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD29261EC7650028A248 /* hb-ot-shape-normalize.cc */; };
 		F384BE0A261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD29261EC7650028A248 /* hb-ot-shape-normalize.cc */; };
-		F384BE0B261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD29261EC7650028A248 /* hb-ot-shape-normalize.cc */; };
-		F384BE0C261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD29261EC7650028A248 /* hb-ot-shape-normalize.cc */; };
 		F384BE0D261EC7650028A248 /* hb-ot-var.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2A261EC7650028A248 /* hb-ot-var.cc */; };
-		F384BE0E261EC7650028A248 /* hb-ot-var.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2A261EC7650028A248 /* hb-ot-var.cc */; };
-		F384BE0F261EC7650028A248 /* hb-ot-var.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2A261EC7650028A248 /* hb-ot-var.cc */; };
 		F384BE10261EC7650028A248 /* hb-ot-var.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2A261EC7650028A248 /* hb-ot-var.cc */; };
-		F384BE11261EC7650028A248 /* hb-ot-var.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2A261EC7650028A248 /* hb-ot-var.cc */; };
-		F384BE12261EC7650028A248 /* hb-ot-var.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2A261EC7650028A248 /* hb-ot-var.cc */; };
 		F384BE13261EC7650028A248 /* hb-ot-math.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2B261EC7650028A248 /* hb-ot-math.cc */; };
-		F384BE14261EC7650028A248 /* hb-ot-math.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2B261EC7650028A248 /* hb-ot-math.cc */; };
-		F384BE15261EC7650028A248 /* hb-ot-math.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2B261EC7650028A248 /* hb-ot-math.cc */; };
 		F384BE16261EC7650028A248 /* hb-ot-math.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2B261EC7650028A248 /* hb-ot-math.cc */; };
-		F384BE17261EC7650028A248 /* hb-ot-math.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2B261EC7650028A248 /* hb-ot-math.cc */; };
-		F384BE18261EC7650028A248 /* hb-ot-math.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2B261EC7650028A248 /* hb-ot-math.cc */; };
 		F384BE19261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2C261EC7650028A248 /* hb-ot-shape-fallback.cc */; };
-		F384BE1A261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2C261EC7650028A248 /* hb-ot-shape-fallback.cc */; };
-		F384BE1B261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2C261EC7650028A248 /* hb-ot-shape-fallback.cc */; };
 		F384BE1C261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2C261EC7650028A248 /* hb-ot-shape-fallback.cc */; };
-		F384BE1D261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2C261EC7650028A248 /* hb-ot-shape-fallback.cc */; };
-		F384BE1E261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2C261EC7650028A248 /* hb-ot-shape-fallback.cc */; };
 		F384BE1F261EC7650028A248 /* hb-ot-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2D261EC7650028A248 /* hb-ot-shape.cc */; };
-		F384BE20261EC7650028A248 /* hb-ot-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2D261EC7650028A248 /* hb-ot-shape.cc */; };
-		F384BE21261EC7650028A248 /* hb-ot-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2D261EC7650028A248 /* hb-ot-shape.cc */; };
 		F384BE22261EC7650028A248 /* hb-ot-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2D261EC7650028A248 /* hb-ot-shape.cc */; };
-		F384BE23261EC7650028A248 /* hb-ot-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2D261EC7650028A248 /* hb-ot-shape.cc */; };
-		F384BE24261EC7650028A248 /* hb-ot-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2D261EC7650028A248 /* hb-ot-shape.cc */; };
 		F384BE25261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2E261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc */; };
-		F384BE26261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2E261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc */; };
-		F384BE27261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2E261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc */; };
 		F384BE28261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2E261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc */; };
-		F384BE29261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2E261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc */; };
-		F384BE2A261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2E261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc */; };
 		F384BE48261EC9470028A248 /* hb-fallback-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BE47261EC9470028A248 /* hb-fallback-shape.cc */; };
-		F384BE49261EC9470028A248 /* hb-fallback-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BE47261EC9470028A248 /* hb-fallback-shape.cc */; };
-		F384BE4A261EC9470028A248 /* hb-fallback-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BE47261EC9470028A248 /* hb-fallback-shape.cc */; };
 		F384BE4B261EC9470028A248 /* hb-fallback-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BE47261EC9470028A248 /* hb-fallback-shape.cc */; };
-		F384BE4C261EC9470028A248 /* hb-fallback-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BE47261EC9470028A248 /* hb-fallback-shape.cc */; };
-		F384BE4D261EC9470028A248 /* hb-fallback-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BE47261EC9470028A248 /* hb-fallback-shape.cc */; };
 		F384BE62261ECD9F0028A248 /* HarfBuzz-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F384BE60261ECD9F0028A248 /* HarfBuzz-LICENSE.txt */; };
-		F384BE63261ECD9F0028A248 /* HarfBuzz-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F384BE60261ECD9F0028A248 /* HarfBuzz-LICENSE.txt */; };
-		F384BE64261ECD9F0028A248 /* HarfBuzz-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F384BE60261ECD9F0028A248 /* HarfBuzz-LICENSE.txt */; };
 		F384BE65261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F384BE61261ECD9F0028A248 /* FreeType-LICENSE.txt */; };
-		F384BE66261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F384BE61261ECD9F0028A248 /* FreeType-LICENSE.txt */; };
-		F384BE67261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F384BE61261ECD9F0028A248 /* FreeType-LICENSE.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -548,26 +200,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		A75FDB1E23E381B800529352 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB2123E381BC00529352 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A75FDB2423E381CF00529352 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -582,103 +214,101 @@
 
 /* Begin PBXFileReference section */
 		1014BAEA010A4B677F000001 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../SDL_ttf.h; sourceTree = SOURCE_ROOT; };
-		A75FDAF323E3582C00529352 /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A75FDB0A23E36B4300529352 /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A75FDB0C23E37ED200529352 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = iOS/SDL2.framework; sourceTree = "<group>"; };
 		A75FDB1023E37EE400529352 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = tvOS/SDL2.framework; sourceTree = "<group>"; };
-		A75FDB2E23E3825200529352 /* libSDL2_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		A75FDB3923E3827100529352 /* libSDL2_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD6607AFA17000BB41DA /* Info-Framework.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Framework.plist"; sourceTree = "<group>"; };
 		BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD6E07AFA17000BB41DA /* libSDL2_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD7207AFA17000BB41DA /* Create DMG */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Create DMG"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD8307AFA29000BB41DA /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
-		F364A5B72620E1A200325ECE /* FTL.TXT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FTL.TXT; path = "../../../external/freetype-2.11.1/docs/FTL.TXT"; sourceTree = "<group>"; };
+		F307EE28282738F8003915D7 /* svg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = svg.c; path = ../external/freetype/src/svg/svg.c; sourceTree = "<group>"; };
+		F307EE2B282807EB003915D7 /* hb-ms-feature-ranges.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ms-feature-ranges.cc"; path = "../external/harfbuzz/src/hb-ms-feature-ranges.cc"; sourceTree = "<group>"; };
+		F364A5B72620E1A200325ECE /* FTL.TXT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FTL.TXT; path = ../../../external/freetype/docs/FTL.TXT; sourceTree = "<group>"; };
 		F364A5C32620E22400325ECE /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
-		F3696FE3278F7107003A7F94 /* sdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdf.c; path = "../external/freetype-2.11.1/src/sdf/sdf.c"; sourceTree = "<group>"; };
-		F384BB6B261EC0760028A248 /* autofit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = autofit.c; path = "../external/freetype-2.11.1/src/autofit/autofit.c"; sourceTree = "<group>"; };
-		F384BB76261EC0DD0028A248 /* ftbdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbdf.c; path = "../external/freetype-2.11.1/src/base/ftbdf.c"; sourceTree = "<group>"; };
-		F384BB77261EC0DD0028A248 /* ftgasp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftgasp.c; path = "../external/freetype-2.11.1/src/base/ftgasp.c"; sourceTree = "<group>"; };
-		F384BB78261EC0DD0028A248 /* ftgxval.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftgxval.c; path = "../external/freetype-2.11.1/src/base/ftgxval.c"; sourceTree = "<group>"; };
-		F384BB79261EC0DD0028A248 /* ftstroke.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftstroke.c; path = "../external/freetype-2.11.1/src/base/ftstroke.c"; sourceTree = "<group>"; };
-		F384BB7A261EC0DD0028A248 /* ftdebug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftdebug.c; path = "../external/freetype-2.11.1/src/base/ftdebug.c"; sourceTree = "<group>"; };
-		F384BB7B261EC0DD0028A248 /* ftbbox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbbox.c; path = "../external/freetype-2.11.1/src/base/ftbbox.c"; sourceTree = "<group>"; };
-		F384BB7C261EC0DD0028A248 /* ftbase.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbase.c; path = "../external/freetype-2.11.1/src/base/ftbase.c"; sourceTree = "<group>"; };
-		F384BB7D261EC0DD0028A248 /* ftpatent.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftpatent.c; path = "../external/freetype-2.11.1/src/base/ftpatent.c"; sourceTree = "<group>"; };
-		F384BB7E261EC0DD0028A248 /* ftglyph.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftglyph.c; path = "../external/freetype-2.11.1/src/base/ftglyph.c"; sourceTree = "<group>"; };
-		F384BB7F261EC0DD0028A248 /* ftsynth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftsynth.c; path = "../external/freetype-2.11.1/src/base/ftsynth.c"; sourceTree = "<group>"; };
-		F384BB80261EC0DD0028A248 /* ftbitmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbitmap.c; path = "../external/freetype-2.11.1/src/base/ftbitmap.c"; sourceTree = "<group>"; };
-		F384BB81261EC0DD0028A248 /* ftinit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftinit.c; path = "../external/freetype-2.11.1/src/base/ftinit.c"; sourceTree = "<group>"; };
-		F384BB82261EC0DD0028A248 /* ftmm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftmm.c; path = "../external/freetype-2.11.1/src/base/ftmm.c"; sourceTree = "<group>"; };
-		F384BB83261EC0DD0028A248 /* ftcid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftcid.c; path = "../external/freetype-2.11.1/src/base/ftcid.c"; sourceTree = "<group>"; };
-		F384BB84261EC0DD0028A248 /* ftpfr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftpfr.c; path = "../external/freetype-2.11.1/src/base/ftpfr.c"; sourceTree = "<group>"; };
-		F384BB85261EC0DE0028A248 /* ftotval.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftotval.c; path = "../external/freetype-2.11.1/src/base/ftotval.c"; sourceTree = "<group>"; };
-		F384BB86261EC0DE0028A248 /* ftfstype.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftfstype.c; path = "../external/freetype-2.11.1/src/base/ftfstype.c"; sourceTree = "<group>"; };
-		F384BB87261EC0DE0028A248 /* ftsystem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftsystem.c; path = "../external/freetype-2.11.1/src/base/ftsystem.c"; sourceTree = "<group>"; };
-		F384BB88261EC0DE0028A248 /* ftwinfnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftwinfnt.c; path = "../external/freetype-2.11.1/src/base/ftwinfnt.c"; sourceTree = "<group>"; };
-		F384BB8A261EC0DE0028A248 /* fttype1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fttype1.c; path = "../external/freetype-2.11.1/src/base/fttype1.c"; sourceTree = "<group>"; };
-		F384BC0D261EC0F90028A248 /* bdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bdf.c; path = "../external/freetype-2.11.1/src/bdf/bdf.c"; sourceTree = "<group>"; };
-		F384BC18261EC1440028A248 /* ftbzip2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbzip2.c; path = "../external/freetype-2.11.1/src/bzip2/ftbzip2.c"; sourceTree = "<group>"; };
-		F384BC2E261EC1710028A248 /* cff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cff.c; path = "../external/freetype-2.11.1/src/cff/cff.c"; sourceTree = "<group>"; };
-		F384BC39261EC1890028A248 /* type1cid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type1cid.c; path = "../external/freetype-2.11.1/src/cid/type1cid.c"; sourceTree = "<group>"; };
-		F384BC44261EC1A30028A248 /* ftgzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftgzip.c; path = "../external/freetype-2.11.1/src/gzip/ftgzip.c"; sourceTree = "<group>"; };
-		F384BC4F261EC1B90028A248 /* ftlzw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftlzw.c; path = "../external/freetype-2.11.1/src/lzw/ftlzw.c"; sourceTree = "<group>"; };
-		F384BC5A261EC1DF0028A248 /* pcf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pcf.c; path = "../external/freetype-2.11.1/src/pcf/pcf.c"; sourceTree = "<group>"; };
-		F384BC65261EC1F30028A248 /* pfr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pfr.c; path = "../external/freetype-2.11.1/src/pfr/pfr.c"; sourceTree = "<group>"; };
-		F384BC70261EC2050028A248 /* psaux.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = psaux.c; path = "../external/freetype-2.11.1/src/psaux/psaux.c"; sourceTree = "<group>"; };
-		F384BC7B261EC2180028A248 /* pshinter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pshinter.c; path = "../external/freetype-2.11.1/src/pshinter/pshinter.c"; sourceTree = "<group>"; };
-		F384BC86261EC23B0028A248 /* psmodule.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = psmodule.c; path = "../external/freetype-2.11.1/src/psnames/psmodule.c"; sourceTree = "<group>"; };
-		F384BC91261EC2560028A248 /* raster.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = raster.c; path = "../external/freetype-2.11.1/src/raster/raster.c"; sourceTree = "<group>"; };
-		F384BC9C261EC2680028A248 /* sfnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sfnt.c; path = "../external/freetype-2.11.1/src/sfnt/sfnt.c"; sourceTree = "<group>"; };
-		F384BCA7261EC2770028A248 /* smooth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = smooth.c; path = "../external/freetype-2.11.1/src/smooth/smooth.c"; sourceTree = "<group>"; };
-		F384BCBD261EC2980028A248 /* truetype.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = truetype.c; path = "../external/freetype-2.11.1/src/truetype/truetype.c"; sourceTree = "<group>"; };
-		F384BCC8261EC2AE0028A248 /* type1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type1.c; path = "../external/freetype-2.11.1/src/type1/type1.c"; sourceTree = "<group>"; };
-		F384BCD3261EC2BE0028A248 /* type42.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type42.c; path = "../external/freetype-2.11.1/src/type42/type42.c"; sourceTree = "<group>"; };
-		F384BCDE261EC2CF0028A248 /* winfnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = winfnt.c; path = "../external/freetype-2.11.1/src/winfonts/winfnt.c"; sourceTree = "<group>"; };
-		F384BCF1261EC5130028A248 /* ftcache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftcache.c; path = "../external/freetype-2.11.1/src/cache/ftcache.c"; sourceTree = "<group>"; };
-		F384BD05261EC7640028A248 /* hb-ot-shape-complex-default.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-default.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-default.cc"; sourceTree = "<group>"; };
-		F384BD06261EC7640028A248 /* hb-set.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-set.cc"; path = "../external/harfbuzz-2.8.0/src/hb-set.cc"; sourceTree = "<group>"; };
-		F384BD07261EC7640028A248 /* hb-shape.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-shape.cc"; path = "../external/harfbuzz-2.8.0/src/hb-shape.cc"; sourceTree = "<group>"; };
-		F384BD08261EC7640028A248 /* hb-static.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-static.cc"; path = "../external/harfbuzz-2.8.0/src/hb-static.cc"; sourceTree = "<group>"; };
-		F384BD09261EC7640028A248 /* hb-ot-shape-complex-hebrew.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-hebrew.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-hebrew.cc"; sourceTree = "<group>"; };
-		F384BD0A261EC7640028A248 /* hb-ucd.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ucd.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ucd.cc"; sourceTree = "<group>"; };
-		F384BD0B261EC7640028A248 /* hb-ot-shape-complex-indic-table.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-indic-table.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-indic-table.cc"; sourceTree = "<group>"; };
-		F384BD0C261EC7640028A248 /* hb-ot-map.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-map.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-map.cc"; sourceTree = "<group>"; };
-		F384BD0D261EC7640028A248 /* hb-ot-shape-complex-hangul.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-hangul.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-hangul.cc"; sourceTree = "<group>"; };
-		F384BD0E261EC7640028A248 /* hb-ot-font.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-font.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-font.cc"; sourceTree = "<group>"; };
-		F384BD0F261EC7640028A248 /* hb-shape-plan.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-shape-plan.cc"; path = "../external/harfbuzz-2.8.0/src/hb-shape-plan.cc"; sourceTree = "<group>"; };
-		F384BD10261EC7640028A248 /* hb-ot-tag.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-tag.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-tag.cc"; sourceTree = "<group>"; };
-		F384BD11261EC7640028A248 /* hb-number.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-number.cc"; path = "../external/harfbuzz-2.8.0/src/hb-number.cc"; sourceTree = "<group>"; };
-		F384BD12261EC7640028A248 /* hb-ot-metrics.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-metrics.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-metrics.cc"; sourceTree = "<group>"; };
-		F384BD13261EC7650028A248 /* hb-shaper.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-shaper.cc"; path = "../external/harfbuzz-2.8.0/src/hb-shaper.cc"; sourceTree = "<group>"; };
-		F384BD14261EC7650028A248 /* hb-ot-shape-complex-arabic.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-arabic.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-arabic.cc"; sourceTree = "<group>"; };
-		F384BD15261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-vowel-constraints.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-vowel-constraints.cc"; sourceTree = "<group>"; };
-		F384BD16261EC7650028A248 /* hb-ot-layout.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-layout.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-layout.cc"; sourceTree = "<group>"; };
-		F384BD17261EC7650028A248 /* hb-ot-shape-complex-thai.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-thai.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-thai.cc"; sourceTree = "<group>"; };
-		F384BD18261EC7650028A248 /* hb-ot-shape-complex-indic.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-indic.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-indic.cc"; sourceTree = "<group>"; };
-		F384BD19261EC7650028A248 /* hb-buffer-serialize.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-buffer-serialize.cc"; path = "../external/harfbuzz-2.8.0/src/hb-buffer-serialize.cc"; sourceTree = "<group>"; };
-		F384BD1A261EC7650028A248 /* hb-font.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-font.cc"; path = "../external/harfbuzz-2.8.0/src/hb-font.cc"; sourceTree = "<group>"; };
-		F384BD1B261EC7650028A248 /* hb-ot-shape-complex-use.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-use.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-use.cc"; sourceTree = "<group>"; };
-		F384BD1C261EC7650028A248 /* hb-unicode.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-unicode.cc"; path = "../external/harfbuzz-2.8.0/src/hb-unicode.cc"; sourceTree = "<group>"; };
-		F384BD1D261EC7650028A248 /* hb-buffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-buffer.cc"; path = "../external/harfbuzz-2.8.0/src/hb-buffer.cc"; sourceTree = "<group>"; };
-		F384BD1E261EC7650028A248 /* hb-ot-cff2-table.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-cff2-table.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-cff2-table.cc"; sourceTree = "<group>"; };
-		F384BD1F261EC7650028A248 /* hb-ot-face.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-face.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-face.cc"; sourceTree = "<group>"; };
-		F384BD20261EC7650028A248 /* hb-ot-shape-complex-khmer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-khmer.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-khmer.cc"; sourceTree = "<group>"; };
-		F384BD21261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-myanmar.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-myanmar.cc"; sourceTree = "<group>"; };
-		F384BD22261EC7650028A248 /* hb-aat-layout.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-aat-layout.cc"; path = "../external/harfbuzz-2.8.0/src/hb-aat-layout.cc"; sourceTree = "<group>"; };
-		F384BD23261EC7650028A248 /* hb-common.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-common.cc"; path = "../external/harfbuzz-2.8.0/src/hb-common.cc"; sourceTree = "<group>"; };
-		F384BD24261EC7650028A248 /* hb-ot-cff1-table.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-cff1-table.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-cff1-table.cc"; sourceTree = "<group>"; };
-		F384BD25261EC7650028A248 /* hb-face.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-face.cc"; path = "../external/harfbuzz-2.8.0/src/hb-face.cc"; sourceTree = "<group>"; };
-		F384BD26261EC7650028A248 /* hb-blob.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-blob.cc"; path = "../external/harfbuzz-2.8.0/src/hb-blob.cc"; sourceTree = "<group>"; };
-		F384BD27261EC7650028A248 /* hb-aat-map.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-aat-map.cc"; path = "../external/harfbuzz-2.8.0/src/hb-aat-map.cc"; sourceTree = "<group>"; };
-		F384BD28261EC7650028A248 /* hb-ft.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ft.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ft.cc"; sourceTree = "<group>"; };
-		F384BD29261EC7650028A248 /* hb-ot-shape-normalize.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-normalize.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-normalize.cc"; sourceTree = "<group>"; };
-		F384BD2A261EC7650028A248 /* hb-ot-var.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-var.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-var.cc"; sourceTree = "<group>"; };
-		F384BD2B261EC7650028A248 /* hb-ot-math.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-math.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-math.cc"; sourceTree = "<group>"; };
-		F384BD2C261EC7650028A248 /* hb-ot-shape-fallback.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-fallback.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-fallback.cc"; sourceTree = "<group>"; };
-		F384BD2D261EC7650028A248 /* hb-ot-shape.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape.cc"; sourceTree = "<group>"; };
-		F384BD2E261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-syllabic.cc"; path = "../external/harfbuzz-2.8.0/src/hb-ot-shape-complex-syllabic.cc"; sourceTree = "<group>"; };
-		F384BE47261EC9470028A248 /* hb-fallback-shape.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-fallback-shape.cc"; path = "../external/harfbuzz-2.8.0/src/hb-fallback-shape.cc"; sourceTree = "<group>"; };
+		F3696FE3278F7107003A7F94 /* sdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdf.c; path = ../external/freetype/src/sdf/sdf.c; sourceTree = "<group>"; };
+		F384BB6B261EC0760028A248 /* autofit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = autofit.c; path = ../external/freetype/src/autofit/autofit.c; sourceTree = "<group>"; };
+		F384BB76261EC0DD0028A248 /* ftbdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbdf.c; path = ../external/freetype/src/base/ftbdf.c; sourceTree = "<group>"; };
+		F384BB77261EC0DD0028A248 /* ftgasp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftgasp.c; path = ../external/freetype/src/base/ftgasp.c; sourceTree = "<group>"; };
+		F384BB78261EC0DD0028A248 /* ftgxval.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftgxval.c; path = ../external/freetype/src/base/ftgxval.c; sourceTree = "<group>"; };
+		F384BB79261EC0DD0028A248 /* ftstroke.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftstroke.c; path = ../external/freetype/src/base/ftstroke.c; sourceTree = "<group>"; };
+		F384BB7A261EC0DD0028A248 /* ftdebug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftdebug.c; path = ../external/freetype/src/base/ftdebug.c; sourceTree = "<group>"; };
+		F384BB7B261EC0DD0028A248 /* ftbbox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbbox.c; path = ../external/freetype/src/base/ftbbox.c; sourceTree = "<group>"; };
+		F384BB7C261EC0DD0028A248 /* ftbase.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbase.c; path = ../external/freetype/src/base/ftbase.c; sourceTree = "<group>"; };
+		F384BB7D261EC0DD0028A248 /* ftpatent.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftpatent.c; path = ../external/freetype/src/base/ftpatent.c; sourceTree = "<group>"; };
+		F384BB7E261EC0DD0028A248 /* ftglyph.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftglyph.c; path = ../external/freetype/src/base/ftglyph.c; sourceTree = "<group>"; };
+		F384BB7F261EC0DD0028A248 /* ftsynth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftsynth.c; path = ../external/freetype/src/base/ftsynth.c; sourceTree = "<group>"; };
+		F384BB80261EC0DD0028A248 /* ftbitmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbitmap.c; path = ../external/freetype/src/base/ftbitmap.c; sourceTree = "<group>"; };
+		F384BB81261EC0DD0028A248 /* ftinit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftinit.c; path = ../external/freetype/src/base/ftinit.c; sourceTree = "<group>"; };
+		F384BB82261EC0DD0028A248 /* ftmm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftmm.c; path = ../external/freetype/src/base/ftmm.c; sourceTree = "<group>"; };
+		F384BB83261EC0DD0028A248 /* ftcid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftcid.c; path = ../external/freetype/src/base/ftcid.c; sourceTree = "<group>"; };
+		F384BB84261EC0DD0028A248 /* ftpfr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftpfr.c; path = ../external/freetype/src/base/ftpfr.c; sourceTree = "<group>"; };
+		F384BB85261EC0DE0028A248 /* ftotval.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftotval.c; path = ../external/freetype/src/base/ftotval.c; sourceTree = "<group>"; };
+		F384BB86261EC0DE0028A248 /* ftfstype.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftfstype.c; path = ../external/freetype/src/base/ftfstype.c; sourceTree = "<group>"; };
+		F384BB87261EC0DE0028A248 /* ftsystem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftsystem.c; path = ../external/freetype/src/base/ftsystem.c; sourceTree = "<group>"; };
+		F384BB88261EC0DE0028A248 /* ftwinfnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftwinfnt.c; path = ../external/freetype/src/base/ftwinfnt.c; sourceTree = "<group>"; };
+		F384BB8A261EC0DE0028A248 /* fttype1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fttype1.c; path = ../external/freetype/src/base/fttype1.c; sourceTree = "<group>"; };
+		F384BC0D261EC0F90028A248 /* bdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bdf.c; path = ../external/freetype/src/bdf/bdf.c; sourceTree = "<group>"; };
+		F384BC18261EC1440028A248 /* ftbzip2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbzip2.c; path = ../external/freetype/src/bzip2/ftbzip2.c; sourceTree = "<group>"; };
+		F384BC2E261EC1710028A248 /* cff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cff.c; path = ../external/freetype/src/cff/cff.c; sourceTree = "<group>"; };
+		F384BC39261EC1890028A248 /* type1cid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type1cid.c; path = ../external/freetype/src/cid/type1cid.c; sourceTree = "<group>"; };
+		F384BC44261EC1A30028A248 /* ftgzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftgzip.c; path = ../external/freetype/src/gzip/ftgzip.c; sourceTree = "<group>"; };
+		F384BC4F261EC1B90028A248 /* ftlzw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftlzw.c; path = ../external/freetype/src/lzw/ftlzw.c; sourceTree = "<group>"; };
+		F384BC5A261EC1DF0028A248 /* pcf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pcf.c; path = ../external/freetype/src/pcf/pcf.c; sourceTree = "<group>"; };
+		F384BC65261EC1F30028A248 /* pfr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pfr.c; path = ../external/freetype/src/pfr/pfr.c; sourceTree = "<group>"; };
+		F384BC70261EC2050028A248 /* psaux.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = psaux.c; path = ../external/freetype/src/psaux/psaux.c; sourceTree = "<group>"; };
+		F384BC7B261EC2180028A248 /* pshinter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pshinter.c; path = ../external/freetype/src/pshinter/pshinter.c; sourceTree = "<group>"; };
+		F384BC86261EC23B0028A248 /* psmodule.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = psmodule.c; path = ../external/freetype/src/psnames/psmodule.c; sourceTree = "<group>"; };
+		F384BC91261EC2560028A248 /* raster.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = raster.c; path = ../external/freetype/src/raster/raster.c; sourceTree = "<group>"; };
+		F384BC9C261EC2680028A248 /* sfnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sfnt.c; path = ../external/freetype/src/sfnt/sfnt.c; sourceTree = "<group>"; };
+		F384BCA7261EC2770028A248 /* smooth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = smooth.c; path = ../external/freetype/src/smooth/smooth.c; sourceTree = "<group>"; };
+		F384BCBD261EC2980028A248 /* truetype.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = truetype.c; path = ../external/freetype/src/truetype/truetype.c; sourceTree = "<group>"; };
+		F384BCC8261EC2AE0028A248 /* type1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type1.c; path = ../external/freetype/src/type1/type1.c; sourceTree = "<group>"; };
+		F384BCD3261EC2BE0028A248 /* type42.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type42.c; path = ../external/freetype/src/type42/type42.c; sourceTree = "<group>"; };
+		F384BCDE261EC2CF0028A248 /* winfnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = winfnt.c; path = ../external/freetype/src/winfonts/winfnt.c; sourceTree = "<group>"; };
+		F384BCF1261EC5130028A248 /* ftcache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftcache.c; path = ../external/freetype/src/cache/ftcache.c; sourceTree = "<group>"; };
+		F384BD05261EC7640028A248 /* hb-ot-shape-complex-default.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-default.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-default.cc"; sourceTree = "<group>"; };
+		F384BD06261EC7640028A248 /* hb-set.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-set.cc"; path = "../external/harfbuzz/src/hb-set.cc"; sourceTree = "<group>"; };
+		F384BD07261EC7640028A248 /* hb-shape.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-shape.cc"; path = "../external/harfbuzz/src/hb-shape.cc"; sourceTree = "<group>"; };
+		F384BD08261EC7640028A248 /* hb-static.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-static.cc"; path = "../external/harfbuzz/src/hb-static.cc"; sourceTree = "<group>"; };
+		F384BD09261EC7640028A248 /* hb-ot-shape-complex-hebrew.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-hebrew.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-hebrew.cc"; sourceTree = "<group>"; };
+		F384BD0A261EC7640028A248 /* hb-ucd.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ucd.cc"; path = "../external/harfbuzz/src/hb-ucd.cc"; sourceTree = "<group>"; };
+		F384BD0B261EC7640028A248 /* hb-ot-shape-complex-indic-table.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-indic-table.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-indic-table.cc"; sourceTree = "<group>"; };
+		F384BD0C261EC7640028A248 /* hb-ot-map.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-map.cc"; path = "../external/harfbuzz/src/hb-ot-map.cc"; sourceTree = "<group>"; };
+		F384BD0D261EC7640028A248 /* hb-ot-shape-complex-hangul.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-hangul.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-hangul.cc"; sourceTree = "<group>"; };
+		F384BD0E261EC7640028A248 /* hb-ot-font.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-font.cc"; path = "../external/harfbuzz/src/hb-ot-font.cc"; sourceTree = "<group>"; };
+		F384BD0F261EC7640028A248 /* hb-shape-plan.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-shape-plan.cc"; path = "../external/harfbuzz/src/hb-shape-plan.cc"; sourceTree = "<group>"; };
+		F384BD10261EC7640028A248 /* hb-ot-tag.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-tag.cc"; path = "../external/harfbuzz/src/hb-ot-tag.cc"; sourceTree = "<group>"; };
+		F384BD11261EC7640028A248 /* hb-number.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-number.cc"; path = "../external/harfbuzz/src/hb-number.cc"; sourceTree = "<group>"; };
+		F384BD12261EC7640028A248 /* hb-ot-metrics.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-metrics.cc"; path = "../external/harfbuzz/src/hb-ot-metrics.cc"; sourceTree = "<group>"; };
+		F384BD13261EC7650028A248 /* hb-shaper.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-shaper.cc"; path = "../external/harfbuzz/src/hb-shaper.cc"; sourceTree = "<group>"; };
+		F384BD14261EC7650028A248 /* hb-ot-shape-complex-arabic.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-arabic.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-arabic.cc"; sourceTree = "<group>"; };
+		F384BD15261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-vowel-constraints.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-vowel-constraints.cc"; sourceTree = "<group>"; };
+		F384BD16261EC7650028A248 /* hb-ot-layout.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-layout.cc"; path = "../external/harfbuzz/src/hb-ot-layout.cc"; sourceTree = "<group>"; };
+		F384BD17261EC7650028A248 /* hb-ot-shape-complex-thai.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-thai.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-thai.cc"; sourceTree = "<group>"; };
+		F384BD18261EC7650028A248 /* hb-ot-shape-complex-indic.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-indic.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-indic.cc"; sourceTree = "<group>"; };
+		F384BD19261EC7650028A248 /* hb-buffer-serialize.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-buffer-serialize.cc"; path = "../external/harfbuzz/src/hb-buffer-serialize.cc"; sourceTree = "<group>"; };
+		F384BD1A261EC7650028A248 /* hb-font.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-font.cc"; path = "../external/harfbuzz/src/hb-font.cc"; sourceTree = "<group>"; };
+		F384BD1B261EC7650028A248 /* hb-ot-shape-complex-use.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-use.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-use.cc"; sourceTree = "<group>"; };
+		F384BD1C261EC7650028A248 /* hb-unicode.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-unicode.cc"; path = "../external/harfbuzz/src/hb-unicode.cc"; sourceTree = "<group>"; };
+		F384BD1D261EC7650028A248 /* hb-buffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-buffer.cc"; path = "../external/harfbuzz/src/hb-buffer.cc"; sourceTree = "<group>"; };
+		F384BD1E261EC7650028A248 /* hb-ot-cff2-table.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-cff2-table.cc"; path = "../external/harfbuzz/src/hb-ot-cff2-table.cc"; sourceTree = "<group>"; };
+		F384BD1F261EC7650028A248 /* hb-ot-face.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-face.cc"; path = "../external/harfbuzz/src/hb-ot-face.cc"; sourceTree = "<group>"; };
+		F384BD20261EC7650028A248 /* hb-ot-shape-complex-khmer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-khmer.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-khmer.cc"; sourceTree = "<group>"; };
+		F384BD21261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-myanmar.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-myanmar.cc"; sourceTree = "<group>"; };
+		F384BD22261EC7650028A248 /* hb-aat-layout.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-aat-layout.cc"; path = "../external/harfbuzz/src/hb-aat-layout.cc"; sourceTree = "<group>"; };
+		F384BD23261EC7650028A248 /* hb-common.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-common.cc"; path = "../external/harfbuzz/src/hb-common.cc"; sourceTree = "<group>"; };
+		F384BD24261EC7650028A248 /* hb-ot-cff1-table.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-cff1-table.cc"; path = "../external/harfbuzz/src/hb-ot-cff1-table.cc"; sourceTree = "<group>"; };
+		F384BD25261EC7650028A248 /* hb-face.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-face.cc"; path = "../external/harfbuzz/src/hb-face.cc"; sourceTree = "<group>"; };
+		F384BD26261EC7650028A248 /* hb-blob.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-blob.cc"; path = "../external/harfbuzz/src/hb-blob.cc"; sourceTree = "<group>"; };
+		F384BD27261EC7650028A248 /* hb-aat-map.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-aat-map.cc"; path = "../external/harfbuzz/src/hb-aat-map.cc"; sourceTree = "<group>"; };
+		F384BD28261EC7650028A248 /* hb-ft.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ft.cc"; path = "../external/harfbuzz/src/hb-ft.cc"; sourceTree = "<group>"; };
+		F384BD29261EC7650028A248 /* hb-ot-shape-normalize.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-normalize.cc"; path = "../external/harfbuzz/src/hb-ot-shape-normalize.cc"; sourceTree = "<group>"; };
+		F384BD2A261EC7650028A248 /* hb-ot-var.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-var.cc"; path = "../external/harfbuzz/src/hb-ot-var.cc"; sourceTree = "<group>"; };
+		F384BD2B261EC7650028A248 /* hb-ot-math.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-math.cc"; path = "../external/harfbuzz/src/hb-ot-math.cc"; sourceTree = "<group>"; };
+		F384BD2C261EC7650028A248 /* hb-ot-shape-fallback.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-fallback.cc"; path = "../external/harfbuzz/src/hb-ot-shape-fallback.cc"; sourceTree = "<group>"; };
+		F384BD2D261EC7650028A248 /* hb-ot-shape.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape.cc"; path = "../external/harfbuzz/src/hb-ot-shape.cc"; sourceTree = "<group>"; };
+		F384BD2E261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ot-shape-complex-syllabic.cc"; path = "../external/harfbuzz/src/hb-ot-shape-complex-syllabic.cc"; sourceTree = "<group>"; };
+		F384BE47261EC9470028A248 /* hb-fallback-shape.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-fallback-shape.cc"; path = "../external/harfbuzz/src/hb-fallback-shape.cc"; sourceTree = "<group>"; };
 		F384BE60261ECD9F0028A248 /* HarfBuzz-LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "HarfBuzz-LICENSE.txt"; sourceTree = "<group>"; };
 		F384BE61261ECD9F0028A248 /* FreeType-LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "FreeType-LICENSE.txt"; sourceTree = "<group>"; };
 		F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SDL_ttf.c; path = ../SDL_ttf.c; sourceTree = SOURCE_ROOT; };
@@ -686,36 +316,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		A75FDAE923E3582C00529352 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A75FDB0E23E37ED200529352 /* SDL2.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB0223E36B4300529352 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A75FDB1223E37EE400529352 /* SDL2.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB2923E3825200529352 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB3423E3827100529352 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		BE48FD6307AFA17000BB41DA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -749,10 +349,6 @@
 				BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */,
 				BE48FD6E07AFA17000BB41DA /* libSDL2_ttf.a */,
 				BE48FD7207AFA17000BB41DA /* Create DMG */,
-				A75FDAF323E3582C00529352 /* SDL2_ttf.framework */,
-				A75FDB0A23E36B4300529352 /* SDL2_ttf.framework */,
-				A75FDB2E23E3825200529352 /* libSDL2_ttf.a */,
-				A75FDB3923E3827100529352 /* libSDL2_ttf.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -868,6 +464,7 @@
 				F3696FE3278F7107003A7F94 /* sdf.c */,
 				F384BC9C261EC2680028A248 /* sfnt.c */,
 				F384BCA7261EC2770028A248 /* smooth.c */,
+				F307EE28282738F8003915D7 /* svg.c */,
 				F384BCBD261EC2980028A248 /* truetype.c */,
 				F384BCC8261EC2AE0028A248 /* type1.c */,
 				F384BC39261EC1890028A248 /* type1cid.c */,
@@ -890,6 +487,7 @@
 				F384BE47261EC9470028A248 /* hb-fallback-shape.cc */,
 				F384BD1A261EC7650028A248 /* hb-font.cc */,
 				F384BD28261EC7650028A248 /* hb-ft.cc */,
+				F307EE2B282807EB003915D7 /* hb-ms-feature-ranges.cc */,
 				F384BD11261EC7640028A248 /* hb-number.cc */,
 				F384BD24261EC7650028A248 /* hb-ot-cff1-table.cc */,
 				F384BD1E261EC7650028A248 /* hb-ot-cff2-table.cc */,
@@ -950,36 +548,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		A75FDAE423E3582C00529352 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A75FDAE523E3582C00529352 /* SDL_ttf.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDAFD23E36B4300529352 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A75FDAFE23E36B4300529352 /* SDL_ttf.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB2623E3825200529352 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB3123E3827100529352 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		BE48FD5E07AFA17000BB41DA /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -998,90 +566,6 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		A75FDAE323E3582C00529352 /* Framework-iOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A75FDAF023E3582C00529352 /* Build configuration list for PBXNativeTarget "Framework-iOS" */;
-			buildPhases = (
-				A75FDAE423E3582C00529352 /* Headers */,
-				A75FDAE623E3582C00529352 /* Resources */,
-				A75FDAE723E3582C00529352 /* Sources */,
-				A75FDAE923E3582C00529352 /* Frameworks */,
-				A75FDAEC23E3582C00529352 /* Rez */,
-				A75FDAEF23E3582C00529352 /* Convert SDL includes to SDL Framework includes */,
-				A75FDB1E23E381B800529352 /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			comments = "Installed into ~/Library/Frameworks/SDL_ttf.framework\n\nAdd -framework SDL_ttf to your linker flags\nAdd ~/Library/Frameworks/SDL_ttf.framework/Headers to your header search path\nAdd ~/Library/Frameworks to your library search path";
-			dependencies = (
-			);
-			name = "Framework-iOS";
-			productInstallPath = "@executable_path/../Frameworks";
-			productName = SDL_ttf;
-			productReference = A75FDAF323E3582C00529352 /* SDL2_ttf.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		A75FDAFC23E36B4300529352 /* Framework-tvOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A75FDB0723E36B4300529352 /* Build configuration list for PBXNativeTarget "Framework-tvOS" */;
-			buildPhases = (
-				A75FDAFD23E36B4300529352 /* Headers */,
-				A75FDAFF23E36B4300529352 /* Resources */,
-				A75FDB0023E36B4300529352 /* Sources */,
-				A75FDB0223E36B4300529352 /* Frameworks */,
-				A75FDB0523E36B4300529352 /* Rez */,
-				A75FDB0623E36B4300529352 /* Convert SDL includes to SDL Framework includes */,
-				A75FDB2123E381BC00529352 /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			comments = "Installed into ~/Library/Frameworks/SDL_ttf.framework\n\nAdd -framework SDL_ttf to your linker flags\nAdd ~/Library/Frameworks/SDL_ttf.framework/Headers to your header search path\nAdd ~/Library/Frameworks to your library search path";
-			dependencies = (
-			);
-			name = "Framework-tvOS";
-			productInstallPath = "@executable_path/../Frameworks";
-			productName = SDL_ttf;
-			productReference = A75FDB0A23E36B4300529352 /* SDL2_ttf.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		A75FDB2523E3825200529352 /* Static Library-iOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A75FDB2B23E3825200529352 /* Build configuration list for PBXNativeTarget "Static Library-iOS" */;
-			buildPhases = (
-				A75FDB2623E3825200529352 /* Headers */,
-				A75FDB2723E3825200529352 /* Sources */,
-				A75FDB2923E3825200529352 /* Frameworks */,
-				A75FDB2A23E3825200529352 /* Rez */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Static Library-iOS";
-			productInstallPath = /usr/local/lib;
-			productName = "Static Library";
-			productReference = A75FDB2E23E3825200529352 /* libSDL2_ttf.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		A75FDB3023E3827100529352 /* Static Library-tvOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A75FDB3623E3827100529352 /* Build configuration list for PBXNativeTarget "Static Library-tvOS" */;
-			buildPhases = (
-				A75FDB3123E3827100529352 /* Headers */,
-				A75FDB3223E3827100529352 /* Sources */,
-				A75FDB3423E3827100529352 /* Frameworks */,
-				A75FDB3523E3827100529352 /* Rez */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Static Library-tvOS";
-			productInstallPath = /usr/local/lib;
-			productName = "Static Library";
-			productReference = A75FDB3923E3827100529352 /* libSDL2_ttf.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		BE48FD5D07AFA17000BB41DA /* Framework */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00B7E1E9097E26C600826121 /* Build configuration list for PBXNativeTarget "Framework" */;
@@ -1163,39 +647,13 @@
 			projectRoot = "";
 			targets = (
 				BE48FD5D07AFA17000BB41DA /* Framework */,
-				A75FDAE323E3582C00529352 /* Framework-iOS */,
-				A75FDAFC23E36B4300529352 /* Framework-tvOS */,
 				BE48FD6807AFA17000BB41DA /* Static Library */,
-				A75FDB2523E3825200529352 /* Static Library-iOS */,
-				A75FDB3023E3827100529352 /* Static Library-tvOS */,
 				BE48FD6F07AFA17000BB41DA /* Create DMG */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A75FDAE623E3582C00529352 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F364A5C52620E22400325ECE /* ReadMe.txt in Resources */,
-				F384BE66261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */,
-				F364A5B92620E1A200325ECE /* FTL.TXT in Resources */,
-				F384BE63261ECD9F0028A248 /* HarfBuzz-LICENSE.txt in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDAFF23E36B4300529352 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F364A5C62620E22400325ECE /* ReadMe.txt in Resources */,
-				F384BE67261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */,
-				F364A5BA2620E1A200325ECE /* FTL.TXT in Resources */,
-				F384BE64261ECD9F0028A248 /* HarfBuzz-LICENSE.txt in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		BE48FD6007AFA17000BB41DA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1210,34 +668,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXRezBuildPhase section */
-		A75FDAEC23E3582C00529352 /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB0523E36B4300529352 /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB2A23E3825200529352 /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB3523E3827100529352 /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		BE48FD6407AFA17000BB41DA /* Rez */ = {
 			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
@@ -1255,34 +685,6 @@
 /* End PBXRezBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		A75FDAEF23E3582C00529352 /* Convert SDL includes to SDL Framework includes */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Convert SDL includes to SDL Framework includes";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$PUBLIC_HEADERS_FOLDER_PATH\"\nHEADER=SDL_ttf.h\nsed 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' <$HEADER >$HEADER.new\nmv $HEADER.new $HEADER\n";
-		};
-		A75FDB0623E36B4300529352 /* Convert SDL includes to SDL Framework includes */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Convert SDL includes to SDL Framework includes";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$PUBLIC_HEADERS_FOLDER_PATH\"\nHEADER=SDL_ttf.h\nsed 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' <$HEADER >$HEADER.new\nmv $HEADER.new $HEADER\n";
-		};
 		AA9EE79C14B2C5D0008773C0 /* Convert SDL includes to SDL Framework includes */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1295,7 +697,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$PUBLIC_HEADERS_FOLDER_PATH\"\nHEADER=SDL_ttf.h\nsed 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' <$HEADER >$HEADER.new\nmv $HEADER.new $HEADER\n";
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$PUBLIC_HEADERS_FOLDER_PATH\"\nsed -i '' -e 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' *.h\n";
 		};
 		BE48FD7107AFA17000BB41DA /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1309,374 +711,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A75FDAE723E3582C00529352 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F384BB8C261EC0DE0028A248 /* ftbdf.c in Sources */,
-				F384BD90261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc in Sources */,
-				F384BBBC261EC0DE0028A248 /* ftglyph.c in Sources */,
-				F384BC3B261EC1890028A248 /* type1cid.c in Sources */,
-				F384BC72261EC2050028A248 /* psaux.c in Sources */,
-				F384BD36261EC7650028A248 /* hb-set.cc in Sources */,
-				F384BC9E261EC2680028A248 /* sfnt.c in Sources */,
-				F384BDEA261EC7650028A248 /* hb-ot-cff1-table.cc in Sources */,
-				F384BE26261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc in Sources */,
-				F384BDD2261EC7650028A248 /* hb-ot-shape-complex-khmer.cc in Sources */,
-				F384BCBF261EC2980028A248 /* truetype.c in Sources */,
-				F384BD5A261EC7650028A248 /* hb-ot-map.cc in Sources */,
-				F384BBDA261EC0DE0028A248 /* ftcid.c in Sources */,
-				F384BDC0261EC7650028A248 /* hb-buffer.cc in Sources */,
-				F384BD84261EC7650028A248 /* hb-shaper.cc in Sources */,
-				F384BCD5261EC2BE0028A248 /* type42.c in Sources */,
-				F384BDF0261EC7650028A248 /* hb-face.cc in Sources */,
-				F384BCE0261EC2CF0028A248 /* winfnt.c in Sources */,
-				F384BC30261EC1710028A248 /* cff.c in Sources */,
-				F384BDA8261EC7650028A248 /* hb-buffer-serialize.cc in Sources */,
-				F384BBC2261EC0DE0028A248 /* ftsynth.c in Sources */,
-				F384BE08261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */,
-				F384BD42261EC7650028A248 /* hb-static.cc in Sources */,
-				F384BD78261EC7650028A248 /* hb-number.cc in Sources */,
-				F384BBCE261EC0DE0028A248 /* ftinit.c in Sources */,
-				F384BE20261EC7650028A248 /* hb-ot-shape.cc in Sources */,
-				F384BDD8261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc in Sources */,
-				F384BD6C261EC7650028A248 /* hb-shape-plan.cc in Sources */,
-				F384BBB0261EC0DE0028A248 /* ftbase.c in Sources */,
-				F384BC5C261EC1DF0028A248 /* pcf.c in Sources */,
-				F384BC51261EC1B90028A248 /* ftlzw.c in Sources */,
-				F384BBF2261EC0DE0028A248 /* ftsystem.c in Sources */,
-				F384BBE0261EC0DE0028A248 /* ftpfr.c in Sources */,
-				F384BDB4261EC7650028A248 /* hb-ot-shape-complex-use.cc in Sources */,
-				F384BDC6261EC7650028A248 /* hb-ot-cff2-table.cc in Sources */,
-				F384BE14261EC7650028A248 /* hb-ot-math.cc in Sources */,
-				F384BBD4261EC0DE0028A248 /* ftmm.c in Sources */,
-				F384BD72261EC7650028A248 /* hb-ot-tag.cc in Sources */,
-				F384BC04261EC0DE0028A248 /* fttype1.c in Sources */,
-				F384BB9E261EC0DE0028A248 /* ftstroke.c in Sources */,
-				F384BD60261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */,
-				F384BC46261EC1A30028A248 /* ftgzip.c in Sources */,
-				F384BB6D261EC0760028A248 /* autofit.c in Sources */,
-				F384BD54261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */,
-				F384BDFC261EC7650028A248 /* hb-aat-map.cc in Sources */,
-				F384BB92261EC0DE0028A248 /* ftgasp.c in Sources */,
-				F384BBF8261EC0DE0028A248 /* ftwinfnt.c in Sources */,
-				A75FDAE823E3582C00529352 /* SDL_ttf.c in Sources */,
-				F384BD8A261EC7650028A248 /* hb-ot-shape-complex-arabic.cc in Sources */,
-				F384BDE4261EC7650028A248 /* hb-common.cc in Sources */,
-				F384BD7E261EC7650028A248 /* hb-ot-metrics.cc in Sources */,
-				F384BDDE261EC7650028A248 /* hb-aat-layout.cc in Sources */,
-				F384BDF6261EC7650028A248 /* hb-blob.cc in Sources */,
-				F384BD9C261EC7650028A248 /* hb-ot-shape-complex-thai.cc in Sources */,
-				F384BCCA261EC2AE0028A248 /* type1.c in Sources */,
-				F384BD3C261EC7650028A248 /* hb-shape.cc in Sources */,
-				F384BC93261EC2560028A248 /* raster.c in Sources */,
-				F384BDCC261EC7650028A248 /* hb-ot-face.cc in Sources */,
-				F384BB98261EC0DE0028A248 /* ftgxval.c in Sources */,
-				F384BDAE261EC7650028A248 /* hb-font.cc in Sources */,
-				F384BD4E261EC7650028A248 /* hb-ucd.cc in Sources */,
-				F384BBB6261EC0DE0028A248 /* ftpatent.c in Sources */,
-				F3696FE5278F7107003A7F94 /* sdf.c in Sources */,
-				F384BE02261EC7650028A248 /* hb-ft.cc in Sources */,
-				F384BE1A261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */,
-				F384BD96261EC7650028A248 /* hb-ot-layout.cc in Sources */,
-				F384BC0F261EC0F90028A248 /* bdf.c in Sources */,
-				F384BC88261EC23B0028A248 /* psmodule.c in Sources */,
-				F384BE0E261EC7650028A248 /* hb-ot-var.cc in Sources */,
-				F384BBE6261EC0DE0028A248 /* ftotval.c in Sources */,
-				F384BD30261EC7650028A248 /* hb-ot-shape-complex-default.cc in Sources */,
-				F384BBEC261EC0DE0028A248 /* ftfstype.c in Sources */,
-				F384BC7D261EC2180028A248 /* pshinter.c in Sources */,
-				F384BD66261EC7650028A248 /* hb-ot-font.cc in Sources */,
-				F384BBC8261EC0DE0028A248 /* ftbitmap.c in Sources */,
-				F384BCA9261EC2770028A248 /* smooth.c in Sources */,
-				F384BD48261EC7650028A248 /* hb-ot-shape-complex-hebrew.cc in Sources */,
-				F384BBAA261EC0DE0028A248 /* ftbbox.c in Sources */,
-				F384BE49261EC9470028A248 /* hb-fallback-shape.cc in Sources */,
-				F384BBA4261EC0DE0028A248 /* ftdebug.c in Sources */,
-				F384BDBA261EC7650028A248 /* hb-unicode.cc in Sources */,
-				F384BC67261EC1F30028A248 /* pfr.c in Sources */,
-				F384BDA2261EC7650028A248 /* hb-ot-shape-complex-indic.cc in Sources */,
-				F384BC1A261EC1440028A248 /* ftbzip2.c in Sources */,
-				F384BCF3261EC5130028A248 /* ftcache.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB0023E36B4300529352 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F384BB8D261EC0DE0028A248 /* ftbdf.c in Sources */,
-				F384BD91261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc in Sources */,
-				F384BBBD261EC0DE0028A248 /* ftglyph.c in Sources */,
-				F384BC3C261EC1890028A248 /* type1cid.c in Sources */,
-				F384BC73261EC2050028A248 /* psaux.c in Sources */,
-				F384BD37261EC7650028A248 /* hb-set.cc in Sources */,
-				F384BC9F261EC2680028A248 /* sfnt.c in Sources */,
-				F384BDEB261EC7650028A248 /* hb-ot-cff1-table.cc in Sources */,
-				F384BE27261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc in Sources */,
-				F384BDD3261EC7650028A248 /* hb-ot-shape-complex-khmer.cc in Sources */,
-				F384BCC0261EC2980028A248 /* truetype.c in Sources */,
-				F384BD5B261EC7650028A248 /* hb-ot-map.cc in Sources */,
-				F384BBDB261EC0DE0028A248 /* ftcid.c in Sources */,
-				F384BDC1261EC7650028A248 /* hb-buffer.cc in Sources */,
-				F384BD85261EC7650028A248 /* hb-shaper.cc in Sources */,
-				F384BCD6261EC2BE0028A248 /* type42.c in Sources */,
-				F384BDF1261EC7650028A248 /* hb-face.cc in Sources */,
-				F384BCE1261EC2CF0028A248 /* winfnt.c in Sources */,
-				F384BC31261EC1710028A248 /* cff.c in Sources */,
-				F384BDA9261EC7650028A248 /* hb-buffer-serialize.cc in Sources */,
-				F384BBC3261EC0DE0028A248 /* ftsynth.c in Sources */,
-				F384BE09261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */,
-				F384BD43261EC7650028A248 /* hb-static.cc in Sources */,
-				F384BD79261EC7650028A248 /* hb-number.cc in Sources */,
-				F384BBCF261EC0DE0028A248 /* ftinit.c in Sources */,
-				F384BE21261EC7650028A248 /* hb-ot-shape.cc in Sources */,
-				F384BDD9261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc in Sources */,
-				F384BD6D261EC7650028A248 /* hb-shape-plan.cc in Sources */,
-				F384BBB1261EC0DE0028A248 /* ftbase.c in Sources */,
-				F384BC5D261EC1DF0028A248 /* pcf.c in Sources */,
-				F384BC52261EC1B90028A248 /* ftlzw.c in Sources */,
-				F384BBF3261EC0DE0028A248 /* ftsystem.c in Sources */,
-				F384BBE1261EC0DE0028A248 /* ftpfr.c in Sources */,
-				F384BDB5261EC7650028A248 /* hb-ot-shape-complex-use.cc in Sources */,
-				F384BDC7261EC7650028A248 /* hb-ot-cff2-table.cc in Sources */,
-				F384BE15261EC7650028A248 /* hb-ot-math.cc in Sources */,
-				F384BBD5261EC0DE0028A248 /* ftmm.c in Sources */,
-				F384BD73261EC7650028A248 /* hb-ot-tag.cc in Sources */,
-				F384BC05261EC0DE0028A248 /* fttype1.c in Sources */,
-				F384BB9F261EC0DE0028A248 /* ftstroke.c in Sources */,
-				F384BD61261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */,
-				F384BC47261EC1A30028A248 /* ftgzip.c in Sources */,
-				F384BB6E261EC0760028A248 /* autofit.c in Sources */,
-				F384BD55261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */,
-				F384BDFD261EC7650028A248 /* hb-aat-map.cc in Sources */,
-				F384BB93261EC0DE0028A248 /* ftgasp.c in Sources */,
-				F384BBF9261EC0DE0028A248 /* ftwinfnt.c in Sources */,
-				A75FDB0123E36B4300529352 /* SDL_ttf.c in Sources */,
-				F384BD8B261EC7650028A248 /* hb-ot-shape-complex-arabic.cc in Sources */,
-				F384BDE5261EC7650028A248 /* hb-common.cc in Sources */,
-				F384BD7F261EC7650028A248 /* hb-ot-metrics.cc in Sources */,
-				F384BDDF261EC7650028A248 /* hb-aat-layout.cc in Sources */,
-				F384BDF7261EC7650028A248 /* hb-blob.cc in Sources */,
-				F384BD9D261EC7650028A248 /* hb-ot-shape-complex-thai.cc in Sources */,
-				F384BCCB261EC2AE0028A248 /* type1.c in Sources */,
-				F384BD3D261EC7650028A248 /* hb-shape.cc in Sources */,
-				F384BC94261EC2560028A248 /* raster.c in Sources */,
-				F384BDCD261EC7650028A248 /* hb-ot-face.cc in Sources */,
-				F384BB99261EC0DE0028A248 /* ftgxval.c in Sources */,
-				F384BDAF261EC7650028A248 /* hb-font.cc in Sources */,
-				F384BD4F261EC7650028A248 /* hb-ucd.cc in Sources */,
-				F384BBB7261EC0DE0028A248 /* ftpatent.c in Sources */,
-				F3696FE6278F7107003A7F94 /* sdf.c in Sources */,
-				F384BE03261EC7650028A248 /* hb-ft.cc in Sources */,
-				F384BE1B261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */,
-				F384BD97261EC7650028A248 /* hb-ot-layout.cc in Sources */,
-				F384BC10261EC0F90028A248 /* bdf.c in Sources */,
-				F384BC89261EC23B0028A248 /* psmodule.c in Sources */,
-				F384BE0F261EC7650028A248 /* hb-ot-var.cc in Sources */,
-				F384BBE7261EC0DE0028A248 /* ftotval.c in Sources */,
-				F384BD31261EC7650028A248 /* hb-ot-shape-complex-default.cc in Sources */,
-				F384BBED261EC0DE0028A248 /* ftfstype.c in Sources */,
-				F384BC7E261EC2180028A248 /* pshinter.c in Sources */,
-				F384BD67261EC7650028A248 /* hb-ot-font.cc in Sources */,
-				F384BBC9261EC0DE0028A248 /* ftbitmap.c in Sources */,
-				F384BCAA261EC2770028A248 /* smooth.c in Sources */,
-				F384BD49261EC7650028A248 /* hb-ot-shape-complex-hebrew.cc in Sources */,
-				F384BBAB261EC0DE0028A248 /* ftbbox.c in Sources */,
-				F384BE4A261EC9470028A248 /* hb-fallback-shape.cc in Sources */,
-				F384BBA5261EC0DE0028A248 /* ftdebug.c in Sources */,
-				F384BDBB261EC7650028A248 /* hb-unicode.cc in Sources */,
-				F384BC68261EC1F30028A248 /* pfr.c in Sources */,
-				F384BDA3261EC7650028A248 /* hb-ot-shape-complex-indic.cc in Sources */,
-				F384BC1B261EC1440028A248 /* ftbzip2.c in Sources */,
-				F384BCF4261EC5130028A248 /* ftcache.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB2723E3825200529352 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F384BB8F261EC0DE0028A248 /* ftbdf.c in Sources */,
-				F384BD93261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc in Sources */,
-				F384BBBF261EC0DE0028A248 /* ftglyph.c in Sources */,
-				F384BC3E261EC1890028A248 /* type1cid.c in Sources */,
-				F384BC75261EC2050028A248 /* psaux.c in Sources */,
-				F384BD39261EC7650028A248 /* hb-set.cc in Sources */,
-				F384BCA1261EC2680028A248 /* sfnt.c in Sources */,
-				F384BDED261EC7650028A248 /* hb-ot-cff1-table.cc in Sources */,
-				F384BE29261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc in Sources */,
-				F384BDD5261EC7650028A248 /* hb-ot-shape-complex-khmer.cc in Sources */,
-				F384BCC2261EC2980028A248 /* truetype.c in Sources */,
-				F384BD5D261EC7650028A248 /* hb-ot-map.cc in Sources */,
-				F384BBDD261EC0DE0028A248 /* ftcid.c in Sources */,
-				F384BDC3261EC7650028A248 /* hb-buffer.cc in Sources */,
-				F384BD87261EC7650028A248 /* hb-shaper.cc in Sources */,
-				F384BCD8261EC2BE0028A248 /* type42.c in Sources */,
-				F384BDF3261EC7650028A248 /* hb-face.cc in Sources */,
-				F384BCE3261EC2CF0028A248 /* winfnt.c in Sources */,
-				F384BC33261EC1710028A248 /* cff.c in Sources */,
-				F384BDAB261EC7650028A248 /* hb-buffer-serialize.cc in Sources */,
-				F384BBC5261EC0DE0028A248 /* ftsynth.c in Sources */,
-				F384BE0B261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */,
-				F384BD45261EC7650028A248 /* hb-static.cc in Sources */,
-				F384BD7B261EC7650028A248 /* hb-number.cc in Sources */,
-				F384BBD1261EC0DE0028A248 /* ftinit.c in Sources */,
-				F384BE23261EC7650028A248 /* hb-ot-shape.cc in Sources */,
-				F384BDDB261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc in Sources */,
-				F384BD6F261EC7650028A248 /* hb-shape-plan.cc in Sources */,
-				F384BBB3261EC0DE0028A248 /* ftbase.c in Sources */,
-				F384BC5F261EC1DF0028A248 /* pcf.c in Sources */,
-				F384BC54261EC1B90028A248 /* ftlzw.c in Sources */,
-				F384BBF5261EC0DE0028A248 /* ftsystem.c in Sources */,
-				F384BBE3261EC0DE0028A248 /* ftpfr.c in Sources */,
-				F384BDB7261EC7650028A248 /* hb-ot-shape-complex-use.cc in Sources */,
-				F384BDC9261EC7650028A248 /* hb-ot-cff2-table.cc in Sources */,
-				F384BE17261EC7650028A248 /* hb-ot-math.cc in Sources */,
-				F384BBD7261EC0DE0028A248 /* ftmm.c in Sources */,
-				F384BD75261EC7650028A248 /* hb-ot-tag.cc in Sources */,
-				F384BC07261EC0DE0028A248 /* fttype1.c in Sources */,
-				F384BBA1261EC0DE0028A248 /* ftstroke.c in Sources */,
-				F384BD63261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */,
-				F384BC49261EC1A30028A248 /* ftgzip.c in Sources */,
-				F384BB70261EC0760028A248 /* autofit.c in Sources */,
-				F384BD57261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */,
-				F384BDFF261EC7650028A248 /* hb-aat-map.cc in Sources */,
-				F384BB95261EC0DE0028A248 /* ftgasp.c in Sources */,
-				F384BBFB261EC0DE0028A248 /* ftwinfnt.c in Sources */,
-				A75FDB2823E3825200529352 /* SDL_ttf.c in Sources */,
-				F384BD8D261EC7650028A248 /* hb-ot-shape-complex-arabic.cc in Sources */,
-				F384BDE7261EC7650028A248 /* hb-common.cc in Sources */,
-				F384BD81261EC7650028A248 /* hb-ot-metrics.cc in Sources */,
-				F384BDE1261EC7650028A248 /* hb-aat-layout.cc in Sources */,
-				F384BDF9261EC7650028A248 /* hb-blob.cc in Sources */,
-				F384BD9F261EC7650028A248 /* hb-ot-shape-complex-thai.cc in Sources */,
-				F384BCCD261EC2AE0028A248 /* type1.c in Sources */,
-				F384BD3F261EC7650028A248 /* hb-shape.cc in Sources */,
-				F384BC96261EC2560028A248 /* raster.c in Sources */,
-				F384BDCF261EC7650028A248 /* hb-ot-face.cc in Sources */,
-				F384BB9B261EC0DE0028A248 /* ftgxval.c in Sources */,
-				F384BDB1261EC7650028A248 /* hb-font.cc in Sources */,
-				F384BD51261EC7650028A248 /* hb-ucd.cc in Sources */,
-				F384BBB9261EC0DE0028A248 /* ftpatent.c in Sources */,
-				F3696FE8278F7107003A7F94 /* sdf.c in Sources */,
-				F384BE05261EC7650028A248 /* hb-ft.cc in Sources */,
-				F384BE1D261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */,
-				F384BD99261EC7650028A248 /* hb-ot-layout.cc in Sources */,
-				F384BC12261EC0F90028A248 /* bdf.c in Sources */,
-				F384BC8B261EC23B0028A248 /* psmodule.c in Sources */,
-				F384BE11261EC7650028A248 /* hb-ot-var.cc in Sources */,
-				F384BBE9261EC0DE0028A248 /* ftotval.c in Sources */,
-				F384BD33261EC7650028A248 /* hb-ot-shape-complex-default.cc in Sources */,
-				F384BBEF261EC0DE0028A248 /* ftfstype.c in Sources */,
-				F384BC80261EC2180028A248 /* pshinter.c in Sources */,
-				F384BD69261EC7650028A248 /* hb-ot-font.cc in Sources */,
-				F384BBCB261EC0DE0028A248 /* ftbitmap.c in Sources */,
-				F384BCAC261EC2770028A248 /* smooth.c in Sources */,
-				F384BD4B261EC7650028A248 /* hb-ot-shape-complex-hebrew.cc in Sources */,
-				F384BBAD261EC0DE0028A248 /* ftbbox.c in Sources */,
-				F384BE4C261EC9470028A248 /* hb-fallback-shape.cc in Sources */,
-				F384BBA7261EC0DE0028A248 /* ftdebug.c in Sources */,
-				F384BDBD261EC7650028A248 /* hb-unicode.cc in Sources */,
-				F384BC6A261EC1F30028A248 /* pfr.c in Sources */,
-				F384BDA5261EC7650028A248 /* hb-ot-shape-complex-indic.cc in Sources */,
-				F384BC1D261EC1440028A248 /* ftbzip2.c in Sources */,
-				F384BCF6261EC5130028A248 /* ftcache.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A75FDB3223E3827100529352 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F384BB90261EC0DE0028A248 /* ftbdf.c in Sources */,
-				F384BD94261EC7650028A248 /* hb-ot-shape-complex-vowel-constraints.cc in Sources */,
-				F384BBC0261EC0DE0028A248 /* ftglyph.c in Sources */,
-				F384BC3F261EC1890028A248 /* type1cid.c in Sources */,
-				F384BC76261EC2050028A248 /* psaux.c in Sources */,
-				F384BD3A261EC7650028A248 /* hb-set.cc in Sources */,
-				F384BCA2261EC2680028A248 /* sfnt.c in Sources */,
-				F384BDEE261EC7650028A248 /* hb-ot-cff1-table.cc in Sources */,
-				F384BE2A261EC7650028A248 /* hb-ot-shape-complex-syllabic.cc in Sources */,
-				F384BDD6261EC7650028A248 /* hb-ot-shape-complex-khmer.cc in Sources */,
-				F384BCC3261EC2980028A248 /* truetype.c in Sources */,
-				F384BD5E261EC7650028A248 /* hb-ot-map.cc in Sources */,
-				F384BBDE261EC0DE0028A248 /* ftcid.c in Sources */,
-				F384BDC4261EC7650028A248 /* hb-buffer.cc in Sources */,
-				F384BD88261EC7650028A248 /* hb-shaper.cc in Sources */,
-				F384BCD9261EC2BE0028A248 /* type42.c in Sources */,
-				F384BDF4261EC7650028A248 /* hb-face.cc in Sources */,
-				F384BCE4261EC2CF0028A248 /* winfnt.c in Sources */,
-				F384BC34261EC1710028A248 /* cff.c in Sources */,
-				F384BDAC261EC7650028A248 /* hb-buffer-serialize.cc in Sources */,
-				F384BBC6261EC0DE0028A248 /* ftsynth.c in Sources */,
-				F384BE0C261EC7650028A248 /* hb-ot-shape-normalize.cc in Sources */,
-				F384BD46261EC7650028A248 /* hb-static.cc in Sources */,
-				F384BD7C261EC7650028A248 /* hb-number.cc in Sources */,
-				F384BBD2261EC0DE0028A248 /* ftinit.c in Sources */,
-				F384BE24261EC7650028A248 /* hb-ot-shape.cc in Sources */,
-				F384BDDC261EC7650028A248 /* hb-ot-shape-complex-myanmar.cc in Sources */,
-				F384BD70261EC7650028A248 /* hb-shape-plan.cc in Sources */,
-				F384BBB4261EC0DE0028A248 /* ftbase.c in Sources */,
-				F384BC60261EC1DF0028A248 /* pcf.c in Sources */,
-				F384BC55261EC1B90028A248 /* ftlzw.c in Sources */,
-				F384BBF6261EC0DE0028A248 /* ftsystem.c in Sources */,
-				F384BBE4261EC0DE0028A248 /* ftpfr.c in Sources */,
-				F384BDB8261EC7650028A248 /* hb-ot-shape-complex-use.cc in Sources */,
-				F384BDCA261EC7650028A248 /* hb-ot-cff2-table.cc in Sources */,
-				F384BE18261EC7650028A248 /* hb-ot-math.cc in Sources */,
-				F384BBD8261EC0DE0028A248 /* ftmm.c in Sources */,
-				F384BD76261EC7650028A248 /* hb-ot-tag.cc in Sources */,
-				F384BC08261EC0DE0028A248 /* fttype1.c in Sources */,
-				F384BBA2261EC0DE0028A248 /* ftstroke.c in Sources */,
-				F384BD64261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */,
-				F384BC4A261EC1A30028A248 /* ftgzip.c in Sources */,
-				F384BB71261EC0760028A248 /* autofit.c in Sources */,
-				F384BD58261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */,
-				F384BE00261EC7650028A248 /* hb-aat-map.cc in Sources */,
-				F384BB96261EC0DE0028A248 /* ftgasp.c in Sources */,
-				F384BBFC261EC0DE0028A248 /* ftwinfnt.c in Sources */,
-				A75FDB3323E3827100529352 /* SDL_ttf.c in Sources */,
-				F384BD8E261EC7650028A248 /* hb-ot-shape-complex-arabic.cc in Sources */,
-				F384BDE8261EC7650028A248 /* hb-common.cc in Sources */,
-				F384BD82261EC7650028A248 /* hb-ot-metrics.cc in Sources */,
-				F384BDE2261EC7650028A248 /* hb-aat-layout.cc in Sources */,
-				F384BDFA261EC7650028A248 /* hb-blob.cc in Sources */,
-				F384BDA0261EC7650028A248 /* hb-ot-shape-complex-thai.cc in Sources */,
-				F384BCCE261EC2AE0028A248 /* type1.c in Sources */,
-				F384BD40261EC7650028A248 /* hb-shape.cc in Sources */,
-				F384BC97261EC2560028A248 /* raster.c in Sources */,
-				F384BDD0261EC7650028A248 /* hb-ot-face.cc in Sources */,
-				F384BB9C261EC0DE0028A248 /* ftgxval.c in Sources */,
-				F384BDB2261EC7650028A248 /* hb-font.cc in Sources */,
-				F384BD52261EC7650028A248 /* hb-ucd.cc in Sources */,
-				F384BBBA261EC0DE0028A248 /* ftpatent.c in Sources */,
-				F3696FE9278F7107003A7F94 /* sdf.c in Sources */,
-				F384BE06261EC7650028A248 /* hb-ft.cc in Sources */,
-				F384BE1E261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */,
-				F384BD9A261EC7650028A248 /* hb-ot-layout.cc in Sources */,
-				F384BC13261EC0F90028A248 /* bdf.c in Sources */,
-				F384BC8C261EC23B0028A248 /* psmodule.c in Sources */,
-				F384BE12261EC7650028A248 /* hb-ot-var.cc in Sources */,
-				F384BBEA261EC0DE0028A248 /* ftotval.c in Sources */,
-				F384BD34261EC7650028A248 /* hb-ot-shape-complex-default.cc in Sources */,
-				F384BBF0261EC0DE0028A248 /* ftfstype.c in Sources */,
-				F384BC81261EC2180028A248 /* pshinter.c in Sources */,
-				F384BD6A261EC7650028A248 /* hb-ot-font.cc in Sources */,
-				F384BBCC261EC0DE0028A248 /* ftbitmap.c in Sources */,
-				F384BCAD261EC2770028A248 /* smooth.c in Sources */,
-				F384BD4C261EC7650028A248 /* hb-ot-shape-complex-hebrew.cc in Sources */,
-				F384BBAE261EC0DE0028A248 /* ftbbox.c in Sources */,
-				F384BE4D261EC9470028A248 /* hb-fallback-shape.cc in Sources */,
-				F384BBA8261EC0DE0028A248 /* ftdebug.c in Sources */,
-				F384BDBE261EC7650028A248 /* hb-unicode.cc in Sources */,
-				F384BC6B261EC1F30028A248 /* pfr.c in Sources */,
-				F384BDA6261EC7650028A248 /* hb-ot-shape-complex-indic.cc in Sources */,
-				F384BC1E261EC1440028A248 /* ftbzip2.c in Sources */,
-				F384BCF7261EC5130028A248 /* ftcache.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		BE48FD6107AFA17000BB41DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1723,6 +757,7 @@
 				F384BB9D261EC0DE0028A248 /* ftstroke.c in Sources */,
 				F384BD5F261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */,
 				F384BC45261EC1A30028A248 /* ftgzip.c in Sources */,
+				F307EE29282738F8003915D7 /* svg.c in Sources */,
 				F384BB6C261EC0760028A248 /* autofit.c in Sources */,
 				F384BD53261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */,
 				F384BDFB261EC7650028A248 /* hb-aat-map.cc in Sources */,
@@ -1747,6 +782,7 @@
 				F384BE01261EC7650028A248 /* hb-ft.cc in Sources */,
 				F384BE19261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */,
 				F384BD95261EC7650028A248 /* hb-ot-layout.cc in Sources */,
+				F307EE2C282807EB003915D7 /* hb-ms-feature-ranges.cc in Sources */,
 				F384BC0E261EC0F90028A248 /* bdf.c in Sources */,
 				F384BC87261EC23B0028A248 /* psmodule.c in Sources */,
 				F384BE0D261EC7650028A248 /* hb-ot-var.cc in Sources */,
@@ -1815,6 +851,7 @@
 				F384BBA0261EC0DE0028A248 /* ftstroke.c in Sources */,
 				F384BD62261EC7650028A248 /* hb-ot-shape-complex-hangul.cc in Sources */,
 				F384BC48261EC1A30028A248 /* ftgzip.c in Sources */,
+				F307EE2A282738F8003915D7 /* svg.c in Sources */,
 				F384BB6F261EC0760028A248 /* autofit.c in Sources */,
 				F384BD56261EC7650028A248 /* hb-ot-shape-complex-indic-table.cc in Sources */,
 				F384BDFE261EC7650028A248 /* hb-aat-map.cc in Sources */,
@@ -1839,6 +876,7 @@
 				F384BE04261EC7650028A248 /* hb-ft.cc in Sources */,
 				F384BE1C261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */,
 				F384BD98261EC7650028A248 /* hb-ot-layout.cc in Sources */,
+				F307EE2D282807EB003915D7 /* hb-ms-feature-ranges.cc in Sources */,
 				F384BC11261EC0F90028A248 /* bdf.c in Sources */,
 				F384BC8A261EC23B0028A248 /* psmodule.c in Sources */,
 				F384BE10261EC7650028A248 /* hb-ot-var.cc in Sources */,
@@ -1875,36 +913,24 @@
 		00B7E1EA097E26C600826121 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/macOS",
-				);
 			};
 			name = Debug;
 		};
 		00B7E1EB097E26C600826121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/macOS",
-				);
 			};
 			name = Release;
 		};
 		00B7E1EE097E26C600826121 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
 		00B7E1EF097E26C600826121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
@@ -1950,35 +976,15 @@
 		00B7E1F6097E26C600826121 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 15.0.0;
-				DYLIB_CURRENT_VERSION = 19.0.0;
+				DYLIB_CURRENT_VERSION = 1901.0.0;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/tvOS\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "\"$(SRCROOT)/iOS\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/macOS\"";
-				GCC_NO_COMMON_BLOCKS = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/$(PLATFORM)\"";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					FT2_BUILD_LIBRARY,
@@ -1988,68 +994,37 @@
 					"TTF_USE_HARFBUZZ=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				"HEADER_SEARCH_PATHS[sdk=appletvos*]" = (
-					"\"$(SRCROOT)/tvOS/SDL2.framework/Headers\"",
-					"\"$(SRCROOT)/tvOS/FreeType.framework/Headers\"",
-				);
-				"HEADER_SEARCH_PATHS[sdk=iphoneos*]" = (
-					"\"$(SRCROOT)/iOS/SDL2.framework/Headers\"",
-					"\"$(SRCROOT)/iOS/FreeType.framework/Headers\"",
-				);
-				"HEADER_SEARCH_PATHS[sdk=macosx*]" = (
-					"\"$(SRCROOT)/macOS/SDL2.framework/Headers\"",
-					"\"$(SRCROOT)/macOS/FreeType.framework/Headers\"",
-				);
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/$(PLATFORM)/SDL2.framework/Headers\"";
 				INFOPLIST_FILE = "Info-Framework.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
+				PLATFORM = "";
+				"PLATFORM[sdk=appletvos*]" = tvOS;
+				"PLATFORM[sdk=iphoneos*]" = iOS;
+				"PLATFORM[sdk=macosx*]" = macOS;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libsdl.SDL2-ttf";
 				PRODUCT_NAME = SDL2_ttf;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
+				SUPPORTS_MACCATALYST = YES;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
-				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../external/freetype-2.11.1/include\" \"$(SRCROOT)/../external/harfbuzz-2.8.0\" \"$(SRCROOT)/../external/harfbuzz-2.8.0/src\" $(PROJECT_DIR)/../../SDL/include";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../external/freetype/include\" \"$(SRCROOT)/../external/harfbuzz\" \"$(SRCROOT)/../external/harfbuzz/src\"";
 			};
 			name = Debug;
 		};
 		00B7E1F7097E26C600826121 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 15.0.0;
-				DYLIB_CURRENT_VERSION = 19.0.0;
+				DYLIB_CURRENT_VERSION = 1901.0.0;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"FRAMEWORK_SEARCH_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/tvOS\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "\"$(SRCROOT)/iOS\"";
-				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/macOS\"";
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/$(PLATFORM)\"";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					FT2_BUILD_LIBRARY,
 					"FT_PUBLIC_FUNCTION_ATTRIBUTE=",
@@ -2058,114 +1033,21 @@
 					"TTF_USE_HARFBUZZ=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				"HEADER_SEARCH_PATHS[sdk=appletvos*]" = (
-					"\"$(SRCROOT)/tvOS/SDL2.framework/Headers\"",
-					"\"$(SRCROOT)/tvOS/FreeType.framework/Headers\"",
-				);
-				"HEADER_SEARCH_PATHS[sdk=iphoneos*]" = (
-					"\"$(SRCROOT)/iOS/SDL2.framework/Headers\"",
-					"\"$(SRCROOT)/iOS/FreeType.framework/Headers\"",
-				);
-				"HEADER_SEARCH_PATHS[sdk=macosx*]" = (
-					"\"$(SRCROOT)/macOS/SDL2.framework/Headers\"",
-					"\"$(SRCROOT)/macOS/FreeType.framework/Headers\"",
-				);
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/$(PLATFORM)/SDL2.framework/Headers\"";
 				INFOPLIST_FILE = "Info-Framework.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PLATFORM = "";
+				"PLATFORM[sdk=appletvos*]" = tvOS;
+				"PLATFORM[sdk=iphoneos*]" = iOS;
+				"PLATFORM[sdk=macosx*]" = macOS;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libsdl.SDL2-ttf";
 				PRODUCT_NAME = SDL2_ttf;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
+				SUPPORTS_MACCATALYST = YES;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
-				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../external/freetype-2.11.1/include\" \"$(SRCROOT)/../external/harfbuzz-2.8.0\" \"$(SRCROOT)/../external/harfbuzz-2.8.0/src\" $(PROJECT_DIR)/../../SDL/include";
-			};
-			name = Release;
-		};
-		A75FDAF123E3582C00529352 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/iOS",
-				);
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		A75FDAF223E3582C00529352 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/iOS",
-				);
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		A75FDB0823E36B4300529352 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/tvOS",
-				);
-				SDKROOT = appletvos;
-			};
-			name = Debug;
-		};
-		A75FDB0923E36B4300529352 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/tvOS",
-				);
-				SDKROOT = appletvos;
-			};
-			name = Release;
-		};
-		A75FDB2C23E3825200529352 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				SDKROOT = iphoneos;
-			};
-			name = Debug;
-		};
-		A75FDB2D23E3825200529352 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				SDKROOT = iphoneos;
-			};
-			name = Release;
-		};
-		A75FDB3723E3827100529352 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				SDKROOT = appletvos;
-			};
-			name = Debug;
-		};
-		A75FDB3823E3827100529352 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				SDKROOT = appletvos;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../external/freetype/include\" \"$(SRCROOT)/../external/harfbuzz\" \"$(SRCROOT)/../external/harfbuzz/src\"";
 			};
 			name = Release;
 		};
@@ -2204,42 +1086,6 @@
 			buildConfigurations = (
 				00B7E1F6097E26C600826121 /* Debug */,
 				00B7E1F7097E26C600826121 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		A75FDAF023E3582C00529352 /* Build configuration list for PBXNativeTarget "Framework-iOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A75FDAF123E3582C00529352 /* Debug */,
-				A75FDAF223E3582C00529352 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		A75FDB0723E36B4300529352 /* Build configuration list for PBXNativeTarget "Framework-tvOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A75FDB0823E36B4300529352 /* Debug */,
-				A75FDB0923E36B4300529352 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		A75FDB2B23E3825200529352 /* Build configuration list for PBXNativeTarget "Static Library-iOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A75FDB2C23E3825200529352 /* Debug */,
-				A75FDB2D23E3825200529352 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		A75FDB3623E3827100529352 /* Build configuration list for PBXNativeTarget "Static Library-tvOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A75FDB3723E3827100529352 /* Debug */,
-				A75FDB3823E3827100529352 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

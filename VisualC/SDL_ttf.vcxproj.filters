@@ -24,253 +24,259 @@
     <ClCompile Include="..\SDL_ttf.c">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\autofit\autofit.c">
+    <ClCompile Include="..\external\freetype\src\autofit\autofit.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftbase.c">
+    <ClCompile Include="..\external\freetype\src\base\ftbase.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftbbox.c">
+    <ClCompile Include="..\external\freetype\src\base\ftbbox.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftbdf.c">
+    <ClCompile Include="..\external\freetype\src\base\ftbdf.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftbitmap.c">
+    <ClCompile Include="..\external\freetype\src\base\ftbitmap.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftcid.c">
+    <ClCompile Include="..\external\freetype\src\base\ftcid.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftdebug.c">
+    <ClCompile Include="..\external\freetype\src\base\ftdebug.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftfstype.c">
+    <ClCompile Include="..\external\freetype\src\base\ftfstype.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftgasp.c">
+    <ClCompile Include="..\external\freetype\src\base\ftgasp.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftglyph.c">
+    <ClCompile Include="..\external\freetype\src\base\ftglyph.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftgxval.c">
+    <ClCompile Include="..\external\freetype\src\base\ftgxval.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftinit.c">
+    <ClCompile Include="..\external\freetype\src\base\ftinit.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftmm.c">
+    <ClCompile Include="..\external\freetype\src\base\ftmm.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftotval.c">
+    <ClCompile Include="..\external\freetype\src\base\ftotval.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftpatent.c">
+    <ClCompile Include="..\external\freetype\src\base\ftpatent.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftpfr.c">
+    <ClCompile Include="..\external\freetype\src\base\ftpfr.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftstroke.c">
+    <ClCompile Include="..\external\freetype\src\base\ftstroke.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftsynth.c">
+    <ClCompile Include="..\external\freetype\src\base\ftsynth.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftsystem.c">
+    <ClCompile Include="..\external\freetype\src\base\ftsystem.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\fttype1.c">
+    <ClCompile Include="..\external\freetype\src\base\fttype1.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\base\ftwinfnt.c">
+    <ClCompile Include="..\external\freetype\src\base\ftwinfnt.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\bdf\bdf.c">
+    <ClCompile Include="..\external\freetype\src\bdf\bdf.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\cache\ftcache.c">
+    <ClCompile Include="..\external\freetype\src\cache\ftcache.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\cff\cff.c">
+    <ClCompile Include="..\external\freetype\src\cff\cff.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\cid\type1cid.c">
+    <ClCompile Include="..\external\freetype\src\cid\type1cid.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\lzw\ftlzw.c">
+    <ClCompile Include="..\external\freetype\src\lzw\ftlzw.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\pcf\pcf.c">
+    <ClCompile Include="..\external\freetype\src\pcf\pcf.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\pfr\pfr.c">
+    <ClCompile Include="..\external\freetype\src\pfr\pfr.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\psaux\psaux.c">
+    <ClCompile Include="..\external\freetype\src\psaux\psaux.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\pshinter\pshinter.c">
+    <ClCompile Include="..\external\freetype\src\pshinter\pshinter.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\psnames\psmodule.c">
+    <ClCompile Include="..\external\freetype\src\psnames\psmodule.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\raster\raster.c">
+    <ClCompile Include="..\external\freetype\src\raster\raster.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\sdf\sdf.c">
+    <ClCompile Include="..\external\freetype\src\sdf\sdf.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\sfnt\sfnt.c">
+    <ClCompile Include="..\external\freetype\src\sfnt\sfnt.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\smooth\smooth.c">
+    <ClCompile Include="..\external\freetype\src\svg\svg.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\truetype\truetype.c">
+    <ClCompile Include="..\external\freetype\src\smooth\smooth.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\type1\type1.c">
+    <ClCompile Include="..\external\freetype\src\truetype\truetype.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\type42\type42.c">
+    <ClCompile Include="..\external\freetype\src\type1\type1.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\winfonts\winfnt.c">
+    <ClCompile Include="..\external\freetype\src\type42\type42.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-aat-layout.cc">
+    <ClCompile Include="..\external\freetype\src\winfonts\winfnt.c">
+      <Filter>Sources\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-aat-layout.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-aat-map.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-aat-map.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-blob.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-blob.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-buffer.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-buffer.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-buffer-serialize.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-buffer-serialize.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-common.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-common.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-face.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-face.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-fallback-shape.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-fallback-shape.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-font.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-font.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ft.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ft.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-number.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-number.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-cff1-table.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ms-feature-ranges.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-cff2-table.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-cff1-table.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-face.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-cff2-table.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-font.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-face.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-layout.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-font.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-map.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-layout.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-math.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-map.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-metrics.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-math.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-metrics.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-arabic.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-default.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-arabic.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-hangul.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-default.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-hebrew.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-hangul.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-indic.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-hebrew.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-indic-table.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-indic.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-khmer.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-indic-table.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-myanmar.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-khmer.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-syllabic.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-myanmar.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-thai.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-syllabic.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-use.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-thai.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-complex-vowel-constraints.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-use.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-fallback.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-vowel-constraints.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-shape-normalize.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-fallback.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-tag.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-normalize.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ot-var.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-tag.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-set.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-var.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-shape.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-set.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-shape-plan.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-shape.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-shaper.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-shape-plan.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-static.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-shaper.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-ucd.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-static.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz-2.8.0\src\hb-unicode.cc">
+    <ClCompile Include="..\external\harfbuzz\src\hb-ucd.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\freetype-2.11.1\src\gzip\ftgzip.c">
+    <ClCompile Include="..\external\harfbuzz\src\hb-unicode.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\freetype\src\gzip\ftgzip.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
   </ItemGroup>

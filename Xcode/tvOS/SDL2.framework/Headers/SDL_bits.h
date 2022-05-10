@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2022 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,9 +28,9 @@
 #ifndef SDL_bits_h_
 #define SDL_bits_h_
 
-#include "SDL_stdinc.h"
+#include <SDL2/SDL_stdinc.h>
 
-#include "begin_code.h"
+#include <SDL2/begin_code.h>
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
@@ -45,13 +45,12 @@ extern "C" {
  *  with 0. This operation can also be stated as "count leading zeroes" and
  *  "log base 2".
  *
- *  \return Index of the most significant bit, or -1 if the value is 0.
+ *  \return the index of the most significant bit, or -1 if the value is 0.
  */
 #if defined(__WATCOMC__) && defined(__386__)
-extern _inline int _SDL_clz_watcom (Uint32);
-#pragma aux _SDL_clz_watcom = \
+extern __inline int _SDL_bsr_watcom(Uint32);
+#pragma aux _SDL_bsr_watcom = \
     "bsr eax, eax" \
-    "xor eax, 31" \
     parm [eax] nomemory \
     value [eax] \
     modify exact [eax] nomemory;
@@ -72,7 +71,13 @@ SDL_MostSignificantBitIndex32(Uint32 x)
     if (x == 0) {
         return -1;
     }
-    return 31 - _SDL_clz_watcom(x);
+    return _SDL_bsr_watcom(x);
+#elif defined(_MSC_VER)
+    unsigned long index;
+    if (_BitScanReverse(&index, x)) {
+        return index;
+    }
+    return -1;
 #else
     /* Based off of Bit Twiddling Hacks by Sean Eron Anderson
      * <seander@cs.stanford.edu>, released in the public domain.
@@ -114,7 +119,7 @@ SDL_HasExactlyOneBitSet32(Uint32 x)
 #ifdef __cplusplus
 }
 #endif
-#include "close_code.h"
+#include <SDL2/close_code.h>
 
 #endif /* SDL_bits_h_ */
 

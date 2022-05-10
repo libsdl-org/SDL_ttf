@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2021 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2022 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -29,40 +29,41 @@
 #ifndef SDL_h_
 #define SDL_h_
 
-#include "SDL_main.h"
-#include "SDL_stdinc.h"
-#include "SDL_assert.h"
-#include "SDL_atomic.h"
-#include "SDL_audio.h"
-#include "SDL_clipboard.h"
-#include "SDL_cpuinfo.h"
-#include "SDL_endian.h"
-#include "SDL_error.h"
-#include "SDL_events.h"
-#include "SDL_filesystem.h"
-#include "SDL_gamecontroller.h"
-#include "SDL_haptic.h"
-#include "SDL_hints.h"
-#include "SDL_joystick.h"
-#include "SDL_loadso.h"
-#include "SDL_log.h"
-#include "SDL_messagebox.h"
-#include "SDL_metal.h"
-#include "SDL_mutex.h"
-#include "SDL_power.h"
-#include "SDL_render.h"
-#include "SDL_rwops.h"
-#include "SDL_sensor.h"
-#include "SDL_shape.h"
-#include "SDL_system.h"
-#include "SDL_thread.h"
-#include "SDL_timer.h"
-#include "SDL_version.h"
-#include "SDL_video.h"
-#include "SDL_locale.h"
-#include "SDL_misc.h"
+#include <SDL2/SDL_main.h>
+#include <SDL2/SDL_stdinc.h>
+#include <SDL2/SDL_assert.h>
+#include <SDL2/SDL_atomic.h>
+#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_clipboard.h>
+#include <SDL2/SDL_cpuinfo.h>
+#include <SDL2/SDL_endian.h>
+#include <SDL2/SDL_error.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_filesystem.h>
+#include <SDL2/SDL_gamecontroller.h>
+#include <SDL2/SDL_haptic.h>
+#include <SDL2/SDL_hidapi.h>
+#include <SDL2/SDL_hints.h>
+#include <SDL2/SDL_joystick.h>
+#include <SDL2/SDL_loadso.h>
+#include <SDL2/SDL_log.h>
+#include <SDL2/SDL_messagebox.h>
+#include <SDL2/SDL_metal.h>
+#include <SDL2/SDL_mutex.h>
+#include <SDL2/SDL_power.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_rwops.h>
+#include <SDL2/SDL_sensor.h>
+#include <SDL2/SDL_shape.h>
+#include <SDL2/SDL_system.h>
+#include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_version.h>
+#include <SDL2/SDL_video.h>
+#include <SDL2/SDL_locale.h>
+#include <SDL2/SDL_misc.h>
 
-#include "begin_code.h"
+#include <SDL2/begin_code.h>
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
@@ -132,6 +133,8 @@ extern "C" {
  * \returns 0 on success or a negative error code on failure; call
  *          SDL_GetError() for more information.
  *
+ * \since This function is available since SDL 2.0.0.
+ *
  * \sa SDL_InitSubSystem
  * \sa SDL_Quit
  * \sa SDL_SetMainReady
@@ -147,6 +150,8 @@ extern DECLSPEC int SDLCALL SDL_Init(Uint32 flags);
  * \param flags any of the flags used by SDL_Init(); see SDL_Init for details.
  * \returns 0 on success or a negative error code on failure; call
  *          SDL_GetError() for more information.
+ *
+ * \since This function is available since SDL 2.0.0.
  *
  * \sa SDL_Init
  * \sa SDL_Quit
@@ -169,6 +174,8 @@ extern DECLSPEC int SDLCALL SDL_InitSubSystem(Uint32 flags);
  *
  * \param flags any of the flags used by SDL_Init(); see SDL_Init for details.
  *
+ * \since This function is available since SDL 2.0.0.
+ *
  * \sa SDL_InitSubSystem
  * \sa SDL_Quit
  */
@@ -178,11 +185,12 @@ extern DECLSPEC void SDLCALL SDL_QuitSubSystem(Uint32 flags);
  * Get a mask of the specified subsystems which are currently initialized.
  *
  * \param flags any of the flags used by SDL_Init(); see SDL_Init for details.
- * \returns If `flags` is 0 it returns a mask of all initialized subsystems,
- *          otherwise it returns the initialization status of the specified
- *          subsystems.
+ * \returns a mask of all initialized subsystems if `flags` is 0, otherwise it
+ *          returns the initialization status of the specified subsystems.
  *
  *          The return value does not include SDL_INIT_NOPARACHUTE.
+ *
+ * \since This function is available since SDL 2.0.0.
  *
  * \sa SDL_Init
  * \sa SDL_InitSubSystem
@@ -206,6 +214,8 @@ extern DECLSPEC Uint32 SDLCALL SDL_WasInit(Uint32 flags);
  * application is shutdown, but it is not wise to do this from a library or
  * other dynamically loaded code.
  *
+ * \since This function is available since SDL 2.0.0.
+ *
  * \sa SDL_Init
  * \sa SDL_QuitSubSystem
  */
@@ -215,7 +225,7 @@ extern DECLSPEC void SDLCALL SDL_Quit(void);
 #ifdef __cplusplus
 }
 #endif
-#include "close_code.h"
+#include <SDL2/close_code.h>
 
 #endif /* SDL_h_ */
 

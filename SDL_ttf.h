@@ -42,8 +42,8 @@ extern "C" {
 /* Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
 */
 #define SDL_TTF_MAJOR_VERSION   2
-#define SDL_TTF_MINOR_VERSION   0
-#define SDL_TTF_PATCHLEVEL      18
+#define SDL_TTF_MINOR_VERSION   19
+#define SDL_TTF_PATCHLEVEL      0
 
 /* This macro can be used to fill a version structure with the compile-time
  * version of the SDL_ttf library.
@@ -61,17 +61,27 @@ extern "C" {
 #define TTF_PATCHLEVEL      SDL_TTF_PATCHLEVEL
 #define TTF_VERSION(X)      SDL_TTF_VERSION(X)
 
+#if SDL_TTF_MAJOR_VERSION < 3 && SDL_MAJOR_VERSION < 3
 /**
  *  This is the version number macro for the current SDL_ttf version.
+ *
+ *  In versions higher than 2.9.0, the minor version overflows into
+ *  the thousands digit: for example, 2.23.0 is encoded as 4300.
+ *  This macro will not be available in SDL 3.x or SDL_ttf 3.x.
+ *
+ *  Deprecated, use SDL_TTF_VERSION_ATLEAST or SDL_TTF_VERSION instead.
  */
 #define SDL_TTF_COMPILEDVERSION \
     SDL_VERSIONNUM(SDL_TTF_MAJOR_VERSION, SDL_TTF_MINOR_VERSION, SDL_TTF_PATCHLEVEL)
+#endif /* SDL_TTF_MAJOR_VERSION < 3 && SDL_MAJOR_VERSION < 3 */
 
 /**
  *  This macro will evaluate to true if compiled with SDL_ttf at least X.Y.Z.
  */
 #define SDL_TTF_VERSION_ATLEAST(X, Y, Z) \
-    (SDL_TTF_COMPILEDVERSION >= SDL_VERSIONNUM(X, Y, Z))
+    ((SDL_TTF_MAJOR_VERSION >= X) && \
+     (SDL_TTF_MAJOR_VERSION > X || SDL_TTF_MINOR_VERSION >= Y) && \
+     (SDL_TTF_MAJOR_VERSION > X || SDL_TTF_MINOR_VERSION > Y || SDL_TTF_PATCHLEVEL >= Z))
 
 /* Make sure this is defined (only available in newer SDL versions) */
 #ifndef SDL_DEPRECATED
@@ -329,6 +339,42 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font,
                         Uint16 ch, SDL_Color fg);
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Blended(TTF_Font *font,
                         Uint32 ch, SDL_Color fg);
+
+/* Create a 32-bit surface (SDL_PIXELFORMAT_ARGB8888) and render the given text
+   using FreeType LCD rendering, with the given font and colors.
+   This function returns the new surface, or NULL if there was an error.
+*/
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font,
+                const char *text, SDL_Color fg, SDL_Color bg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_LCD(TTF_Font *font,
+                const char *text, SDL_Color fg, SDL_Color bg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_LCD(TTF_Font *font,
+                const Uint16 *text, SDL_Color fg, SDL_Color bg);
+
+/* Create a 32-bit surface (SDL_PIXELFORMAT_ARGB8888) and render the given text
+   using FreeType LCD rendering, with the given font and colors.
+   Text is wrapped to multiple lines on line endings and on word boundaries
+   if it extends beyond wrapLength in pixels.
+   This function returns the new surface, or NULL if there was an error.
+*/
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *font,
+                const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_LCD_Wrapped(TTF_Font *font,
+                const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_LCD_Wrapped(TTF_Font *font,
+                const Uint16 *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+
+/* Create a 32-bit surface (SDL_PIXELFORMAT_ARGB8888) and render the given text
+   using FreeType LCD rendering, with the given font and colors.
+   The glyph is rendered without any padding or centering in the X
+   direction, and aligned normally in the Y direction.
+   This function returns the new surface, or NULL if there was an error.
+*/
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font,
+                Uint16 ch, SDL_Color fg, SDL_Color bg);
+extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_LCD(TTF_Font *font,
+                Uint32 ch, SDL_Color fg, SDL_Color bg);
+
 
 /* For compatibility with previous versions, here are the old functions */
 #define TTF_RenderText(font, text, fg, bg)  \
