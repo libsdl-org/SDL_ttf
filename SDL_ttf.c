@@ -1870,8 +1870,8 @@ TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, int freesrc, int ptsize, long i
     hb_ft_font_set_load_flags(font->hb_font, FT_LOAD_DEFAULT | font->ft_load_target);
 
     /* Default value script / direction */
-    TTF_SetFontScript(font, g_hb_script);
-    TTF_SetFontDirection(font, g_hb_direction);
+    font->hb_script = g_hb_script;
+    font->hb_direction = g_hb_direction;
 #endif
 
     if (TTF_SetFontSizeDPI(font, ptsize, hdpi, vdpi) < 0) {
@@ -3053,10 +3053,22 @@ int TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
     return 0;
 }
 
-int TTF_SetFontDirection(TTF_Font *font, int direction) /* hb_direction_t */
+int TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
 {
 #if TTF_USE_HARFBUZZ
-    font->hb_direction = direction;
+    hb_direction_t dir;
+    if (direction == TTF_DIRECTION_LTR) {
+        dir = HB_DIRECTION_LTR;
+    } else if (direction == TTF_DIRECTION_RTL) {
+        dir = HB_DIRECTION_RTL;
+    } else if (direction == TTF_DIRECTION_TTB) {
+        dir = HB_DIRECTION_TTB;
+    } else if (direction == TTF_DIRECTION_BTT) {
+        dir = HB_DIRECTION_BTT;
+    } else {
+        return -1;
+    }
+    font->hb_direction = dir;
     return 0;
 #else
     (void) direction;
@@ -3064,10 +3076,23 @@ int TTF_SetFontDirection(TTF_Font *font, int direction) /* hb_direction_t */
 #endif
 }
 
-int TTF_SetFontScript(TTF_Font *font, int script) /* hb_script_t */
+int TTF_SetFontScriptName(TTF_Font *font, const char *script)
 {
 #if TTF_USE_HARFBUZZ
-    font->hb_script = script;
+    Uint8 a, b, c, d;
+    hb_script_t scr;
+
+    if (script == NULL || SDL_strlen(script) != 4) {
+        return -1;
+    }
+
+    a = script[0];
+    b = script[1];
+    c = script[2];
+    d = script[3];
+
+    scr = HB_TAG(a, b, c, d);
+    font->hb_script = scr;
     return 0;
 #else
     (void) script;
