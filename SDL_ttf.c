@@ -91,7 +91,7 @@ static hb_script_t    g_hb_script = HB_SCRIPT_UNKNOWN;
 #endif
 
 /* Harfbuzz */
-int TTF_SetDirection(TTF_Direction direction)
+int TTF_SetDirection(int direction)
 {
 #if TTF_USE_HARFBUZZ
     if (direction == TTF_DIRECTION_RTL) {
@@ -326,7 +326,7 @@ hb_script_t TTF_to_HB(TTF_Script script)
 #undef CASE_SCRIPT
 }
 
-int TTF_SetScript(TTF_Script script)
+int TTF_SetScript(int script)
 {
 #if TTF_USE_HARFBUZZ
     g_hb_script = TTF_to_HB(script);
@@ -3319,7 +3319,7 @@ int TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
     return 0;
 }
 
-int TTF_SetFontDirection(TTF_Font *font, int direction) /* hb_direction_t */
+int TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction) /* hb_direction_t */
 {
 #if TTF_USE_HARFBUZZ
     font->hb_direction = direction;

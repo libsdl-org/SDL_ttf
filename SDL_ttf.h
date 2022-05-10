@@ -638,9 +638,11 @@ typedef enum
 
 /* Set Direction and Script to be used for text shaping.
    This functions returns always 0, or -1 if SDL_ttf is not compiled with HarfBuzz
+
+   Deprecated. Prefer TTF_SetFontDirection() and TTF_SetFontScriptName()
 */
-extern DECLSPEC int SDLCALL TTF_SetDirection(TTF_Direction direction);
-extern DECLSPEC int SDLCALL TTF_SetScript(TTF_Script script);
+extern DECLSPEC int SDLCALL TTF_SetDirection(int direction); /* hb_direction_t */
+extern DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_script_t */
 
 /* Set direction and script per font 
    This functions returns always 0, or -1 if SDL_ttf is not compiled with HarfBuzz
