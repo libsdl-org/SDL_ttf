@@ -3315,10 +3315,22 @@ int TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
     return 0;
 }
 
-int TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction) /* hb_direction_t */
+int TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
 {
 #if TTF_USE_HARFBUZZ
-    font->hb_direction = direction;
+    hb_direction_t dir;
+    if (direction == TTF_DIRECTION_LTR) {
+        dir = HB_DIRECTION_LTR;
+    } else if (direction == TTF_DIRECTION_RTL) {
+        dir = HB_DIRECTION_RTL;
+    } else if (direction == TTF_DIRECTION_TTB) {
+        dir = HB_DIRECTION_TTB;
+    } else if (direction == TTF_DIRECTION_BTT) {
+        dir = HB_DIRECTION_BTT;
+    } else {
+        return -1;
+    }
+    font->hb_direction = dir;
     return 0;
 #else
     (void) direction;

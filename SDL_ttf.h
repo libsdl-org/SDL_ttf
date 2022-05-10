@@ -419,7 +419,9 @@ extern DECLSPEC SDL_bool TTF_GetFontSDF(const TTF_Font *font);
 typedef enum
 {
   TTF_DIRECTION_LTR = 0,
-  TTF_DIRECTION_RTL
+  TTF_DIRECTION_RTL,
+  TTF_DIRECTION_TTB,
+  TTF_DIRECTION_BTT
 } TTF_Direction;
 
 /**
