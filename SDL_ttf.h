@@ -384,19 +384,6 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_LCD(TTF_Font *font,
 #define TTF_RenderUNICODE(font, text, fg, bg)   \
     TTF_RenderUNICODE_Shaded(font, text, fg, bg)
 
-/* Set Direction and Script to be used for text shaping.
-   - direction is of type hb_direction_t
-   - script is of type hb_script_t
-
-   This functions returns always 0, or -1 if SDL_ttf is not compiled with HarfBuzz
-*/
-extern DECLSPEC int SDLCALL TTF_SetDirection(int direction); /* hb_direction_t */
-extern DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_script_t */
-
-/* Set direction and script per font */
-extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, int direction); /* hb_direction_t */
-extern DECLSPEC int SDLCALL TTF_SetFontScript(TTF_Font *font, int script); /* hb_script_t */
-
 /* Close an opened font file */
 extern DECLSPEC void SDLCALL TTF_CloseFont(TTF_Font *font);
 
@@ -425,6 +412,32 @@ extern DECLSPEC SDL_bool TTF_GetFontSDF(const TTF_Font *font);
 /* We'll use SDL for reporting errors */
 #define TTF_SetError    SDL_SetError
 #define TTF_GetError    SDL_GetError
+
+/**
+ * \brief Direction
+ */
+typedef enum
+{
+  TTF_DIRECTION_LTR = 0, /* Left to Right */
+  TTF_DIRECTION_RTL,     /* Right to Left */
+  TTF_DIRECTION_TTB,     /* Top to Bottom */
+  TTF_DIRECTION_BTT      /* Bottom to Top */
+} TTF_Direction;
+
+/* Set Direction and Script to be used for text shaping.
+   These functions return 0, or -1 if SDL_ttf is not compiled with HarfBuzz
+
+   These functions are deprecated. Prefer TTF_SetFontDirection() and TTF_SetFontScriptName()
+*/
+extern DECLSPEC int SDLCALL TTF_SetDirection(int direction); /* hb_direction_t */
+extern DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_script_t */
+
+/* Set direction and script per font.
+   'script' is null terminated string of exactly 4 characters.
+   These functions return 0, or -1 if SDL_ttf is not compiled with HarfBuzz or invalid parameter
+*/
+extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction);
+extern DECLSPEC int SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char *script);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
