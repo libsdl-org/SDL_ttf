@@ -1,22 +1,11 @@
-# FIXME: CMAKE SUPPORT IN SDL2_ttf IS VERY INCOMPLETE YET !!!
-#
-# FIXME: make it able build against system libs or the included ones.
-# FIXME: handle library versioning.
-# FIXME: test accross different target platforms.
-
-if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-  message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the SDL_ttf source code and call cmake from there")
-endif()
-
-##### general #####
-cmake_minimum_required(VERSION 3.0)
-project(SDL_ttf C)
+cmake_minimum_required(VERSION 3.10)
 
 # See docs/release_checklist.md
 set(MAJOR_VERSION 2)
 set(MINOR_VERSION 19)
 set(MICRO_VERSION 0)
 set(SDL_TTF_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}")
+set(SDL_REQUIRED_VERSION 2.0.10)
 
 # Calculate a libtool-like version number
 math(EXPR BINARY_AGE "${MINOR_VERSION} * 100 + ${MICRO_VERSION}")
@@ -54,173 +43,253 @@ set(DYLIB_CURRENT_VERSION "${DYLIB_CURRENT_VERSION_MAJOR}.${DYLIB_CURRENT_VERSIO
 # For historical reasons this is 15.0.0 rather than the expected 1.0.0
 set(DYLIB_COMPATIBILITY_VERSION "15.0.0")
 
-# For the static assertions in SDL_ttf.c
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSDL_BUILD_MAJOR_VERSION=${MAJOR_VERSION}")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSDL_BUILD_MINOR_VERSION=${MINOR_VERSION}")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSDL_BUILD_MICRO_VERSION=${MICRO_VERSION}")
-
-if (ANDROID)
-    option(TTF_WITH_HARFBUZZ "use harfbuzz to improve text shaping" OFF)
-
-    add_library(SDL2_ttf SHARED)
-    target_sources(SDL2_ttf PRIVATE SDL_ttf.c)
-
-    if (TTF_WITH_HARFBUZZ)
-        set(HARFBUZZ_INCLUDE_DIRS ../../external/harfbuzz/src)
-        set(HARFBUZZ_LIBRARIES harfbuzz)
-        set(FREETYPE_INCLUDE_DIRS ../../external/freetype/include)
-        set(FREETYPE_LIBRARY freetype)
-
-        add_definitions("-DTTF_USE_HARFBUZZ=1")
-        set(HB_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-        set(HB_HAVE_FREETYPE ON CACHE BOOL "" FORCE)
-        set(FT_WITH_HARFBUZZ ON CACHE BOOL "" FORCE)
-
-        add_subdirectory(external/harfbuzz)
-        target_include_directories(SDL2_ttf PUBLIC external/harfbuzz/src)
-        target_link_libraries(SDL2_ttf PRIVATE harfbuzz)
-
-    else()
-        set(FT_WITH_HARFBUZZ OFF CACHE BOOL "" FORCE)
-    endif()
-
-    add_subdirectory(external/freetype)
-    include_directories(external/freetype/include)
-
-    target_include_directories(SDL2_ttf PUBLIC .)
-    target_link_libraries(SDL2_ttf PRIVATE freetype SDL2)
-
-else()
-
-include(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
-
-find_package(PkgConfig QUIET)
-if (NOT (TARGET SDL2 OR TARGET SDL2-static))
-  find_package(SDL2 REQUIRED)
-endif()
-if (NOT (TARGET Freetype::Freetype))
-  pkg_check_modules(freetype2 IMPORTED_TARGET freetype2)
-  if (freetype2_FOUND)
-    set(PC_REQUIRES "freetype2 ${PC_REQUIRES}")
-  else()
-    find_package(Freetype REQUIRED)
-  endif()
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+    message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the SDL_ttf source code and call cmake from there")
 endif()
 
-##### library generation #####
-add_library(SDL2_ttf SDL_ttf.c SDL_ttf.h)
+project(SDL_ttf LANGUAGES C
+    VERSION "${SDL_TTF_VERSION}")
+
+message(STATUS "Configuring ${PROJECT_NAME} ${PROJECT_VERSION}")
+
+if (NOT ANDROID AND NOT (TARGET SDL2::SDL2 OR TARGET SDL2::SDL2-static))
+    find_package(SDL2 REQUIRED)
+endif()
 
 # Workaround for Ubuntu 20.04's SDL being older than
 # https://github.com/libsdl-org/SDL/issues/3531
 if (NOT TARGET SDL2::SDL2)
-  add_library(SDL2::SDL2 SHARED IMPORTED)
-  find_library(SDL2_LIBRARY
-    NAMES SDL2
-    HINTS "${SDL2_EXEC_PREFIX}"
-    REQUIRED)
-  set_target_properties(SDL2::SDL2 PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIRS}"
-    IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-    IMPORTED_LOCATION "${SDL2_LIBRARY}")
+    find_library(SDL2_LIBRARY
+        NAMES SDL2
+        HINTS "${SDL2_EXEC_PREFIX}"
+        REQUIRED
+    )
+    if (NOT SDL2_LIBRARY)
+        message(FATAL_ERROR "Could not find SDL2 library. Please define SDL2_EXEC_PREFIX and/or SLD2_LIBRARY")
+    endif()
+    add_library(SDL2::SDL2 SHARED IMPORTED)
+    set_target_properties(SDL2::SDL2 PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIRS}"
+        IMPORTED_LINK_INTERFACE_LANGUAGES "C"
+        IMPORTED_LOCATION "${SDL2_LIBRARY}"
+    )
 endif()
 
-if (APPLE)
-  # TODO: Use DYLIB_COMPATIBILITY_VERSION, DYLIB_CURRENT_VERSION here
-elseif (UNIX AND NOT ANDROID)
-  # This is compatible with the libtool build
-  set_target_properties(SDL2_ttf PROPERTIES
-    VERSION ${LT_VERSION}
-    SOVERSION ${LT_MAJOR}
-    OUTPUT_NAME "SDL2_ttf-${LT_RELEASE}"
-  )
-endif()
+include(CMakeDependentOption)
+include(CMakePackageConfigHelpers)
+include(GNUInstallDirs)
 
-if (BUILD_SHARED_LIBS)
-  target_link_libraries(SDL2_ttf SDL2::SDL2)
-  if (WIN32 OR CYGWIN)
-    set_target_properties(SDL2_ttf PROPERTIES DEFINE_SYMBOL DLL_EXPORT)
-    target_sources(SDL2_ttf PRIVATE version.rc)
-  endif()
-else()
-  target_link_libraries(SDL2_ttf SDL2::SDL2-static)
-  if (NOT PSP)
-    set_target_properties(SDL2_ttf PROPERTIES POSITION_INDEPENDENT_CODE ON)
-  endif()
-endif()
-if (TARGET Freetype::Freetype)
-  target_link_libraries(SDL2_ttf Freetype::Freetype)
-else()
-  target_link_libraries(SDL2_ttf PkgConfig::freetype2)
-endif()
+option(VENDORED_DEFAULT "Default value for *_VENDORED options. Can be overridden for each library. Is only used in the first configure run." ON)
 
-target_include_directories(SDL2_ttf
-  PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+# For style consistency, create a TTF_WITH_FREETYPE CMake variable. This variable is NOT configurable.
+set(TTF_WITH_FREETYPE ON)
+cmake_dependent_option(TTF_WITH_FREETYPE_VENDORED "Use vendored freetype library" ${VENDORED_DEFAULT} TTF_WITH_FREETYPE OFF)
+
+option(TTF_WITH_HARFBUZZ "Use harfbuzz to improve text shaping" OFF)
+cmake_dependent_option(TTF_WITH_HARFBUZZ_VENDORED "Use vendored harfbuzz library" ${VENDORED_DEFAULT} TTF_WITH_HARFBUZZ OFF)
+
+option(BUILD_SAMPLES "Build the SDL2_ttf sample program(s)" ON)
+option(BUILD_SHARED_LIBS "Build the library as a shared library" ON)
+option(TTF_DISABLE_INSTALL "Disable installing SDL2_ttf" OFF)
+
+add_library(SDL2_ttf
+    SDL_ttf.c
+    SDL_ttf.h
+)
+add_library(SDL2_ttf::SDL2_ttf ALIAS SDL2_ttf)
+
+target_compile_definitions(SDL2_ttf PRIVATE
+    SDL_BUILD_MAJOR_VERSION=${MAJOR_VERSION}
+    SDL_BUILD_MINOR_VERSION=${MINOR_VERSION}
+    SDL_BUILD_MICRO_VERSION=${MICRO_VERSION}
 )
 
-option(SDL2_TTF_DISABLE_INSTALL "Disable installing SDL2_ttf" OFF)
-if (NOT SDL2_TTF_DISABLE_INSTALL)
-  install(
-    TARGETS SDL2_ttf
-    EXPORT SDL2_ttfTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  )
-  install(
-    FILES SDL_ttf.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SDL2
-  )
+if (BUILD_SHARED_LIBS)
+    target_link_libraries(SDL2_ttf PRIVATE SDL2::SDL2)
+else()
+    target_link_libraries(SDL2_ttf PRIVATE SDL2::SDL2-static)
+endif()
 
-  ##### export files #####
-  if (APPLE)
-    set(PKG_PREFIX "SDL2_ttf.framework/Resources")
-  elseif (WIN32)
-    set(PKG_PREFIX "cmake")
-  else ()
-    set(PKG_PREFIX "lib/cmake/SDL2")
-  endif ()
+set(INSTALL_EXTRA_TARGETS)
+set(PC_LIBS)
+set(PC_REQUIRES)
 
-  write_basic_package_version_file("${CMAKE_BINARY_DIR}/SDL2_ttfConfigVersion.cmake"
-    VERSION ${SDL_TTF_VERSION}
-    COMPATIBILITY AnyNewerVersion
-  )
+if (TTF_WITH_HARFBUZZ)
+    target_compile_definitions(SDL2_ttf PRIVATE TTF_USE_HARFBUZZ=1)
+    if (TTF_WITH_HARFBUZZ_VENDORED)
+        set(HB_BUILD_UTILS OFF)
+        set(SKIP_INSTALL_LIBRARIES ON)
+        set(HB_HAVE_FREETYPE ${TTF_WITH_FREETYPE} CACHE BOOL "harfbuzz freetype helpers" FORCE)
+        add_subdirectory(external/harfbuzz EXCLUDE_FROM_ALL)
+        list(APPEND INSTALL_EXTRA_TARGETS harfbuzz)
+        if (NOT TARGET harfbuzz::harfbuzz)
+            add_library(harfbuzz::harfbuzz ALIAS harfbuzz)
+        endif()
+        list(APPEND PC_LIBS -l$<TARGET_FILE_BASE_NAME:harfbuzz>)
+    else()
+        find_package(harfbuzz REQUIRED)
+        list(APPEND PC_REQUIRES harfbuzz)
+    endif()
+    target_link_libraries(SDL2_ttf PRIVATE harfbuzz::harfbuzz)
+endif()
 
-  install(
-    EXPORT SDL2_ttfTargets
-    FILE SDL2_ttfTargets.cmake
-    NAMESPACE SDL2_ttf::
-    DESTINATION ${PKG_PREFIX}
-  )
-  install(
-    FILES
-      ${CMAKE_CURRENT_SOURCE_DIR}/SDL2_ttfConfig.cmake
-      ${CMAKE_BINARY_DIR}/SDL2_ttfConfigVersion.cmake
-    DESTINATION ${PKG_PREFIX}
-    COMPONENT Devel
-  )
+if (TTF_WITH_FREETYPE)
+    if (TTF_WITH_FREETYPE_VENDORED)
+        set(FT_DISABLE_ZLIB ON CACHE BOOL "freetype zlib option")
+        set(FT_DISABLE_BZIP2 ON CACHE BOOL "freetype bzip2 option")
+        set(FT_DISABLE_PNG ON CACHE BOOL "freetype png option")
+        set(FT_DISABLE_BROTLI ON CACHE BOOL "freetype option")
+        if (TTF_WITH_HARFBUZZ)
+            set(FT_DISABLE_HARFBUZZ OFF CACHE BOOL "freetype harfbuzz option" FORCE)
+            set(FT_REQUIRE_HARFBUZZ ON CACHE BOOL "freetype harfbuzz option" FORCE)
+            #set(HarfBuzz_INCLUDE_DIR "$<TARGET_PROPERTY:harfbuzz::harfbuzz,INCLUDE_DIRECTORIES>" CACHE STRING "freetype harfbuzz include path" FORCE)
+            #set(HarfBuzz_LIBRARY harfbuzz::harfbuzz CACHE STRING "freetype harfbuzz library path" FORCE)
+        else()
+            set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "freetype harfbuzz option" FORCE)
+            set(FT_REQUIRE_HARFBUZZ OFF CACHE BOOL "freetype harfbuzz option" FORCE)
+        endif()
+        add_subdirectory(external/freetype EXCLUDE_FROM_ALL)
+        list(APPEND INSTALL_EXTRA_TARGETS freetype)
+        if (NOT TARGET Freetype::Freetype)
+            add_library(Freetype::Freetype ALIAS freetype)
+        endif()
+        list(APPEND PC_LIBS -l$<TARGET_FILE_BASE_NAME:freetype>)
+    else()
+        find_package(Freetype REQUIRED)
+        list(APPEND PC_REQUIRES freetype2)
+    endif()
+    target_link_libraries(SDL2_ttf PRIVATE Freetype::Freetype)
+endif()
 
-  ##### pkg-config #####
-  if (PKG_CONFIG_FOUND)
-    set(SDL_VERSION 2.0.0)
-    set(prefix ${CMAKE_INSTALL_PREFIX})
+set_target_properties(SDL2_ttf PROPERTIES
+    DEFINE_SYMBOL DLL_EXPORT
+    PUBLIC_HEADER SDL_ttf.h
+    EXPORT_NAME SDL2_ttf
+    C_VISIBILITY_PRESET "hidden"
+)
+
+if (APPLE)
+    # TODO: Use DYLIB_COMPATIBILITY_VERSION, DYLIB_CURRENT_VERSION here
+elseif (UNIX AND NOT APPLE AND NOT ANDROID)
+    set_target_properties(SDL2_ttf PROPERTIES
+        SOVERSION "${LT_MAJOR}"
+        VERSION "${LT_VERSION}"
+    )
+endif()
+if (BUILD_SHARED_LIBS)
+    if (WIN32)
+        set_target_properties(SDL2_ttf PROPERTIES
+            PREFIX ""
+        )
+    elseif (UNIX AND NOT APPLE AND NOT ANDROID)
+        set_target_properties(SDL2_ttf PROPERTIES
+            OUTPUT_NAME "SDL2_ttf-${LT_RELEASE}"
+        )
+    endif()
+endif()
+
+if (WIN32 AND BUILD_SHARED_LIBS)
+    target_sources(SDL2_ttf PRIVATE version.rc)
+endif()
+
+if (NOT TTF_DISABLE_INSTALL)
+    install(
+        TARGETS SDL2_ttf
+        EXPORT SDL2_ttfTargets
+        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/SDL2"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    )
+
+    if (INSTALL_EXTRA_TARGETS)
+        install(TARGETS ${INSTALL_EXTRA_TARGETS} EXPORT SDL2_ttfTargets
+            ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+            LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+            RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+            PUBLIC_HEADER DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/external_include"
+        )
+    endif()
+
+    ##### export files #####
+    if (APPLE)
+        set(PKG_PREFIX "SDL2_ttf.framework/Resources")
+    elseif (WIN32)
+        set(PKG_PREFIX "cmake")
+    else ()
+        set(PKG_PREFIX "${CMAKE_INSTALL_LIBDIR}/cmake/SDL2_ttf")
+    endif ()
+
+    configure_package_config_file(SDL2_ttf-config.cmake.in SDL2_ttf-config.cmake
+        INSTALL_DESTINATION "${PKG_PREFIX}"
+    )
+    write_basic_package_version_file("${PROJECT_BINARY_DIR}/SDL2_ttf-config-version.cmake"
+        VERSION ${SDL_TTF_VERSION}
+        COMPATIBILITY AnyNewerVersion
+    )
+
+    install(EXPORT SDL2_ttfTargets
+        FILE SDL2_ttf-targets.cmake
+        NAMESPACE SDL2_ttf::
+        DESTINATION "${PKG_PREFIX}"
+    )
+
+    set(VERSION ${SDL_TTF_VERSION})
+    set(SDL_VERSION ${SDL_REQUIRED_VERSION})
+    set(prefix "${CMAKE_INSTALL_PREFIX}")
     set(exec_prefix "\${prefix}")
-    set(libdir "\${exec_prefix}/lib${LIB_SUFFIX}")
+    set(libdir "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
     set(bindir "\${exec_prefix}/bin")
-    set(includedir "\${prefix}/include")
-
-    configure_file("${SDL_ttf_SOURCE_DIR}/SDL2_ttf.pc.in"
-      "${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc" @ONLY)
+    set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+    string(JOIN " " PC_REQUIRES ${PC_REQUIRES})
+    string(JOIN " " PC_LIBS ${PC_LIBS})
+    configure_file(SDL2_ttf.pc.in ${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc.intermediate @ONLY)
+    file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc" INPUT "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc.intermediate")
 
     if (CMAKE_SYSTEM_NAME MATCHES FreeBSD)
-      # FreeBSD uses ${PREFIX}/libdata/pkgconfig
-      install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc DESTINATION "libdata/pkgconfig")
+        # FreeBSD uses ${PREFIX}/libdata/pkgconfig
+        install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc DESTINATION "libdata/pkgconfig")
     else ()
-      install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc
-        DESTINATION "lib${LIB_SUFFIX}/pkgconfig")
+        install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc
+            DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
     endif ()
-  endif ()
-endif ()
 
+    install(
+        FILES
+            "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf-config.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf-config-version.cmake"
+        DESTINATION ${PKG_PREFIX}
+        COMPONENT devel
+    )
+
+    if (BUILD_SAMPLES)
+        add_executable(glfont glfont.c)
+        add_executable(showfont showfont.c)
+
+        set(OpenGL_GL_PREFERENCE GLVND)
+        find_package(OpenGL)
+        if (TARGET OpenGL::OpenGL)
+            target_compile_definitions(glfont PRIVATE HAVE_OPENGL)
+            target_link_libraries(glfont PRIVATE OpenGL::OpenGL)
+        elseif (TARGET OpenGL::GL)
+            target_compile_definitions(glfont PRIVATE HAVE_OPENGL)
+            target_link_libraries(glfont PRIVATE OpenGL::GL)
+        endif()
+
+        foreach(prog glfont showfont)
+            if (MINGW)
+                target_link_libraries(${prog} PRIVATE mingw32)
+                target_link_options(${prog} PRIVATE -mwindows)
+            endif()
+            target_link_libraries(${prog} PRIVATE SDL2_ttf::SDL2_ttf)
+            if (TARGET SDL2::SDL2main)
+                target_link_libraries(${prog} PRIVATE SDL2::SDL2main)
+            endif()
+            if (BUILD_SHARED_LIBS)
+                target_link_libraries(${prog} PRIVATE SDL2::SDL2)
+            else()
+                target_link_libraries(${prog} PRIVATE SDL2::SDL2-static)
+            endif()
+        endforeach()
+    endif()
 endif()
