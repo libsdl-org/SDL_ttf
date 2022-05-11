@@ -24,7 +24,9 @@ SRCS = SDL_ttf.c
 
 OBJS = $(SRCS:.c=.obj)
 
-LIBS = freetype.lib  zlib.lib  SDL2.lib
+# assuming freetype is built without FT_CONFIG_OPTION_SYSTEM_ZLIB
+# if not, add zlib.lib to LIBS
+LIBS = freetype.lib SDL2.lib
 
 CFLAGS_BASE = -bt=os2 -d0 -q -bm -5s -fp5 -fpi87 -sg -oeatxh -ei -j
 # warnings:
