@@ -1413,8 +1413,7 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
     const size_t bytes_per_pixel = SDL_BYTESPERPIXEL(format);
     SDL_Surface *textbuf = NULL;
     size_t size;
-    size_t data_bytes;
-    void *pixels, *ptr;
+    void *ptr;
     size_t pitch;
 
     /* Worst case at the end of line pulling 'alignment' extra blank pixels */
@@ -1422,31 +1421,25 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
         height > SDL_MAX_SINT32 ||
         SDL_size_add_overflow(width, alignment, &pitch) ||
         SDL_size_mul_overflow(pitch, bytes_per_pixel, &pitch) ||
-        SDL_size_add_overflow(pitch, alignment, &pitch) ||
         pitch > SDL_MAX_SINT32) {
         return NULL;
     }
     pitch &= ~alignment;
 
-    if (SDL_size_mul_overflow(height, pitch, &data_bytes) ||
-        SDL_size_add_overflow(data_bytes, sizeof (void *) + alignment, &size) ||
+    if (SDL_size_mul_overflow(height, pitch, &size) ||
         size > SDL_MAX_SINT32) {
         /* Overflow... */
         return NULL;
     }
 
-    ptr = SDL_malloc(size);
+    ptr = SDL_SIMDAllocAligned(size, alignment + 1);
     if (ptr == NULL) {
         return NULL;
     }
 
-    /* address is aligned */
-    pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
-    ((void **)pixels)[-1] = ptr;
-
-    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, (int)width, (int)height, 0, (int)pitch, format);
+    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(ptr, (int)width, (int)height, 0, (int)pitch, format);
     if (textbuf == NULL) {
-        SDL_free(ptr);
+        SDL_SIMDFree(ptr);
         return NULL;
     }
 
@@ -1455,10 +1448,10 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
     textbuf->flags |= SDL_SIMD_ALIGNED;
 
     if (bytes_per_pixel == 4) {
-        SDL_memset4(pixels, bgcolor, data_bytes / 4);
+        SDL_memset4(ptr, bgcolor, size / 4);
     }
     else {
-        SDL_memset(pixels, (bgcolor & 0xff), data_bytes);
+        SDL_memset(ptr, (bgcolor & 0xff), size);
     }
 
     return textbuf;
