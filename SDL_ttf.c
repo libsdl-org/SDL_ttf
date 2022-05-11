@@ -1432,14 +1432,14 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
         return NULL;
     }
 
-    ptr = SDL_SIMDAllocAligned(size, alignment + 1);
+    ptr = SDL_aligned_alloc(alignment + 1, size);
     if (ptr == NULL) {
         return NULL;
     }
 
     textbuf = SDL_CreateRGBSurfaceWithFormatFrom(ptr, (int)width, (int)height, 0, (int)pitch, format);
     if (textbuf == NULL) {
-        SDL_SIMDFree(ptr);
+        SDL_aligned_free(ptr);
         return NULL;
     }
 
