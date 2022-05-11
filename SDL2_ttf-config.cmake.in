@@ -3,6 +3,10 @@ set(SDL2_TTF_WITH_FREETYPE @TTF_WITH_FREETYPE@)
 
 include(CMakeFindDependencyMacro)
 
+if (NOT ANDROID AND NOT (TARGET SDL2::SDL2 OR TARGET SDL2::SDL2-static))
+	find_dependency(SDL2 REQUIRED)
+endif()
+
 if(SDL2_TTF_WITH_FREETYPE AND NOT @TTF_WITH_FREETYPE_VENDORED@)
 	find_dependency(Freetype REQUIRED)
 endif()
