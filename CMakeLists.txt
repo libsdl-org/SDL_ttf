@@ -7,6 +7,10 @@ set(MICRO_VERSION 0)
 set(SDL_TTF_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}")
 set(SDL_REQUIRED_VERSION 2.0.10)
 
+# Set defaults preventing destination file conflicts
+set(SDL_CMAKE_DEBUG_POSTFIX "d"
+    CACHE STRING "Name suffix for debug builds")
+
 # Calculate a libtool-like version number
 math(EXPR BINARY_AGE "${MINOR_VERSION} * 100 + ${MICRO_VERSION}")
 if(MINOR_VERSION MATCHES "[02468]$")
@@ -92,11 +96,19 @@ option(BUILD_SAMPLES "Build the SDL2_ttf sample program(s)" ON)
 option(BUILD_SHARED_LIBS "Build the library as a shared library" ON)
 option(TTF_DISABLE_INSTALL "Disable installing SDL2_ttf" OFF)
 
+if(BUILD_SHARED_LIBS)
+    set(sdl2_ttf_export_name SDL2_ttf)
+    set(sdl2_ttf_install_name_infix shared)
+else()
+    set(sdl2_ttf_export_name SDL2_ttf-static)
+    set(sdl2_ttf_install_name_infix static)
+endif()
+
 add_library(SDL2_ttf
     SDL_ttf.c
     SDL_ttf.h
 )
-add_library(SDL2_ttf::SDL2_ttf ALIAS SDL2_ttf)
+add_library(SDL2_ttf::${sdl2_ttf_export_name} ALIAS SDL2_ttf)
 
 target_compile_definitions(SDL2_ttf PRIVATE
     SDL_BUILD_MAJOR_VERSION=${MAJOR_VERSION}
@@ -117,8 +129,8 @@ set(PC_REQUIRES)
 if (TTF_WITH_HARFBUZZ)
     target_compile_definitions(SDL2_ttf PRIVATE TTF_USE_HARFBUZZ=1)
     if (TTF_WITH_HARFBUZZ_VENDORED)
-        set(HB_BUILD_UTILS OFF)
-        set(SKIP_INSTALL_LIBRARIES ON)
+        set(HB_BUILD_UTILS OFF CACHE BOOL "harfbuzz build utils" FORCE)
+        set(SKIP_INSTALL_LIBRARIES ON CACHE BOOL "harfbuzz install option" FORCE)
         set(HB_HAVE_FREETYPE ${TTF_WITH_FREETYPE} CACHE BOOL "harfbuzz freetype helpers" FORCE)
         add_subdirectory(external/harfbuzz EXCLUDE_FROM_ALL)
         list(APPEND INSTALL_EXTRA_TARGETS harfbuzz)
@@ -164,9 +176,13 @@ endif()
 set_target_properties(SDL2_ttf PROPERTIES
     DEFINE_SYMBOL DLL_EXPORT
     PUBLIC_HEADER SDL_ttf.h
-    EXPORT_NAME SDL2_ttf
+    EXPORT_NAME ${sdl2_ttf_export_name}
     C_VISIBILITY_PRESET "hidden"
 )
+if (NOT ANDROID)
+    set_target_properties(SDL2_ttf PROPERTIES
+        DEBUG_POSTFIX "${SDL_CMAKE_DEBUG_POSTFIX}")
+endif()
 
 if (APPLE)
     # TODO: Use DYLIB_COMPATIBILITY_VERSION, DYLIB_CURRENT_VERSION here
@@ -220,16 +236,16 @@ if (NOT TTF_DISABLE_INSTALL)
         set(PKG_PREFIX "${CMAKE_INSTALL_LIBDIR}/cmake/SDL2_ttf")
     endif ()
 
-    configure_package_config_file(SDL2_ttf-config.cmake.in SDL2_ttf-config.cmake
+    configure_package_config_file(SDL2_ttfConfig.cmake.in SDL2_ttfConfig.cmake
         INSTALL_DESTINATION "${PKG_PREFIX}"
     )
-    write_basic_package_version_file("${PROJECT_BINARY_DIR}/SDL2_ttf-config-version.cmake"
+    write_basic_package_version_file("${PROJECT_BINARY_DIR}/SDL2_ttfConfigVersion.cmake"
         VERSION ${SDL_TTF_VERSION}
         COMPATIBILITY AnyNewerVersion
     )
 
     install(EXPORT SDL2_ttfTargets
-        FILE SDL2_ttf-targets.cmake
+        FILE SDL2_ttf-${sdl2_ttf_install_name_infix}-targets.cmake
         NAMESPACE SDL2_ttf::
         DESTINATION "${PKG_PREFIX}"
     )
@@ -256,8 +272,8 @@ if (NOT TTF_DISABLE_INSTALL)
 
     install(
         FILES
-            "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf-config.cmake"
-            "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf-config-version.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttfConfig.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttfConfigVersion.cmake"
         DESTINATION ${PKG_PREFIX}
         COMPONENT devel
     )
@@ -281,7 +297,7 @@ if (NOT TTF_DISABLE_INSTALL)
                 target_link_libraries(${prog} PRIVATE mingw32)
                 target_link_options(${prog} PRIVATE -mwindows)
             endif()
-            target_link_libraries(${prog} PRIVATE SDL2_ttf::SDL2_ttf)
+            target_link_libraries(${prog} PRIVATE SDL2_ttf::${sdl2_ttf_export_name})
             if (TARGET SDL2::SDL2main)
                 target_link_libraries(${prog} PRIVATE SDL2::SDL2main)
             endif()
