@@ -193,9 +193,15 @@ elseif (UNIX AND NOT APPLE AND NOT ANDROID)
     )
 endif()
 if (BUILD_SHARED_LIBS)
-    if (WIN32)
+    if (WIN32 OR OS2)
         set_target_properties(SDL2_ttf PROPERTIES
             PREFIX ""
+        )
+    endif
+    if (OS2)
+        # OS/2 doesn't support a DLL name longer than 8 characters.
+        set_target_properties(SDL2_ttf PROPERTIES
+           OUTPUT_NAME "SDL2ttf"
         )
     elseif (UNIX AND NOT APPLE AND NOT ANDROID)
         set_target_properties(SDL2_ttf PROPERTIES
