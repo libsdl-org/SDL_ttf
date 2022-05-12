@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 
 # See docs/release_checklist.md
 set(MAJOR_VERSION 2)
@@ -51,7 +51,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the SDL_ttf source code and call cmake from there")
 endif()
 
-project(SDL_ttf LANGUAGES C
+project(SDL2_ttf LANGUAGES C
     VERSION "${SDL_TTF_VERSION}")
 
 message(STATUS "Configuring ${PROJECT_NAME} ${PROJECT_VERSION}")
@@ -269,7 +269,18 @@ if (NOT TTF_DISABLE_INSTALL)
         install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc
             DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
     endif ()
-
+    install(FILES "COPYING.txt" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/licenses/${PROJECT_NAME}")
+    if (NOT (WIN32 OR CYGWIN OR MINGW))
+        if(BUILD_SHARED_LIBS)
+            if(NOT ANDROID)
+                install(CODE "
+                    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+                        \"$<TARGET_SONAME_FILE_NAME:SDL2_ttf>\" \"libSDL2_ttf$<$<CONFIG:Debug>:${SDL_CMAKE_DEBUG_POSTFIX}>$<TARGET_FILE_SUFFIX:SDL2_ttf>\"
+                        WORKING_DIRECTORY \"${PROJECT_BINARY_DIR}\")")
+                install(FILES "${PROJECT_BINARY_DIR}/libSDL2_ttf$<$<CONFIG:Debug>:${SDL_CMAKE_DEBUG_POSTFIX}>$<TARGET_FILE_SUFFIX:SDL2_ttf>" DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+            endif()
+        endif()
+    endif()
     install(
         FILES
             "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttfConfig.cmake"
