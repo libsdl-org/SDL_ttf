@@ -197,7 +197,7 @@ if (BUILD_SHARED_LIBS)
         set_target_properties(SDL2_ttf PROPERTIES
             PREFIX ""
         )
-    endif
+    endif()
     if (OS2)
         # OS/2 doesn't support a DLL name longer than 8 characters.
         set_target_properties(SDL2_ttf PROPERTIES
