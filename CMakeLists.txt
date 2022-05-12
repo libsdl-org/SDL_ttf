@@ -264,9 +264,9 @@ if (NOT TTF_DISABLE_INSTALL)
 
     if (CMAKE_SYSTEM_NAME MATCHES FreeBSD)
         # FreeBSD uses ${PREFIX}/libdata/pkgconfig
-        install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc DESTINATION "libdata/pkgconfig")
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc DESTINATION "libdata/pkgconfig")
     else ()
-        install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc
             DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
     endif ()
     install(FILES "COPYING.txt" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/licenses/${PROJECT_NAME}")
