@@ -130,6 +130,15 @@ else
     not_ok "project.pbxproj DYLIB_COMPATIBILITY_VERSION is inconsistent"
 fi
 
+dylib_compat=$(sed -ne 's/^set(DYLIB_COMPATIBILITY_VERSION "\([0-9.]\+\)")$/\1/p' CMakeLists.txt)
+ref='15.0.0'
+
+if [ "$ref" = "$dylib_compat" ]; then
+    ok "CMakeLists.txt DYLIB_COMPATIBILITY_VERSION is consistent"
+else
+    not_ok "CMakeLists.txt DYLIB_COMPATIBILITY_VERSION is inconsistent"
+fi
+
 dylib_cur=$(sed -Ene 's/.*DYLIB_CURRENT_VERSION = (.*);$/\1/p' Xcode/SDL_ttf.xcodeproj/project.pbxproj)
 
 case "$ref_minor" in
@@ -150,6 +159,14 @@ if [ "$ref" = "$dylib_cur" ]; then
     ok "project.pbxproj DYLIB_CURRENT_VERSION is consistent"
 else
     not_ok "project.pbxproj DYLIB_CURRENT_VERSION is inconsistent"
+fi
+
+sdl_req=$(sed -ne 's/\$sdl2_version = "\([0-9.]*\)"$/\1/p' .github/fetch_sdl_vc.ps1)
+
+if [ "$ref_sdl_req" = "$sdl_req" ]; then
+    ok ".github/fetch_sdl_vc.ps1 $sdl_req"
+else
+    not_ok ".github/fetch_sdl_vc.ps1 sdl2_version=$sdl_req disagrees with configure.ac SDL_VERSION=$ref_sdl_req"
 fi
 
 echo "1..$tests"
