@@ -126,6 +126,12 @@ set(INSTALL_EXTRA_TARGETS)
 set(PC_LIBS)
 set(PC_REQUIRES)
 
+# Save BUILD_SHARED_LIBS variable
+set(SDL2TTF_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+
+# Build freetype and harfbuzz as a static library (avoid cyclic dependency between shared libraries)
+set(BUILD_SHARED_LIBS OFF)
+
 if (TTF_WITH_HARFBUZZ)
     target_compile_definitions(SDL2_ttf PRIVATE TTF_USE_HARFBUZZ=1)
     if (TTF_WITH_HARFBUZZ_VENDORED)
@@ -172,6 +178,9 @@ if (TTF_WITH_FREETYPE)
     endif()
     target_link_libraries(SDL2_ttf PRIVATE Freetype::Freetype)
 endif()
+
+# Restore BUILD_SHARED_LIBS variable
+set(BUILD_SHARED_LIBS ${SDL2TTF_BUILD_SHARED_LIBS})
 
 set_target_properties(SDL2_ttf PROPERTIES
     DEFINE_SYMBOL DLL_EXPORT
