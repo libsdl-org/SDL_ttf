@@ -56,13 +56,13 @@ project(SDL2_ttf LANGUAGES C
 
 message(STATUS "Configuring ${PROJECT_NAME} ${PROJECT_VERSION}")
 
-if (NOT ANDROID AND NOT (TARGET SDL2::SDL2 OR TARGET SDL2::SDL2-static))
+if (NOT (TARGET SDL2::SDL2 OR TARGET SDL2::SDL2-static))
     find_package(SDL2 REQUIRED)
 endif()
 
 # Workaround for Ubuntu 20.04's SDL being older than
 # https://github.com/libsdl-org/SDL/issues/3531
-if (NOT TARGET SDL2::SDL2)
+if (NOT (TARGET SDL2::SDL2 OR TARGET SDL2::SDL2-static))
     find_library(SDL2_LIBRARY
         NAMES SDL2
         HINTS "${SDL2_EXEC_PREFIX}"
@@ -213,6 +213,11 @@ endif()
 if (WIN32 AND BUILD_SHARED_LIBS)
     target_sources(SDL2_ttf PRIVATE version.rc)
 endif()
+
+target_include_directories(SDL2_ttf
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>
+    )
 
 if (NOT TTF_DISABLE_INSTALL)
     install(
