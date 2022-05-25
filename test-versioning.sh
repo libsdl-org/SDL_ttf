@@ -4,6 +4,9 @@
 
 set -eu
 
+# Needed so sed doesn't report illegal byte sequences on macOS
+export LC_CTYPE=C
+
 ref_major=$(sed -ne 's/^#define SDL_TTF_MAJOR_VERSION  *//p' SDL_ttf.h)
 ref_minor=$(sed -ne 's/^#define SDL_TTF_MINOR_VERSION  *//p' SDL_ttf.h)
 ref_micro=$(sed -ne 's/^#define SDL_TTF_PATCHLEVEL  *//p' SDL_ttf.h)
@@ -23,9 +26,9 @@ not_ok () {
     failed=1
 }
 
-major=$(sed -Ene 's/^m4_define\(\[MAJOR_VERSION_MACRO\], \[([0-9]+)\]\)$/\1/p' configure.ac)
-minor=$(sed -Ene 's/^m4_define\(\[MINOR_VERSION_MACRO\], \[([0-9]+)\]\)$/\1/p' configure.ac)
-micro=$(sed -Ene 's/^m4_define\(\[MICRO_VERSION_MACRO\], \[([0-9]+)\]\)$/\1/p' configure.ac)
+major=$(sed -Ene 's/^m4_define\(\[MAJOR_VERSION_MACRO\], \[([0-9]*)\]\)$/\1/p' configure.ac)
+minor=$(sed -Ene 's/^m4_define\(\[MINOR_VERSION_MACRO\], \[([0-9]*)\]\)$/\1/p' configure.ac)
+micro=$(sed -Ene 's/^m4_define\(\[MICRO_VERSION_MACRO\], \[([0-9]*)\]\)$/\1/p' configure.ac)
 version="${major}.${minor}.${micro}"
 ref_sdl_req=$(sed -ne 's/^SDL_VERSION=//p' configure.ac)
 
@@ -35,10 +38,10 @@ else
     not_ok "configure.ac $version disagrees with SDL_ttf.h $ref_version"
 fi
 
-major=$(sed -ne 's/^set(MAJOR_VERSION \([0-9]\+\))$/\1/p' CMakeLists.txt)
-minor=$(sed -ne 's/^set(MINOR_VERSION \([0-9]\+\))$/\1/p' CMakeLists.txt)
-micro=$(sed -ne 's/^set(MICRO_VERSION \([0-9]\+\))$/\1/p' CMakeLists.txt)
-sdl_req=$(sed -ne 's/^set(SDL_REQUIRED_VERSION \([0-9.]\+\))$/\1/p' CMakeLists.txt)
+major=$(sed -ne 's/^set(MAJOR_VERSION \([0-9]*\))$/\1/p' CMakeLists.txt)
+minor=$(sed -ne 's/^set(MINOR_VERSION \([0-9]*\))$/\1/p' CMakeLists.txt)
+micro=$(sed -ne 's/^set(MICRO_VERSION \([0-9]*\))$/\1/p' CMakeLists.txt)
+sdl_req=$(sed -ne 's/^set(SDL_REQUIRED_VERSION \([0-9.]*\))$/\1/p' CMakeLists.txt)
 version="${major}.${minor}.${micro}"
 
 if [ "$ref_version" = "$version" ]; then
@@ -82,7 +85,7 @@ for rcfile in version.rc VisualC/Version.rc; do
         not_ok "$rcfile PRODUCTVERSION $tuple disagrees with SDL_ttf.h $ref_tuple"
     fi
 
-    tuple=$(sed -Ene 's/^ *VALUE "FileVersion", "([0-9, ]+)\\0"\r?$/\1/p' "$rcfile" | tr -d '\r')
+    tuple=$(sed -Ene 's/^ *VALUE "FileVersion", "([0-9, ]*)\\0"\r?$/\1/p' "$rcfile" | tr -d '\r')
     ref_tuple="${ref_major}, ${ref_minor}, ${ref_micro}, 0"
 
     if [ "$ref_tuple" = "$tuple" ]; then
@@ -91,7 +94,7 @@ for rcfile in version.rc VisualC/Version.rc; do
         not_ok "$rcfile FileVersion $tuple disagrees with SDL_ttf.h $ref_tuple"
     fi
 
-    tuple=$(sed -Ene 's/^ *VALUE "ProductVersion", "([0-9, ]+)\\0"\r?$/\1/p' "$rcfile" | tr -d '\r')
+    tuple=$(sed -Ene 's/^ *VALUE "ProductVersion", "([0-9, ]*)\\0"\r?$/\1/p' "$rcfile" | tr -d '\r')
 
     if [ "$ref_tuple" = "$tuple" ]; then
         ok "$rcfile ProductVersion $tuple"
