@@ -11,6 +11,7 @@ ref_major=$(sed -ne 's/^#define SDL_TTF_MAJOR_VERSION  *//p' SDL_ttf.h)
 ref_minor=$(sed -ne 's/^#define SDL_TTF_MINOR_VERSION  *//p' SDL_ttf.h)
 ref_micro=$(sed -ne 's/^#define SDL_TTF_PATCHLEVEL  *//p' SDL_ttf.h)
 ref_version="${ref_major}.${ref_minor}.${ref_micro}"
+ref_sdl_req=$(sed -ne 's/^SDL_VERSION=//p' configure.ac)
 
 tests=0
 failed=0
@@ -30,7 +31,6 @@ major=$(sed -Ene 's/^m4_define\(\[MAJOR_VERSION_MACRO\], \[([0-9]*)\]\)$/\1/p' c
 minor=$(sed -Ene 's/^m4_define\(\[MINOR_VERSION_MACRO\], \[([0-9]*)\]\)$/\1/p' configure.ac)
 micro=$(sed -Ene 's/^m4_define\(\[MICRO_VERSION_MACRO\], \[([0-9]*)\]\)$/\1/p' configure.ac)
 version="${major}.${minor}.${micro}"
-ref_sdl_req=$(sed -ne 's/^SDL_VERSION=//p' configure.ac)
 
 if [ "$ref_version" = "$version" ]; then
     ok "configure.ac $version"
