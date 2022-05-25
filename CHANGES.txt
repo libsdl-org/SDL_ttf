@@ -1,6 +1,17 @@
-2.0.20:
-Sam Lantinga - Wed Jan 12 10:57:16 PST 2022
- * Updated to FreeType version 2.11.1
+2.20.0:
+ * Added TTF_GetFontWrappedAlign() and TTF_SetFontWrappedAlign() to set alignment on wrapped text
+ * Added functions to render using FreeType LCD algorithm:
+    TTF_RenderText_LCD()
+    TTF_RenderUTF8_LCD()
+    TTF_RenderUNICODE_LCD()
+    TTF_RenderText_LCD_Wrapped()
+    TTF_RenderUTF8_LCD_Wrapped()
+    TTF_RenderUNICODE_LCD_Wrapped()
+    TTF_RenderGlyph_LCD()
+    TTF_RenderGlyph32_LCD()
+ * Added TTF_SetFontDirection() and TTF_SetFontScriptName() for additional control over fonts using HarfBuzz
+ * Updated to FreeType version 2.12.1 and HarfBuzz version 2.9.1, fixing CVE-2018-25032
+ * Fixed crash when loading fonts at certain sizes on Windows
 
 2.0.18:
 Ozkan Sezer - Wed Jan  5 14:15:46 PST 2022
