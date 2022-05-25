@@ -141,7 +141,7 @@ pkgconfig_DATA = SDL2_ttf.pc
 	$(RC) $< $@
 
 EXTRA_DIST = CHANGES.txt COPYING.txt README.txt \
-	Android.mk Makefile.os2 version.rc	\
+	Android.mk CMakeLists.txt Makefile.os2 version.rc	\
 	VisualC VisualC-WinRT Xcode external	\
 	SDL2_ttf.spec SDL2_ttf.spec.in		\
 	SDL2_ttfConfig.cmake.in		\
