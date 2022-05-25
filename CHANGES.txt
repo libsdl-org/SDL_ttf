@@ -12,6 +12,7 @@
  * Added TTF_SetFontDirection() and TTF_SetFontScriptName() for additional control over fonts using HarfBuzz
  * Updated to FreeType version 2.12.1 and HarfBuzz version 2.9.1, fixing CVE-2018-25032
  * Fixed crash when loading fonts at certain sizes on Windows
+ * Fix memory corruption loading malformed TTF files (CVE-2022-27470)
 
 2.0.18:
 Ozkan Sezer - Wed Jan  5 14:15:46 PST 2022
