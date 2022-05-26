@@ -82,6 +82,7 @@ endif()
 include(CMakeDependentOption)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
+include(CheckSymbolExists)
 
 option(VENDORED_DEFAULT "Default value for *_VENDORED options. Can be overridden for each library. Is only used in the first configure run." ON)
 
@@ -102,6 +103,13 @@ if(BUILD_SHARED_LIBS)
 else()
     set(sdl2_ttf_export_name SDL2_ttf-static)
     set(sdl2_ttf_install_name_infix static)
+endif()
+
+# Enable large file support on 32-bit glibc, so that the vendored libraries
+# can access files with large inode numbers
+check_symbol_exists("__GLIBC__" "stdlib.h" LIBC_IS_GLIBC)
+if (LIBC_IS_GLIBC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+    add_compile_definitions(PRIVATE _FILE_OFFSET_BITS=64)
 endif()
 
 add_library(SDL2_ttf
