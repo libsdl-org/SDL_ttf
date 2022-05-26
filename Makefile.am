@@ -145,7 +145,7 @@ EXTRA_DIST = CHANGES.txt LICENSE.txt README.txt \
 	VisualC VisualC-WinRT Xcode external	\
 	SDL2_ttf.spec SDL2_ttf.spec.in		\
 	SDL2_ttfConfig.cmake.in		\
-	autogen.sh gcc-fat.sh
+	autogen.sh
 
 noinst_PROGRAMS = showfont glfont
 
