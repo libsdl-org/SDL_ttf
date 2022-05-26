@@ -439,7 +439,10 @@ typedef enum
 extern DECLSPEC int SDLCALL TTF_SetDirection(int direction); /* hb_direction_t */
 extern DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_script_t */
 
-/* Set direction and script per font.
+/* Set direction and script per font, overriding the global direction
+   and script set with the deprecated TTF_SetDirection() and
+   TTF_SetScript().
+
    'script' is null terminated string of exactly 4 characters.
    These functions return 0, or -1 if SDL_ttf is not compiled with HarfBuzz or invalid parameter
 */
