@@ -147,7 +147,11 @@ EXTRA_DIST = CHANGES.txt COPYING.txt README.txt \
 	SDL2_ttfConfig.cmake.in		\
 	autogen.sh gcc-fat.sh
 
-noinst_PROGRAMS = showfont glfont
+noinst_PROGRAMS = showfont glfont testfont
+
+testfont_CPPFLAGS = $(TTF_CFLAGS) $(LOCAL_HB_FLAGS)
+testfont_SOURCES = test/main.c
+testfont_LDADD = libSDL2_ttf.la -lSDL2_test
 
 showfont_LDADD = libSDL2_ttf.la
 glfont_LDADD = libSDL2_ttf.la @GL_LIBS@ @MATHLIB@
