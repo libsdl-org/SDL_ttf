@@ -3354,7 +3354,21 @@ static int TTF_Size_Internal(TTF_Font *font,
             *extent = current_width;
         }
         if (count) {
-            *count = char_count;
+#if TTF_USE_HARFBUZZ
+            if (char_count == glyph_count) {
+                /* The higher level code doesn't know about ligatures,
+                 * so if we've covered all the glyphs, report the full
+                 * string length.
+                 *
+                 * If we have to line wrap somewhere in the middle, we
+                 * might be off by the number of ligatures, but there
+                 * isn't an easy way around that without using hb_buffer
+                 * at that level instead.
+                 */
+                *count = SDL_utf8strlen(text);
+            } else
+#endif
+                *count = char_count;
         }
     }
 
