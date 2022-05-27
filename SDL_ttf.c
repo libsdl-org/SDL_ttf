@@ -3304,11 +3304,13 @@ static int TTF_Size_Internal(TTF_Font *font,
         if (measure_width) {
             int cw = SDL_max(maxx, FT_FLOOR(x + prev_advance)) - minx;
             cw += 2 * font->outline_val;
+            if (cw <= measure_width) {
+                current_width = cw;
+                char_count += 1;
+            }
             if (cw >= measure_width) {
                 break;
             }
-            current_width = cw;
-            char_count += 1;
         }
     }
 
