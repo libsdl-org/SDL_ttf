@@ -7,7 +7,7 @@ m4_define([MINOR_VERSION_MACRO], [19])
 m4_define([MICRO_VERSION_MACRO], [1])
 
 AC_INIT([SDL2_ttf],
-        MAJOR_VERSION_MACRO.MINOR_VERSION_MACRO.MICRO_VERSION_MACRO,
+        [MAJOR_VERSION_MACRO.MINOR_VERSION_MACRO.MICRO_VERSION_MACRO],
         [https://github.com/libsdl-org/SDL_ttf/issues],
         [SDL2_ttf])
 AC_CONFIG_MACRO_DIR([acinclude])
@@ -41,9 +41,8 @@ LT_MAJOR=0
 LT_AGE=`expr $BINARY_AGE - $INTERFACE_AGE`
 LT_CURRENT=`expr $LT_MAJOR + $LT_AGE`
 LT_REVISION=$INTERFACE_AGE
+LT_EXTRA=""
 m4_pattern_allow([^LT_MAJOR$])
-
-LT_EXTRA="" dnl for OS2 dll name
 
 AC_SUBST(LT_RELEASE)
 AC_SUBST(LT_CURRENT)
