@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7FC2F5DC285AC0D600836845 /* CMake in Resources */ = {isa = PBXBuildFile; fileRef = 7FC2F5DB285AC0D600836845 /* CMake */; };
 		BE48FD5F07AFA17000BB41DA /* SDL_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1014BAEA010A4B677F000001 /* SDL_ttf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE48FD6207AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		BE48FD6B07AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
@@ -214,6 +215,7 @@
 
 /* Begin PBXFileReference section */
 		1014BAEA010A4B677F000001 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../SDL_ttf.h; sourceTree = SOURCE_ROOT; };
+		7FC2F5DB285AC0D600836845 /* CMake */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CMake; sourceTree = "<group>"; };
 		A75FDB0C23E37ED200529352 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = iOS/SDL2.framework; sourceTree = "<group>"; };
 		A75FDB1023E37EE400529352 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = tvOS/SDL2.framework; sourceTree = "<group>"; };
 		BE48FD6607AFA17000BB41DA /* Info-Framework.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Framework.plist"; sourceTree = "<group>"; };
@@ -537,6 +539,7 @@
 		F59C710100D5CB5801000001 /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				7FC2F5DB285AC0D600836845 /* CMake */,
 				F364A5C32620E22400325ECE /* ReadMe.txt */,
 				F384BE61261ECD9F0028A248 /* FreeType-LICENSE.txt */,
 				F364A5B72620E1A200325ECE /* FTL.TXT */,
@@ -661,6 +664,7 @@
 				F364A5C42620E22400325ECE /* ReadMe.txt in Resources */,
 				F384BE65261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */,
 				F364A5B82620E1A200325ECE /* FTL.TXT in Resources */,
+				7FC2F5DC285AC0D600836845 /* CMake in Resources */,
 				F384BE62261ECD9F0028A248 /* HarfBuzz-LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
