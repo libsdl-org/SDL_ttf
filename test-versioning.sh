@@ -130,7 +130,7 @@ else
     not_ok "project.pbxproj DYLIB_COMPATIBILITY_VERSION is inconsistent"
 fi
 
-dylib_compat=$(sed -ne 's/^set(DYLIB_COMPATIBILITY_VERSION "\([0-9.]\+\)")$/\1/p' CMakeLists.txt)
+dylib_compat=$(sed -ne 's/^set(DYLIB_COMPATIBILITY_VERSION "\([0-9.]*\)")$/\1/p' CMakeLists.txt)
 ref='15.0.0'
 
 if [ "$ref" = "$dylib_compat" ]; then
