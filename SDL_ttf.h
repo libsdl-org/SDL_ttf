@@ -21,7 +21,7 @@
 
 
 /**
- *  \file SDL_render.h
+ *  \file SDL_ttf.h
  *
  *  Header file for SDL_ttf library
  *
@@ -102,7 +102,7 @@ extern "C" {
  * it should NOT be used to fill a version structure, instead you should
  * use the SDL_TTF_VERSION() macro.
  *
- * \returns SDL version
+ * \returns SDL_ttf version
  */
 extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
 
