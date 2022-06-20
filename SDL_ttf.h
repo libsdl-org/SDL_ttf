@@ -230,7 +230,7 @@ extern DECLSPEC int SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
  * \param ptsize point size
  * \param hdpi horizontal DPI
  * \param vdpi vertical DPI
- * \returns 0 if successful, -1 on error
+ * \returns 0 if successful, -1 on error.
  */
 extern DECLSPEC int SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsigned int hdpi, unsigned int vdpi);
 
