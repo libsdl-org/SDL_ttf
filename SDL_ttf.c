@@ -3007,12 +3007,14 @@ int TTF_FontFaceIsFixedWidth(const TTF_Font *font)
     return FT_IS_FIXED_WIDTH(font->face);
 }
 
-char* TTF_FontFaceFamilyName(const TTF_Font *font)
+const char *
+TTF_FontFaceFamilyName(const TTF_Font *font)
 {
     return font->face->family_name;
 }
 
-char* TTF_FontFaceStyleName(const TTF_Font *font)
+const char *
+TTF_FontFaceStyleName(const TTF_Font *font)
 {
     return font->face->style_name;
 }

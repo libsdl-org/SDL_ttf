@@ -413,18 +413,22 @@ extern DECLSPEC int SDLCALL TTF_FontFaceIsFixedWidth(const TTF_Font *font);
 /**
  * Get font family name
  *
+ * The returned value shouldn't be modified nor freed.
+ *
  * \param font TTF_Font handle
  * \returns font family name, NULL on error
  */
-extern DECLSPEC char * SDLCALL TTF_FontFaceFamilyName(const TTF_Font *font);
+extern DECLSPEC const char * SDLCALL TTF_FontFaceFamilyName(const TTF_Font *font);
 
 /**
  * Get font style name
  *
+ * The returned value shouldn't be modified nor freed.
+ *
  * \param font TTF_Font handle
  * \returns font style name, NULL on error
  */
-extern DECLSPEC char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *font);
+extern DECLSPEC const char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *font);
 
 /**
  * Check wether a glyph is provided by the font or not
