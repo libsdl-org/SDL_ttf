@@ -2771,9 +2771,21 @@ static size_t LATIN1_to_UTF8_len(const char *text)
 /* Gets the number of bytes needed to convert a UCS2 string to UTF-8 */
 static size_t UCS2_to_UTF8_len(const Uint16 *text)
 {
+    SDL_bool swapped = TTF_byteswapped;
     size_t bytes = 1;
     while (*text) {
         Uint16 ch = *text++;
+        if (ch == UNICODE_BOM_NATIVE) {
+            swapped = SDL_FALSE;
+            continue;
+        }
+        if (ch == UNICODE_BOM_SWAPPED) {
+            swapped = SDL_TRUE;
+            continue;
+        }
+        if (swapped) {
+            ch = SDL_Swap16(ch);
+        }
         if (ch <= 0x7F) {
             bytes += 1;
         } else if (ch <= 0x7FF) {
