@@ -363,7 +363,6 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPI(const char *file, int pt
  */
 extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontDPIRW(SDL_RWops *src, int freesrc, int ptsize, unsigned int hdpi, unsigned int vdpi);
 
-
 /**
  * Opens a font from an SDL_RWops with target resolutions (in DPI).
  *
@@ -556,9 +555,9 @@ extern DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting);
 /**
  * Special layout option for rendering wrapped text
  */
-#define TTF_WRAPPED_ALIGN_LEFT     0
-#define TTF_WRAPPED_ALIGN_CENTER   1
-#define TTF_WRAPPED_ALIGN_RIGHT    2
+#define TTF_WRAPPED_ALIGN_LEFT      0
+#define TTF_WRAPPED_ALIGN_CENTER    1
+#define TTF_WRAPPED_ALIGN_RIGHT     2
 
 /**
  * Query a font's current wrap alignment option.
@@ -911,7 +910,6 @@ extern DECLSPEC int SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, 
  */
 extern DECLSPEC int SDLCALL TTF_MeasureText(TTF_Font *font, const char *text, int measure_width, int *extent, int *count);
 
-
 /**
  * Calculate how much of a UTF-8 string will fit in a given width.
  *
@@ -1000,7 +998,6 @@ extern DECLSPEC int SDLCALL TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *tex
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font,
                 const char *text, SDL_Color fg);
 
-
 /**
  * Render UTF-8 text at fast quality to a new 8-bit surface.
  *
@@ -1031,7 +1028,6 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font,
  */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid(TTF_Font *font,
                 const char *text, SDL_Color fg);
-
 
 /**
  * Render UCS-2 text at fast quality to a new 8-bit surface.
@@ -1427,7 +1423,6 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded_Wrapped(TTF_Font *fo
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded_Wrapped(TTF_Font *font,
                 const Uint16 *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
 
-
 /**
  * Render a single 16-bit glyph at high quality to a new 8-bit surface.
  *
@@ -1463,7 +1458,6 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded_Wrapped(TTF_Font 
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
                 Uint16 ch, SDL_Color fg, SDL_Color bg);
 
-
 /**
  * Render a single 32-bit glyph at high quality to a new 8-bit surface.
  *
@@ -1496,7 +1490,6 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
  */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Shaded(TTF_Font *font,
                 Uint32 ch, SDL_Color fg, SDL_Color bg);
-
 
 /**
  * Render Latin1 text at high quality to a new ARGB surface.
@@ -1595,7 +1588,6 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended(TTF_Font *font,
  */
 extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended(TTF_Font *font,
                 const Uint16 *text, SDL_Color fg);
-
 
 /**
  * Render word-wrapped Latin1 text at high quality to a new ARGB surface.
@@ -2214,10 +2206,10 @@ extern DECLSPEC SDL_bool TTF_GetFontSDF(const TTF_Font *font);
  */
 typedef enum
 {
-  TTF_DIRECTION_LTR = 0, /* Left to Right */
-  TTF_DIRECTION_RTL,     /* Right to Left */
-  TTF_DIRECTION_TTB,     /* Top to Bottom */
-  TTF_DIRECTION_BTT      /* Bottom to Top */
+  TTF_DIRECTION_LTR = 0,    /* Left to Right */
+  TTF_DIRECTION_RTL,        /* Right to Left */
+  TTF_DIRECTION_TTB,        /* Top to Bottom */
+  TTF_DIRECTION_BTT         /* Bottom to Top */
 } TTF_Direction;
 
 /**
