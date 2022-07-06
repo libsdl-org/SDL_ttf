@@ -3379,7 +3379,7 @@ static int TTF_Size_Internal(TTF_Font *font,
                  * isn't an easy way around that without using hb_buffer
                  * at that level instead.
                  */
-                *count = SDL_utf8strlen(text);
+                *count = (int)SDL_utf8strlen(text);
             } else
 #endif
                 *count = char_count;
