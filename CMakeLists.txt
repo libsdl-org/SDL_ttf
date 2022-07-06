@@ -4,8 +4,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 # See docs/release_checklist.md
 set(MAJOR_VERSION 2)
-set(MINOR_VERSION 19)
-set(MICRO_VERSION 3)
+set(MINOR_VERSION 20)
+set(MICRO_VERSION 0)
 set(SDL_REQUIRED_VERSION 2.0.10)
 
 # For historical reasons this is 15.0.0 rather than the expected 1.0.0

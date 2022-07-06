@@ -48,8 +48,8 @@ extern "C" {
  * Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
  */
 #define SDL_TTF_MAJOR_VERSION   2
-#define SDL_TTF_MINOR_VERSION   19
-#define SDL_TTF_PATCHLEVEL      3
+#define SDL_TTF_MINOR_VERSION   20
+#define SDL_TTF_PATCHLEVEL      0
 
 /**
  * This macro can be used to fill a version structure with the compile-time
