@@ -246,7 +246,7 @@ set_target_properties(SDL2_ttf PROPERTIES
 )
 if (NOT ANDROID)
     set_target_properties(SDL2_ttf PROPERTIES
-        DEBUG_POSTFIX "${SDL_CMAKE_DEBUG_POSTFIX}")
+        DEBUG_POSTFIX "${SDL2TTF_DEBUG_POSTFIX}")
 endif()
 
 if (APPLE)
