@@ -244,10 +244,6 @@ set_target_properties(SDL2_ttf PROPERTIES
     EXPORT_NAME ${sdl2_ttf_export_name}
     C_VISIBILITY_PRESET "hidden"
 )
-if (NOT ANDROID)
-    set_target_properties(SDL2_ttf PROPERTIES
-        DEBUG_POSTFIX "${SDL2TTF_DEBUG_POSTFIX}")
-endif()
 
 if (APPLE)
     # TODO: Use DYLIB_COMPATIBILITY_VERSION, DYLIB_CURRENT_VERSION here
