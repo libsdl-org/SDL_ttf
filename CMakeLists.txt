@@ -348,8 +348,9 @@ if(SDL2TTF_INSTALL)
         endif()
         # Only install a SDL2_ttf.pc file in Release mode
         install(CODE "
-        file(COPY_FILE \"${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf-$<CONFIG>.pc\"
-            \"${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc\" ONLY_IF_DIFFERENT)
+        # FIXME: use file(COPY_FILE) if CMake 3.21+
+        execute_process(COMMAND \"${CMAKE_COMMAND}\" -E copy \"${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf-$<CONFIG>.pc\"
+            \"${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc\")
         file(INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/${PC_DESTDIR}\"
             TYPE FILE
             FILES \"${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc\")" CONFIG Release)
