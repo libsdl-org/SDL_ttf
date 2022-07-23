@@ -25,6 +25,12 @@ project(SDL2_ttf
 
 message(STATUS "Configuring ${PROJECT_NAME} ${PROJECT_VERSION}")
 
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+    set(SDL2TTF_ROOTPROJECT ON)
+else()
+    set(SDL2TTF_ROOTPROJECT OFF)
+endif()
+
 # Set defaults preventing destination file conflicts
 set(SDL2TTF_DEBUG_POSTFIX "d"
     CACHE STRING "Name suffix for debug builds")
@@ -47,8 +53,8 @@ include(CheckSymbolExists)
 option(CMAKE_POSITION_INDEPENDENT_CODE "Build static libraries with -fPIC" ON)
 option(BUILD_SHARED_LIBS "Build the library as a shared library" ON)
 
-option(SDL2TTF_SAMPLES "Build the SDL2_ttf sample program(s)" ON)
-option(SDL2TTF_INSTALL "Enable SDL2_ttf install target" ON)
+option(SDL2TTF_SAMPLES "Build the SDL2_ttf sample program(s)" ${SDL2TTF_ROOTPROJECT})
+option(SDL2TTF_INSTALL "Enable SDL2_ttf install target" ${SDL2TTF_ROOTPROJECT})
 option(SDL2TTF_VENDORED "Use vendored third-party libraries" ${vendored_default})
 
 # For style consistency, create a SDL2TTF_FREETYPE CMake variable. This variable is NOT configurable.
