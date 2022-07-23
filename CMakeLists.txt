@@ -401,6 +401,9 @@ endif()
 add_library(SDL2::ttf INTERFACE IMPORTED GLOBAL)
 set_target_properties(SDL2::ttf PROPERTIES
     INTERFACE_LINK_LIBRARIES "SDL2_ttf"
-    DEPRECATION "Use SDL2_ttf::SDL2_ttf or SDL2_ttf::SDL2_ttf-static instead"
 )
-
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.17")
+    set_target_properties(SDL2::ttf PROPERTIES
+        DEPRECATION "Use SDL2_ttf::SDL2_ttf or SDL2_ttf::SDL2_ttf-static instead"
+    )
+endif()
