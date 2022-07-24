@@ -97,7 +97,10 @@ noinst_PROGRAMS = showfont$(EXEEXT) glfont$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps =  \
+	$(top_srcdir)/acinclude/ax_compute_relative_paths.m4 \
 	$(top_srcdir)/acinclude/ax_cxx_compile_stdcxx.m4 \
+	$(top_srcdir)/acinclude/ax_normalize_path.m4 \
+	$(top_srcdir)/acinclude/ax_recursive_eval.m4 \
 	$(top_srcdir)/acinclude/freetype2.m4 \
 	$(top_srcdir)/acinclude/libtool.m4 \
 	$(top_srcdir)/acinclude/ltoptions.m4 \
