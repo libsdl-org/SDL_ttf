@@ -28,11 +28,15 @@
         * set first number in `DYLIB_CURRENT_VERSION` to
             (100 * *minor*) + 1
         * set second number in `DYLIB_CURRENT_VERSION` to 0
-        * set `DYLIB_COMPATIBILITY_VERSION` to the same value
-
-* Regenerate `configure`
+        * if backwards compatibility has been broken,
+            increase `DYLIB_COMPATIBILITY_VERSION` (?)
+    * `CMakeLists.txt`:
+		* if backwards compatibility has been broken,
+		  increase `DYLIB_COMPATIBILITY_VERSION` (?)
 
 * Run `./test-versioning.sh` to verify that everything is consistent
+
+* Regenerate `configure`
 
 * Do the release
 
@@ -51,11 +55,10 @@
 	* `Xcode/SDL_ttf.xcodeproj/project.pbxproj`:
 	  `DYLIB_CURRENT_VERSION`, `DYLIB_COMPATIBILITY_VERSION`
 		* set second number in `DYLIB_CURRENT_VERSION` to *patchlevel*
-        * Leave `DYLIB_COMPATIBILITY_VERSION` unchanged
-
-* Regenerate `configure`
 
 * Run test/versioning.sh to verify that everything is consistent
+
+* Regenerate `configure`
 
 * Do the release
 
@@ -87,10 +90,15 @@
 		* set first number in `DYLIB_CURRENT_VERSION` to
 		  (100 * *minor*) + *patchlevel* + 1
 		* set second number in `DYLIB_CURRENT_VERSION` to 0
-        * set `DYLIB_COMPATIBILITY_VERSION` to the same value
-
-* Regenerate `configure`
+		* if backwards compatibility has been broken,
+		  increase `DYLIB_COMPATIBILITY_VERSION` (?)
+	* `CMakeLists.txt`:
+	  `DYLIB_COMPATIBILITY_VERSION`
+		* if backwards compatibility has been broken,
+		  increase `DYLIB_COMPATIBILITY_VERSION` (?)
 
 * Run test/versioning.sh to verify that everything is consistent
+
+* Regenerate `configure`
 
 * Do the release

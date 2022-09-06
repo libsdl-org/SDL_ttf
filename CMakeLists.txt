@@ -8,6 +8,9 @@ set(MINOR_VERSION 20)
 set(MICRO_VERSION 1)
 set(SDL_REQUIRED_VERSION 2.0.10)
 
+# For historical reasons this is 15.0.0 rather than the expected 1.0.0
+set(DYLIB_COMPATIBILITY_VERSION "15.0.0")
+
 include(PrivateSdlFunctions)
 sdl_calculate_derived_version_variables()
 
