@@ -319,36 +319,34 @@ if(SDL2TTF_INSTALL)
         COMPONENT devel
     )
 
-    if(SDL2TTF_BUILD_SHARED_LIBS)
-        # Only create a .pc file for a shared SDL2_ttf
-        set(prefix "${CMAKE_INSTALL_PREFIX}")
-        set(exec_prefix "\${prefix}")
-        set(libdir "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
-        set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
-        set(PACKAGE "${PROJECT_NAME}")
-        set(VERSION ${FULL_VERSION})
-        set(SDL_VERSION ${SDL_REQUIRED_VERSION})
-        string(JOIN " " PC_REQUIRES ${PC_REQUIRES})
-        string(JOIN " " PC_LIBS ${PC_LIBS})
-        configure_file("${PROJECT_SOURCE_DIR}/SDL2_ttf.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc.intermediate" @ONLY)
-        file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf-$<CONFIG>.pc" INPUT "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc.intermediate")
+    set(prefix "${CMAKE_INSTALL_PREFIX}")
+    set(exec_prefix "\${prefix}")
+    set(libdir "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
+    set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+    set(PACKAGE "${PROJECT_NAME}")
+    set(VERSION ${FULL_VERSION})
+    set(SDL_VERSION ${SDL_REQUIRED_VERSION})
+    string(JOIN " " PC_REQUIRES ${PC_REQUIRES})
+    string(JOIN " " PC_LIBS ${PC_LIBS})
+    configure_file("${PROJECT_SOURCE_DIR}/SDL2_ttf.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc.intermediate" @ONLY)
+    file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf-$<CONFIG>.pc" INPUT "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc.intermediate")
 
-        set(PC_DESTDIR)
-        if(CMAKE_SYSTEM_NAME MATCHES FreeBSD)
-            # FreeBSD uses ${PREFIX}/libdata/pkgconfig
-            set(PC_DESTDIR "libdata/pkgconfig")
-        else()
-            set(PC_DESTDIR "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
-        endif()
-        # Only install a SDL2_ttf.pc file in Release mode
-        install(CODE "
+    set(PC_DESTDIR)
+    if(CMAKE_SYSTEM_NAME MATCHES FreeBSD)
+        # FreeBSD uses ${PREFIX}/libdata/pkgconfig
+        set(PC_DESTDIR "libdata/pkgconfig")
+    else()
+        set(PC_DESTDIR "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+    endif()
+    # Always install SDL2_ttf.pc file: libraries might be different between config modes
+    install(CODE "
         # FIXME: use file(COPY_FILE) if CMake 3.21+
-        execute_process(COMMAND \"${CMAKE_COMMAND}\" -E copy_if_different \"${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf-$<CONFIG>.pc\"
+        execute_process(COMMAND \"${CMAKE_COMMAND}\" -E copy_if_different
+            \"${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf-$<CONFIG>.pc\"
             \"${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc\")
         file(INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}/${PC_DESTDIR}\"
             TYPE FILE
-            FILES \"${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc\")" CONFIG Release)
-    endif()
+            FILES \"${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttf.pc\")" COMPONENT devel)
 
     if(SDL2TTF_BUILD_SHARED_LIBS AND (APPLE OR (UNIX AND NOT ANDROID)))
         install(FILES
