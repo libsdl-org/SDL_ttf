@@ -2032,7 +2032,8 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_LCD(TTF_Font *font,
  * Dispose of a previously-created font.
  *
  * Call this when done with a font. This function will free any resources
- * associated with it.
+ * associated with it. It is safe to call this function on NULL, for example
+ * on the result of a failed call to TTF_OpenFont().
  *
  * The font is not valid after being passed to this function. String pointers
  * from functions that return information on this font, such as
