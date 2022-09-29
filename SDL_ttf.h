@@ -845,7 +845,7 @@ extern DECLSPEC int SDLCALL TTF_SizeText(TTF_Font *font, const char *text, int *
  * This does not need to render the string to do this calculation.
  *
  * \param font the font to query.
- * \param text text to calculate, in Latin1 encoding.
+ * \param text text to calculate, in UTF-8 encoding.
  * \param w will be filled with width, in pixels, on return.
  * \param h will be filled with height, in pixels, on return.
  * \returns 0 if successful, -1 on error.
