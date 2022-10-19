@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.16)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
@@ -293,13 +293,14 @@ if(SDL2TTF_INSTALL)
     endif()
 
     if(WIN32 AND NOT MINGW)
-        set(PKG_PREFIX "cmake")
+        set(SDLTTF_INSTALL_CMAKEDIR_DEFAULT "cmake")
     else()
-        set(PKG_PREFIX "${CMAKE_INSTALL_LIBDIR}/cmake/SDL2_ttf")
+        set(SDLTTF_INSTALL_CMAKEDIR_DEFAULT "${CMAKE_INSTALL_LIBDIR}/cmake/SDL2_ttf")
     endif()
+    set(SDLTTF_INSTALL_CMAKEDIR "${SDLTTF_INSTALL_CMAKEDIR_DEFAULT}" CACHE STRING "Location where to install SDL2_ttfConfig.cmake")
 
     configure_package_config_file(SDL2_ttfConfig.cmake.in SDL2_ttfConfig.cmake
-        INSTALL_DESTINATION "${PKG_PREFIX}"
+        INSTALL_DESTINATION "${SDLTTF_INSTALL_CMAKEDIR}"
     )
     write_basic_package_version_file("${PROJECT_BINARY_DIR}/SDL2_ttfConfigVersion.cmake"
         VERSION ${FULL_VERSION}
@@ -309,13 +310,13 @@ if(SDL2TTF_INSTALL)
         FILES
             "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttfConfig.cmake"
             "${CMAKE_CURRENT_BINARY_DIR}/SDL2_ttfConfigVersion.cmake"
-        DESTINATION ${PKG_PREFIX}
+        DESTINATION ${SDLTTF_INSTALL_CMAKEDIR}
         COMPONENT devel
     )
     install(EXPORT SDL2_ttfTargets
         FILE SDL2_ttf-${sdl2_ttf_install_name_infix}-targets.cmake
         NAMESPACE SDL2_ttf::
-        DESTINATION "${PKG_PREFIX}"
+        DESTINATION "${SDLTTF_INSTALL_CMAKEDIR}"
         COMPONENT devel
     )
 
