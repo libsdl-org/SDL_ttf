@@ -2044,6 +2044,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_LCD(TTF_Font *font,
  *
  * \since This function is available since SDL_ttf 2.0.12.
  *
+ * \sa TTF_OpenFont
  * \sa TTF_OpenFontIndexDPIRW
  * \sa TTF_OpenFontRW
  * \sa TTF_OpenFontDPI
