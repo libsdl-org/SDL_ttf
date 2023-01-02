@@ -1281,6 +1281,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font,
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
  * \param fg the foreground color for the text.
+ * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 2.0.12.
