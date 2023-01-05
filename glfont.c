@@ -28,12 +28,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "SDL.h"
-#include "SDL_ttf.h"
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
+#include <SDL3/SDL_ttf.h>
 
 #ifdef HAVE_OPENGL
 
-#include "SDL_opengl.h"
+#include <SDL3/SDL_opengl.h>
 
 #define DEFAULT_PTSIZE  18
 #define DEFAULT_TEXT    "The quick brown fox jumped over the lazy dog"
@@ -112,7 +113,7 @@ static GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
     texcoord[2] = (GLfloat)surface->w / w;  /* Max X */
     texcoord[3] = (GLfloat)surface->h / h;  /* Max Y */
 
-    image = SDL_CreateRGBSurfaceWithFormat(0, w, h, 0, SDL_PIXELFORMAT_RGBA32);
+    image = SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA32);
     if (image == NULL) {
         return 0;
     }
@@ -147,7 +148,7 @@ static GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
              GL_RGBA,
              GL_UNSIGNED_BYTE,
              image->pixels);
-    SDL_FreeSurface(image); /* No longer needed */
+    SDL_DestroySurface(image); /* No longer needed */
 
     return texture;
 }
@@ -382,7 +383,7 @@ int main(int argc, char *argv[])
     texMaxY = texcoord[3];
 
     /* We don't need the original text surface anymore */
-    SDL_FreeSurface(text);
+    SDL_DestroySurface(text);
 
     /* Initialize the GL state */
     glViewport(0, 0, WIDTH, HEIGHT);

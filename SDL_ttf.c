@@ -19,11 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "SDL.h"
-#include "SDL_cpuinfo.h"
-#include "SDL_endian.h"
-
-#include "SDL_ttf.h"
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_ttf.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -1455,7 +1452,7 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
     pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
     ((void **)pixels)[-1] = ptr;
 
-    textbuf = SDL_CreateRGBSurfaceWithFormatFrom(pixels, (int)width, (int)height, 0, (int)pitch, format);
+    textbuf = SDL_CreateSurfaceFrom(pixels, (int)width, (int)height, (int)pitch, format);
     if (textbuf == NULL) {
         SDL_free(ptr);
         return NULL;
@@ -1497,7 +1494,7 @@ static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Ui
         palette->colors[1].a = fg.a;
     }
 
-    SDL_SetColorKey(textbuf, SDL_TRUE, 0);
+    SDL_SetSurfaceColorKey(textbuf, SDL_TRUE, 0);
 
     return textbuf;
 }
@@ -1739,13 +1736,18 @@ static unsigned long RWread(
 )
 {
     SDL_RWops *src;
+    Sint64 amount;
 
     src = (SDL_RWops *)stream->descriptor.pointer;
-    SDL_RWseek(src, (int)offset, RW_SEEK_SET);
+    SDL_RWseek(src, (int)offset, SDL_RW_SEEK_SET);
     if (count == 0) {
         return 0;
     }
-    return (unsigned long)SDL_RWread(src, buffer, 1, (int)count);
+    amount = SDL_RWread(src, buffer, count);
+    if (amount <= 0) {
+        return 0;
+    }
+    return (unsigned long)amount;
 }
 
 TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, int freesrc, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
@@ -3519,7 +3521,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
     return textbuf;
 failure:
     if (textbuf) {
-        SDL_FreeSurface(textbuf);
+        SDL_DestroySurface(textbuf);
     }
     if (utf8_alloc) {
         SDL_stack_free(utf8_alloc);
@@ -3922,7 +3924,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     return textbuf;
 failure:
     if (textbuf) {
-        SDL_FreeSurface(textbuf);
+        SDL_DestroySurface(textbuf);
     }
     if (strLines) {
         SDL_free(strLines);

@@ -6,13 +6,9 @@
 
 * Bump version number to 2.EVEN.0 in all these locations:
 
-    * `SDL_ttf.h`:
+    * `include/SDL3/SDL_ttf.h`:
         `SDL_TTF_MAJOR_VERSION`, `SDL_TTF_MINOR_VERSION`, `SDL_TTF_PATCHLEVEL`
-    * `configure.ac`:
-        `MAJOR_VERSION`, `MINOR_VERSION`, `MICRO_VERSION`
     * `CMakeLists.txt`:
-        `MAJOR_VERSION`, `MINOR_VERSION`, `MICRO_VERSION`
-    * `Makefile.os2`:
         `MAJOR_VERSION`, `MINOR_VERSION`, `MICRO_VERSION`
     * `version.rc`:
         `FILEVERSION`, `PRODUCTVERSION`, `FileVersion`, `ProductVersion`

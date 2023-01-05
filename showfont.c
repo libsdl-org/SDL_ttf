@@ -21,8 +21,9 @@
 
 /* A simple program to test the text rendering feature of the TTF library */
 
-#include "SDL.h"
-#include "SDL_ttf.h"
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
+#include <SDL3/SDL_ttf.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -45,9 +46,9 @@ typedef enum
 
 typedef struct {
     SDL_Texture *caption;
-    SDL_Rect captionRect;
+    SDL_FRect captionRect;
     SDL_Texture *message;
-    SDL_Rect messageRect;
+    SDL_FRect messageRect;
 } Scene;
 
 static void draw_scene(SDL_Renderer *renderer, Scene *scene)
@@ -56,8 +57,8 @@ static void draw_scene(SDL_Renderer *renderer, Scene *scene)
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
 
-    SDL_RenderCopy(renderer, scene->caption, NULL, &scene->captionRect);
-    SDL_RenderCopy(renderer, scene->message, NULL, &scene->messageRect);
+    SDL_RenderTexture(renderer, scene->caption, NULL, &scene->captionRect);
+    SDL_RenderTexture(renderer, scene->message, NULL, &scene->messageRect);
     SDL_RenderPresent(renderer);
 }
 
@@ -257,12 +258,12 @@ int main(int argc, char *argv[])
         break;
     }
     if (text != NULL) {
-        scene.captionRect.x = 4;
-        scene.captionRect.y = 4;
-        scene.captionRect.w = text->w;
-        scene.captionRect.h = text->h;
+        scene.captionRect.x = 4.0f;
+        scene.captionRect.y = 4.0f;
+        scene.captionRect.w = (float)text->w;
+        scene.captionRect.h = (float)text->h;
         scene.caption = SDL_CreateTextureFromSurface(renderer, text);
-        SDL_FreeSurface(text);
+        SDL_DestroySurface(text);
     }
 
     /* Render and center the message */
@@ -323,10 +324,10 @@ int main(int argc, char *argv[])
         TTF_CloseFont(font);
         cleanup(2);
     }
-    scene.messageRect.x = (WIDTH - text->w)/2;
-    scene.messageRect.y = (HEIGHT - text->h)/2;
-    scene.messageRect.w = text->w;
-    scene.messageRect.h = text->h;
+    scene.messageRect.x = (float)((WIDTH - text->w)/2);
+    scene.messageRect.y = (float)((HEIGHT - text->h)/2);
+    scene.messageRect.w = (float)text->w;
+    scene.messageRect.h = (float)text->h;
     scene.message = SDL_CreateTextureFromSurface(renderer, text);
     SDL_Log("Font is generally %d big, and string is %d big\n",
                         TTF_FontHeight(font), text->h);
@@ -358,7 +359,7 @@ int main(int argc, char *argv[])
                 break;
         }
     }
-    SDL_FreeSurface(text);
+    SDL_DestroySurface(text);
     TTF_CloseFont(font);
     SDL_DestroyTexture(scene.caption);
     SDL_DestroyTexture(scene.message);

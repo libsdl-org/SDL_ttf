@@ -21,7 +21,7 @@ endif
 LOCAL_PATH := $(SDL_TTF_LOCAL_PATH)
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := SDL2_ttf
+LOCAL_MODULE := SDL3_ttf
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
 
@@ -40,7 +40,7 @@ ifeq ($(SUPPORT_HARFBUZZ),true)
     LOCAL_STATIC_LIBRARIES += harfbuzz
 endif
 
-LOCAL_SHARED_LIBRARIES := SDL2
+LOCAL_SHARED_LIBRARIES := SDL3
 
 LOCAL_EXPORT_C_INCLUDES += $(LOCAL_C_INCLUDES)
 
@@ -48,13 +48,13 @@ include $(BUILD_SHARED_LIBRARY)
 
 ###########################
 #
-# SDL2_ttf static library
+# SDL3_ttf static library
 #
 ###########################
 
-LOCAL_MODULE := SDL2_ttf_static
+LOCAL_MODULE := SDL3_ttf_static
 
-LOCAL_MODULE_FILENAME := libSDL2_ttf
+LOCAL_MODULE_FILENAME := libSDL3_ttf
 
 LOCAL_LDLIBS :=
 LOCAL_EXPORT_LDLIBS :=

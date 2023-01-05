@@ -1,0 +1,53 @@
+# sdl3_ttf cmake project-config input for CMakeLists.txt script
+
+include(FeatureSummary)
+set_package_properties(SDL3_ttf PROPERTIES
+    URL "https://www.libsdl.org/projects/SDL_ttf/"
+    DESCRIPTION "Support for TrueType (.ttf) font files with Simple Directmedia Layer"
+)
+
+set(SDL3_ttf_FOUND ON)
+
+set(SDL3TTF_VENDORED  @SDL3TTF_VENDORED@)
+
+set(SDL3TTF_HARFBUZZ @SDL3TTF_HARFBUZZ@)
+set(SDL3TTF_FREETYPE @SDL3TTF_FREETYPE@)
+
+set(SDL3TTF_SDL3_REQUIRED_VERSION  @SDL_REQUIRED_VERSION@)
+
+include(CMakeFindDependencyMacro)
+
+if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/SDL3_ttf-shared-targets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/SDL3_ttf-shared-targets.cmake")
+endif()
+
+if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/SDL3_ttf-static-targets.cmake")
+    if(SDL3TTF_VENDORED)
+        include(CheckLanguage)
+        check_language(CXX)
+        if(NOT CMAKE_CXX_COMPILER AND NOT _sdl3ttf_nowarning)
+            message(WARNING "CXX language not enabled. Linking to SDL3_ttf::SDL3_ttf-static might fail.")
+        endif()
+    endif()
+    include("${CMAKE_CURRENT_LIST_DIR}/SDL3_ttf-static-targets.cmake")
+endif()
+
+
+if(NOT SDL3TTF_VENDORED)
+    set(_sdl_cmake_module_path "${CMAKE_MODULE_PATH}")
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+
+    if(TARGET SDL3_ttf::SDL3_ttf-static)
+        if(SDL3TTF_FREETYPE)
+            find_dependency(Freetype)
+        endif()
+
+        if(SDL3TTF_HARFBUZZ)
+            list(APPEND harfbuzz_ROOT "${CMAKE_CURRENT_LIST_DIR}")
+            find_dependency(harfbuzz)
+        endif()
+    endif()
+
+    set(CMAKE_MODULE_PATH "${_sdl_cmake_module_path}")
+    unset(_sdl_cmake_module_path)
+endif()
