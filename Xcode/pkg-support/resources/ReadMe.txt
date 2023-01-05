@@ -6,13 +6,13 @@ This library is distributed under the terms of the zlib license: http://www.zlib
 
 Portions of this software are copyright © 2013 The FreeType Project (www.freetype.org).  All rights reserved.
 
-This packages contains the SDL2_ttf.framework for OS X. Conforming with Apple guidelines, this framework contains both the SDL runtime component and development header files.
+This packages contains the SDL3_ttf.framework for OS X. Conforming with Apple guidelines, this framework contains both the SDL runtime component and development header files.
 
 Requirements:
-You must have the SDL2.framework installed.
+You must have the SDL3.framework installed.
 
 To Install:
-Copy the SDL2_ttf.framework to /Library/Frameworks
+Copy the SDL3_ttf.framework to /Library/Frameworks
 
 You may alternatively install it in <your home directory>/Library/Frameworks if your access privileges are not high enough. (Be aware that the Xcode templates we provide in the SDL Developer Extras package may require some adjustment for your system if you do this.)
 

@@ -11,7 +11,7 @@
 		BE48FD5F07AFA17000BB41DA /* SDL_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1014BAEA010A4B677F000001 /* SDL_ttf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE48FD6207AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		BE48FD6B07AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
-		BE48FD8407AFA29000BB41DA /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FD8307AFA29000BB41DA /* SDL2.framework */; };
+		BE48FD8407AFA29000BB41DA /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE48FD8307AFA29000BB41DA /* SDL3.framework */; };
 		F307EE29282738F8003915D7 /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = F307EE28282738F8003915D7 /* svg.c */; };
 		F307EE2A282738F8003915D7 /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = F307EE28282738F8003915D7 /* svg.c */; };
 		F307EE2C282807EB003915D7 /* hb-ms-feature-ranges.cc in Sources */ = {isa = PBXBuildFile; fileRef = F307EE2B282807EB003915D7 /* hb-ms-feature-ranges.cc */; };
@@ -216,13 +216,13 @@
 /* Begin PBXFileReference section */
 		1014BAEA010A4B677F000001 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../SDL_ttf.h; sourceTree = SOURCE_ROOT; };
 		7FC2F5DB285AC0D600836845 /* CMake */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CMake; sourceTree = "<group>"; };
-		A75FDB0C23E37ED200529352 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = iOS/SDL2.framework; sourceTree = "<group>"; };
-		A75FDB1023E37EE400529352 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = tvOS/SDL2.framework; sourceTree = "<group>"; };
+		A75FDB0C23E37ED200529352 /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL3.framework; path = iOS/SDL3.framework; sourceTree = "<group>"; };
+		A75FDB1023E37EE400529352 /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL3.framework; path = tvOS/SDL3.framework; sourceTree = "<group>"; };
 		BE48FD6607AFA17000BB41DA /* Info-Framework.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Framework.plist"; sourceTree = "<group>"; };
-		BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE48FD6E07AFA17000BB41DA /* libSDL2_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL2_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE48FD6707AFA17000BB41DA /* SDL3_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL3_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE48FD6E07AFA17000BB41DA /* libSDL3_ttf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDL3_ttf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE48FD7207AFA17000BB41DA /* Create DMG */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Create DMG"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE48FD8307AFA29000BB41DA /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
+		BE48FD8307AFA29000BB41DA /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL3.framework; sourceTree = "<group>"; };
 		F307EE28282738F8003915D7 /* svg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = svg.c; path = ../external/freetype/src/svg/svg.c; sourceTree = "<group>"; };
 		F307EE2B282807EB003915D7 /* hb-ms-feature-ranges.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "hb-ms-feature-ranges.cc"; path = "../external/harfbuzz/src/hb-ms-feature-ranges.cc"; sourceTree = "<group>"; };
 		F364A5B72620E1A200325ECE /* FTL.TXT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FTL.TXT; path = ../../../external/freetype/docs/FTL.TXT; sourceTree = "<group>"; };
@@ -322,7 +322,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE48FD8407AFA29000BB41DA /* SDL2.framework in Frameworks */,
+				BE48FD8407AFA29000BB41DA /* SDL3.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,8 +348,8 @@
 			isa = PBXGroup;
 			children = (
 				089C1665FE841158C02AAC07 /* Resources */,
-				BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */,
-				BE48FD6E07AFA17000BB41DA /* libSDL2_ttf.a */,
+				BE48FD6707AFA17000BB41DA /* SDL3_ttf.framework */,
+				BE48FD6E07AFA17000BB41DA /* libSDL3_ttf.a */,
 				BE48FD7207AFA17000BB41DA /* Create DMG */,
 			);
 			name = Products;
@@ -388,7 +388,7 @@
 		A75FDAE023E3493000529352 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				BE48FD8307AFA29000BB41DA /* SDL2.framework */,
+				BE48FD8307AFA29000BB41DA /* SDL3.framework */,
 			);
 			path = macOS;
 			sourceTree = "<group>";
@@ -396,7 +396,7 @@
 		A75FDAE123E3496200529352 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				A75FDB0C23E37ED200529352 /* SDL2.framework */,
+				A75FDB0C23E37ED200529352 /* SDL3.framework */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -404,7 +404,7 @@
 		A75FDAE223E3496700529352 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
-				A75FDB1023E37EE400529352 /* SDL2.framework */,
+				A75FDB1023E37EE400529352 /* SDL3.framework */,
 			);
 			name = tvOS;
 			sourceTree = "<group>";
@@ -589,7 +589,7 @@
 			name = Framework;
 			productInstallPath = "@executable_path/../Frameworks";
 			productName = SDL_ttf;
-			productReference = BE48FD6707AFA17000BB41DA /* SDL2_ttf.framework */;
+			productReference = BE48FD6707AFA17000BB41DA /* SDL3_ttf.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		BE48FD6807AFA17000BB41DA /* Static Library */ = {
@@ -608,7 +608,7 @@
 			name = "Static Library";
 			productInstallPath = /usr/local/lib;
 			productName = "Static Library";
-			productReference = BE48FD6E07AFA17000BB41DA /* libSDL2_ttf.a */;
+			productReference = BE48FD6E07AFA17000BB41DA /* libSDL3_ttf.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		BE48FD6F07AFA17000BB41DA /* Create DMG */ = {
@@ -701,7 +701,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$PUBLIC_HEADERS_FOLDER_PATH\"\nsed -i '' -e 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' *.h\n";
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR/$PUBLIC_HEADERS_FOLDER_PATH\"\nsed -i '' -e 's,#include \"\\(.*\\)\",#include <SDL3/\\1>,' *.h\n";
 		};
 		BE48FD7107AFA17000BB41DA /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -710,7 +710,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PRODUCT_NAME=SDL2_ttf\n\n# Sign framework\nif [ \"$SDL_CODESIGN_IDENTITY\" != \"\" ]; then\n    codesign --force --deep --sign \"$SDL_CODESIGN_IDENTITY\" $TARGET_BUILD_DIR/$PRODUCT_NAME.framework/Versions/A || exit $?\nfi\n\n# clean up the framework, remove headers, extra files\nmkdir -p build/dmg-tmp\ncp -a $TARGET_BUILD_DIR/*.framework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname $PRODUCT_NAME -srcfolder build/dmg-tmp build/$PRODUCT_NAME.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n";
+			shellScript = "PRODUCT_NAME=SDL3_ttf\n\n# Sign framework\nif [ \"$SDL_CODESIGN_IDENTITY\" != \"\" ]; then\n    codesign --force --deep --sign \"$SDL_CODESIGN_IDENTITY\" $TARGET_BUILD_DIR/$PRODUCT_NAME.framework/Versions/A || exit $?\nfi\n\n# clean up the framework, remove headers, extra files\nmkdir -p build/dmg-tmp\ncp -a $TARGET_BUILD_DIR/*.framework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname $PRODUCT_NAME -srcfolder build/dmg-tmp build/$PRODUCT_NAME.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -998,7 +998,7 @@
 					"TTF_USE_HARFBUZZ=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/$(PLATFORM)/SDL2.framework/Headers\"";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/$(PLATFORM)/SDL3.framework/Headers\"";
 				INFOPLIST_FILE = "Info-Framework.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1008,8 +1008,8 @@
 				"PLATFORM[sdk=appletvos*]" = tvOS;
 				"PLATFORM[sdk=iphoneos*]" = iOS;
 				"PLATFORM[sdk=macosx*]" = macOS;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.libsdl.SDL2-ttf";
-				PRODUCT_NAME = SDL2_ttf;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.libsdl.SDL3-ttf";
+				PRODUCT_NAME = SDL3_ttf;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
 				SUPPORTS_MACCATALYST = YES;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
@@ -1037,7 +1037,7 @@
 					"TTF_USE_HARFBUZZ=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/$(PLATFORM)/SDL2.framework/Headers\"";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/$(PLATFORM)/SDL3.framework/Headers\"";
 				INFOPLIST_FILE = "Info-Framework.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1046,8 +1046,8 @@
 				"PLATFORM[sdk=appletvos*]" = tvOS;
 				"PLATFORM[sdk=iphoneos*]" = iOS;
 				"PLATFORM[sdk=macosx*]" = macOS;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.libsdl.SDL2-ttf";
-				PRODUCT_NAME = SDL2_ttf;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.libsdl.SDL3-ttf";
+				PRODUCT_NAME = SDL3_ttf;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
 				SUPPORTS_MACCATALYST = YES;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
