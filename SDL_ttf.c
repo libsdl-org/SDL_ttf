@@ -113,6 +113,7 @@ int TTF_SetScript(int script) /* hb_script_t */
 /* Round glyph to 16 bytes width and use SSE2 instructions */
 #if defined(__SSE2__)
 #  define HAVE_SSE2_INTRINSICS 1
+#include <emmintrin.h>
 #endif
 
 /* Round glyph width to 16 bytes use NEON instructions */
@@ -1012,6 +1013,8 @@ static void Draw_Line(TTF_Font *font, const SDL_Surface *textbuf, int column, in
     if (hb_direction == HB_DIRECTION_TTB || hb_direction == HB_DIRECTION_BTT) {
         return;
     }
+#else
+    (void) font;
 #endif
 
     /* Not needed because of "font->height = SDL_max(font->height, bottom_row);".
@@ -2499,7 +2502,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
                     if (ft_render_mode != FT_RENDER_MODE_SDF) {
                         SDL_memcpy(dstp, srcp, src->width);
                     } else {
-                        int x;
+                        unsigned int x;
                         for (x = 0; x < src->width; x++) {
                             Uint8 s = srcp[x];
                             Uint8 d;
@@ -3098,6 +3101,7 @@ int TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
     font->hb_direction = dir;
     return 0;
 #else
+    (void) font;
     (void) direction;
     return -1;
 #endif
@@ -3122,6 +3126,7 @@ int TTF_SetFontScriptName(TTF_Font *font, const char *script)
     font->hb_script = scr;
     return 0;
 #else
+    (void) font;
     (void) script;
     return -1;
 #endif
