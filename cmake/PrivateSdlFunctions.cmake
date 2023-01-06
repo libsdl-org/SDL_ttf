@@ -1,52 +1,27 @@
-# This file is shared amongst SDL_image/SDL_mixer/SDL_net/SDL_ttf
+# This file is shared amongst SDL_image/SDL_mixer/SDL_ttf
 
-macro(sdl_calculate_derived_version_variables)
-    if (NOT DEFINED MAJOR_VERSION OR NOT DEFINED MINOR_VERSION OR NOT DEFINED MICRO_VERSION)
-        message(FATAL_ERROR "MAJOR_VERSION, MINOR_VERSION and MICRO_VERSION need to be defined")
-    endif()
+macro(sdl_calculate_derived_version_variables MAJOR MINOR MICRO)
+    set(SO_VERSION_MAJOR "0")
+    set(SO_VERSION_MINOR "${MINOR_VERSION}")
+    set(SO_VERSION_MICRO "${MICRO_VERSION}")
+    set(SO_VERSION "${SO_VERSION_MAJOR}.${SO_VERSION_MINOR}.${SO_VERSION_MICRO}")
 
-    set(FULL_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}")
-
-    # Calculate a libtool-like version number
-    math(EXPR BINARY_AGE "${MINOR_VERSION} * 100 + ${MICRO_VERSION}")
-    math(EXPR IS_DEVELOPMENT "${MINOR_VERSION} % 2")
-    if (IS_DEVELOPMENT)
-        # Development branch, 2.5.1 -> libSDL2_XXXXX-2.0.so.0.501.0
-        set(INTERFACE_AGE 0)
+    if(MINOR MATCHES "[02468]$")
+        math(EXPR DYLIB_COMPAT_VERSION_MAJOR "100 * ${MINOR} + 1")
+        set(DYLIB_COMPAT_VERSION_MINOR "0")
+        math(EXPR DYLIB_CURRENT_VERSION_MAJOR "${DYLIB_COMPAT_VERSION_MAJOR}")
+        set(DYLIB_CURRENT_VERSION_MINOR "${MICRO}")
     else()
-        # Stable branch, 2.6.1 -> libSDL2_XXXXX-2.0.so.0.600.1
-        set(INTERFACE_AGE ${MICRO_VERSION})
+        math(EXPR DYLIB_COMPAT_VERSION_MAJOR "100 * ${MINOR} + ${MICRO} + 1")
+        set(DYLIB_COMPAT_VERSION_MINOR "0")
+        math(EXPR DYLIB_CURRENT_VERSION_MAJOR "${DYLIB_COMPAT_VERSION_MAJOR}")
+        set(DYLIB_CURRENT_VERSION_MINOR "0")
     endif()
+    set(DYLIB_COMPAT_VERSION_MICRO "0")
+    set(DYLIB_CURRENT_VERSION_MICRO "0")
 
-    # Increment this if there is an incompatible change - but if that happens,
-    # we should rename the library from SDL2 to SDL3, at which point this would
-    # reset to 0 anyway.
-    set(LT_MAJOR "0")
-
-    math(EXPR LT_AGE "${BINARY_AGE} - ${INTERFACE_AGE}")
-    math(EXPR LT_CURRENT "${LT_MAJOR} + ${LT_AGE}")
-    set(LT_REVISION "${INTERFACE_AGE}")
-    # For historical reasons, the library name redundantly includes the major
-    # version twice: libSDL2_XXXXX-2.0.so.0.
-    # TODO: in SDL 3, set the OUTPUT_NAME to plain SDL3_XXXXX, which will simplify
-    # it to libSDL2_XXXXX.so.0
-    set(LT_RELEASE "2.0")
-    set(LT_VERSION "${LT_MAJOR}.${LT_AGE}.${LT_REVISION}")
-
-    # The following should match the versions in the Xcode project file.
-    # Each version is 1 higher than you might expect, for compatibility
-    # with libtool: macOS ABI versioning is 1-based, unlike other platforms
-    # which are normally 0-based.
-    math(EXPR DYLIB_CURRENT_VERSION_MAJOR "${LT_MAJOR} + ${LT_AGE} + 1")
-    math(EXPR DYLIB_CURRENT_VERSION_MINOR "${LT_REVISION}")
-    set(DYLIB_CURRENT_VERSION "${DYLIB_CURRENT_VERSION_MAJOR}.${DYLIB_CURRENT_VERSION_MINOR}.0")
-    set(DYLIB_COMPATIBILITY_VERSION "${DYLIB_CURRENT_VERSION_MAJOR}.0.0")
-endmacro()
-
-macro(sdl_find_sdl3 TARGET VERSION)
-    if(NOT TARGET ${TARGET})
-        find_package(SDL3 ${VERSION} REQUIRED QUIET)
-    endif()
+    set(DYLIB_CURRENT_VERSION "${DYLIB_CURRENT_VERSION_MAJOR}.${DYLIB_CURRENT_VERSION_MINOR}.${DYLIB_CURRENT_VERSION_MICRO}")
+    set(DYLIB_COMPAT_VERSION "${DYLIB_COMPAT_VERSION_MAJOR}.${DYLIB_COMPAT_VERSION_MINOR}.${DYLIB_COMPAT_VERSION_MICRO}")
 endmacro()
 
 function(read_absolute_symlink DEST PATH)
@@ -157,38 +132,37 @@ function(target_get_dynamic_library DEST TARGET)
         # 1. find the target library a file might be symbolic linking to
         # 2. find all other files in the same folder that symolic link to it
         # 3. sort all these files, and select the 2nd item
-        set(props_to_check IMPORTED_LOCATION)
+        set(location_properties IMPORTED_LOCATION)
         if (CMAKE_BUILD_TYPE)
-            list(APPEND props_to_check IMPORTED_LOCATION_${CMAKE_BUILD_TYPE})
+            list(APPEND location_properties IMPORTED_LOCATION_${CMAKE_BUILD_TYPE})
         endif()
         foreach (config_type ${CMAKE_CONFIGURATION_TYPES} RELEASE DEBUG RELWITHDEBINFO MINSIZEREL)
-            list(APPEND props_to_check IMPORTED_LOCATION_${config_type})
+            list(APPEND location_properties IMPORTED_LOCATION_${config_type})
         endforeach()
-        foreach(prop_to_check ${props_to_check})
+        foreach(location_property ${location_properties})
             if (NOT result)
-                get_target_property(propvalue "${TARGET}" ${prop_to_check})
-                if (EXISTS "${propvalue}")
-                    while (IS_SYMLINK "${propvalue}")
-                        read_absolute_symlink(propvalue "${propvalue}")
+                get_target_property(library_path "${TARGET}" ${location_property})
+                if (EXISTS "${library_path}")
+                    while (IS_SYMLINK "${library_path}")
+                        read_absolute_symlink(library_path "${library_path}")
                     endwhile()
-                    get_filename_component(libdir "${propvalue}" DIRECTORY)
+                    get_filename_component(libdir "${library_path}" DIRECTORY)
                     file(GLOB subfiles "${libdir}/*")
-                    set(similar_files "${propvalue}")
+                    set(similar_files "${library_path}")
                     foreach(subfile ${subfiles})
                         if (IS_SYMLINK "${subfile}")
                             read_absolute_symlink(subfile_target "${subfile}")
-                            if (subfile_target STREQUAL propvalue)
+                            while (IS_SYMLINK "${subfile_target}")
+                                read_absolute_symlink(subfile_target "${subfile_target}")
+                            endwhile()
+                            if (subfile_target STREQUAL library_path AND NOT "${subfile}" MATCHES ".*(dylib|so)$")
                                 list(APPEND similar_files "${subfile}")
                             endif()
                         endif()
                     endforeach()
                     list(SORT similar_files)
                     list(LENGTH similar_files eq_length)
-                    if (eq_length GREATER 1)
-                        list(GET similar_files 1 item)
-                    else()
-                        list(GET similar_files 0 item)
-                    endif()
+                    list(GET similar_files 0 item)
                     get_filename_component(result "${item}" NAME)
                 endif()
             endif()
