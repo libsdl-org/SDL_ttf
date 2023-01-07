@@ -1,5 +1,5 @@
 # SDL3_image CMake configuration file:
-# This file is meant to be placed in a cmake subfolder of SDL3_image-devel-2.x.y-VC
+# This file is meant to be placed in a cmake subfolder of SDL3_image-devel-3.x.y-VC
 
 include(FeatureSummary)
 set_package_properties(SDL3_ttf PROPERTIES
@@ -37,7 +37,7 @@ if(NOT TARGET SDL3_ttf::SDL3_ttf)
     add_library(SDL3_ttf::SDL3_ttf SHARED IMPORTED)
     set_target_properties(SDL3_ttf::SDL3_ttf
         PROPERTIES
-            INTERFACE_INCLUDE_DIRECTORIES "${_sdl3ttf_incdir}"
+            INTERFACE_INCLUDE_DIRECTORIES "${_sdl3ttf_incdir};${_sdl3ttf_incdir}/SDL3"
             IMPORTED_IMPLIB "${_sdl3ttf_library}"
             IMPORTED_LOCATION "${_sdl3ttf_dll}"
             COMPATIBLE_INTERFACE_BOOL "SDL3_SHARED"
