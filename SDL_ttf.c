@@ -141,7 +141,7 @@ int TTF_SetScript(int script) /* hb_script_t */
 //#define USE_DUFFS_LOOP
 
 #if defined(HAVE_SSE2_INTRINSICS)
-static SDL_INLINE int hasSSE2()
+static SDL_INLINE int hasSSE2(void)
 {
     static int val = -1;
     if (val != -1) {
@@ -442,18 +442,13 @@ static SDL_INLINE void BG_Blended_LCD(const TTF_Image *image, Uint32 *destinatio
     Uint8 bg_r, bg_g, bg_b;
     Uint32 bg_a;
 
-    int x, y = 0;
-
     fg_r = fg->r;
     fg_g = fg->g;
     fg_b = fg->b;
 
     while (height--) {
-        y++;
-        x = 0;
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-                x++;
                 tmp = *src++;
 
                 if (tmp) {
@@ -1093,7 +1088,7 @@ static void clip_glyph(int *_x, int *_y, TTF_Image *image, const SDL_Surface *te
 }
 
 /* Glyph width is rounded, dst addresses are aligned, src addresses are not aligned */
-static int Get_Alignment()
+static int Get_Alignment(void)
 {
 #if defined(HAVE_NEON_INTRINSICS)
     if (hasNEON()) {
