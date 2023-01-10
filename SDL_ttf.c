@@ -153,7 +153,7 @@ static SDL_INLINE int hasSSE2(void)
 #endif
 
 #if defined(HAVE_NEON_INTRINSICS)
-static SDL_INLINE int hasNEON()
+static SDL_INLINE int hasNEON(void)
 {
     static int val = -1;
     if (val != -1) {
