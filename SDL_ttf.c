@@ -1093,7 +1093,7 @@ static void clip_glyph(int *_x, int *_y, TTF_Image *image, const SDL_Surface *te
 }
 
 /* Glyph width is rounded, dst addresses are aligned, src addresses are not aligned */
-static int Get_Alignement()
+static int Get_Alignment()
 {
 #if defined(HAVE_NEON_INTRINSICS)
     if (hasNEON()) {
@@ -1125,7 +1125,7 @@ static int Get_Alignement()
 static SDL_INLINE                                                                                                       \
 int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg)                     \
 {                                                                                                                       \
-    const int alignment = Get_Alignement() - 1;                                                                         \
+    const int alignment = Get_Alignment() - 1;                                                                         \
     const int bpp = ((IS_BLENDED || IS_LCD) ? 4 : 1);                                                                   \
     unsigned int i;                                                                                                     \
     Uint8 fg_alpha = (fg ? fg->a : 0);                                                                                  \
@@ -1377,37 +1377,6 @@ static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel,
 #endif
 }
 
-#ifndef SIZE_MAX
-# define SIZE_MAX ((size_t) -1)
-#endif
-
-#if !SDL_VERSION_ATLEAST(2, 23, 1)
-SDL_FORCE_INLINE int compat_size_add_overflow (size_t a,
-                                               size_t b,
-                                               size_t *ret)
-{
-    if (b > SIZE_MAX - a) {
-        return -1;
-    }
-    *ret = a + b;
-    return 0;
-}
-
-SDL_FORCE_INLINE int compat_size_mul_overflow (size_t a,
-                                               size_t b,
-                                               size_t *ret)
-{
-    if (a != 0 && b > SIZE_MAX / a) {
-        return -1;
-    }
-    *ret = a * b;
-    return 0;
-}
-
-#define SDL_size_add_overflow(a, b, r) compat_size_add_overflow(a, b, r)
-#define SDL_size_mul_overflow(a, b, r) compat_size_mul_overflow(a, b, r)
-#endif /* SDL < 2.23.1 */
-
 /* Create a surface with memory:
  * - pitch is rounded to alignment
  * - address is aligned
@@ -1420,12 +1389,11 @@ SDL_FORCE_INLINE int compat_size_mul_overflow (size_t a,
  */
 static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_PixelFormatEnum format, Uint32 bgcolor)
 {
-    const size_t alignment = Get_Alignement() - 1;
+    const size_t alignment = Get_Alignment() - 1;
     const size_t bytes_per_pixel = SDL_BYTESPERPIXEL(format);
     SDL_Surface *textbuf = NULL;
     size_t size;
-    size_t data_bytes;
-    void *pixels, *ptr;
+    void *pixels;
     size_t pitch;
 
     /* Worst case at the end of line pulling 'alignment' extra blank pixels */
@@ -1439,25 +1407,19 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
     }
     pitch &= ~alignment;
 
-    if (SDL_size_mul_overflow(height, pitch, &data_bytes) ||
-        SDL_size_add_overflow(data_bytes, sizeof (void *) + alignment, &size) ||
-        size > SDL_MAX_SINT32) {
+    if (SDL_size_mul_overflow(height, pitch, &size)) {
         /* Overflow... */
         return NULL;
     }
 
-    ptr = SDL_malloc(size);
-    if (ptr == NULL) {
+    pixels = SDL_aligned_alloc(alignment + 1, size);
+    if (pixels == NULL) {
         return NULL;
     }
 
-    /* address is aligned */
-    pixels = (void *)(((uintptr_t)ptr + sizeof(void *) + alignment) & ~alignment);
-    ((void **)pixels)[-1] = ptr;
-
     textbuf = SDL_CreateSurfaceFrom(pixels, (int)width, (int)height, (int)pitch, format);
     if (textbuf == NULL) {
-        SDL_free(ptr);
+        SDL_aligned_free(pixels);
         return NULL;
     }
 
@@ -1466,10 +1428,10 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
     textbuf->flags |= SDL_SIMD_ALIGNED;
 
     if (bytes_per_pixel == 4) {
-        SDL_memset4(pixels, bgcolor, data_bytes / 4);
+        SDL_memset4(pixels, bgcolor, size / 4);
     }
     else {
-        SDL_memset(pixels, (bgcolor & 0xff), data_bytes);
+        SDL_memset(pixels, (bgcolor & 0xff), size);
     }
 
     return textbuf;
@@ -1677,7 +1639,7 @@ int TTF_Init(void)
     compil_neon = 1;
 #  endif
     SDL_Log("SDL_ttf: hasSSE2=%d hasNEON=%d alignment=%d duffs_loop=%d compil_sse2=%d compil_neon=%d",
-            sse2, neon, Get_Alignement(), duffs, compil_sse2, compil_neon);
+            sse2, neon, Get_Alignment(), duffs, compil_sse2, compil_neon);
 
     SDL_Log("Sizeof TTF_Image: %d c_glyph: %d TTF_Font: %d", sizeof (TTF_Image), sizeof (c_glyph), sizeof (TTF_Font));
 #endif
@@ -2094,7 +2056,7 @@ static void Flush_Cache(TTF_Font *font)
 
 static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translation)
 {
-    const int alignment = Get_Alignement() - 1;
+    const int alignment = Get_Alignment() - 1;
     FT_GlyphSlot slot;
     FT_Error error;
 
