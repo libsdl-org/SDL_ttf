@@ -1396,7 +1396,6 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
         height > SDL_MAX_SINT32 ||
         SDL_size_add_overflow(width, alignment, &pitch) ||
         SDL_size_mul_overflow(pitch, bytes_per_pixel, &pitch) ||
-        SDL_size_add_overflow(pitch, alignment, &pitch) ||
         pitch > SDL_MAX_SINT32) {
         return NULL;
     }
