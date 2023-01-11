@@ -1397,7 +1397,49 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
     void *pixels;
     size_t pitch;
 
-    /* Worst case at the end of line pulling 'alignment' extra blank pixels */
+    /*
+     * 1/ Line size is "width * bytes_per_pixel"
+     *
+     * 2/ We add a right padding, because we process glyph from source to destination by
+     * blocks of 'alignment + 1' bytes.  (Using SSE 128 instruction for instance when renderering,
+     * but this isn't always the case for all modes).
+     *
+     * We need to make sure the last transfer doesn't go too much outside!
+     *
+     * Considerer also for instance, that when we read 1 block of 16 bytes from source, for the blended
+     * format (bbp == 4), it writes(and reads) 4 blocks of 16 in the dest, like BG_Blended_SSE()).
+     *
+     * Remark: for Solid/Shaded, block ratio read/write is 1:1.
+     * For Color / LCD / SDF, it is byte vs byte or int. They are also fallback for
+     * Solid/Shaded/Blend, when it isn't contained in textbuf, see clip_glyph()
+     *
+     * So the pitch must contain "width * bytes_per_pixel", plus in the
+     * worst case, writing at last pixel (1 * bytes_per_pixel), an extra "alignment * bytes_per_pixel".
+     * (Using the destination bytes_per_pixel is a safe upper bound for the ratio).
+     *
+     * Also, we always write at a block-aligned adresses.
+     * - address is aligned 'SDL_aligned_alloc((alignment + 1), size)'
+     * - the pitch is aligned 'pitch &= ~alignment'
+     * So that each line is aligned.
+     *
+     * Remark: we can safely align the pitch (pitch &= ~alignment), without adding more to pitch,
+     * becaJuse we know we always write blocks at block-aligned addresses.
+     * So pitch won't need to be more than a multiple of block size.
+     *
+     * So pitch is:
+     *  ((width * bytes_per_pixel) + (alignment * bytes_per_pixel) ) & ~alignment
+     *  ==
+     *  ((width + alignment) * bytes_per_pixel ) & ~alignment
+     *
+     * which is different than:
+     *  ((width + alignment) & ~alignment)) * bytes_per_pixel  (which fails)
+     *
+     *
+     *
+     * Remark: to test memory issue, it is usefull to patch SDL to use real memalign/free
+     * so that valgrind check more precisely out of bounds.
+     *
+     */
     if (width > SDL_MAX_SINT32 ||
         height > SDL_MAX_SINT32 ||
         SDL_size_add_overflow(width, alignment, &pitch) ||

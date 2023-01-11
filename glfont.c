@@ -74,7 +74,7 @@ static void SDL_GL_Enter2DMode(int width, int height)
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
-static void SDL_GL_Leave2DMode()
+static void SDL_GL_Leave2DMode(void)
 {
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
