@@ -323,6 +323,7 @@ endif()
 if(SDL3TTF_SAMPLES)
     add_executable(glfont glfont.c)
     add_executable(showfont showfont.c)
+    add_executable(testapp testapp.c)
 
     set(OpenGL_GL_PREFERENCE GLVND)
     find_package(OpenGL)
@@ -334,7 +335,7 @@ if(SDL3TTF_SAMPLES)
         target_link_libraries(glfont PRIVATE OpenGL::GL)
     endif()
 
-    foreach(prog glfont showfont)
+    foreach(prog glfont showfont testapp)
         target_link_libraries(${prog} PRIVATE SDL3_ttf::${sdl3_ttf_export_name})
         target_link_libraries(${prog} PRIVATE ${sdl3_target_name})
 
