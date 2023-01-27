@@ -406,13 +406,13 @@ int main(int argc, char *argv[])
     while (!done) {
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
-                case SDL_MOUSEMOTION:
+                case SDL_EVENT_MOUSE_MOTION:
                 x = event.motion.x - w/2;
                 y = event.motion.y - h/2;
                 break;
 
-                case SDL_KEYDOWN:
-                case SDL_QUIT:
+                case SDL_EVENT_KEY_DOWN:
+                case SDL_EVENT_QUIT:
                 done = 1;
                 break;
                 default:
