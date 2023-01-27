@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
             continue;
         }
         switch (event.type) {
-            case SDL_MOUSEBUTTONDOWN:
+            case SDL_EVENT_MOUSE_BUTTONDOWN:
                 scene.messageRect.x = event.button.x - text->w/2;
                 scene.messageRect.y = event.button.y - text->h/2;
                 scene.messageRect.w = text->w;
@@ -351,8 +351,8 @@ int main(int argc, char *argv[])
                 draw_scene(renderer, &scene);
                 break;
 
-            case SDL_KEYDOWN:
-            case SDL_QUIT:
+            case SDL_EVENT_KEY_DOWN:
+            case SDL_EVENT_QUIT:
                 done = 1;
                 break;
             default:
