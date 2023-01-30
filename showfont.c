@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
             continue;
         }
         switch (event.type) {
-            case SDL_EVENT_MOUSE_BUTTONDOWN:
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 scene.messageRect.x = event.button.x - text->w/2;
                 scene.messageRect.y = event.button.y - text->h/2;
                 scene.messageRect.w = text->w;
