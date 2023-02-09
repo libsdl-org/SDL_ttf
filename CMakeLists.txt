@@ -42,6 +42,12 @@ else()
     set(vendored_default FALSE)
 endif()
 
+set(sdl2ttf_install_enableable ON)
+if ((TARGET SDL2 OR TARGET SDL2-static) AND SDL2_DISABLE_INSTALL)
+    # Cannot install SDL2_mixer when SDL2 is built in same built, and is not installed.
+    set(sdl2ttf_install_enableable OFF)
+endif()
+
 include(CMakeDependentOption)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
@@ -51,7 +57,7 @@ option(CMAKE_POSITION_INDEPENDENT_CODE "Build static libraries with -fPIC" ON)
 option(BUILD_SHARED_LIBS "Build the library as a shared library" ON)
 
 option(SDL2TTF_SAMPLES "Build the SDL2_ttf sample program(s)" ${SDL2TTF_ROOTPROJECT})
-option(SDL2TTF_INSTALL "Enable SDL2_ttf install target" ${SDL2TTF_ROOTPROJECT})
+cmake_dependent_option(SDL2TTF_INSTALL "Enable SDL2_ttf install target" ${SDL2TTF_ROOTPROJECT} "${sdl2ttf_install_enableable}" OFF)
 option(SDL2TTF_VENDORED "Use vendored third-party libraries" ${vendored_default})
 
 # For style consistency, create a SDL2TTF_FREETYPE CMake variable. This variable is NOT configurable.
