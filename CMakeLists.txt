@@ -37,6 +37,12 @@ else()
     set(vendored_default FALSE)
 endif()
 
+set(sdl3ttf_install_enableable ON)
+if ((TARGET SDL3 OR TARGET SDL3-static) AND SDL3_DISABLE_INSTALL)
+    # Cannot install SDL3_ttf when SDL3 is built in same built, and is not installed.
+    set(sdl3ttf_install_enableable OFF)
+endif()
+
 include(CMakeDependentOption)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
@@ -45,7 +51,7 @@ include(CheckSymbolExists)
 option(CMAKE_POSITION_INDEPENDENT_CODE "Build static libraries with -fPIC" ON)
 option(BUILD_SHARED_LIBS "Build the library as a shared library" ON)
 
-option(SDL3TTF_INSTALL "Enable SDL3_ttf install target" ${SDL3TTF_ROOTPROJECT})
+cmake_dependent_option(SDL3TTF_INSTALL "Enable SDL3_ttf install target" ${SDL3TTF_ROOTPROJECT} "${sdl3ttf_install_enableable}" OFF)
 option(SDL3TTF_VENDORED "Use vendored third-party libraries" ${vendored_default})
 option(SDL3TTF_WERROR "Treat warnings as errors" OFF)
 
