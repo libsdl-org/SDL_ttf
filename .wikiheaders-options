@@ -1,7 +1,7 @@
 projectfullname = SDL_ttf
 projectshortname = SDL_ttf
-incsubdir =
-wikisubdir = SDL_ttf
+incsubdir = include/SDL3
+wikisubdir = SDL3_ttf
 apiprefixregex = TTF_
 mainincludefname = SDL_ttf.h
 versionfname = SDL_ttf.h
