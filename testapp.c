@@ -577,7 +577,7 @@ int main(void)
 #define INIT_VARS           \
     t_sum = 0;              \
     T_sum = 0;              \
-    T_min = 999999999999;   \
+    T_min = 999999999999ULL;\
     count = count_init;     \
 
 #define START_MEASURE                                                                   \
