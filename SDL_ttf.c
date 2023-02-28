@@ -1431,14 +1431,11 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
      *  ==
      *  ((width + alignment) * bytes_per_pixel ) & ~alignment
      *
-     * which is different than:
-     *  ((width + alignment) & ~alignment)) * bytes_per_pixel  (which fails)
+     * which is different from:
+     *  ((width + alignment) & ~alignment)) * bytes_per_pixel  (which fails.)
      *
-     *
-     *
-     * Remark: to test memory issue, it is usefull to patch SDL to use real memalign/free
+     * Remark: to test memory issues, it is useful to patch SDL to use real memalign/free
      * so that valgrind check more precisely out of bounds.
-     *
      */
     if (width > SDL_MAX_SINT32 ||
         height > SDL_MAX_SINT32 ||
