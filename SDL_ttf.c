@@ -143,7 +143,7 @@ int TTF_SetScript(int script) /* hb_script_t */
 //#define USE_DUFFS_LOOP
 
 #if defined(HAVE_SSE2_INTRINSICS)
-static SDL_INLINE int hasSSE2()
+static SDL_INLINE int hasSSE2(void)
 {
     static int val = -1;
     if (val != -1) {
@@ -155,7 +155,7 @@ static SDL_INLINE int hasSSE2()
 #endif
 
 #if defined(HAVE_NEON_INTRINSICS)
-static SDL_INLINE int hasNEON()
+static SDL_INLINE int hasNEON(void)
 {
     static int val = -1;
     if (val != -1) {
@@ -444,18 +444,13 @@ static SDL_INLINE void BG_Blended_LCD(const TTF_Image *image, Uint32 *destinatio
     Uint8 bg_r, bg_g, bg_b;
     Uint32 bg_a;
 
-    int x, y = 0;
-
     fg_r = fg->r;
     fg_g = fg->g;
     fg_b = fg->b;
 
     while (height--) {
-        y++;
-        x = 0;
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-                x++;
                 tmp = *src++;
 
                 if (tmp) {
@@ -1015,6 +1010,8 @@ static void Draw_Line(TTF_Font *font, const SDL_Surface *textbuf, int column, in
     if (hb_direction == HB_DIRECTION_TTB || hb_direction == HB_DIRECTION_BTT) {
         return;
     }
+#else
+    (void) font;
 #endif
 
     /* Not needed because of "font->height = SDL_max(font->height, bottom_row);".
@@ -1099,7 +1096,7 @@ static void clip_glyph(int *_x, int *_y, TTF_Image *image, const SDL_Surface *te
 }
 
 /* Glyph width is rounded, dst addresses are aligned, src addresses are not aligned */
-static int Get_Alignement()
+static int Get_Alignment(void)
 {
 #if defined(HAVE_NEON_INTRINSICS)
     if (hasNEON()) {
@@ -1131,7 +1128,7 @@ static int Get_Alignement()
 static SDL_INLINE                                                                                                       \
 int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg)                     \
 {                                                                                                                       \
-    const int alignment = Get_Alignement() - 1;                                                                         \
+    const int alignment = Get_Alignment() - 1;                                                                         \
     const int bpp = ((IS_BLENDED || IS_LCD) ? 4 : 1);                                                                   \
     unsigned int i;                                                                                                     \
     Uint8 fg_alpha = (fg ? fg->a : 0);                                                                                  \
@@ -1384,13 +1381,12 @@ static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel,
 }
 
 #ifndef SIZE_MAX
-# define SIZE_MAX ((size_t) -1)
+# define SIZE_MAX ((size_t)(-1))
 #endif
 
 #if !SDL_VERSION_ATLEAST(2, 23, 1)
-SDL_FORCE_INLINE int compat_size_add_overflow (size_t a,
-                                               size_t b,
-                                               size_t *ret)
+SDL_FORCE_INLINE int
+compat_size_add_overflow (size_t a, size_t b, size_t *ret)
 {
     if (b > SIZE_MAX - a) {
         return -1;
@@ -1399,9 +1395,8 @@ SDL_FORCE_INLINE int compat_size_add_overflow (size_t a,
     return 0;
 }
 
-SDL_FORCE_INLINE int compat_size_mul_overflow (size_t a,
-                                               size_t b,
-                                               size_t *ret)
+SDL_FORCE_INLINE int
+compat_size_mul_overflow (size_t a, size_t b, size_t *ret)
 {
     if (a != 0 && b > SIZE_MAX / a) {
         return -1;
@@ -1426,7 +1421,7 @@ SDL_FORCE_INLINE int compat_size_mul_overflow (size_t a,
  */
 static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_PixelFormatEnum format, Uint32 bgcolor)
 {
-    const size_t alignment = Get_Alignement() - 1;
+    const size_t alignment = Get_Alignment() - 1;
     const size_t bytes_per_pixel = SDL_BYTESPERPIXEL(format);
     SDL_Surface *textbuf = NULL;
     size_t size;
@@ -1683,7 +1678,7 @@ int TTF_Init(void)
     compil_neon = 1;
 #  endif
     SDL_Log("SDL_ttf: hasSSE2=%d hasNEON=%d alignment=%d duffs_loop=%d compil_sse2=%d compil_neon=%d",
-            sse2, neon, Get_Alignement(), duffs, compil_sse2, compil_neon);
+            sse2, neon, Get_Alignment(), duffs, compil_sse2, compil_neon);
 
     SDL_Log("Sizeof TTF_Image: %d c_glyph: %d TTF_Font: %d", sizeof (TTF_Image), sizeof (c_glyph), sizeof (TTF_Font));
 #endif
@@ -2095,7 +2090,7 @@ static void Flush_Cache(TTF_Font *font)
 
 static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translation)
 {
-    const int alignment = Get_Alignement() - 1;
+    const int alignment = Get_Alignment() - 1;
     FT_GlyphSlot slot;
     FT_Error error;
 
@@ -3102,6 +3097,7 @@ int TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
     font->hb_direction = dir;
     return 0;
 #else
+    (void) font;
     (void) direction;
     return -1;
 #endif
@@ -3126,6 +3122,7 @@ int TTF_SetFontScriptName(TTF_Font *font, const char *script)
     font->hb_script = scr;
     return 0;
 #else
+    (void) font;
     (void) script;
     return -1;
 #endif
