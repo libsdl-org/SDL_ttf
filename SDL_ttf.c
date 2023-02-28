@@ -3096,9 +3096,9 @@ int TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
     } else if (direction == TTF_DIRECTION_RTL) {
         dir = HB_DIRECTION_RTL;
     } else if (direction == TTF_DIRECTION_TTB) {
-        dir = HB_DIRECTION_TTB;
-    } else if (direction == TTF_DIRECTION_BTT) {
         dir = HB_DIRECTION_BTT;
+    } else if (direction == TTF_DIRECTION_BTT) {
+        dir = HB_DIRECTION_TTB;
     } else {
         return -1;
     }
