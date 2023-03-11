@@ -2324,7 +2324,7 @@ extern DECLSPEC int SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char *sc
  *
  * \sa TTF_SetFontSDF
  */
-extern DECLSPEC SDL_bool TTF_GetFontScalable(const TTF_Font *font);
+extern DECLSPEC SDL_bool TTF_IsFontScalable(const TTF_Font *font);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
