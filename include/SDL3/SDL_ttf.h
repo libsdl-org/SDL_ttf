@@ -2311,6 +2311,21 @@ extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction d
  */
 extern DECLSPEC int SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char *script);
 
+/**
+ * Query whether a font is scalable or not.
+ *
+ * Scalability lets us distinguish between outline and bitmap fonts.
+ *
+ * \param font the font to query
+ *
+ * \returns SDL_TRUE if the font is scalable, SDL_FALSE otherwise.
+ *
+ * \since This function is available since SDL_ttf 2.21.0.
+ *
+ * \sa TTF_SetFontSDF
+ */
+extern DECLSPEC SDL_bool TTF_IsFontScalable(const TTF_Font *font);
+
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }

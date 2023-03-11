@@ -4248,4 +4248,13 @@ int TTF_GetFontKerningSizeGlyphs32(TTF_Font *font, Uint32 previous_ch, Uint32 ch
     return (int)(delta.x >> 6);
 }
 
+SDL_bool TTF_IsFontScalable(const TTF_Font *font)
+{
+    TTF_CHECK_POINTER(font, SDL_FALSE);
+    if (FT_IS_SCALABLE(font->face)) {
+        return SDL_TRUE;
+    }
+    return SDL_FALSE;
+}
+
 /* vi: set ts=4 sw=4 expandtab: */
