@@ -308,10 +308,7 @@ int main(int argc, char *argv[])
     }
 
     /* Set a 640x480 video mode */
-    window = SDL_CreateWindow("glfont",
-                                SDL_WINDOWPOS_UNDEFINED,
-                                SDL_WINDOWPOS_UNDEFINED,
-                                WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow("glfont", WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
     if (window == NULL) {
         fprintf(stderr, "Couldn't create window: %s\n", SDL_GetError());
         cleanup(2);

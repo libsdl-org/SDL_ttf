@@ -605,7 +605,7 @@ int main(void)
        quit("SDL_ttf init failed");
     }
 
-    window = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windoww, windowh, 0);
+    window = SDL_CreateWindow("", windoww, windowh, 0);
     if (window == NULL) {
        quit("SDL windowdow setup failed");
     }
