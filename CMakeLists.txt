@@ -164,6 +164,15 @@ if(SDL2TTF_BUILD_SHARED_LIBS)
     set_property(TARGET SDL2_ttf APPEND PROPERTY COMPATIBLE_INTERFACE_BOOL SDL2_SHARED)
 endif()
 
+if(SDL2TTF_BUILD_SHARED_LIBS)
+    sdl_target_link_options_no_undefined(SDL2_ttf)
+endif()
+
+if(SDL2TTF_BUILD_SHARED_LIBS)
+    # Make sure static library dependencies are built with -fPIC when building a shared SDL2_ttf
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
+
 set(INSTALL_EXTRA_TARGETS)
 set(PC_LIBS)
 set(PC_REQUIRES)
