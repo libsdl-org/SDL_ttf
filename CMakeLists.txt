@@ -166,6 +166,15 @@ if(SDL3TTF_BUILD_SHARED_LIBS)
     set_property(TARGET SDL3_ttf APPEND PROPERTY COMPATIBLE_INTERFACE_BOOL SDL3_SHARED)
 endif()
 
+if(SDL3TTF_BUILD_SHARED_LIBS)
+    sdl_target_link_options_no_undefined(SDL3_ttf)
+endif()
+
+if(SDL3TTF_BUILD_SHARED_LIBS)
+    # Make sure static library dependencies are built with -fPIC when building a shared SDL3_ttf
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
+
 set(INSTALL_EXTRA_TARGETS)
 set(PC_LIBS)
 set(PC_REQUIRES)
