@@ -107,11 +107,12 @@ add_library(SDL3_ttf
     SDL_ttf.c
 )
 add_library(SDL3_ttf::${sdl3_ttf_export_name} ALIAS SDL3_ttf)
-target_include_directories(SDL3_ttf PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/include"
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/include/SDL3"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL3>"
+target_include_directories(SDL3_ttf
+    PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/SDL3>"
+        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL3>"
 )
 target_compile_definitions(SDL3_ttf PRIVATE
     BUILD_SDL
