@@ -3377,7 +3377,7 @@ static int TTF_Size_Internal(TTF_Font *font,
         }
         if (count) {
 #if TTF_USE_HARFBUZZ
-            if (char_count == glyph_count) {
+            if ((unsigned int)char_count == glyph_count) {
                 /* The higher level code doesn't know about ligatures,
                  * so if we've covered all the glyphs, report the full
                  * string length.
