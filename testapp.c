@@ -31,7 +31,7 @@
  *
  */
 
-const static int g_force_no_SDF = 0; /* make random fuzzer faster by disabling SDF rendering */
+static const int g_force_no_SDF = 0; /* make random fuzzer faster by disabling SDF rendering */
 
 #include <stdio.h>
 #include <stdlib.h>
