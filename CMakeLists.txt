@@ -173,6 +173,8 @@ if(SDL3TTF_BUILD_SHARED_LIBS)
     sdl_target_link_options_no_undefined(${sdl3_ttf_target_name})
 endif()
 
+sdl_target_link_option_version_file(${sdl3_ttf_target_name} "${CMAKE_CURRENT_SOURCE_DIR}/SDL_ttf.sym")
+
 if(SDL3TTF_BUILD_SHARED_LIBS)
     # Make sure static library dependencies are built with -fPIC when building a shared SDL3_ttf
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
