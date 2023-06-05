@@ -82,20 +82,6 @@ if(NOT TARGET ${sdl3_target_name})
     find_package(SDL3 ${SDL_REQUIRED_VERSION} REQUIRED)
 endif()
 
-add_library(sdl3ttf_build_options INTERFACE)
-if(MSVC)
-    target_compile_options(sdl3ttf_build_options INTERFACE /W2)
-else()
-    target_compile_options(sdl3ttf_build_options INTERFACE -Wall -Wextra)
-endif()
-if(SDL3TTF_WERROR)
-    if(MSVC)
-        target_compile_options(sdl3ttf_build_options INTERFACE /WX)
-    else()
-        target_compile_options(sdl3ttf_build_options INTERFACE -Werror)
-    endif()
-endif()
-
 # Enable large file support on 32-bit glibc, so that the vendored libraries
 # can access files with large inode numbers
 check_symbol_exists("__GLIBC__" "stdlib.h" LIBC_IS_GLIBC)
@@ -124,7 +110,7 @@ target_compile_definitions(${sdl3_ttf_target_name} PRIVATE
     SDL_BUILD_MICRO_VERSION=${MICRO_VERSION}
 )
 target_link_libraries(${sdl3_ttf_target_name} PRIVATE $<BUILD_INTERFACE:${sdl3_target_name}>)
-target_link_libraries(${sdl3_ttf_target_name} PRIVATE $<BUILD_INTERFACE:sdl3ttf_build_options>)
+sdl_add_warning_options(${sdl3_ttf_target_name} WARNING_AS_ERROR ${SDL3TTF_WERROR})
 if(WIN32 AND SDL3TTF_BUILD_SHARED_LIBS)
     target_sources(${sdl3_ttf_target_name} PRIVATE
         version.rc
@@ -365,6 +351,7 @@ if(SDL3TTF_SAMPLES)
     endif()
 
     foreach(prog glfont showfont testapp)
+        sdl_add_warning_options(${prog} WARNING_AS_ERROR ${SDL3TTF_WERROR})
         target_link_libraries(${prog} PRIVATE SDL3_ttf::${sdl3_ttf_target_name})
         target_link_libraries(${prog} PRIVATE ${sdl3_target_name})
 
