@@ -71,12 +71,10 @@ set(SDL3TTF_HARFBUZZ_VENDORED "${SDL3TTF_VENDORED}")
 set(SDL3TTF_BUILD_SHARED_LIBS "${BUILD_SHARED_LIBS}")
 
 if(SDL3TTF_BUILD_SHARED_LIBS)
-    set(sdl3_ttf_export_name SDL3_ttf)
-    set(sdl3_ttf_install_name_infix shared)
-    set(sdl3_target_name SDL3::SDL3)
+    set(sdl3_ttf_target_name SDL3_ttf-shared)
+    set(sdl3_target_name SDL3::SDL3-shared)
 else()
-    set(sdl3_ttf_export_name SDL3_ttf-static)
-    set(sdl3_ttf_install_name_infix static)
+    set(sdl3_ttf_target_name SDL3_ttf-static)
     set(sdl3_target_name SDL3::SDL3-static)
 endif()
 
@@ -105,45 +103,49 @@ if (LIBC_IS_GLIBC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
     add_compile_definitions(_FILE_OFFSET_BITS=64)
 endif()
 
-add_library(SDL3_ttf
+add_library(${sdl3_ttf_target_name}
     SDL_ttf.c
 )
-add_library(SDL3_ttf::${sdl3_ttf_export_name} ALIAS SDL3_ttf)
-target_include_directories(SDL3_ttf
+add_library(SDL3_ttf::${sdl3_ttf_target_name} ALIAS ${sdl3_ttf_target_name})
+if(NOT TARGET SDL3_ttf::SDL3_ttf)
+    add_library(SDL3_ttf::SDL3_mixer ALIAS ${sdl3_ttf_target_name})
+endif()
+target_include_directories(${sdl3_ttf_target_name}
     PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/SDL3>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL3>"
 )
-target_compile_definitions(SDL3_ttf PRIVATE
+target_compile_definitions(${sdl3_ttf_target_name} PRIVATE
     BUILD_SDL
     SDL_BUILD_MAJOR_VERSION=${MAJOR_VERSION}
     SDL_BUILD_MINOR_VERSION=${MINOR_VERSION}
     SDL_BUILD_MICRO_VERSION=${MICRO_VERSION}
 )
-target_link_libraries(SDL3_ttf PRIVATE $<BUILD_INTERFACE:${sdl3_target_name}>)
-target_link_libraries(SDL3_ttf PRIVATE $<BUILD_INTERFACE:sdl3ttf_build_options>)
+target_link_libraries(${sdl3_ttf_target_name} PRIVATE $<BUILD_INTERFACE:${sdl3_target_name}>)
+target_link_libraries(${sdl3_ttf_target_name} PRIVATE $<BUILD_INTERFACE:sdl3ttf_build_options>)
 if(WIN32 AND SDL3TTF_BUILD_SHARED_LIBS)
-    target_sources(SDL3_ttf PRIVATE
+    target_sources(${sdl3_ttf_target_name} PRIVATE
         version.rc
     )
 endif()
-set_target_properties(SDL3_ttf PROPERTIES
+set_target_properties(${sdl3_ttf_target_name} PROPERTIES
     DEFINE_SYMBOL DLL_EXPORT
-    EXPORT_NAME ${sdl3_ttf_export_name}
+    EXPORT_NAME ${sdl3_ttf_target_name}
     C_VISIBILITY_PRESET "hidden"
+    OUTPUT_NAME SDL3_ttf
 )
 if(NOT ANDROID)
     if(APPLE)
         # the SOVERSION property corresponds to the compatibility version and VERSION corresponds to the current version
         # https://cmake.org/cmake/help/latest/prop_tgt/SOVERSION.html#mach-o-versions
-        set_target_properties(SDL3_ttf PROPERTIES
+        set_target_properties(${sdl3_ttf_target_name} PROPERTIES
             SOVERSION "${DYLIB_COMPAT_VERSION}"
             VERSION "${DYLIB_CURRENT_VERSION}"
         )
     else()
-        set_target_properties(SDL3_ttf PROPERTIES
+        set_target_properties(${sdl3_ttf_target_name} PROPERTIES
             SOVERSION "${SO_VERSION_MAJOR}"
             VERSION "${SO_VERSION}"
         )
@@ -151,13 +153,13 @@ if(NOT ANDROID)
 endif()
 if(SDL3TTF_BUILD_SHARED_LIBS)
     if(WIN32)
-        set_target_properties(SDL3_ttf PROPERTIES
+        set_target_properties(${sdl3_ttf_target_name} PROPERTIES
             PREFIX ""
         )
     endif()
 else()
     if(MSVC)
-        set_target_properties(SDL3_ttf PROPERTIES
+        set_target_properties(${sdl3_ttf_target_name} PROPERTIES
             OUTPUT_NAME "SDL3_ttf-static"
         )
     endif()
@@ -165,12 +167,12 @@ endif()
 
 if(SDL3TTF_BUILD_SHARED_LIBS)
     # Use `Compatible Interface Properties` to ensure a shared SDL3_ttf is linked to a shared SDL3 library
-    set_property(TARGET SDL3_ttf PROPERTY INTERFACE_SDL3_SHARED ${SDL3TTF_BUILD_SHARED_LIBS})
-    set_property(TARGET SDL3_ttf APPEND PROPERTY COMPATIBLE_INTERFACE_BOOL SDL3_SHARED)
+    set_property(TARGET ${sdl3_ttf_target_name} PROPERTY INTERFACE_SDL3_SHARED ${SDL3TTF_BUILD_SHARED_LIBS})
+    set_property(TARGET ${sdl3_ttf_target_name} APPEND PROPERTY COMPATIBLE_INTERFACE_BOOL SDL3_SHARED)
 endif()
 
 if(SDL3TTF_BUILD_SHARED_LIBS)
-    sdl_target_link_options_no_undefined(SDL3_ttf)
+    sdl_target_link_options_no_undefined(${sdl3_ttf_target_name})
 endif()
 
 if(SDL3TTF_BUILD_SHARED_LIBS)
@@ -212,8 +214,8 @@ if(SDL3TTF_HARFBUZZ)
         find_package(harfbuzz REQUIRED)
         list(APPEND PC_REQUIRES harfbuzz)
     endif()
-    target_compile_definitions(SDL3_ttf PRIVATE TTF_USE_HARFBUZZ=1)
-    target_link_libraries(SDL3_ttf PRIVATE harfbuzz::harfbuzz)
+    target_compile_definitions(${sdl3_ttf_target_name} PRIVATE TTF_USE_HARFBUZZ=1)
+    target_link_libraries(${sdl3_ttf_target_name} PRIVATE harfbuzz::harfbuzz)
 endif()
 
 if(SDL3TTF_FREETYPE)
@@ -254,7 +256,7 @@ if(SDL3TTF_FREETYPE)
         find_package(Freetype REQUIRED)
         list(APPEND PC_REQUIRES freetype2)
     endif()
-    target_link_libraries(SDL3_ttf PRIVATE Freetype::Freetype)
+    target_link_libraries(${sdl3_ttf_target_name} PRIVATE Freetype::Freetype)
 endif()
 
 # Restore BUILD_SHARED_LIBS variable
@@ -262,7 +264,7 @@ set(BUILD_SHARED_LIBS ${SDL3TTF_BUILD_SHARED_LIBS})
 
 if(SDL3TTF_INSTALL)
     install(
-        TARGETS SDL3_ttf
+        TARGETS ${sdl3_ttf_target_name}
         EXPORT SDL3_ttfTargets
         ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT devel
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT library
@@ -312,7 +314,7 @@ if(SDL3TTF_INSTALL)
         COMPONENT devel
     )
     install(EXPORT SDL3_ttfTargets
-        FILE SDL3_ttf-${sdl3_ttf_install_name_infix}-targets.cmake
+        FILE ${sdl3_ttf_target_name}-targets.cmake
         NAMESPACE SDL3_ttf::
         DESTINATION "${SDL3TTF_INSTALL_CMAKEDIR}"
         COMPONENT devel
@@ -361,7 +363,7 @@ if(SDL3TTF_SAMPLES)
     endif()
 
     foreach(prog glfont showfont testapp)
-        target_link_libraries(${prog} PRIVATE SDL3_ttf::${sdl3_ttf_export_name})
+        target_link_libraries(${prog} PRIVATE SDL3_ttf::${sdl3_ttf_target_name})
         target_link_libraries(${prog} PRIVATE ${sdl3_target_name})
 
         if(SDL3TTF_SAMPLES_INSTALL)
