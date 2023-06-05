@@ -29,6 +29,8 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/include
 
 LOCAL_CFLAGS += -O2
 
+LOCAL_LDFLAGS := -Wl,--no-undefined -Wl,--version-script=$(LOCAL_PATH)/SDL_ttf.sym
+
 ifneq ($(FREETYPE_LIBRARY_PATH),)
     LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(FREETYPE_LIBRARY_PATH)/include
     LOCAL_STATIC_LIBRARIES += freetype
