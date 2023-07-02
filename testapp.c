@@ -803,7 +803,7 @@ int main(void)
        /* Get some console output out in case we crash next... */
        if (! mode_random_test) {
           char title[1024];
-          snprintf(title, sizeof(title) - 1, "%s Sz=%d outline=%d Hinting=%s %s",
+          SDL_snprintf(title, sizeof(title) - 1, "%s Sz=%d outline=%d Hinting=%s %s",
                 render_mode_desc[render_mode],
                 curr_size,
                 outline,
@@ -811,7 +811,7 @@ int main(void)
                 basename((char*)font_path));
 
           if (save_to_bmp) {
-             snprintf(filename, sizeof(filename) - 1 ,
+             SDL_snprintf(filename, sizeof(filename) - 1 ,
                    "Render=%s_size=%d_outline=%d_wrap=%d_wrap_size=%d_kerning=%d_sdf=%d_italic=%d_bold=%d_underline=%d_strikethrough=%d_hinting=%s_%s__%ld.bmp",
                    render_mode_desc[render_mode],
                    curr_size,
@@ -830,7 +830,7 @@ int main(void)
                    );
           }
 
-          snprintf(infos, sizeof(infos) - 1 ,
+          SDL_snprintf(infos, sizeof(infos) - 1 ,
                 "Render=%s size=%d outline=%d wrap=%d wrap_size=%d kerning=%d sdf=%d italic=%d bold=%d underline=%d strikethrough=%d hinting=%s %s",
                 render_mode_desc[render_mode],
                 curr_size,

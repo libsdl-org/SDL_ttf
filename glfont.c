@@ -214,25 +214,25 @@ int main(int argc, char *argv[])
     forecol = &black;
     backcol = &white;
     for (i=1; argv[i] && argv[i][0] == '-'; ++i) {
-        if (strcmp(argv[i], "-utf8") == 0) {
+        if (SDL_strcmp(argv[i], "-utf8") == 0) {
             rendertype = RENDER_UTF8;
         } else
-        if (strcmp(argv[i], "-unicode") == 0) {
+        if (SDL_strcmp(argv[i], "-unicode") == 0) {
             rendertype = RENDER_UNICODE;
         } else
-        if (strcmp(argv[i], "-b") == 0) {
+        if (SDL_strcmp(argv[i], "-b") == 0) {
             renderstyle |= TTF_STYLE_BOLD;
         } else
-        if (strcmp(argv[i], "-i") == 0) {
+        if (SDL_strcmp(argv[i], "-i") == 0) {
             renderstyle |= TTF_STYLE_ITALIC;
         } else
-        if (strcmp(argv[i], "-u") == 0) {
+        if (SDL_strcmp(argv[i], "-u") == 0) {
             renderstyle |= TTF_STYLE_UNDERLINE;
         } else
-        if (strcmp(argv[i], "-dump") == 0) {
+        if (SDL_strcmp(argv[i], "-dump") == 0) {
             dump = 1;
         } else
-        if (strcmp(argv[i], "-fgcol") == 0) {
+        if (SDL_strcmp(argv[i], "-fgcol") == 0) {
             int r, g, b;
             if (sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3) {
                 fprintf(stderr, TTF_GLFONT_USAGE, argv0);
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
             forecol->g = (Uint8)g;
             forecol->b = (Uint8)b;
         } else
-        if (strcmp(argv[i], "-bgcol") == 0) {
+        if (SDL_strcmp(argv[i], "-bgcol") == 0) {
             int r, g, b;
             if (sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3) {
                 fprintf(stderr, TTF_GLFONT_USAGE, argv0);
@@ -275,7 +275,7 @@ int main(int argc, char *argv[])
     /* Open the font file with the requested point size */
     ptsize = 0;
     if (argc > 1) {
-        ptsize = atoi(argv[1]);
+        ptsize = SDL_atoi(argv[1]);
     }
     if (ptsize == 0) {
         i = 2;

@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
     /* Open the font file with the requested point size */
     ptsize = 0;
     if (argc > 1) {
-        ptsize = atoi(argv[1]);
+        ptsize = SDL_atoi(argv[1]);
     }
     if (ptsize == 0) {
         i = 2;
