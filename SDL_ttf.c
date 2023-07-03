@@ -4154,6 +4154,7 @@ int TTF_SetFontSDF(TTF_Font *font, SDL_bool on_off)
     Flush_Cache(font);
     return 0;
 #else
+    (void)on_off;
     TTF_SetError("SDL_ttf compiled without SDF support");
     return -1;
 #endif
