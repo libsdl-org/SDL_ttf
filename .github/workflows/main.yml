@@ -23,13 +23,21 @@ jobs:
         - { name: Macos,                        os: macos-latest,   shell: sh,   cmake: '-DSDL3TTF_VENDORED=ON -GNinja', shared: 1, static: 0 }
 
     steps:
+    - uses: ilammy/msvc-dev-cmd@v1
+      if: ${{ matrix.platform.msvc }}
+      with:
+        arch: x64
+    - name: Setup Ninja for MSVC
+      if: ${{ !contains(matrix.platform.shell, 'msys2') }}
+      uses: ashutoshvarma/setup-ninja@master
+      with:
+        version: 1.11.1
     - name: Set up MSYS2
-      if: matrix.platform.shell == 'msys2 {0}'
+      if: ${{ matrix.platform.shell == 'msys2 {0}' }}
       uses: msys2/setup-msys2@v2
       with:
         msystem: ${{ matrix.platform.msystem }}
         install: >-
-          ${{ matrix.platform.msys-env }}-SDL3
           ${{ matrix.platform.msys-env }}-cmake
           ${{ matrix.platform.msys-env }}-gcc
           ${{ matrix.platform.msys-env }}-freetype
@@ -37,18 +45,25 @@ jobs:
           ${{ matrix.platform.msys-env }}-ninja
           ${{ matrix.platform.msys-env }}-pkg-config
           ${{ matrix.platform.msys-env }}-zlib
+    - name: Set up SDL
+      id: sdl
+      uses: libsdl-org/setup-sdl@main
+      with:
+        cmake-generator: Ninja
+        version: 3-head
+        sdl-test: true
+        shell: ${{ matrix.platform.shell }}
     - name: Setup Macos dependencies
-      if: runner.os == 'macOS'
+      if: ${{ runner.os == 'macOS' }}
       run: |
           brew install \
             freetype \
             harfbuzz \
             ninja \
             pkg-config \
-            sdl3 \
             ${NULL+}
     - name: Setup Linux dependencies
-      if: runner.os == 'Linux'
+      if: ${{ runner.os == 'Linux' }}
       run: |
         sudo apt-get update
         sudo apt-get -y install \
@@ -57,7 +72,6 @@ jobs:
           fonts-dejavu-core \
           libfreetype-dev \
           libharfbuzz-dev \
-          libsdl3-dev \
           ninja-build \
           pkg-config \
           ${NULL+}
@@ -65,25 +79,9 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Setup MSVC dependencies
-      if: "matrix.platform.msvc"
-      shell: pwsh
-      run: |
-        .github/fetch_sdl_vc.ps1
-        echo "SDL3_DIR=$Env:GITHUB_WORKSPACE/SDL3-devel-VC" >> $Env:GITHUB_ENV
-    - name: Setup Ninja for MSVC
-      if: "matrix.platform.msvc"
-      uses: ashutoshvarma/setup-ninja@master
-      with:
-        version: 1.10.2
-    - uses: ilammy/msvc-dev-cmd@v1
-      if: "matrix.platform.msvc"
-      with:
-        arch: x64
-
     - name: Check that versioning is consistent
       # We only need to run this once: arbitrarily use the Linux build
-      if: "runner.os == 'Linux'"
+      if: ${{ runner.os == 'Linux' }}
       run: ./test-versioning.sh
 
     - name: Configure
@@ -105,10 +103,10 @@ jobs:
         set -eu
         rm -rf prefix_cmake
         cmake --install build-cmake/ --config Release --verbose
-        echo "SDL3_ttf_DIR=$(pwd)/prefix_cmake" >> $GITHUB_ENV
+        echo "SDL3_ttf_ROOT=$(pwd)/prefix_cmake" >> $GITHUB_ENV
         ( cd prefix_cmake; find . ) | LC_ALL=C sort -u
     - name: Test using showfont
-      if: "runner.os == 'Linux'"
+      if: ${{ runner.os == 'Linux' }}
       run: |
           # Just check that it doesn't crash, we can't really test the results...
           env -C build-cmake/ SDL_VIDEODRIVER=dummy ./showfont -dump /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
@@ -119,7 +117,6 @@ jobs:
       run: |
           cmake -S cmake/test -B cmake_config_build \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_PREFIX_PATH="${{ env.SDL3_ttf_DIR }};${{ env.SDL3_DIR }}" \
             -DTEST_SHARED=${{ matrix.platform.shared }} \
             -DTEST_STATIC=${{ matrix.platform.static }}
           cmake --build cmake_config_build --verbose --config Release
