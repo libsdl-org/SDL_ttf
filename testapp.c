@@ -36,11 +36,50 @@ static const int g_force_no_SDF = 0; /* make random fuzzer faster by disabling S
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <libgen.h>
 
 #include "SDL3/SDL.h"
 #include "SDL3/SDL_ttf.h"
 
+static char *testapp_basename(const char *path) {
+    static char buffer[1024];
+    const char *pos, *sep, *prev_sep;
+    int prev_was_sep = 0;
+
+    prev_sep = sep = NULL;
+    for (pos = path; *pos; pos++) {
+        if (*pos == '/' || *pos == '\\') {
+            if (!prev_was_sep) {
+                prev_sep = sep;
+            }
+            sep = pos;
+            prev_was_sep = 1;
+        } else {
+            prev_was_sep = 0;
+        }
+    }
+    if (!sep) {
+        if (path[0] == '\0') {
+            buffer[0] = '.';
+            buffer[1] = '\0';
+        } else {
+            SDL_strlcpy(buffer, path, sizeof(buffer));
+        }
+    } else {
+        if (sep[1] == '\0') {
+            if (prev_sep) {
+                char *s;
+                SDL_strlcpy(buffer, prev_sep + 1, sizeof(buffer));
+                SDL_strtokr(buffer, "/\\", &s);
+            } else {
+                buffer[0] = *sep;
+                buffer[1] = '\0';
+            }
+        } else {
+            SDL_strlcpy(buffer, sep + 1, sizeof(buffer));
+        }
+    }
+    return buffer;
+}
 
 static void help(void)
 {
@@ -808,7 +847,7 @@ int main(void)
                 curr_size,
                 outline,
                 hinting_desc[hinting],
-                basename((char*)font_path));
+                testapp_basename(font_path));
 
           if (save_to_bmp) {
              SDL_snprintf(filename, sizeof(filename) - 1 ,
@@ -825,7 +864,7 @@ int main(void)
                    !!(font_style & TTF_STYLE_UNDERLINE),
                    !!(font_style & TTF_STYLE_STRIKETHROUGH),
                    hinting_desc[hinting],
-                   basename((char*)font_path),
+                   testapp_basename(font_path),
                    (Sint64)time(NULL)
                    );
           }
