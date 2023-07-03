@@ -510,6 +510,8 @@ int main(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    (void)argc;
+    (void)argv;
     printf("No OpenGL support on this system\n");
     return 1;
 }
