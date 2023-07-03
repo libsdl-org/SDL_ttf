@@ -404,8 +404,8 @@ int main(int argc, char *argv[])
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_EVENT_MOUSE_MOTION:
-                x = event.motion.x - w/2;
-                y = event.motion.y - h/2;
+                x = (int)(event.motion.x - w/2);
+                y = (int)(event.motion.y - h/2);
                 break;
 
                 case SDL_EVENT_KEY_DOWN:

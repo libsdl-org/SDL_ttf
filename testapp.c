@@ -1041,10 +1041,10 @@ int main(void)
              dstrect.h = text_surface->h;
              {
                 SDL_FRect d;
-                d.x = dstrect.x;
-                d.y = dstrect.y;
-                d.w = dstrect.w;
-                d.h = dstrect.h;
+                d.x = (float)dstrect.x;
+                d.y = (float)dstrect.y;
+                d.w = (float)dstrect.w;
+                d.h = (float)dstrect.h;
                 SDL_RenderTexture(renderer, text_texture, NULL, &d);
              }
              SDL_RenderPresent(renderer);
