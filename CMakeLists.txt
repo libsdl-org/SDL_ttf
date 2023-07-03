@@ -39,7 +39,7 @@ else()
 endif()
 
 set(sdl3ttf_install_enableable ON)
-if ((TARGET SDL3 OR TARGET SDL3-static) AND SDL3_DISABLE_INSTALL)
+if ((TARGET SDL3-shared OR TARGET SDL3-static) AND SDL_DISABLE_INSTALL)
     # Cannot install SDL3_ttf when SDL3 is built in same built, and is not installed.
     set(sdl3ttf_install_enableable OFF)
 endif()
@@ -70,16 +70,20 @@ set(SDL3TTF_HARFBUZZ_VENDORED "${SDL3TTF_VENDORED}")
 # Save BUILD_SHARED_LIBS variable
 set(SDL3TTF_BUILD_SHARED_LIBS "${BUILD_SHARED_LIBS}")
 
+set(sdl_required_components Headers)
+
 if(SDL3TTF_BUILD_SHARED_LIBS)
     set(sdl3_ttf_target_name SDL3_ttf-shared)
     set(sdl3_target_name SDL3::SDL3-shared)
+
+    list(APPEND sdl_required_components SDL3-shared)
 else()
     set(sdl3_ttf_target_name SDL3_ttf-static)
-    set(sdl3_target_name SDL3::SDL3-static)
+    set(sdl3_target_name SDL3::SDL3)
 endif()
 
-if(NOT TARGET ${sdl3_target_name})
-    find_package(SDL3 ${SDL_REQUIRED_VERSION} REQUIRED)
+if(NOT TARGET SDL3::Headers OR NOT TARGET ${sdl3_target_name})
+    find_package(SDL3 ${SDL_REQUIRED_VERSION} REQUIRED COMPONENTS ${sdl_required_components})
 endif()
 
 # Enable large file support on 32-bit glibc, so that the vendored libraries
@@ -94,7 +98,7 @@ add_library(${sdl3_ttf_target_name}
 )
 add_library(SDL3_ttf::${sdl3_ttf_target_name} ALIAS ${sdl3_ttf_target_name})
 if(NOT TARGET SDL3_ttf::SDL3_ttf)
-    add_library(SDL3_ttf::SDL3_mixer ALIAS ${sdl3_ttf_target_name})
+    add_library(SDL3_ttf::SDL3_ttf ALIAS ${sdl3_ttf_target_name})
 endif()
 target_include_directories(${sdl3_ttf_target_name}
     PUBLIC
@@ -109,7 +113,10 @@ target_compile_definitions(${sdl3_ttf_target_name} PRIVATE
     SDL_BUILD_MINOR_VERSION=${MINOR_VERSION}
     SDL_BUILD_MICRO_VERSION=${MICRO_VERSION}
 )
-target_link_libraries(${sdl3_ttf_target_name} PRIVATE $<BUILD_INTERFACE:${sdl3_target_name}>)
+target_link_libraries(${sdl3_ttf_target_name} PUBLIC SDL3::Headers)
+if(SDL3TTF_BUILD_SHARED_LIBS)
+    target_link_libraries(${sdl3_ttf_target_name} PRIVATE SDL3::SDL3-shared)
+endif()
 sdl_add_warning_options(${sdl3_ttf_target_name} WARNING_AS_ERROR ${SDL3TTF_WERROR})
 if(WIN32 AND SDL3TTF_BUILD_SHARED_LIBS)
     target_sources(${sdl3_ttf_target_name} PRIVATE
@@ -117,10 +124,10 @@ if(WIN32 AND SDL3TTF_BUILD_SHARED_LIBS)
     )
 endif()
 set_target_properties(${sdl3_ttf_target_name} PROPERTIES
+    OUTPUT_NAME SDL3_ttf
     DEFINE_SYMBOL DLL_EXPORT
     EXPORT_NAME ${sdl3_ttf_target_name}
     C_VISIBILITY_PRESET "hidden"
-    OUTPUT_NAME SDL3_ttf
 )
 if(NOT ANDROID)
     if(APPLE)
@@ -358,7 +365,7 @@ if(SDL3TTF_SAMPLES)
         if(SDL3TTF_SAMPLES_INSTALL)
             install(TARGETS ${prog}
                 RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-                )
+            )
         endif()
     endforeach()
 endif()
