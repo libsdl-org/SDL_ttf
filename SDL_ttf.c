@@ -274,7 +274,7 @@ struct _TTF_Font {
 
     /* We are responsible for closing the font stream */
     SDL_RWops *src;
-    int freesrc;
+    SDL_bool freesrc;
     FT_Open_Args args;
 
     /* Internal buffer to store positions computed by TTF_Size_Internal()
@@ -1754,7 +1754,7 @@ static unsigned long RWread(
     return (unsigned long)amount;
 }
 
-TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, int freesrc, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
+TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
 {
     TTF_Font *font;
     FT_Error error;
@@ -2027,12 +2027,12 @@ static int TTF_initFontMetrics(TTF_Font *font)
     return 0;
 }
 
-TTF_Font* TTF_OpenFontDPIRW( SDL_RWops *src, int freesrc, int ptsize, unsigned int hdpi, unsigned int vdpi )
+TTF_Font* TTF_OpenFontDPIRW( SDL_RWops *src, SDL_bool freesrc, int ptsize, unsigned int hdpi, unsigned int vdpi )
 {
     return TTF_OpenFontIndexDPIRW(src, freesrc, ptsize, 0, hdpi, vdpi);
 }
 
-TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, int freesrc, int ptsize, long index )
+TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, SDL_bool freesrc, int ptsize, long index )
 {
     return TTF_OpenFontIndexDPIRW(src, freesrc, ptsize, index, 0, 0);
 }
@@ -2046,7 +2046,7 @@ TTF_Font* TTF_OpenFontIndexDPI( const char *file, int ptsize, long index, unsign
     return TTF_OpenFontIndexDPIRW(rw, 1, ptsize, index, hdpi, vdpi);
 }
 
-TTF_Font* TTF_OpenFontRW(SDL_RWops *src, int freesrc, int ptsize)
+TTF_Font* TTF_OpenFontRW(SDL_RWops *src, SDL_bool freesrc, int ptsize)
 {
     return TTF_OpenFontIndexRW(src, freesrc, ptsize, 0);
 }
