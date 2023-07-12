@@ -27,7 +27,7 @@ jobs:
       if: ${{ matrix.platform.msvc }}
       with:
         arch: x64
-    - name: Setup Ninja for MSVC
+    - name: Set up Ninja
       if: ${{ !contains(matrix.platform.shell, 'msys2') }}
       uses: ashutoshvarma/setup-ninja@master
       with:
@@ -62,7 +62,7 @@ jobs:
             ninja \
             pkg-config \
             ${NULL+}
-    - name: Setup Linux dependencies
+    - name: Set up Linux dependencies
       if: ${{ runner.os == 'Linux' }}
       run: |
         sudo apt-get update

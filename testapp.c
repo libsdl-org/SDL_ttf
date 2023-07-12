@@ -69,7 +69,7 @@ static char *testapp_basename(const char *path) {
             if (prev_sep) {
                 char *s;
                 SDL_strlcpy(buffer, prev_sep + 1, sizeof(buffer));
-                SDL_strtokr(buffer, "/\\", &s);
+                SDL_strtok_r(buffer, "/\\", &s);
             } else {
                 buffer[0] = *sep;
                 buffer[1] = '\0';
