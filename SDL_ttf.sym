@@ -1,4 +1,4 @@
-SDL3_mixer_0.0.0 {
+SDL3_ttf_0.0.0 {
   global:
     TTF_ByteSwappedUNICODE;
     TTF_CloseFont;
