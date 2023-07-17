@@ -94,7 +94,7 @@ if (LIBC_IS_GLIBC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
 endif()
 
 add_library(${sdl3_ttf_target_name}
-    SDL_ttf.c
+    src/SDL_ttf.c
 )
 add_library(SDL3_ttf::${sdl3_ttf_target_name} ALIAS ${sdl3_ttf_target_name})
 if(NOT TARGET SDL3_ttf::SDL3_ttf)
@@ -120,7 +120,7 @@ endif()
 sdl_add_warning_options(${sdl3_ttf_target_name} WARNING_AS_ERROR ${SDL3TTF_WERROR})
 if(WIN32 AND SDL3TTF_BUILD_SHARED_LIBS)
     target_sources(${sdl3_ttf_target_name} PRIVATE
-        version.rc
+        src/version.rc
     )
 endif()
 set_target_properties(${sdl3_ttf_target_name} PROPERTIES
@@ -168,7 +168,7 @@ if(SDL3TTF_BUILD_SHARED_LIBS)
     sdl_target_link_options_no_undefined(${sdl3_ttf_target_name})
 endif()
 
-sdl_target_link_option_version_file(${sdl3_ttf_target_name} "${CMAKE_CURRENT_SOURCE_DIR}/SDL_ttf.sym")
+sdl_target_link_option_version_file(${sdl3_ttf_target_name} "${CMAKE_CURRENT_SOURCE_DIR}/src/SDL_ttf.sym")
 
 if(SDL3TTF_BUILD_SHARED_LIBS)
     # Make sure static library dependencies are built with -fPIC when building a shared SDL3_ttf
@@ -342,9 +342,9 @@ if(SDL3TTF_INSTALL)
 endif()
 
 if(SDL3TTF_SAMPLES)
-    add_executable(glfont glfont.c)
-    add_executable(showfont showfont.c)
-    add_executable(testapp testapp.c)
+    add_executable(glfont examples/glfont.c)
+    add_executable(showfont examples/showfont.c)
+    add_executable(testapp examples/testapp.c)
 
     set(OpenGL_GL_PREFERENCE GLVND)
     find_package(OpenGL)

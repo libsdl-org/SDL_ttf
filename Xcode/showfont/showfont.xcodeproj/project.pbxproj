@@ -94,7 +94,7 @@
 		F3ED80B3281D9E8900C33C5B /* showfont.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = showfont.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3ED80B9281D9E8900C33C5B /* showfont.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = showfont.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3ED80BB281D9E8900C33C5B /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
-		F3ED80CA281D9ECB00C33C5B /* showfont.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = showfont.c; path = ../../showfont.c; sourceTree = SOURCE_ROOT; };
+		F3ED80CA281D9ECB00C33C5B /* showfont.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = showfont.c; path = ../../examples/showfont.c; sourceTree = SOURCE_ROOT; };
 		F3ED80CD281D9ED600C33C5B /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = ../SDL_ttf.xcodeproj; sourceTree = "<group>"; };
 		F3ED80E1281D9F2100C33C5B /* showfont.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = showfont.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3ED80E4281DA17800C33C5B /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL3.framework; path = ../macOS/SDL3.framework; sourceTree = "<group>"; };
