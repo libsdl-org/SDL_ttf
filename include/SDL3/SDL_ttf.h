@@ -698,7 +698,7 @@ extern DECLSPEC int SDLCALL TTF_FontFaceIsFixedWidth(const TTF_Font *font);
  * This string is dictated by the contents of the font file.
  *
  * Note that the returned string is to internal storage, and should not be
- * modifed or free'd by the caller. The string becomes invalid, with the rest
+ * modified or free'd by the caller. The string becomes invalid, with the rest
  * of the font, when `font` is handed to TTF_CloseFont().
  *
  * \param font the font to query.
@@ -714,7 +714,7 @@ extern DECLSPEC const char * SDLCALL TTF_FontFaceFamilyName(const TTF_Font *font
  * This string is dictated by the contents of the font file.
  *
  * Note that the returned string is to internal storage, and should not be
- * modifed or free'd by the caller. The string becomes invalid, with the rest
+ * modified or free'd by the caller. The string becomes invalid, with the rest
  * of the font, when `font` is handed to TTF_CloseFont().
  *
  * \param font the font to query.
