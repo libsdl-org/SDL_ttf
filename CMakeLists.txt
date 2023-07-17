@@ -286,6 +286,7 @@ if(SDL3TTF_INSTALL)
         set(SDL3TTF_INSTALL_CMAKEDIR_DEFAULT "${CMAKE_INSTALL_LIBDIR}/cmake")
     endif()
     set(SDL3TTF_INSTALL_CMAKEDIR_ROOT "${SDL3TTF_INSTALL_CMAKEDIR_DEFAULT}" CACHE STRING "Location where to install SDL3_ttfConfig.cmake")
+    set(SDLTTF_PKGCONFIG_INSTALLDIR "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
 
     if(WIN32 AND NOT MINGW)
         set(SDL3TTF_INSTALL_CMAKEDIR "${SDL3TTF_INSTALL_CMAKEDIR_ROOT}")
@@ -315,19 +316,17 @@ if(SDL3TTF_INSTALL)
         COMPONENT devel
     )
 
+    file(RELATIVE_PATH SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG "${CMAKE_INSTALL_PREFIX}/${SDLTTF_PKGCONFIG_INSTALLDIR}" "${CMAKE_INSTALL_PREFIX}")
+    string(REGEX REPLACE "[/]+$" "" SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG "${SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG}")
+    set(SDL_PKGCONFIG_PREFIX "\${pcfiledir}/${SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG}")
+
     string(JOIN " " PC_REQUIRES ${PC_REQUIRES})
     string(JOIN " " PC_LIBS ${PC_LIBS})
     configure_file(cmake/sdl3-ttf.pc.in sdl3-ttf.pc @ONLY)
 
-    if(CMAKE_SYSTEM_NAME MATCHES FreeBSD)
-        # FreeBSD uses ${PREFIX}/libdata/pkgconfig
-        set(PC_DESTDIR "libdata/pkgconfig")
-    else()
-        set(PC_DESTDIR "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
-    endif()
     # Always install sdl3-ttf.pc file: libraries might be different between config modes
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/sdl3-ttf.pc"
-        DESTINATION "${PC_DESTDIR}" COMPONENT devel)
+        DESTINATION "${SDLTTF_PKGCONFIG_INSTALLDIR}" COMPONENT devel)
 
     install(FILES "LICENSE.txt"
         DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/licenses/${PROJECT_NAME}"
