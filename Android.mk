@@ -23,7 +23,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := SDL3_ttf
 
-LOCAL_SRC_FILES := SDL_ttf.c.neon
+LOCAL_SRC_FILES := src/SDL_ttf.c.neon
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/include
 
