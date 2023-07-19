@@ -231,7 +231,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalIncludeDirectories>..\include;..\src;..\src\codecs;..\src\codecs\timidity;..\external\ogg\include;..\external\vorbis\include;..\..\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -244,7 +244,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalIncludeDirectories>..\include;..\src;..\src\codecs;..\src\codecs\timidity;..\external\ogg\include;..\external\vorbis\include;..\..\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -257,7 +257,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalIncludeDirectories>..\include;..\src;..\src\codecs;..\src\codecs\timidity;..\external\ogg\include;..\external\vorbis\include;..\..\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -270,7 +270,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalIncludeDirectories>..\include;..\src;..\src\codecs;..\src\codecs\timidity;..\external\ogg\include;..\external\vorbis\include;..\..\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -283,7 +283,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalIncludeDirectories>..\include;..\src;..\src\codecs;..\src\codecs\timidity;..\external\ogg\include;..\external\vorbis\include;..\..\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -296,7 +296,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalIncludeDirectories>..\include;..\src;..\src\codecs;..\src\codecs\timidity;..\external\ogg\include;..\external\vorbis\include;..\..\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DLL_EXPORT;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
