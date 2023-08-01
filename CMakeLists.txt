@@ -103,9 +103,9 @@ endif()
 target_include_directories(${sdl3_ttf_target_name}
     PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/SDL3>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/SDL3_ttf>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL3>"
+        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL3_ttf>"
 )
 target_compile_definitions(${sdl3_ttf_target_name} PRIVATE
     BUILD_SDL
@@ -266,8 +266,8 @@ if(SDL3TTF_INSTALL)
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT library
     )
     install(FILES
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/SDL3/SDL_ttf.h"
-        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/SDL3" COMPONENT devel
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/SDL3_ttf/SDL_ttf.h"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/SDL3_ttf" COMPONENT devel
     )
 
     if(INSTALL_EXTRA_TARGETS)
@@ -335,6 +335,7 @@ if(SDL3TTF_INSTALL)
 
     if(SDL3TTF_INSTALL_MAN)
         SDL_generate_manpages(
+            HEADERS_DIR "${PROJECT_SOURCE_DIR}/include/SDL3_ttf"
             SYMBOL "TTF_Init"
             WIKIHEADERS_PL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/wikiheaders.pl"
         )

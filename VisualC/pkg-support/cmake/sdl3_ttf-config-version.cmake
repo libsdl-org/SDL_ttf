@@ -3,12 +3,12 @@
 # SDL3_ttf CMake version configuration file:
 # This file is meant to be placed in a cmake subfolder of SDL3_ttf-devel-3.x.y-VC
 
-if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/../include/SDL3/SDL_ttf.h")
+if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/../include/SDL3_ttf/SDL_ttf.h")
     message(AUTHOR_WARNING "Could not find SDL_ttf.h. This script is meant to be placed in a CMake subfolder of SDL3_ttf-devel-3.x.y-VC")
     return()
 endif()
 
-file(READ "${CMAKE_CURRENT_LIST_DIR}/../include/SDL3/SDL_ttf.h" _sdl_ttf_h)
+file(READ "${CMAKE_CURRENT_LIST_DIR}/../include/SDL3_ttf/SDL_ttf.h" _sdl_ttf_h)
 string(REGEX MATCH "#define[ \t]+SDL_TTF_MAJOR_VERSION[ \t]+([0-9]+)" _sdl_major_re "${_sdl_ttf_h}")
 set(_sdl_major "${CMAKE_MATCH_1}")
 string(REGEX MATCH "#define[ \t]+SDL_TTF_MINOR_VERSION[ \t]+([0-9]+)" _sdl_minor_re "${_sdl_ttf_h}")

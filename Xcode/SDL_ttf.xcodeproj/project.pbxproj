@@ -216,7 +216,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1014BAEA010A4B677F000001 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../include/SDL3/SDL_ttf.h; sourceTree = SOURCE_ROOT; };
+		1014BAEA010A4B677F000001 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDL_ttf.h; path = ../include/SDL3_ttf/SDL_ttf.h; sourceTree = SOURCE_ROOT; };
 		7FC2F5DB285AC0D600836845 /* CMake */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CMake; sourceTree = "<group>"; };
 		A75FDB0C23E37ED200529352 /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL3.framework; path = iOS/SDL3.framework; sourceTree = "<group>"; };
 		A75FDB1023E37EE400529352 /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL3.framework; path = tvOS/SDL3.framework; sourceTree = "<group>"; };
