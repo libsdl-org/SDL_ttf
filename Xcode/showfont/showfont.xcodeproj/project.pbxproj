@@ -10,41 +10,27 @@
 		F3016F75296FA2C400C730E5 /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3016F74296FA2C400C730E5 /* SDL3.xcframework */; };
 		F3016F76296FA2C400C730E5 /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3016F74296FA2C400C730E5 /* SDL3.xcframework */; };
 		F3016F77296FA2C400C730E5 /* SDL3.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3016F74296FA2C400C730E5 /* SDL3.xcframework */; };
-		F39CD44B281DC6C8006CF638 /* SDL3_ttf.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3ED80D4281D9ED600C33C5B /* SDL3_ttf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		F39CD452281DC9CE006CF638 /* SDL3_ttf.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3ED80D4281D9ED600C33C5B /* SDL3_ttf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F3E1F87F2A7946EC00AC76D3 /* SDL3_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E1F8342A79434D00AC76D3 /* SDL3_ttf.framework */; };
+		F3E1F8802A7946EC00AC76D3 /* SDL3_ttf.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3E1F8342A79434D00AC76D3 /* SDL3_ttf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F3E1F8812A79470700AC76D3 /* SDL3_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E1F8342A79434D00AC76D3 /* SDL3_ttf.framework */; };
+		F3E1F8822A79470700AC76D3 /* SDL3_ttf.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3E1F8342A79434D00AC76D3 /* SDL3_ttf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F3E1F8832A79472800AC76D3 /* SDL3_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E1F8342A79434D00AC76D3 /* SDL3_ttf.framework */; };
+		F3E1F8842A79472800AC76D3 /* SDL3_ttf.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3E1F8342A79434D00AC76D3 /* SDL3_ttf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F3ED80CB281D9ECB00C33C5B /* showfont.c in Sources */ = {isa = PBXBuildFile; fileRef = F3ED80CA281D9ECB00C33C5B /* showfont.c */; };
 		F3ED80CC281D9ECB00C33C5B /* showfont.c in Sources */ = {isa = PBXBuildFile; fileRef = F3ED80CA281D9ECB00C33C5B /* showfont.c */; };
 		F3ED80DB281D9F2100C33C5B /* showfont.c in Sources */ = {isa = PBXBuildFile; fileRef = F3ED80CA281D9ECB00C33C5B /* showfont.c */; };
-		F3ED80E3281DA16500C33C5B /* SDL3_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3ED80D4281D9ED600C33C5B /* SDL3_ttf.framework */; };
-		F3ED80F5281DA3F600C33C5B /* SDL3_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3ED80D4281D9ED600C33C5B /* SDL3_ttf.framework */; };
-		F3ED80FF281DA63000C33C5B /* SDL3_ttf.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3ED80D4281D9ED600C33C5B /* SDL3_ttf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		F3ED8113281DC13D00C33C5B /* SDL3_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3ED80D4281D9ED600C33C5B /* SDL3_ttf.framework */; };
 		F3EFE98F296FA2FC00CB26C8 /* SDL3.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3016F74296FA2C400C730E5 /* SDL3.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F3EFE990296FA30700CB26C8 /* SDL3.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3016F74296FA2C400C730E5 /* SDL3.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F3EFE991296FA31400CB26C8 /* SDL3.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3016F74296FA2C400C730E5 /* SDL3.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		F3ED80D3281D9ED600C33C5B /* PBXContainerItemProxy */ = {
+		F3E1F8332A79434D00AC76D3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F3ED80CD281D9ED600C33C5B /* SDL_ttf.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = BE1FA72E07AF4C45004B6283;
-			remoteInfo = Framework;
-		};
-		F3ED80D5281D9ED600C33C5B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F3ED80CD281D9ED600C33C5B /* SDL_ttf.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BE1FA74107AF4C45004B6283;
-			remoteInfo = "Static Library";
-		};
-		F3ED80D7281D9ED600C33C5B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F3ED80CD281D9ED600C33C5B /* SDL_ttf.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BE1FA74507AF4C45004B6283;
-			remoteInfo = "Create DMG";
+			remoteGlobalIDString = BE48FD6707AFA17000BB41DA;
+			remoteInfo = SDL3_ttf;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -56,7 +42,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				F3EFE991296FA31400CB26C8 /* SDL3.xcframework in Copy Frameworks */,
-				F39CD44B281DC6C8006CF638 /* SDL3_ttf.framework in Copy Frameworks */,
+				F3E1F8842A79472800AC76D3 /* SDL3_ttf.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -68,7 +54,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				F3EFE990296FA30700CB26C8 /* SDL3.xcframework in Copy Frameworks */,
-				F39CD452281DC9CE006CF638 /* SDL3_ttf.framework in Copy Frameworks */,
+				F3E1F8802A7946EC00AC76D3 /* SDL3_ttf.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -80,7 +66,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				F3EFE98F296FA2FC00CB26C8 /* SDL3.xcframework in Copy Frameworks */,
-				F3ED80FF281DA63000C33C5B /* SDL3_ttf.framework in Copy Frameworks */,
+				F3E1F8822A79470700AC76D3 /* SDL3_ttf.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -91,6 +77,7 @@
 		F3016F74296FA2C400C730E5 /* SDL3.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SDL3.xcframework; path = ../SDL/SDL3.xcframework; sourceTree = "<group>"; };
 		F39CD44C281DC7A4006CF638 /* webp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = webp.framework; path = ../tvOS/webp.framework; sourceTree = "<group>"; };
 		F39CD44F281DC949006CF638 /* webp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = webp.framework; path = ../iOS/webp.framework; sourceTree = "<group>"; };
+		F3E1F8782A79466F00AC76D3 /* config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
 		F3ED80B3281D9E8900C33C5B /* showfont.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = showfont.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3ED80B9281D9E8900C33C5B /* showfont.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = showfont.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3ED80BB281D9E8900C33C5B /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
@@ -109,7 +96,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3016F75296FA2C400C730E5 /* SDL3.xcframework in Frameworks */,
-				F3ED80F5281DA3F600C33C5B /* SDL3_ttf.framework in Frameworks */,
+				F3E1F8812A79470700AC76D3 /* SDL3_ttf.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,7 +105,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3016F76296FA2C400C730E5 /* SDL3.xcframework in Frameworks */,
-				F3ED80E3281DA16500C33C5B /* SDL3_ttf.framework in Frameworks */,
+				F3E1F87F2A7946EC00AC76D3 /* SDL3_ttf.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,7 +114,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3016F77296FA2C400C730E5 /* SDL3.xcframework in Frameworks */,
-				F3ED8113281DC13D00C33C5B /* SDL3_ttf.framework in Frameworks */,
+				F3E1F8832A79472800AC76D3 /* SDL3_ttf.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +124,7 @@
 		F3ED80A6281D9E8800C33C5B = {
 			isa = PBXGroup;
 			children = (
+				F3E1F8782A79466F00AC76D3 /* config.xcconfig */,
 				F3016F74296FA2C400C730E5 /* SDL3.xcframework */,
 				F3ED80CD281D9ED600C33C5B /* SDL_ttf.xcodeproj */,
 				F3ED80AB281D9E8800C33C5B /* Shared */,
@@ -175,9 +163,7 @@
 		F3ED80CE281D9ED600C33C5B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F3ED80D4281D9ED600C33C5B /* SDL3_ttf.framework */,
-				F3ED80D6281D9ED600C33C5B /* libSDL3_ttf.a */,
-				F3ED80D8281D9ED600C33C5B /* Create DMG */,
+				F3E1F8342A79434D00AC76D3 /* SDL3_ttf.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -321,25 +307,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		F3ED80D4281D9ED600C33C5B /* SDL3_ttf.framework */ = {
+		F3E1F8342A79434D00AC76D3 /* SDL3_ttf.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = SDL3_ttf.framework;
-			remoteRef = F3ED80D3281D9ED600C33C5B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		F3ED80D6281D9ED600C33C5B /* libSDL3_ttf.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSDL3_ttf.a;
-			remoteRef = F3ED80D5281D9ED600C33C5B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		F3ED80D8281D9ED600C33C5B /* Create DMG */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = "Create DMG";
-			remoteRef = F3ED80D7281D9ED600C33C5B /* PBXContainerItemProxy */;
+			remoteRef = F3E1F8332A79434D00AC76D3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -398,6 +370,7 @@
 /* Begin XCBuildConfiguration section */
 		F3ED80C2281D9E8900C33C5B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3E1F8782A79466F00AC76D3 /* config.xcconfig */;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -418,6 +391,7 @@
 		};
 		F3ED80C3281D9E8900C33C5B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3E1F8782A79466F00AC76D3 /* config.xcconfig */;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -433,7 +407,6 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EH385AYQ6F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -458,7 +431,6 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EH385AYQ6F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -524,7 +496,6 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EH385AYQ6F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -545,7 +516,6 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EH385AYQ6F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

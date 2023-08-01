@@ -1,0 +1,12 @@
+//
+//  config.xcconfig
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// Include any optional config for this build
+#include? "build.xcconfig"
+
+CONFIG_PREPROCESSOR_DEFINITIONS = $(inherited) $(MIDI_PREPROCESSOR_DEFINITIONS) $(MOD_PREPROCESSOR_DEFINITIONS) $(OPUS_PREPROCESSOR_DEFINITIONS)
+CONFIG_FRAMEWORK_LDFLAGS = $(inherited) $(MIDI_FRAMEWORK_LDFLAGS) $(MOD_FRAMEWORK_LDFLAGS) $(OPUS_FRAMEWORK_LDFLAGS)
