@@ -37,8 +37,8 @@ static const int g_force_no_SDF = 0; /* make random fuzzer faster by disabling S
 #include <stdlib.h>
 #include <time.h>
 
-#include "SDL3/SDL.h"
-#include "SDL3/SDL_ttf.h"
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 static char *testapp_basename(const char *path) {
     static char buffer[1024];
