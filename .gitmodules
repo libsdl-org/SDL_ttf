@@ -1,6 +1,7 @@
 [submodule "external/SDL"]
 	path = external/SDL
 	url = https://github.com/libsdl-org/SDL.git
+	branch = main
 [submodule "external/freetype"]
 	path = external/freetype
 	url = https://github.com/libsdl-org/freetype.git
