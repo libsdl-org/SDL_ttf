@@ -3148,6 +3148,7 @@ static int TTF_Size_Internal(TTF_Font *font,
     hb_glyph_info_t *hb_glyph_info;
     hb_glyph_position_t *hb_glyph_position;
     int y = 0;
+    int advance_if_bold = 0;
 #else
     size_t textlen;
     int skip_first = 1;
@@ -3190,6 +3191,12 @@ static int TTF_Size_Internal(TTF_Font *font,
     font->pos_len = 0;
 
 #if TTF_USE_HARFBUZZ
+
+    /* Adjust for bold text */
+    if (TTF_HANDLE_STYLE_BOLD(font)) {
+        advance_if_bold = F26Dot6(font->glyph_overhang);
+    }
+
     /* Create a buffer for harfbuzz to use */
     hb_buffer = hb_buffer_create();
     if (hb_buffer == NULL) {
@@ -3264,7 +3271,7 @@ static int TTF_Size_Internal(TTF_Font *font,
         /* Compute positions */
         pos_x  = x                     + x_offset;
         pos_y  = y + F26Dot6(font->ascent) - y_offset;
-        x     += x_advance;
+        x     += x_advance + advance_if_bold;
         y     += y_advance;
 #else
         /* Compute positions */
