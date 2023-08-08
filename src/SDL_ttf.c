@@ -1740,18 +1740,10 @@ static unsigned long RWread(
 )
 {
     SDL_RWops *src;
-    Sint64 amount;
 
     src = (SDL_RWops *)stream->descriptor.pointer;
-    SDL_RWseek(src, (int)offset, SDL_RW_SEEK_SET);
-    if (count == 0) {
-        return 0;
-    }
-    amount = SDL_RWread(src, buffer, count);
-    if (amount <= 0) {
-        return 0;
-    }
-    return (unsigned long)amount;
+    SDL_RWseek(src, offset, SDL_RW_SEEK_SET);
+    return SDL_RWread(src, buffer, count);
 }
 
 TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
@@ -2027,17 +2019,17 @@ static int TTF_initFontMetrics(TTF_Font *font)
     return 0;
 }
 
-TTF_Font* TTF_OpenFontDPIRW( SDL_RWops *src, SDL_bool freesrc, int ptsize, unsigned int hdpi, unsigned int vdpi )
+TTF_Font* TTF_OpenFontDPIRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, unsigned int hdpi, unsigned int vdpi)
 {
     return TTF_OpenFontIndexDPIRW(src, freesrc, ptsize, 0, hdpi, vdpi);
 }
 
-TTF_Font* TTF_OpenFontIndexRW( SDL_RWops *src, SDL_bool freesrc, int ptsize, long index )
+TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, long index)
 {
     return TTF_OpenFontIndexDPIRW(src, freesrc, ptsize, index, 0, 0);
 }
 
-TTF_Font* TTF_OpenFontIndexDPI( const char *file, int ptsize, long index, unsigned int hdpi, unsigned int vdpi )
+TTF_Font* TTF_OpenFontIndexDPI(const char *file, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
 {
     SDL_RWops *rw = SDL_RWFromFile(file, "rb");
     if ( rw == NULL ) {
