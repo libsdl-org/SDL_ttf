@@ -239,7 +239,12 @@ function(target_get_dynamic_library DEST TARGET)
         endif()
         set (result "$<TARGET_FILE_NAME:${TARGET}>")
     endif()
-    set(${DEST} ${result} PARENT_SCOPE)
+    # TARGET_SONAME_FILE is not allowed for DLL target platforms.
+    if(WIN32)
+        set(result "$<TARGET_FILE_NAME:${TARGET}>")
+    else()
+        set(result "$<TARGET_SONAME_FILE_NAME:${TARGET}>")
+    endif()
 endfunction()
 
 macro(sdl_check_project_in_subfolder relative_subfolder name vendored_option)
