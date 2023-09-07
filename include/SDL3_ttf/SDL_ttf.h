@@ -2103,27 +2103,6 @@ extern DECLSPEC void SDLCALL TTF_Quit(void);
 extern DECLSPEC int SDLCALL TTF_WasInit(void);
 
 /**
- * Query the kerning size of two glyphs indices.
- *
- * \deprecated This function accidentally requires FreeType font indexes,
- *             not codepoints, which we don't expose through this API, so
- *             it could give wildly incorrect results, especially with
- *             non-ASCII values. Going forward, please use
- *             TTF_GetFontKerningSizeGlyphs() instead, which does what you
- *             probably expected this function to do.
- *
- * \param font the font to query.
- * \param prev_index the font index, NOT codepoint, of the previous character.
- * \param index the font index, NOT codepoint, of the current character.
- * \returns The kerning size between the two specified characters, in pixels, or -1 on error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_GetFontKerningSizeGlyphs
- */
-extern SDL_DEPRECATED DECLSPEC int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int index);
-
-/**
  * Query the kerning size of two 16-bit glyphs.
  *
  * Note that this version of the function takes 16-bit character

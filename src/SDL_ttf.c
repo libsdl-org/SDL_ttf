@@ -4200,17 +4200,6 @@ int TTF_WasInit(void)
     return TTF_initialized;
 }
 
-/* don't use this function. It's just here for binary compatibility. */
-int TTF_GetFontKerningSize(TTF_Font *font, int prev_index, int index)
-{
-    FT_Vector delta;
-
-    TTF_CHECK_POINTER(font, -1);
-
-    FT_Get_Kerning(font->face, (FT_UInt)prev_index, (FT_UInt)index, FT_KERNING_DEFAULT, &delta);
-    return (int)(delta.x >> 6);
-}
-
 int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous_ch, Uint16 ch)
 {
     return TTF_GetFontKerningSizeGlyphs32(font, previous_ch, ch);

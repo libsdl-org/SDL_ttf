@@ -12,7 +12,6 @@ SDL3_ttf_0.0.0 {
     TTF_FontLineSkip;
     TTF_GetFontHinting;
     TTF_GetFontKerning;
-    TTF_GetFontKerningSize;
     TTF_GetFontKerningSizeGlyphs;
     TTF_GetFontKerningSizeGlyphs32;
     TTF_GetFontOutline;
