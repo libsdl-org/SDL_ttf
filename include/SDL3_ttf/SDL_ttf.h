@@ -92,11 +92,6 @@ extern "C" {
      (SDL_TTF_MAJOR_VERSION > X || SDL_TTF_MINOR_VERSION >= Y) && \
      (SDL_TTF_MAJOR_VERSION > X || SDL_TTF_MINOR_VERSION > Y || SDL_TTF_PATCHLEVEL >= Z))
 
-/* Make sure this is defined (only available in newer SDL versions) */
-#ifndef SDL_DEPRECATED
-#define SDL_DEPRECATED
-#endif
-
 /**
  * Query the version of SDL_ttf that the program is linked against.
  *
