@@ -87,18 +87,6 @@ static hb_direction_t g_hb_direction = HB_DIRECTION_LTR;
 static hb_script_t    g_hb_script = HB_SCRIPT_UNKNOWN;
 #endif
 
-/* Harfbuzz */
-int TTF_SetDirection(int direction) /* hb_direction_t */
-{
-#if TTF_USE_HARFBUZZ
-    g_hb_direction = direction;
-    return 0;
-#else
-    (void) direction;
-    return -1;
-#endif
-}
-
 int TTF_SetScript(int script) /* hb_script_t */
 {
 #if TTF_USE_HARFBUZZ

@@ -71,7 +71,6 @@ SDL3_ttf_0.0.0 {
     TTF_RenderUTF8_Shaded_Wrapped;
     TTF_RenderUTF8_Solid;
     TTF_RenderUTF8_Solid_Wrapped;
-    TTF_SetDirection;
     TTF_SetFontDirection;
     TTF_SetFontHinting;
     TTF_SetFontKerning;

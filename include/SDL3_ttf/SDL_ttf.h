@@ -2202,30 +2202,6 @@ typedef enum
 } TTF_Direction;
 
 /**
- * Set a global direction to be used for text shaping.
- *
- * \deprecated This function expects an hb_direction_t value, from HarfBuzz,
- *             cast to an int, and affects all fonts globally. Please use
- *             TTF_SetFontDirection() instead, which uses an enum supplied by
- *             SDL_ttf itself and operates on a per-font basis.
- *
- *             This is a global setting; fonts will favor a value set with
- *             TTF_SetFontDirection(), but if they have not had one explicitly
- *             set, they will use the value specified here.
- *
- *             The default value is `HB_DIRECTION_LTR` (left-to-right text
- *             flow).
- *
- * \param direction an hb_direction_t value.
- * \returns 0, or -1 if SDL_ttf is not compiled with HarfBuzz support.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SetFontDirection
- */
-extern SDL_DEPRECATED DECLSPEC int SDLCALL TTF_SetDirection(int direction); /* hb_direction_t */
-
-/**
  * Set a global script to be used for text shaping.
  *
  * \deprecated This function expects an hb_script_t value, from HarfBuzz, cast
@@ -2250,9 +2226,6 @@ extern SDL_DEPRECATED DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_scri
 
 /**
  * Set direction to be used for text shaping by a font.
- *
- * Any value supplied here will override the global direction set with the
- * deprecated TTF_SetDirection().
  *
  * Possible direction values are:
  *
