@@ -2202,29 +2202,6 @@ typedef enum
 } TTF_Direction;
 
 /**
- * Set a global script to be used for text shaping.
- *
- * \deprecated This function expects an hb_script_t value, from HarfBuzz, cast
- *             to an int, and affects all fonts globally. Please use
- *             TTF_SetFontScriptName() instead, which accepts a string that is
- *             converted to an equivalent int internally, and operates on a
- *             per-font basis.
- *
- *             This is a global setting; fonts will favor a value set with
- *             TTF_SetFontScriptName(), but if they have not had one
- *             explicitly set, they will use the value specified here.
- *
- *             The default value is `HB_SCRIPT_UNKNOWN`.
- *
- * \returns 0, or -1 if SDL_ttf is not compiled with HarfBuzz support.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SetFontScriptName
- */
-extern SDL_DEPRECATED DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_script_t */
-
-/**
  * Set direction to be used for text shaping by a font.
  *
  * Possible direction values are:
@@ -2246,9 +2223,6 @@ extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction d
 
 /**
  * Set script to be used for text shaping by a font.
- *
- * Any value supplied here will override the global script set with the
- * deprecated TTF_SetScript().
  *
  * The supplied script value must be a null-terminated string of exactly four
  * characters.

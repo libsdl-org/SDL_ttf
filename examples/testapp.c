@@ -795,8 +795,6 @@ int main(void)
        }
 
        TTF_SetFontDirection(font, directions[direction].value);
-       //    TTF_SetScript(HB_SCRIPT_ARABIC);
-       //        TTF_SetScript(HB_SCRIPT_HAN);
 
        {
           int tmp;

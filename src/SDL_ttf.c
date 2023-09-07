@@ -87,17 +87,6 @@ static hb_direction_t g_hb_direction = HB_DIRECTION_LTR;
 static hb_script_t    g_hb_script = HB_SCRIPT_UNKNOWN;
 #endif
 
-int TTF_SetScript(int script) /* hb_script_t */
-{
-#if TTF_USE_HARFBUZZ
-    g_hb_script = script;
-    return 0;
-#else
-    (void) script;
-    return -1;
-#endif
-}
-
 /* Round glyph to 16 bytes width and use SSE2 instructions */
 #if defined(__SSE2__)
 #  define HAVE_SSE2_INTRINSICS 1

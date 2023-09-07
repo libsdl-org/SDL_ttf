@@ -81,7 +81,6 @@ SDL3_ttf_0.0.0 {
     TTF_SetFontSizeDPI;
     TTF_SetFontStyle;
     TTF_SetFontWrappedAlign;
-    TTF_SetScript;
     TTF_SizeText;
     TTF_SizeUNICODE;
     TTF_SizeUTF8;
