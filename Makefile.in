@@ -198,38 +198,43 @@ am__libSDL2_ttf_la_SOURCES_DIST = SDL_ttf.c \
 	$(HARFBUZZ_PATH)/src/hb-aat-map.cc \
 	$(HARFBUZZ_PATH)/src/hb-blob.cc \
 	$(HARFBUZZ_PATH)/src/hb-buffer-serialize.cc \
+	$(HARFBUZZ_PATH)/src/hb-buffer-verify.cc \
 	$(HARFBUZZ_PATH)/src/hb-buffer.cc \
 	$(HARFBUZZ_PATH)/src/hb-common.cc \
+	$(HARFBUZZ_PATH)/src/hb-draw.cc \
 	$(HARFBUZZ_PATH)/src/hb-face.cc \
 	$(HARFBUZZ_PATH)/src/hb-fallback-shape.cc \
 	$(HARFBUZZ_PATH)/src/hb-font.cc $(HARFBUZZ_PATH)/src/hb-ft.cc \
 	$(HARFBUZZ_PATH)/src/hb-number.cc \
-	$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff2-table.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-color.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-face.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-font.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-layout.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-map.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-math.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-metrics.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-arabic.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-default.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hangul.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hebrew.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic-table.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-khmer.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-myanmar.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-syllabic.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-thai.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-use.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-vowel-constraints.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-arabic.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-default.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-hangul.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-hebrew.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic-table.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-khmer.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-myanmar.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-syllabic.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-thai.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-use.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-vowel-constraints.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shape.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-shape-fallback.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-shape-normalize.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-tag.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-var.cc \
+	$(HARFBUZZ_PATH)/src/hb-outline.cc \
+	$(HARFBUZZ_PATH)/src/hb-paint.cc \
+	$(HARFBUZZ_PATH)/src/hb-paint-extents.cc \
 	$(HARFBUZZ_PATH)/src/hb-set.cc \
 	$(HARFBUZZ_PATH)/src/hb-shape-plan.cc \
 	$(HARFBUZZ_PATH)/src/hb-shape.cc \
@@ -289,39 +294,44 @@ am__objects_3 = $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-aat-layout.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-aat-map.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-blob.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-serialize.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-verify.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-common.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-draw.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-face.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-fallback-shape.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-font.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ft.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-number.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff1-table.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff2-table.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-color.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-face.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-font.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-layout.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-map.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-math.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-metrics.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-arabic.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-default.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hangul.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-khmer.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-thai.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-use.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-arabic.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-default.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hangul.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hebrew.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic-table.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-khmer.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-myanmar.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-syllabic.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-thai.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-use.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-fallback.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-normalize.lo \
-	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-tag.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-var.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-outline.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint.lo \
+	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint-extents.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-set.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-shape-plan.lo \
 	$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-shape.lo \
@@ -407,41 +417,46 @@ am__depfiles_remade = $(FREETYPE_PATH)/src/autofit/$(DEPDIR)/libSDL2_ttf_la-auto
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-aat-map.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-blob.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-serialize.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-verify.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-common.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-draw.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-face.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-fallback-shape.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-color.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-face.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-font.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-layout.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-map.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-math.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-metrics.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-arabic.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-default.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hangul.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-khmer.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-thai.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-use.Plo \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-fallback.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-normalize.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-arabic.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-default.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hangul.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hebrew.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic-table.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-khmer.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-myanmar.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-syllabic.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-thai.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-use.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-tag.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-var.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-outline.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint-extents.Plo \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-set.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-shape-plan.Plo \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-shape.Plo \
@@ -519,7 +534,7 @@ AM_RECURSIVE_TARGETS = cscope
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/SDL2_ttf.pc.in \
 	$(srcdir)/SDL2_ttf.spec.in \
 	$(srcdir)/sdl2_ttf-config-version.cmake.in \
-	$(srcdir)/sdl2_ttf-config.cmake.in compile config.guess \
+	$(srcdir)/sdl2_ttf-config.cmake.in ar-lib compile config.guess \
 	config.sub depcomp install-sh ltmain.sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
@@ -764,39 +779,44 @@ HARFBUZZ_SOURCES = \
 	$(HARFBUZZ_PATH)/src/hb-aat-map.cc \
 	$(HARFBUZZ_PATH)/src/hb-blob.cc \
 	$(HARFBUZZ_PATH)/src/hb-buffer-serialize.cc \
+	$(HARFBUZZ_PATH)/src/hb-buffer-verify.cc \
 	$(HARFBUZZ_PATH)/src/hb-buffer.cc \
 	$(HARFBUZZ_PATH)/src/hb-common.cc \
+	$(HARFBUZZ_PATH)/src/hb-draw.cc \
 	$(HARFBUZZ_PATH)/src/hb-face.cc \
 	$(HARFBUZZ_PATH)/src/hb-fallback-shape.cc \
 	$(HARFBUZZ_PATH)/src/hb-font.cc \
 	$(HARFBUZZ_PATH)/src/hb-ft.cc \
 	$(HARFBUZZ_PATH)/src/hb-number.cc \
-	$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-cff2-table.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-color.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-face.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-font.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-layout.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-map.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-math.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-metrics.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-arabic.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-default.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hangul.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hebrew.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic-table.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-khmer.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-myanmar.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-syllabic.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-thai.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-use.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-vowel-constraints.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-arabic.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-default.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-hangul.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-hebrew.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic-table.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-khmer.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-myanmar.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-syllabic.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-thai.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-use.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shaper-vowel-constraints.cc \
+	$(HARFBUZZ_PATH)/src/hb-ot-shape.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-shape-fallback.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-shape-normalize.cc \
-	$(HARFBUZZ_PATH)/src/hb-ot-shape.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-tag.cc \
 	$(HARFBUZZ_PATH)/src/hb-ot-var.cc \
+	$(HARFBUZZ_PATH)/src/hb-outline.cc \
+	$(HARFBUZZ_PATH)/src/hb-paint.cc \
+	$(HARFBUZZ_PATH)/src/hb-paint-extents.cc \
 	$(HARFBUZZ_PATH)/src/hb-set.cc \
 	$(HARFBUZZ_PATH)/src/hb-shape-plan.cc \
 	$(HARFBUZZ_PATH)/src/hb-shape.cc \
@@ -1217,10 +1237,16 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-blob.lo:  \
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-serialize.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-verify.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-common.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-draw.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-face.lo:  \
@@ -1238,13 +1264,13 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ft.lo:  \
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-number.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo:  \
-	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff1-table.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff2-table.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-color.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-face.lo:  \
@@ -1265,40 +1291,43 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-math.lo:  \
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-metrics.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-arabic.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-arabic.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-default.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-default.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hangul.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hangul.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hebrew.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic-table.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-khmer.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-khmer.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-myanmar.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-syllabic.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-thai.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-thai.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-use.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-use.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.lo:  \
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-fallback.lo:  \
@@ -1307,13 +1336,19 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-fallback.lo:  \
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-normalize.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo:  \
-	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
-	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-tag.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-var.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-outline.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint.lo:  \
+	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
+	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint-extents.lo:  \
 	$(HARFBUZZ_PATH)/src/$(am__dirstamp) \
 	$(HARFBUZZ_PATH)/src/$(DEPDIR)/$(am__dirstamp)
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-set.lo:  \
@@ -1458,41 +1493,46 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-aat-map.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-blob.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-serialize.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-verify.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-common.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-draw.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-face.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-fallback-shape.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-color.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-face.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-font.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-layout.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-map.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-math.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-metrics.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-arabic.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-default.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hangul.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-khmer.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-thai.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-use.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-fallback.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-normalize.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-arabic.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-default.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hangul.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hebrew.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic-table.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-khmer.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-myanmar.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-syllabic.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-thai.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-use.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-tag.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-var.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-outline.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint-extents.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-set.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-shape-plan.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-shape.Plo@am__quote@ # am--include-marker
@@ -1888,6 +1928,13 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-serialize.lo: $(HARFBUZZ_PATH)/src
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-serialize.lo `test -f '$(HARFBUZZ_PATH)/src/hb-buffer-serialize.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-buffer-serialize.cc
 
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-verify.lo: $(HARFBUZZ_PATH)/src/hb-buffer-verify.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-verify.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-verify.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-verify.lo `test -f '$(HARFBUZZ_PATH)/src/hb-buffer-verify.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-buffer-verify.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-verify.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-verify.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-buffer-verify.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-verify.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer-verify.lo `test -f '$(HARFBUZZ_PATH)/src/hb-buffer-verify.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-buffer-verify.cc
+
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer.lo: $(HARFBUZZ_PATH)/src/hb-buffer.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-buffer.lo `test -f '$(HARFBUZZ_PATH)/src/hb-buffer.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-buffer.cc
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Plo
@@ -1901,6 +1948,13 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-common.lo: $(HARFBUZZ_PATH)/src/hb-common
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-common.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-common.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-common.lo `test -f '$(HARFBUZZ_PATH)/src/hb-common.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-common.cc
+
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-draw.lo: $(HARFBUZZ_PATH)/src/hb-draw.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-draw.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-draw.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-draw.lo `test -f '$(HARFBUZZ_PATH)/src/hb-draw.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-draw.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-draw.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-draw.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-draw.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-draw.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-draw.lo `test -f '$(HARFBUZZ_PATH)/src/hb-draw.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-draw.cc
 
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-face.lo: $(HARFBUZZ_PATH)/src/hb-face.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-face.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-face.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-face.lo `test -f '$(HARFBUZZ_PATH)/src/hb-face.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-face.cc
@@ -1937,13 +1991,6 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-number.lo: $(HARFBUZZ_PATH)/src/hb-number
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-number.lo `test -f '$(HARFBUZZ_PATH)/src/hb-number.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-number.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo: $(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ms-feature-ranges.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ms-feature-ranges.cc
-
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff1-table.lo: $(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff1-table.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff1-table.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-cff1-table.cc
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo
@@ -1957,6 +2004,13 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff2-table.lo: $(HARFBUZZ_PATH)/src/hb
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-cff2-table.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff2-table.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-cff2-table.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-cff2-table.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-cff2-table.cc
+
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-color.lo: $(HARFBUZZ_PATH)/src/hb-ot-color.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-color.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-color.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-color.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-color.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-color.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-color.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-color.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-color.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-color.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-color.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-color.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-color.cc
 
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-face.lo: $(HARFBUZZ_PATH)/src/hb-ot-face.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-face.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-face.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-face.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-face.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-face.cc
@@ -2000,89 +2054,96 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-metrics.lo: $(HARFBUZZ_PATH)/src/hb-ot
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-metrics.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-metrics.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-metrics.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-arabic.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-arabic.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-arabic.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-arabic.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-arabic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-arabic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-arabic.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-arabic.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-arabic.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-arabic.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-arabic.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-arabic.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-arabic.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-arabic.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-arabic.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-arabic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-arabic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-arabic.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-arabic.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-arabic.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-arabic.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-arabic.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-arabic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-arabic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-arabic.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-arabic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-arabic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-arabic.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-default.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-default.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-default.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-default.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-default.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-default.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-default.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-default.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-default.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-default.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-default.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-default.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-default.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-default.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-default.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-default.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-default.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-default.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-default.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-default.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-default.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-default.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-default.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-default.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-default.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-default.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-default.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-default.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hangul.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hangul.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hangul.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hangul.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hangul.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hangul.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hangul.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hangul.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hangul.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hangul.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hangul.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hangul.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-hangul.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hangul.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hangul.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hangul.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-hangul.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-hangul.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hangul.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hangul.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-hangul.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hangul.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hangul.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hangul.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hangul.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hangul.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-hangul.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-hangul.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hebrew.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hebrew.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hebrew.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hebrew.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hebrew.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-hebrew.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hebrew.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hebrew.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hebrew.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-hebrew.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-hebrew.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hebrew.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hebrew.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-hebrew.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hebrew.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hebrew.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-hebrew.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-hebrew.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-hebrew.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-hebrew.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic-table.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic-table.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic-table.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic-table.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-indic.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic-table.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic-table.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic-table.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-indic-table.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic-table.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic-table.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic-table.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic-table.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic-table.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic-table.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic-table.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic-table.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic-table.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-indic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-indic.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-indic-table.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic-table.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-indic-table.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-khmer.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-khmer.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-khmer.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-khmer.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-khmer.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-khmer.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-khmer.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-khmer.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-khmer.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-khmer.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-khmer.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-khmer.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-khmer.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-khmer.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-khmer.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-khmer.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-khmer.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-khmer.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-khmer.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-khmer.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-khmer.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-khmer.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-khmer.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-khmer.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-khmer.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-khmer.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-khmer.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-khmer.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-myanmar.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-myanmar.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-myanmar.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-myanmar.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-myanmar.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-myanmar.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-myanmar.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-myanmar.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-myanmar.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-myanmar.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-myanmar.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-myanmar.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-myanmar.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-myanmar.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-myanmar.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-myanmar.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-myanmar.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-myanmar.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-myanmar.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-myanmar.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-syllabic.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-syllabic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-syllabic.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-syllabic.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-syllabic.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-syllabic.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-syllabic.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-syllabic.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-syllabic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-syllabic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-syllabic.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-syllabic.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-syllabic.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-syllabic.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-syllabic.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-syllabic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-syllabic.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-syllabic.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-syllabic.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-syllabic.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-thai.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-thai.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-thai.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-thai.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-thai.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-thai.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-thai.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-thai.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-thai.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-thai.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-thai.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-thai.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-thai.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-thai.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-thai.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-thai.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-thai.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-thai.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-thai.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-thai.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-thai.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-thai.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-thai.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-thai.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-thai.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-thai.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-thai.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-thai.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-use.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-use.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-use.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-use.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-use.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-use.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-use.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-use.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-use.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-use.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-use.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-use.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-use.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-use.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-use.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-use.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-use.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-use.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-use.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-use.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-use.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-use.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-use.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-use.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-use.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-use.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-use.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-use.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-complex-vowel-constraints.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-vowel-constraints.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-vowel-constraints.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-vowel-constraints.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.lo' libtool=yes @AMDEPBACKSLASH@
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.lo: $(HARFBUZZ_PATH)/src/hb-ot-shaper-vowel-constraints.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-vowel-constraints.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-vowel-constraints.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shaper-vowel-constraints.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-vowel-constraints.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-complex-vowel-constraints.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shaper-vowel-constraints.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shaper-vowel-constraints.cc
+
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape.cc
 
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-fallback.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape-fallback.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-fallback.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-fallback.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-fallback.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-fallback.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-fallback.cc
@@ -2098,13 +2159,6 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-normalize.lo: $(HARFBUZZ_PATH)/s
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape-normalize.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape-normalize.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape-normalize.cc
 
-$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo: $(HARFBUZZ_PATH)/src/hb-ot-shape.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-shape.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-shape.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-shape.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-shape.cc
-
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-tag.lo: $(HARFBUZZ_PATH)/src/hb-ot-tag.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-tag.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-tag.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-tag.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-tag.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-tag.cc
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-tag.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-tag.Plo
@@ -2118,6 +2172,27 @@ $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-var.lo: $(HARFBUZZ_PATH)/src/hb-ot-var
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-ot-var.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-var.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-ot-var.lo `test -f '$(HARFBUZZ_PATH)/src/hb-ot-var.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-ot-var.cc
+
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-outline.lo: $(HARFBUZZ_PATH)/src/hb-outline.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-outline.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-outline.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-outline.lo `test -f '$(HARFBUZZ_PATH)/src/hb-outline.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-outline.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-outline.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-outline.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-outline.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-outline.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-outline.lo `test -f '$(HARFBUZZ_PATH)/src/hb-outline.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-outline.cc
+
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint.lo: $(HARFBUZZ_PATH)/src/hb-paint.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint.lo `test -f '$(HARFBUZZ_PATH)/src/hb-paint.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-paint.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-paint.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint.lo `test -f '$(HARFBUZZ_PATH)/src/hb-paint.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-paint.cc
+
+$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint-extents.lo: $(HARFBUZZ_PATH)/src/hb-paint-extents.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint-extents.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint-extents.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint-extents.lo `test -f '$(HARFBUZZ_PATH)/src/hb-paint-extents.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-paint-extents.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint-extents.Tpo $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint-extents.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(HARFBUZZ_PATH)/src/hb-paint-extents.cc' object='$(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint-extents.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-paint-extents.lo `test -f '$(HARFBUZZ_PATH)/src/hb-paint-extents.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-paint-extents.cc
 
 $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-set.lo: $(HARFBUZZ_PATH)/src/hb-set.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libSDL2_ttf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-set.lo -MD -MP -MF $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-set.Tpo -c -o $(HARFBUZZ_PATH)/src/libSDL2_ttf_la-hb-set.lo `test -f '$(HARFBUZZ_PATH)/src/hb-set.cc' || echo '$(srcdir)/'`$(HARFBUZZ_PATH)/src/hb-set.cc
@@ -2635,41 +2710,46 @@ distclean: distclean-am
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-aat-map.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-blob.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-serialize.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-verify.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-common.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-draw.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-face.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-fallback-shape.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-color.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-face.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-font.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-layout.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-map.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-math.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-metrics.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-arabic.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-default.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hangul.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-khmer.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-thai.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-use.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-fallback.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-normalize.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-arabic.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-default.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hangul.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hebrew.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic-table.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-khmer.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-myanmar.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-syllabic.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-thai.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-use.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-tag.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-var.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-outline.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint-extents.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-set.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-shape-plan.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-shape.Plo
@@ -2775,41 +2855,46 @@ maintainer-clean: maintainer-clean-am
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-aat-map.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-blob.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-serialize.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer-verify.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-buffer.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-common.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-coretext.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-draw.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-face.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-fallback-shape.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-font.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ft.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-gdi.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ms-feature-ranges.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-number.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff1-table.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-cff2-table.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-color.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-face.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-font.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-layout.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-map.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-math.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-metrics.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-arabic.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-default.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hangul.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-hebrew.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic-table.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-indic.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-khmer.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-myanmar.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-syllabic.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-thai.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-use.Plo
-	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-complex-vowel-constraints.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-fallback.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape-normalize.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shape.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-arabic.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-default.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hangul.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-hebrew.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic-table.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-indic.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-khmer.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-myanmar.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-syllabic.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-thai.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-use.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-shaper-vowel-constraints.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-tag.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-ot-var.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-outline.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint-extents.Plo
+	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-paint.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-set.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-shape-plan.Plo
 	-rm -f $(HARFBUZZ_PATH)/src/$(DEPDIR)/libSDL2_ttf_la-hb-shape.Plo

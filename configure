@@ -19966,6 +19966,10 @@ printf "%s\n" "#define ALIGNOF_STRUCT_CHAR__ $ac_cv_alignof_struct_char__" >>con
 			TTF_LIBS="$TTF_LIBS -lusp10 -lgdi32 -lrpcrt4"
 			PC_LIBS="$PC_LIBS -lusp10 -lgdi32 -lrpcrt4"
 		  ;;
+		  *)
+			# compiler might optimize sinf+cosf into sincosf
+			TTF_LIBS="$TTF_LIBS -lm"
+		  ;;
 		esac
 		case "$host" in
 		  arm-*-*)

@@ -246,6 +246,10 @@ if test x$enable_harfbuzz = xyes; then
 			TTF_LIBS="$TTF_LIBS -lusp10 -lgdi32 -lrpcrt4"
 			PC_LIBS="$PC_LIBS -lusp10 -lgdi32 -lrpcrt4"
 		  ;;
+		  *)
+			# compiler might optimize sinf+cosf into sincosf
+			TTF_LIBS="$TTF_LIBS -lm"
+		  ;;
 		esac
 		case "$host" in
 		  arm-*-*)
