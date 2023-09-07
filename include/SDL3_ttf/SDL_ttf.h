@@ -70,20 +70,6 @@ extern "C" {
 #define TTF_PATCHLEVEL      SDL_TTF_PATCHLEVEL
 #define TTF_VERSION(X)      SDL_TTF_VERSION(X)
 
-#if SDL_TTF_MAJOR_VERSION < 3 && SDL_MAJOR_VERSION < 3
-/**
- *  This is the version number macro for the current SDL_ttf version.
- *
- *  In versions higher than 2.9.0, the minor version overflows into
- *  the thousands digit: for example, 2.23.0 is encoded as 4300.
- *  This macro will not be available in SDL 3.x or SDL_ttf 3.x.
- *
- *  \deprecated, use SDL_TTF_VERSION_ATLEAST or SDL_TTF_VERSION instead.
- */
-#define SDL_TTF_COMPILEDVERSION \
-    SDL_VERSIONNUM(SDL_TTF_MAJOR_VERSION, SDL_TTF_MINOR_VERSION, SDL_TTF_PATCHLEVEL)
-#endif /* SDL_TTF_MAJOR_VERSION < 3 && SDL_MAJOR_VERSION < 3 */
-
 /**
  *  This macro will evaluate to true if compiled with SDL_ttf at least X.Y.Z.
  */
