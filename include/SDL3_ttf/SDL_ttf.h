@@ -108,7 +108,7 @@ extern "C" {
  *
  * \returns a pointer to the version information.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
 
@@ -121,7 +121,7 @@ extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
  * \param minor to be filled in with the minor version number. Can be NULL.
  * \param patch to be filled in with the param version number. Can be NULL.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_Init
  */
@@ -136,7 +136,7 @@ extern DECLSPEC void SDLCALL TTF_GetFreeTypeVersion(int *major, int *minor, int 
  * \param minor to be filled in with the minor version number. Can be NULL.
  * \param patch to be filled in with the param version number. Can be NULL.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC void SDLCALL TTF_GetHarfBuzzVersion(int *major, int *minor, int *patch);
 
@@ -154,7 +154,7 @@ extern DECLSPEC void SDLCALL TTF_GetHarfBuzzVersion(int *major, int *minor, int 
  *
  * \param swapped boolean to indicate whether text is byteswapped
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC void SDLCALL TTF_ByteSwappedUNICODE(SDL_bool swapped);
 
@@ -179,7 +179,7 @@ typedef struct _TTF_Font TTF_Font;
  *
  * \returns 0 on success, -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_Quit
  */
@@ -198,7 +198,7 @@ extern DECLSPEC int SDLCALL TTF_Init(void);
  * \param ptsize point size to use for the newly-opened font.
  * \returns a valid TTF_Font, or NULL on error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CloseFont
  */
@@ -222,7 +222,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFont(const char *file, int ptsize);
  * \param index index of the face in the font file.
  * \returns a valid TTF_Font, or NULL on error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CloseFont
  */
@@ -247,7 +247,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int ptsiz
  * \param ptsize point size to use for the newly-opened font.
  * \returns a valid TTF_Font, or NULL on error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CloseFont
  */
@@ -277,7 +277,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontRW(SDL_RWops *src, SDL_bool frees
  * \param index index of the face in the font file.
  * \returns a valid TTF_Font, or NULL on error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CloseFont
  */
@@ -300,7 +300,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexRW(SDL_RWops *src, SDL_bool 
  * \param vdpi the target vertical DPI.
  * \returns a valid TTF_Font, or NULL on error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CloseFont
  */
@@ -328,7 +328,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontDPI(const char *file, int ptsize,
  * \param vdpi the target vertical DPI.
  * \returns a valid TTF_Font, or NULL on error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CloseFont
  */
@@ -357,7 +357,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPI(const char *file, int pt
  * \param vdpi the target vertical DPI.
  * \returns a valid TTF_Font, or NULL on error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CloseFont
  */
@@ -391,7 +391,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontDPIRW(SDL_RWops *src, SDL_bool fr
  * \param vdpi the target vertical DPI.
  * \returns a valid TTF_Font, or NULL on error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CloseFont
  */
@@ -406,7 +406,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPIRW(SDL_RWops *src, SDL_bo
  * \param ptsize the new point size.
  * \returns 0 if successful, -1 on error
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
 
@@ -421,7 +421,7 @@ extern DECLSPEC int SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
  * \param vdpi the target vertical DPI.
  * \returns 0 if successful, -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsigned int hdpi, unsigned int vdpi);
 
@@ -448,7 +448,7 @@ extern DECLSPEC int SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsig
  * \param font the font to query.
  * \returns the current font style, as a set of bit flags.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontStyle
  */
@@ -470,7 +470,7 @@ extern DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
  * \param font the font to set a new style on.
  * \param style the new style values to set, OR'd together.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GetFontStyle
  */
@@ -482,7 +482,7 @@ extern DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
  * \param font the font to query.
  * \returns the font's current outline value.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontOutline
  */
@@ -494,7 +494,7 @@ extern DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
  * \param font the font to set a new outline on.
  * \param outline positive outline value, 0 to default.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GetFontOutline
  */
@@ -519,12 +519,12 @@ extern DECLSPEC void SDLCALL TTF_SetFontOutline(TTF_Font *font, int outline);
  * - `TTF_HINTING_LIGHT`
  * - `TTF_HINTING_MONO`
  * - `TTF_HINTING_NONE`
- * - `TTF_HINTING_LIGHT_SUBPIXEL` (available in SDL_ttf 2.0.18 and later)
+ * - `TTF_HINTING_LIGHT_SUBPIXEL` (available in SDL_ttf 3.0.0 and later)
  *
  * \param font the font to query.
  * \returns the font's current hinter value.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontHinting
  */
@@ -541,12 +541,12 @@ extern DECLSPEC int SDLCALL TTF_GetFontHinting(const TTF_Font *font);
  * - `TTF_HINTING_LIGHT`
  * - `TTF_HINTING_MONO`
  * - `TTF_HINTING_NONE`
- * - `TTF_HINTING_LIGHT_SUBPIXEL` (available in SDL_ttf 2.0.18 and later)
+ * - `TTF_HINTING_LIGHT_SUBPIXEL` (available in SDL_ttf 3.0.0 and later)
  *
  * \param font the font to set a new hinter setting on.
  * \param hinting the new hinter setting.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GetFontHinting
  */
@@ -571,7 +571,7 @@ extern DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting);
  * \param font the font to query.
  * \returns the font's current wrap alignment option.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontWrappedAlign
  */
@@ -589,7 +589,7 @@ extern DECLSPEC int SDLCALL TTF_GetFontWrappedAlign(const TTF_Font *font);
  * \param font the font to set a new wrap alignment option on.
  * \param align the new wrap alignment option.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GetFontWrappedAlign
  */
@@ -603,7 +603,7 @@ extern DECLSPEC void SDLCALL TTF_SetFontWrappedAlign(TTF_Font *font, int align);
  * \param font the font to query.
  * \returns the font's height.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_FontHeight(const TTF_Font *font);
 
@@ -615,7 +615,7 @@ extern DECLSPEC int SDLCALL TTF_FontHeight(const TTF_Font *font);
  * \param font the font to query.
  * \returns the font's ascent.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_FontAscent(const TTF_Font *font);
 
@@ -627,7 +627,7 @@ extern DECLSPEC int SDLCALL TTF_FontAscent(const TTF_Font *font);
  * \param font the font to query.
  * \returns the font's descent.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_FontDescent(const TTF_Font *font);
 
@@ -637,7 +637,7 @@ extern DECLSPEC int SDLCALL TTF_FontDescent(const TTF_Font *font);
  * \param font the font to query.
  * \returns the font's recommended spacing.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_FontLineSkip(const TTF_Font *font);
 
@@ -647,7 +647,7 @@ extern DECLSPEC int SDLCALL TTF_FontLineSkip(const TTF_Font *font);
  * \param font the font to query.
  * \returns non-zero if kerning is enabled, zero otherwise.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_GetFontKerning(const TTF_Font *font);
 
@@ -662,7 +662,7 @@ extern DECLSPEC int SDLCALL TTF_GetFontKerning(const TTF_Font *font);
  * \param font the font to set kerning on.
  * \param allowed non-zero to allow kerning, zero to disallow.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC void SDLCALL TTF_SetFontKerning(TTF_Font *font, int allowed);
 
@@ -672,7 +672,7 @@ extern DECLSPEC void SDLCALL TTF_SetFontKerning(TTF_Font *font, int allowed);
  * \param font the font to query.
  * \returns the number of FreeType font faces.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC long SDLCALL TTF_FontFaces(const TTF_Font *font);
 
@@ -688,7 +688,7 @@ extern DECLSPEC long SDLCALL TTF_FontFaces(const TTF_Font *font);
  * \param font the font to query.
  * \returns non-zero if fixed-width, zero if not.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_FontFaceIsFixedWidth(const TTF_Font *font);
 
@@ -704,7 +704,7 @@ extern DECLSPEC int SDLCALL TTF_FontFaceIsFixedWidth(const TTF_Font *font);
  * \param font the font to query.
  * \returns the font's family name.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC const char * SDLCALL TTF_FontFaceFamilyName(const TTF_Font *font);
 
@@ -720,7 +720,7 @@ extern DECLSPEC const char * SDLCALL TTF_FontFaceFamilyName(const TTF_Font *font
  * \param font the font to query.
  * \returns the font's style name.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC const char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *font);
 
@@ -740,7 +740,7 @@ extern DECLSPEC const char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *font)
  * \param ch the character code to check.
  * \returns non-zero if font provides a glyph for this character, zero if not.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GlyphIsProvided32
  */
@@ -758,7 +758,7 @@ extern DECLSPEC int SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint16 ch);
  * \param ch the character code to check.
  * \returns non-zero if font provides a glyph for this character, zero if not.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_GlyphIsProvided32(TTF_Font *font, Uint32 ch);
 
@@ -781,7 +781,7 @@ extern DECLSPEC int SDLCALL TTF_GlyphIsProvided32(TTF_Font *font, Uint32 ch);
  * \param font the font to query.
  * \param ch the character code to check.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GlyphMetrics32
  */
@@ -804,7 +804,7 @@ extern DECLSPEC int SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
  * \param font the font to query.
  * \param ch the character code to check.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
                         int *minx, int *maxx,
@@ -829,7 +829,7 @@ extern DECLSPEC int SDLCALL TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
  * \param h will be filled with height, in pixels, on return.
  * \returns 0 if successful, -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SizeUTF8
  * \sa TTF_SizeUNICODE
@@ -850,7 +850,7 @@ extern DECLSPEC int SDLCALL TTF_SizeText(TTF_Font *font, const char *text, int *
  * \param h will be filled with height, in pixels, on return.
  * \returns 0 if successful, -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SizeUNICODE
  */
@@ -875,7 +875,7 @@ extern DECLSPEC int SDLCALL TTF_SizeUTF8(TTF_Font *font, const char *text, int *
  * \param h will be filled with height, in pixels, on return.
  * \returns 0 if successful, -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SizeUTF8
  */
@@ -902,7 +902,7 @@ extern DECLSPEC int SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, 
  * \param extent on return, filled with latest calculated width.
  * \returns 0 if successful, -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_MeasureText
  * \sa TTF_MeasureUTF8
@@ -926,7 +926,7 @@ extern DECLSPEC int SDLCALL TTF_MeasureText(TTF_Font *font, const char *text, in
  * \param extent on return, filled with latest calculated width.
  * \returns 0 if successful, -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_MeasureText
  * \sa TTF_MeasureUTF8
@@ -955,7 +955,7 @@ extern DECLSPEC int SDLCALL TTF_MeasureUTF8(TTF_Font *font, const char *text, in
  * \param extent on return, filled with latest calculated width.
  * \returns 0 if successful, -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_MeasureText
  * \sa TTF_MeasureUTF8
@@ -990,7 +990,7 @@ extern DECLSPEC int SDLCALL TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *tex
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Solid
  * \sa TTF_RenderUNICODE_Solid
@@ -1020,7 +1020,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Shaded
  * \sa TTF_RenderUTF8_Blended
@@ -1056,7 +1056,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Solid
  */
@@ -1088,7 +1088,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Solid_Wrapped
  * \sa TTF_RenderUNICODE_Solid_Wrapped
@@ -1116,7 +1116,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font *fon
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Shaded_Wrapped
  * \sa TTF_RenderUTF8_Blended_Wrapped
@@ -1151,7 +1151,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid_Wrapped(TTF_Font *fon
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Solid_Wrapped
  */
@@ -1185,7 +1185,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid_Wrapped(TTF_Font *
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderGlyph32_Solid
  */
@@ -1215,7 +1215,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderGlyph32_Shaded
  * \sa TTF_RenderGlyph32_Blended
@@ -1253,7 +1253,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Solid(TTF_Font *font,
  * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Shaded
  * \sa TTF_RenderUNICODE_Shaded
@@ -1285,7 +1285,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font,
  * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUNICODE_Shaded
  */
@@ -1320,7 +1320,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Shaded
  */
@@ -1354,7 +1354,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded(TTF_Font *font,
  * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Shaded_Wrapped
  * \sa TTF_RenderUNICODE_Shaded_Wrapped
@@ -1383,7 +1383,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font *fo
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Solid_Wrapped
  * \sa TTF_RenderUTF8_Blended_Wrapped
@@ -1419,7 +1419,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded_Wrapped(TTF_Font *fo
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Shaded_Wrapped
  */
@@ -1455,7 +1455,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded_Wrapped(TTF_Font 
  * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderGlyph32_Shaded
  */
@@ -1486,7 +1486,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderGlyph32_Solid
  * \sa TTF_RenderGlyph32_Blended
@@ -1522,7 +1522,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Shaded(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Shaded
  * \sa TTF_RenderUNICODE_Shaded
@@ -1552,7 +1552,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUNICODE_Blended
  */
@@ -1586,7 +1586,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Blended
  */
@@ -1618,7 +1618,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Blended_Wrapped
  * \sa TTF_RenderUNICODE_Blended_Wrapped
@@ -1646,7 +1646,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Font *f
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Solid_Wrapped
  * \sa TTF_RenderUTF8_Shaded_Wrapped
@@ -1681,7 +1681,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended_Wrapped(TTF_Font *f
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Blended_Wrapped
  */
@@ -1715,7 +1715,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended_Wrapped(TTF_Font
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderGlyph32_Blended
  */
@@ -1745,7 +1745,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderGlyph32_Solid
  * \sa TTF_RenderGlyph32_Shaded
@@ -1782,7 +1782,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Blended(TTF_Font *font,
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_LCD
  * \sa TTF_RenderUNICODE_LCD
@@ -1813,7 +1813,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font,
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUNICODE_LCD
  */
@@ -1848,7 +1848,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_LCD(TTF_Font *font,
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_LCD
  */
@@ -1882,7 +1882,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_LCD(TTF_Font *font,
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_LCD_Wrapped
  * \sa TTF_RenderUNICODE_LCD_Wrapped
@@ -1912,7 +1912,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *font,
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_Solid_Wrapped
  * \sa TTF_RenderUTF8_Shaded_Wrapped
@@ -1949,7 +1949,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_LCD_Wrapped(TTF_Font *font,
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderUTF8_LCD_Wrapped
  */
@@ -1984,7 +1984,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_LCD_Wrapped(TTF_Font *fo
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderGlyph32_LCD
  */
@@ -2014,7 +2014,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font,
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_RenderGlyph32_Solid
  * \sa TTF_RenderGlyph32_Shaded
@@ -2046,7 +2046,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_LCD(TTF_Font *font,
  *
  * \param font the font to dispose of.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_OpenFont
  * \sa TTF_OpenFontIndexDPIRW
@@ -2076,7 +2076,7 @@ extern DECLSPEC void SDLCALL TTF_CloseFont(TTF_Font *font);
  * deal with it. A well-written program should call TTF_CloseFont() on any
  * open fonts before calling this function!
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC void SDLCALL TTF_Quit(void);
 
@@ -2095,7 +2095,7 @@ extern DECLSPEC void SDLCALL TTF_Quit(void);
  * \returns the current number of initialization calls, that need to
  *          eventually be paired with this many calls to TTF_Quit().
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_Init
  * \sa TTF_Quit
@@ -2117,7 +2117,7 @@ extern DECLSPEC int SDLCALL TTF_WasInit(void);
  * \param index the font index, NOT codepoint, of the current character.
  * \returns The kerning size between the two specified characters, in pixels, or -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.12.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GetFontKerningSizeGlyphs
  */
@@ -2140,7 +2140,7 @@ extern SDL_DEPRECATED DECLSPEC int TTF_GetFontKerningSize(TTF_Font *font, int pr
  * \param ch the current character's code, 16 bits.
  * \returns The kerning size between the two specified characters, in pixels, or -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.14.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GetFontKerningSizeGlyphs32
  */
@@ -2159,7 +2159,7 @@ extern DECLSPEC int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous
  * \param ch the current character's code, 32 bits.
  * \returns The kerning size between the two specified characters, in pixels, or -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int TTF_GetFontKerningSizeGlyphs32(TTF_Font *font, Uint32 previous_ch, Uint32 ch);
 
@@ -2176,7 +2176,7 @@ extern DECLSPEC int TTF_GetFontKerningSizeGlyphs32(TTF_Font *font, Uint32 previo
  *
  * \returns 0 on success, -1 on error.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GetFontSDF
  */
@@ -2189,7 +2189,7 @@ extern DECLSPEC int TTF_SetFontSDF(TTF_Font *font, SDL_bool on_off);
  *
  * \returns SDL_TRUE if enabled, SDL_FALSE otherwise.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontSDF
  */
@@ -2240,7 +2240,7 @@ typedef enum
  * \param direction an hb_direction_t value.
  * \returns 0, or -1 if SDL_ttf is not compiled with HarfBuzz support.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontDirection
  */
@@ -2263,7 +2263,7 @@ extern SDL_DEPRECATED DECLSPEC int SDLCALL TTF_SetDirection(int direction); /* h
  *
  * \returns 0, or -1 if SDL_ttf is not compiled with HarfBuzz support.
  *
- * \since This function is available since SDL_ttf 2.0.18.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontScriptName
  */
@@ -2288,7 +2288,7 @@ extern SDL_DEPRECATED DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_scri
  * \param direction the new direction for text to flow.
  * \returns 0 on success, or -1 on error.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction);
 
@@ -2307,7 +2307,7 @@ extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction d
  * \param script null-terminated string of exactly 4 characters.
  * \returns 0 on success, or -1 on error.
  *
- * \since This function is available since SDL_ttf 2.20.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern DECLSPEC int SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char *script);
 
@@ -2320,7 +2320,7 @@ extern DECLSPEC int SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char *sc
  *
  * \returns SDL_TRUE if the font is scalable, SDL_FALSE otherwise.
  *
- * \since This function is available since SDL_ttf 2.21.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontSDF
  */
