@@ -104,9 +104,7 @@ endif()
 target_include_directories(${sdl3_ttf_target_name}
     PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/SDL3_ttf>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL3_ttf>"
 )
 target_compile_definitions(${sdl3_ttf_target_name} PRIVATE
     BUILD_SDL
