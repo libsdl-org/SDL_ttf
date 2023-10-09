@@ -2312,6 +2312,19 @@ extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction d
 extern DECLSPEC int SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char *script);
 
 /**
+ * Set language to be used for text shaping by a font.
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns -1.
+ *
+ * \param font the font to specify a language for.
+ * \param language_bcp47 a null-terminated string containing the desired language's BCP47 code. Or null to reset the value.
+ * \returns 0 on success, or -1 on error.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern DECLSPEC int TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
+
+/**
  * Query whether a font is scalable or not.
  *
  * Scalability lets us distinguish between outline and bitmap fonts.
