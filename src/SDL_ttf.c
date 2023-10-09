@@ -269,6 +269,7 @@ struct _TTF_Font {
     hb_script_t hb_script;
     /* If HB_DIRECTION_INVALID, use global default direction */
     hb_direction_t hb_direction;
+    hb_language_t hb_language;
 #endif
     int render_sdf;
 
@@ -1867,6 +1868,7 @@ TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, l
     /* By default the script / direction are inherited from global variables */
     font->hb_script = HB_SCRIPT_INVALID;
     font->hb_direction = HB_DIRECTION_INVALID;
+    font->hb_language = hb_language_from_string("", -1);
 #endif
 
     if (TTF_SetFontSizeDPI(font, ptsize, hdpi, vdpi) < 0) {
@@ -3111,6 +3113,24 @@ int TTF_SetFontScriptName(TTF_Font *font, const char *script)
 #endif
 }
 
+int TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
+{
+#if TTF_USE_HARFBUZZ
+    TTF_CHECK_POINTER(font, -1);
+
+    if (language_bcp47 == NULL) {
+        font->hb_language = hb_language_from_string("", -1);
+    } else {
+        font->hb_language = hb_language_from_string(language_bcp47, -1);
+    }
+    return 0;
+#else
+    (void) font;
+    (void) language_bcp47;
+    return TTF_SetError("Unsupported");
+#endif
+}
+
 static int TTF_Size_Internal(TTF_Font *font,
         const char *text, const str_type_t str_type,
         int *w, int *h, int *xstart, int *ystart,
@@ -3200,6 +3220,7 @@ static int TTF_Size_Internal(TTF_Font *font,
     }
 
     /* Set global configuration */
+    hb_buffer_set_language(hb_buffer, font->hb_language);
     hb_buffer_set_direction(hb_buffer, hb_direction);
     hb_buffer_set_script(hb_buffer, hb_script);
 
