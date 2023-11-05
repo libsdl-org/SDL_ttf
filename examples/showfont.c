@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
     /* Wait for a keystroke, and blit text on mouse press */
     done = 0;
     while (!done) {
-        if (SDL_WaitEvent(&event) < 0) {
+        if (!SDL_WaitEvent(&event)) {
             SDL_Log("SDL_PullEvent() error: %s\n", SDL_GetError());
             done = 1;
             continue;
@@ -368,5 +368,3 @@ int main(int argc, char *argv[])
     /* Not reached, but fixes compiler warnings */
     return 0;
 }
-
-/* vi: set ts=4 sw=4 expandtab: */

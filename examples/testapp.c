@@ -326,8 +326,6 @@ static const char *test_strings[] = {
 "hvlSZ6jE2BU9ImjUjQiY255GA5ASfUUx",
 "e9o4tBCA9TCpilOI05UyHzes6s8lP9lQ",
 "gJyC26gZsCKR8wSp9kNMYKJRRgA3u45U1DWdzPCWv1SUEKi3Wdo3zNFTWiMcCfcl5A0MzOhbqRee7OP13NruY WP0ufGiB4W9RBWqgSy7umnE6puTyCc9WhPOzdLz168BhQwYetZkADWibObi8jcYajuUv54zxXkXQwC1B8lAi8rIH9lmIy0G10fQ832HKiLx"
-
-
 };
 static const int test_strings_count = SDL_arraysize(test_strings);
 static const char *font_path = NULL;
@@ -350,7 +348,7 @@ static int wait_for_input(void)
     SDL_Event event;
 
     while (!done) {
-        if (SDL_WaitEvent(&event) < 0) {
+        if (!SDL_WaitEvent(&event)) {
             quit("Event handling");
         }
 
@@ -633,8 +631,6 @@ int main(void)
     T_min  = SDL_min(T_min, T2 - T1);                                                   \
 
 
-
-
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
        quit("SDL init failed");
     }
@@ -693,20 +689,12 @@ int main(void)
 
     //seed=1673390190; replay=1; font_style=9; kerning=1; sdf=0; wrap=1; wrap_size=94; w_align=2; outline=7; curr_size=42; render_mode=1; curr_str=75; curr_font=1997; hinting=1; fg_alpha=90; // light Blended
 
-
-
-
-
-
-
     if (replay) {
        SDL_Log("Replay with string _%s_", test_strings[curr_str]);
     }
 
-
     while (1)
     {
-
        /* Normal mode <space>, try all combination {strings}x{render_mode} and exit
           This updates "render_mode" and "curr_str" */
        if (!mode_random_test && !replay) {
@@ -817,8 +805,6 @@ int main(void)
           }
 #endif
 
-
-
           {
              // static const char *hinting_desc[] = { "normal", "light", "light_subpix", "mono", "none" };
              // static const char *hinting_desc[] = { "normal", "light", "light_subpix", "lcd_subpix", "mono", "none" };
@@ -835,7 +821,6 @@ int main(void)
              }
           }
        }
-
 
        /* Get some console output out in case we crash next... */
        if (! mode_random_test) {
@@ -889,8 +874,6 @@ int main(void)
           SDL_Log("font_style=%d; kerning=%d; wrap=%d; wrap_size=%d; outline=%d; curr_size=%d; render_mode=%d; curr_str=%d; curr_font=%d; hinting=%d;",
                 font_style, kerning, wrap, wrap_size, outline, curr_size, render_mode, curr_str, curr_font, hinting);
 #endif
-
-
        }
 
        /* pick a string */
@@ -1065,7 +1048,6 @@ int main(void)
           if (background_color == 5) SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
 
           SDL_RenderClear(renderer);
-
 
           text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
           if (text_texture == NULL) {
@@ -1274,4 +1256,3 @@ static void random_input(void)
 
     return;
 }
-
