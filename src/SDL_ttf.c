@@ -883,11 +883,13 @@ static SDL_INLINE void BG_64(const TTF_Image *image, Uint8 *destination, Sint32 
     Uint64       *dst    = (Uint64 *)destination;
     Uint32        width  = image->width / 8;
     Uint32        height = image->rows;
-
+    Uint64        tmp;
+    
     while (height--) {
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-            *dst++ |= *src++;
+            memcpy(&tmp, src++, sizeof(tmp));
+            *dst++ |= tmp;
         , width);
         /* *INDENT-ON* */
         src = (const Uint64 *)((const Uint8 *)src + srcskip);
