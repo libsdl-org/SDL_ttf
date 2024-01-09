@@ -3921,6 +3921,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         } else {
             xoffset = 0;
         }
+        xoffset = SDL_max(0, xoffset);
 
         /* Render one text line to textbuf at (xstart, ystart) */
         if (Render_Line(render_mode, font->render_subpixel, font, textbuf, xstart + xoffset, ystart, fg) < 0) {
