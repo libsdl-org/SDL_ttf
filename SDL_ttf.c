@@ -510,7 +510,7 @@ static SDL_INLINE void BG_Blended_Opaque_SDF(const TTF_Image *image, Uint32 *des
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
             d = *dst;
-            s = *src++ << 24;
+            s = ((Uint32)*src++) << 24;
             if (s > d) {
                 *dst = s;
             }
@@ -564,7 +564,7 @@ static SDL_INLINE void BG_Blended_Opaque(const TTF_Image *image, Uint32 *destina
     while (height--) {
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-            *dst++ |= *src++ << 24;
+            *dst++ |= ((Uint32)*src++) << 24;
         , width);
         /* *INDENT-ON* */
         src += srcskip;
@@ -605,10 +605,10 @@ static SDL_INLINE void BG_Blended_Opaque_32(const TTF_Image *image, Uint32 *dest
     while (height--) {
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-            *dst++ |= *src++ << 24;
-            *dst++ |= *src++ << 24;
-            *dst++ |= *src++ << 24;
-            *dst++ |= *src++ << 24;
+            *dst++ |= ((Uint32)*src++) << 24;
+            *dst++ |= ((Uint32)*src++) << 24;
+            *dst++ |= ((Uint32)*src++) << 24;
+            *dst++ |= ((Uint32)*src++) << 24;
         , width);
         /* *INDENT-ON* */
         src += srcskip;
@@ -1574,7 +1574,7 @@ static SDL_Surface *Create_Surface_Blended(int width, int height, SDL_Color fg, 
     bgcolor = (fg.r << 16) | (fg.g << 8) | fg.b;
 
     /* Underline/Strikethrough color style */
-    *color = bgcolor | (fg.a << 24);
+    *color = bgcolor | ((Uint32)fg.a << 24);
 
     /* Create the target surface if required */
     if (width != 0) {
@@ -1598,10 +1598,10 @@ static SDL_Surface* Create_Surface_LCD(int width, int height, SDL_Color fg, SDL_
     Uint32 bgcolor;
 
     /* Background color */
-    bgcolor = (bg.a << 24) | (bg.r << 16) | (bg.g << 8) | bg.b;
+    bgcolor = (((Uint32)bg.a) << 24) | (bg.r << 16) | (bg.g << 8) | bg.b;
 
     /* Underline/Strikethrough color style */
-    *color = (bg.a << 24) | (fg.r << 16) | (fg.g << 8) | fg.b;
+    *color = (((Uint32)bg.a) << 24) | (fg.r << 16) | (fg.g << 8) | fg.b;
 
     /* Create the target surface if required */
     if (width != 0) {
