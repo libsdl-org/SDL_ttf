@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
-		F3016F68296F9E9F00C730E5 /* SDL3_ttf.xcFramework */ = {
+		F3016F68296F9E9F00C730E5 /* SDL3_ttf.xcframework */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = F3016F69296F9E9F00C730E5 /* Build configuration list for PBXAggregateTarget "SDL3_ttf.xcFramework" */;
+			buildConfigurationList = F3016F69296F9E9F00C730E5 /* Build configuration list for PBXAggregateTarget "SDL3_ttf.xcframework" */;
 			buildPhases = (
 				F3016F6C296F9EA700C730E5 /* ShellScript */,
 			);
 			dependencies = (
 			);
-			name = SDL3_ttf.xcFramework;
+			name = SDL3_ttf.xcframework;
 			productName = xcFramework;
 		};
 		F3E1F8282A79403E00AC76D3 /* SDL3_ttf.dmg */ = {
@@ -587,7 +587,7 @@
 			projectRoot = "";
 			targets = (
 				BE48FD5D07AFA17000BB41DA /* SDL3_ttf */,
-				F3016F68296F9E9F00C730E5 /* SDL3_ttf.xcFramework */,
+				F3016F68296F9E9F00C730E5 /* SDL3_ttf.xcframework */,
 				F3E1F8282A79403E00AC76D3 /* SDL3_ttf.dmg */,
 			);
 		};
@@ -779,7 +779,7 @@
 /* Begin PBXTargetDependency section */
 		F3E1F82D2A79405A00AC76D3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F3016F68296F9E9F00C730E5 /* SDL3_ttf.xcFramework */;
+			target = F3016F68296F9E9F00C730E5 /* SDL3_ttf.xcframework */;
 			targetProxy = F3E1F82C2A79405A00AC76D3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -942,7 +942,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		F3016F69296F9E9F00C730E5 /* Build configuration list for PBXAggregateTarget "SDL3_ttf.xcFramework" */ = {
+		F3016F69296F9E9F00C730E5 /* Build configuration list for PBXAggregateTarget "SDL3_ttf.xcframework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F3016F6A296F9E9F00C730E5 /* Debug */,
