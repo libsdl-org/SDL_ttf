@@ -3870,6 +3870,8 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
                     }
                 }
             }
+            /* In case there are all newlines */
+            width = SDL_max(width, 1);
         }
     } else {
         if (numLines <= 1 && font->horizontal_align == TTF_WRAPPED_ALIGN_LEFT) {
