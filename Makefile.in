@@ -844,6 +844,7 @@ libSDL2_ttf_la_LIBADD = $(TTF_LIBS) @MATHLIB@
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = SDL2_ttf.pc
 EXTRA_DIST = \
+	.gitmodules		\
 	Android.mk 		\
 	CHANGES.txt 		\
 	CMakeLists.txt 		\
