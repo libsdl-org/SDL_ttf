@@ -34,7 +34,7 @@
 #define HEIGHT  480
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-solid] [-shaded] [-blended] [-utf8|-unicode] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [-solid] [-shaded] [-blended] [-wrapped] [-utf8|-unicode] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
@@ -88,6 +88,7 @@ int main(int argc, char *argv[])
     int outline;
     int hinting;
     int kerning;
+    int wrap;
     int dump;
     enum {
         RENDER_LATIN1,
@@ -153,6 +154,9 @@ int main(int argc, char *argv[])
         } else
         if (SDL_strcmp(argv[i], "-nokerning") == 0) {
             kerning = 0;
+        } else
+        if (SDL_strcmp(argv[i], "-wrap") == 0) {
+            wrap = 1;
         } else
         if (SDL_strcmp(argv[i], "-dump") == 0) {
             dump = 1;
@@ -275,13 +279,25 @@ int main(int argc, char *argv[])
         case RENDER_LATIN1:
             switch (rendermethod) {
             case TextRenderSolid:
-                text = TTF_RenderText_Solid(font, message, *forecol);
+                if (wrap) {
+                    text = TTF_RenderText_Solid_Wrapped(font, message, *forecol, 0);
+                } else {
+                    text = TTF_RenderText_Solid(font, message, *forecol);
+                }
                 break;
             case TextRenderShaded:
-                text = TTF_RenderText_Shaded(font, message, *forecol, *backcol);
+                if (wrap) {
+                    text = TTF_RenderText_Shaded_Wrapped(font, message, *forecol, *backcol, 0);
+                } else {
+                    text = TTF_RenderText_Shaded(font, message, *forecol, *backcol);
+                }
                 break;
             case TextRenderBlended:
-                text = TTF_RenderText_Blended(font, message, *forecol);
+                if (wrap) {
+                    text = TTF_RenderText_Blended_Wrapped(font, message, *forecol, 0);
+                } else {
+                    text = TTF_RenderText_Blended(font, message, *forecol);
+                }
                 break;
             }
             break;
@@ -289,13 +305,25 @@ int main(int argc, char *argv[])
         case RENDER_UTF8:
             switch (rendermethod) {
             case TextRenderSolid:
-                text = TTF_RenderUTF8_Solid(font, message, *forecol);
+                if (wrap) {
+                    text = TTF_RenderUTF8_Solid_Wrapped(font, message, *forecol, 0);
+                } else {
+                    text = TTF_RenderUTF8_Solid(font, message, *forecol);
+                }
                 break;
             case TextRenderShaded:
-                text = TTF_RenderUTF8_Shaded(font, message, *forecol, *backcol);
+                if (wrap) {
+                    text = TTF_RenderUTF8_Shaded_Wrapped(font, message, *forecol, *backcol, 0);
+                } else {
+                    text = TTF_RenderUTF8_Shaded(font, message, *forecol, *backcol);
+                }
                 break;
             case TextRenderBlended:
-                text = TTF_RenderUTF8_Blended(font, message, *forecol);
+                if (wrap) {
+                    text = TTF_RenderUTF8_Blended_Wrapped(font, message, *forecol, 0);
+                } else {
+                    text = TTF_RenderUTF8_Blended(font, message, *forecol);
+                }
                 break;
             }
             break;
@@ -305,13 +333,25 @@ int main(int argc, char *argv[])
             Uint16 *unicode_text = SDL_iconv_utf8_ucs2(message);
             switch (rendermethod) {
             case TextRenderSolid:
-                text = TTF_RenderUNICODE_Solid(font, unicode_text, *forecol);
+                if (wrap) {
+                    text = TTF_RenderUNICODE_Solid_Wrapped(font, unicode_text, *forecol, 0);
+                } else {
+                    text = TTF_RenderUNICODE_Solid(font, unicode_text, *forecol);
+                }
                 break;
             case TextRenderShaded:
-                text = TTF_RenderUNICODE_Shaded(font, unicode_text, *forecol, *backcol);
+                if (wrap) {
+                    text = TTF_RenderUNICODE_Shaded_Wrapped(font, unicode_text, *forecol, *backcol, 0);
+                } else {
+                    text = TTF_RenderUNICODE_Shaded(font, unicode_text, *forecol, *backcol);
+                }
                 break;
             case TextRenderBlended:
-                text = TTF_RenderUNICODE_Blended(font, unicode_text, *forecol);
+                if (wrap) {
+                    text = TTF_RenderUNICODE_Blended_Wrapped(font, unicode_text, *forecol, 0);
+                } else {
+                    text = TTF_RenderUNICODE_Blended(font, unicode_text, *forecol);
+                }
                 break;
             }
             SDL_free(unicode_text);
