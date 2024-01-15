@@ -146,6 +146,7 @@ pkgconfig_DATA = SDL2_ttf.pc
 	$(RC) $< $@
 
 EXTRA_DIST = 			\
+	.gitmodules		\
 	Android.mk 		\
 	CHANGES.txt 		\
 	CMakeLists.txt 		\
