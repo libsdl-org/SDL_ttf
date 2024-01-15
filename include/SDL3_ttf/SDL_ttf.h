@@ -216,15 +216,14 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int ptsiz
  * size becomes the index of choosing which size. If the value is too high,
  * the last indexed size will be the default.
  *
- * If `freesrc` is SDL_TRUE, the RWops will be closed before returning,
- * whether this function succeeds or not. SDL_ttf reads everything it needs
- * from the RWops during this call in any case.
+ * If `freesrc` is SDL_TRUE, the RWops will be automatically closed once
+ * the font is closed. Otherwise you should close the RWops yourself after
+ * closing the font.
  *
  * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
  *
  * \param src an SDL_RWops to provide a font file's data.
- * \param freesrc SDL_TRUE to close the RWops before returning, SDL_FALSE to
- *                leave it open.
+ * \param freesrc SDL_TRUE to close the RWops when the font is closed, SDL_FALSE to leave it open.
  * \param ptsize point size to use for the newly-opened font.
  * \returns a valid TTF_Font, or NULL on error.
  *
@@ -241,9 +240,9 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontRW(SDL_RWops *src, SDL_bool frees
  * size becomes the index of choosing which size. If the value is too high,
  * the last indexed size will be the default.
  *
- * If `freesrc` is SDL_TRUE, the RWops will be closed before returning,
- * whether this function succeeds or not. SDL_ttf reads everything it needs
- * from the RWops during this call in any case.
+ * If `freesrc` is SDL_TRUE the RWops will be automatically closed once
+ * the font is closed. Otherwise you should close the RWops yourself after
+ * closing the font.
  *
  * Some fonts have multiple "faces" included. The index specifies which face
  * to use from the font file. Font files with only one face should specify
@@ -252,8 +251,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontRW(SDL_RWops *src, SDL_bool frees
  * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
  *
  * \param src an SDL_RWops to provide a font file's data.
- * \param freesrc SDL_TRUE to close the RWops before returning, SDL_FALSE to
- *                leave it open.
+ * \param freesrc SDL_TRUE to close the RWops when the font is closed, SDL_FALSE to leave it open.
  * \param ptsize point size to use for the newly-opened font.
  * \param index index of the face in the font file.
  * \returns a valid TTF_Font, or NULL on error.
@@ -324,15 +322,14 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPI(const char *file, int pt
  * size becomes the index of choosing which size. If the value is too high,
  * the last indexed size will be the default.
  *
- * If `freesrc` is SDL_TRUE, the RWops will be closed before returning,
- * whether this function succeeds or not. SDL_ttf reads everything it needs
- * from the RWops during this call in any case.
+ * If `freesrc` is SDL_TRUE the RWops will be automatically closed once
+ * the font is closed. Otherwise you should close the RWops yourself after
+ * closing the font.
  *
  * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
  *
  * \param src an SDL_RWops to provide a font file's data.
- * \param freesrc SDL_TRUE to close the RWops before returning, zero to leave
- *                it open.
+ * \param freesrc SDL_TRUE to close the RWops when the font is closed, SDL_FALSE to leave it open.
  * \param ptsize point size to use for the newly-opened font.
  * \param hdpi the target horizontal DPI.
  * \param vdpi the target vertical DPI.
@@ -353,9 +350,9 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontDPIRW(SDL_RWops *src, SDL_bool fr
  * size becomes the index of choosing which size. If the value is too high,
  * the last indexed size will be the default.
  *
- * If `freesrc` is SDL_TRUE, the RWops will be closed before returning,
- * whether this function succeeds or not. SDL_ttf reads everything it needs
- * from the RWops during this call in any case.
+ * If `freesrc` is SDL_TRUE the RWops will be automatically closed once
+ * the font is closed. Otherwise you should close the RWops yourself after
+ * closing the font.
  *
  * Some fonts have multiple "faces" included. The index specifies which face
  * to use from the font file. Font files with only one face should specify
@@ -364,8 +361,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontDPIRW(SDL_RWops *src, SDL_bool fr
  * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
  *
  * \param src an SDL_RWops to provide a font file's data.
- * \param freesrc SDL_TRUE to close the RWops before returning, SDL_FALSE to
- *                leave it open.
+ * \param freesrc SDL_TRUE to close the RWops when the font is closed, SDL_FALSE to leave it open.
  * \param ptsize point size to use for the newly-opened font.
  * \param index index of the face in the font file.
  * \param hdpi the target horizontal DPI.
