@@ -2246,6 +2246,96 @@ extern DECLSPEC int TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp
  */
 extern DECLSPEC SDL_bool TTF_IsFontScalable(const TTF_Font *font);
 
+/**
+ * Subpixel rendering mode
+ *
+ * \sa TTF_GetSubpixelMode
+ * \sa TTF_SetLCDGeometry
+ * \sa TTF_SetLCDFilter
+ * \sa TTF_SetLCDFilterWeights
+ */
+typedef enum
+{
+  TTF_SUBPIXEL_MODE_UNKNOWN = 0,            /* Unknown */
+  TTF_SUBPIXEL_MODE_HARMONY = 1,            /* Harmony LCD rendering */
+  TTF_SUBPIXEL_MODE_CLEARTYPE_STYLE = 2,    /* ClearType-style LCD rendering */
+} TTF_SubpixelMode;
+
+/**
+ * LCD filter, for ClearType-style LCD rendering
+ * mapping to FreeType FT_LcdFilter
+ */
+typedef enum
+{
+    TTF_LCD_FILTER_NONE    = 0,
+    TTF_LCD_FILTER_DEFAULT = 1,
+    TTF_LCD_FILTER_LIGHT   = 2,
+    TTF_LCD_FILTER_LEGACY1 = 3,
+    TTF_LCD_FILTER_LEGACY  = 4,
+} TTF_LcdFilter;
+
+/**
+ * Detect which subpixel rendering mode FreeType uses internally when LCD functions are used.
+ *
+ * \returns subpixel rendering mode
+ *
+ * \since This function is available since SDL_ttf 3.0.0
+ *
+ * \sa TTF_SetLCDGeometry
+ * \sa TTF_SetLCDFilter
+ * \sa TTF_SetLCDFilterWeights
+ */
+extern DECLSPEC TTF_SubpixelMode SDLCALL TTF_GetSubpixelMode(void);
+
+/**
+ * Set parameters for Harmony LCD rendering.
+ *
+ * See FreeType function FT_Library_SetLcdGeometry for more details
+ * Remark: FT_Library_SetLcdGeometry's y coordinates are in reverse from the usual SDL notation (larger = upper as opposed to larger = lower).
+ *
+ * \param font the font to configure
+ * \param pixel_coordinates default positions of color subpixels
+ * \returns 0 on success, or -1 on error.
+ *
+ * \since This function is available since SDL_ttf 3.0.0
+ *
+ * \sa TTF_GetSubpixelMode
+ */
+extern DECLSPEC int SDLCALL TTF_SetLCDGeometry(TTF_Font *font, const int pixel_coordinates[6]);
+
+/**
+ * Set a filter for ClearType-style LCD rendering.
+ *
+ * See FreeType function FT_Library_SetLcdFilter for more details
+ *
+ * \param font the font to configure
+ * \param filter filter to use
+ * \returns 0 on success, or -1 on error.
+ *
+ * \since This function is available since SDL_ttf 3.0.0
+ *
+ * \sa TTF_GetSubpixelMode
+ * \sa TTF_LcdFilter
+ * \sa TTF_SetLCDFilterWeights
+ */
+extern DECLSPEC int SDLCALL TTF_SetLCDFilter(TTF_Font *font, TTF_LcdFilter filter);
+
+/**
+ * Set a custom filter for ClearType-style LCD rendering.
+ *
+ * See FreeType function FT_Library_SetLcdFilterWeights for more details
+ *
+ * \param font the font to configure
+ * \param weights A pointer to an array; the function copies the first five bytes and uses them to specify the filter weights in 1/256 units.
+ * \returns 0 on success, or -1 on error.
+ *
+ * \since This function is available since SDL_ttf 3.0.0
+ *
+ * \sa TTF_GetSubpixelMode
+ * \sa TTF_SetLCDFilter
+ */
+extern DECLSPEC int SDLCALL TTF_SetLCDFilterWeights(TTF_Font *font, const unsigned char weights[5]);
+
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }

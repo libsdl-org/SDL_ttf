@@ -29,6 +29,7 @@
 #include FT_GLYPH_H
 #include FT_TRUETYPE_IDS_H
 #include FT_IMAGE_H
+#include FT_LCD_FILTER_H
 
 /* Enable rendering with color
  * Freetype may need to be compiled with FT_CONFIG_OPTION_USE_PNG */
@@ -218,6 +219,13 @@ typedef struct PosBuf {
     int y;
 } PosBuf_t;
 
+typedef enum {
+    MODE_LCD_DEFAULT = 0, /* no lcd customization */
+    MODE_LCD_HARMONY = 1,
+    MODE_LCD_CT = 2,
+    MODE_LCD_CT_WEIGHTS = 3,
+} mode_lcd_t;
+
 /* The structure used to hold internal font information */
 struct _TTF_Font {
     /* Freetype2 maintains all sorts of useful info itself */
@@ -275,7 +283,19 @@ struct _TTF_Font {
 
     /* Extra layout setting for wrapped text */
     int horizontal_align;
+
+    /* LCD filter, per font */
+    FT_LcdFilter ft_filter; /* ClearType-style */
+    FT_Vector sub[3]; /* Harmony */
+    unsigned char weights[5]; /* ClearType-style with weights*/
+    mode_lcd_t mode_lcd;
 };
+
+/* LCD filter, for the library */
+static FT_LcdFilter g_ft_filter;
+static FT_Vector g_sub[3];
+static unsigned char g_weights[5];
+static mode_lcd_t g_mode_lcd = MODE_LCD_DEFAULT;
 
 /* Tell if SDL_ttf has to handle the style */
 #define TTF_HANDLE_STYLE_BOLD(font)          ((font)->style & TTF_STYLE_BOLD)
@@ -336,6 +356,8 @@ static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         int translation, c_glyph **out_glyph, TTF_Image **out_image);
 
 static void Flush_Cache(TTF_Font *font);
+
+static int reapply_lcd_setting(TTF_Font *font);
 
 #if defined(USE_DUFFS_LOOP)
 
@@ -3463,9 +3485,12 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
     TTF_CHECK_POINTER(font, NULL);
     TTF_CHECK_POINTER(text, NULL);
 
-    if (render_mode == RENDER_LCD && !FT_IS_SCALABLE(font->face)) {
-        TTF_SetError("LCD rendering is not available for non-scalable font");
-        goto failure;
+    if (render_mode == RENDER_LCD) {
+        if (!FT_IS_SCALABLE(font->face)) {
+            TTF_SetError("LCD rendering is not available for non-scalable font");
+            goto failure;
+        }
+        reapply_lcd_setting(font);
     }
 
     /* Convert input string to default encoding UTF-8 */
@@ -3696,9 +3721,12 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     TTF_CHECK_POINTER(font, NULL);
     TTF_CHECK_POINTER(text, NULL);
 
-    if (render_mode == RENDER_LCD && !FT_IS_SCALABLE(font->face)) {
-        TTF_SetError("LCD rendering is not available for non-scalable font");
-        goto failure;
+    if (render_mode == RENDER_LCD) {
+        if (!FT_IS_SCALABLE(font->face)) {
+            TTF_SetError("LCD rendering is not available for non-scalable font");
+            goto failure;
+        }
+        reapply_lcd_setting(font);
     }
 
     /* Convert input string to default encoding UTF-8 */
@@ -4254,6 +4282,216 @@ SDL_bool TTF_IsFontScalable(const TTF_Font *font)
         return SDL_TRUE;
     }
     return SDL_FALSE;
+}
+
+TTF_SubpixelMode TTF_GetSubpixelMode(void) {
+    static SDL_bool done = SDL_FALSE;
+    static TTF_SubpixelMode mode = TTF_SUBPIXEL_MODE_UNKNOWN;
+    FT_Error error;
+
+    if (done) {
+        return mode;
+    }
+
+    TTF_CHECK_INITIALIZED(TTF_SUBPIXEL_MODE_UNKNOWN);
+
+    /* Detect TTF_SUBPIXEL_MODE_HARMONY */
+    {
+        /* {{-21, 0}, {0, 0}, {21, 0}} is the default, corresponding to 3 color stripes shifted by a third of a pixel. This could be an RGB panel. */
+        FT_Vector sub[3];
+        sub[0].x = -21;
+        sub[0].y = 0;
+        sub[1].x = 0;
+        sub[1].y = 0;
+        sub[2].x = 21;
+        sub[2].y = 0;
+        error = FT_Library_SetLcdGeometry(library, sub);
+
+        if (error == FT_Err_Unimplemented_Feature) {
+            /* continue detection */
+        } else if (error) {
+            TTF_SetFTError("FT_Library_SetLcdGeometry", error);
+            return TTF_SUBPIXEL_MODE_UNKNOWN;
+        } else {
+            done = SDL_TRUE;
+            mode = TTF_SUBPIXEL_MODE_HARMONY;
+            return mode;
+        }
+    }
+
+
+    /* Detect TTF_SUBPIXEL_MODE_CLEARTYPE_STYLE */
+    {
+        error = FT_Library_SetLcdFilter(library, FT_LCD_FILTER_DEFAULT);
+        if (error == FT_Err_Unimplemented_Feature) {
+            /* continue detection */
+        } else if (error) {
+            TTF_SetFTError("FT_Library_SetLcdFilter", error);
+            return TTF_SUBPIXEL_MODE_UNKNOWN;
+        } else {
+            done = SDL_TRUE;
+            mode = TTF_SUBPIXEL_MODE_CLEARTYPE_STYLE;
+            return mode;
+        }
+    }
+
+    return TTF_SUBPIXEL_MODE_UNKNOWN;
+}
+
+int TTF_SetLCDFilter(TTF_Font *font, TTF_LcdFilter filter) {
+    FT_LcdFilter ft_filter;
+    TTF_SubpixelMode mode;
+
+    TTF_CHECK_INITIALIZED(-1);
+    TTF_CHECK_POINTER(font, -1);
+
+    mode = TTF_GetSubpixelMode();
+    if (mode != TTF_SUBPIXEL_MODE_CLEARTYPE_STYLE) {
+        TTF_SetError("FreeType not using ClearType-style subpixel rendering (maybe FreeType is not compiled with FT_CONFIG_OPTION_SUBPIXEL_RENDERING)");
+        return -1;
+    }
+
+    if (filter == TTF_LCD_FILTER_NONE) {
+        ft_filter = FT_LCD_FILTER_NONE;
+    } else if (filter == TTF_LCD_FILTER_DEFAULT) {
+        ft_filter = FT_LCD_FILTER_DEFAULT;
+    } else if (filter == TTF_LCD_FILTER_LIGHT) {
+        ft_filter = FT_LCD_FILTER_LIGHT;
+    } else if (filter == TTF_LCD_FILTER_LEGACY1) {
+        ft_filter = FT_LCD_FILTER_LEGACY1;
+    } else if (filter == TTF_LCD_FILTER_LEGACY) {
+        ft_filter = FT_LCD_FILTER_LEGACY;
+    } else {
+        return SDL_InvalidParamError("filter");
+    }
+
+    font->mode_lcd = MODE_LCD_CT;
+    font->ft_filter = ft_filter;
+    return reapply_lcd_setting(font);
+}
+
+int TTF_SetLCDFilterWeights(TTF_Font *font, const unsigned char weights[5]) {
+    TTF_SubpixelMode mode;
+
+    TTF_CHECK_INITIALIZED(-1);
+    TTF_CHECK_POINTER(font, -1);
+
+    mode = TTF_GetSubpixelMode();
+    if (mode != TTF_SUBPIXEL_MODE_CLEARTYPE_STYLE) {
+        TTF_SetError("FreeType not using ClearType-style subpixel rendering (maybe FreeType is not compiled with FT_CONFIG_OPTION_SUBPIXEL_RENDERING)");
+        return -1;
+    }
+
+    if (weights == NULL) {
+        return SDL_InvalidParamError("weights");
+    }
+
+    font->mode_lcd = MODE_LCD_CT_WEIGHTS;
+    SDL_memcpy(font->weights, weights, 5);
+    return reapply_lcd_setting(font);
+}
+
+int TTF_SetLCDGeometry(TTF_Font *font, const int pixel_coordinates[6]) {
+    FT_Vector sub[3];
+    TTF_SubpixelMode mode;
+
+    TTF_CHECK_INITIALIZED(-1);
+    TTF_CHECK_POINTER(font, -1);
+
+    mode = TTF_GetSubpixelMode();
+    if (mode != TTF_SUBPIXEL_MODE_HARMONY) {
+        TTF_SetError("FreeType not using Harmony subpixel rendering (maybe FreeType library is compiled with FT_CONFIG_OPTION_SUBPIXEL_RENDERING)");
+        return -1;
+    }
+
+    sub[0].x = pixel_coordinates[0];
+    sub[0].y = pixel_coordinates[1];
+    sub[1].x = pixel_coordinates[2];
+    sub[1].y = pixel_coordinates[3];
+    sub[2].x = pixel_coordinates[4];
+    sub[2].y = pixel_coordinates[5];
+
+    font->mode_lcd = MODE_LCD_HARMONY;
+    SDL_memcpy(font->sub, sub, sizeof(sub));
+    return reapply_lcd_setting(font);
+}
+
+static int reapply_lcd_setting(TTF_Font *font) {
+    FT_Error error;
+
+    if (g_mode_lcd == font->mode_lcd) {
+        if (g_mode_lcd == MODE_LCD_DEFAULT) {
+            return 0; /* Same mode, nothing to do */
+        }
+        if (g_mode_lcd == MODE_LCD_CT) {
+            if (font->ft_filter == g_ft_filter) {
+                return 0; /* Same mode, nothing to do */
+            }
+        }
+        if (g_mode_lcd == MODE_LCD_CT_WEIGHTS) {
+            if (SDL_memcmp(font->weights, g_weights, 5) == 0) {
+                return 0; /* Same mode, nothing to do */
+            }
+        }
+        if (g_mode_lcd == MODE_LCD_HARMONY) {
+            if (SDL_memcpy(font->sub, g_sub, sizeof(g_sub)) == 0) {
+                return 0; /* Same mode, nothing to do */
+            }
+        }
+    }
+
+    /* re-apply to the library, the font->mode_lcd */
+
+    if (font->mode_lcd == MODE_LCD_DEFAULT) {
+        /* This font was never configure for LCD, switch back to default */
+        TTF_SubpixelMode mode;
+        mode = TTF_GetSubpixelMode();
+        if (mode == TTF_SUBPIXEL_MODE_CLEARTYPE_STYLE) {
+            font->ft_filter = FT_LCD_FILTER_DEFAULT;
+            font->mode_lcd = MODE_LCD_CT;
+        } else if (mode == TTF_SUBPIXEL_MODE_HARMONY) {
+            FT_Vector sub[3];
+            sub[0].x = -21;
+            sub[0].y = 0;
+            sub[1].x = 0;
+            sub[1].y = 0;
+            sub[2].x = 21;
+            sub[2].y = 0;
+            SDL_memcpy(font->sub, sub, sizeof(sub));
+            font->mode_lcd = MODE_LCD_HARMONY;
+        }
+    }
+
+    /* Need to apply the settings */
+    if (font->mode_lcd == MODE_LCD_CT) {
+        error = FT_Library_SetLcdFilter(library, font->ft_filter);
+        if (error) {
+            TTF_SetFTError("FT_Library_SetLcdFilter", error);
+            return -1;
+        }
+        g_ft_filter = font->ft_filter;
+    } else if (font->mode_lcd == MODE_LCD_CT_WEIGHTS) {
+        error = FT_Library_SetLcdFilterWeights(library, font->weights);
+        if (error) {
+            TTF_SetFTError("FT_Library_SetLcdFilterWeights", error);
+            return -1;
+        }
+        SDL_memcpy(g_weights, font->weights, 5);
+    } else if (font->mode_lcd == MODE_LCD_HARMONY) {
+        error = FT_Library_SetLcdGeometry(library, font->sub);
+        if (error) {
+            TTF_SetFTError("FT_Library_SetLcdGeometry", error);
+            return -1;
+        }
+        SDL_memcpy(g_sub, font->sub, sizeof(g_sub));
+    }
+
+    g_mode_lcd = font->mode_lcd;
+
+    /* Since the setting has changed, flush the cache */
+    Flush_Cache(font);
+
+    return 0;
 }
 
 /* vi: set ts=4 sw=4 expandtab: */
