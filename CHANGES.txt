@@ -1,5 +1,5 @@
 2.22.0:
- * Updated to FreeType version 2.13.0 and HarfBuzz version 8.1.1
+ * Updated to FreeType version 2.13.2 and HarfBuzz version 8.1.1
 
 2.20.0:
  * Added support for building with CMake
