@@ -834,7 +834,7 @@ int main(void)
 
           if (save_to_bmp) {
              SDL_snprintf(filename, sizeof(filename) - 1 ,
-                   "Render=%s_size=%d_outline=%d_wrap=%d_wrap_size=%d_kerning=%d_sdf=%d_italic=%d_bold=%d_underline=%d_strikethrough=%d_hinting=%s_%s__%"SDL_PRIs64".bmp",
+                   "Render=%s_size=%d_outline=%d_wrap=%d_wrap_size=%d_kerning=%d_sdf=%d_italic=%d_bold=%d_underline=%d_strikethrough=%d_hinting=%s_%s__%" SDL_PRIs64 ".bmp",
                    render_mode_desc[render_mode],
                    curr_size,
                    outline,
@@ -1014,7 +1014,7 @@ int main(void)
           }
 
        if (print_elapsed_ticks) {
-          SDL_Log("Avg: %7lg ms  Avg Perf: %7"SDL_PRIu64" (min=%7"SDL_PRIu64")", (double)t_sum / (double)count_init, T_sum / count_init, T_min);
+          SDL_Log("Avg: %7lg ms  Avg Perf: %7" SDL_PRIu64 " (min=%7" SDL_PRIu64 ")", (double)t_sum / (double)count_init, T_sum / count_init, T_min);
        }
 
        if (text_surface == NULL && render_mode == 1 && sdf == 1) {
