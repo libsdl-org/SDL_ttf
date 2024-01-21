@@ -394,7 +394,7 @@ static SDL_INLINE void BG_Blended_Color(const TTF_Image *image, Uint32 *destinat
             DUFFS_LOOP4(
                     /* prevent misaligned load: tmp = *src++; */
                     /* eventually, we can expect the compiler to replace the memcpy call with something optimized */
-                    memcpy(&tmp, src++, sizeof(tmp)); /* This should NOT be SDL_memcpy */
+                    SDL_memcpy(&tmp, src++, sizeof(tmp));
                     alpha = tmp >> 24;
                     tmp &= ~0xFF000000;
                     alpha = fg_alpha * alpha;
@@ -430,7 +430,7 @@ static SDL_INLINE void BG_Blended_LCD(const TTF_Image *image, Uint32 *destinatio
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
                 /* prevent misaligned load: tmp = *src++; */
-                memcpy(&tmp, src++, sizeof(tmp)); /* This should NOT be SDL_memcpy */
+                SDL_memcpy(&tmp, src++, sizeof(tmp));
 
                 if (tmp) {
                     bg = *dst;
@@ -893,7 +893,7 @@ static SDL_INLINE void BG_64(const TTF_Image *image, Uint8 *destination, Sint32 
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
               /* prevent misaligned load: *dst++ |= *src++; */
-              memcpy(&tmp, src++, sizeof(tmp)); /* This should NOT be SDL_memcpy */
+              SDL_memcpy(&tmp, src++, sizeof(tmp));
               *dst++ |= tmp;
         , width);
         /* *INDENT-ON* */
@@ -914,7 +914,7 @@ static SDL_INLINE void BG_32(const TTF_Image *image, Uint8 *destination, Sint32 
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
             /* prevent misaligned load: *dst++ |= *src++; */
-            memcpy(&tmp, src++, sizeof(tmp)); /* This should NOT be SDL_memcpy */
+            SDL_memcpy(&tmp, src++, sizeof(tmp));
             *dst++ |= tmp;
         , width);
         /* *INDENT-ON* */
