@@ -293,6 +293,10 @@ int main(int argc, char *argv[])
         cleanup(2);
     }
 
+    if (window) {
+        SDL_SetWindowTitle(window, "Show Font");
+    }
+
     /* Show which font file we're looking at */
     SDL_snprintf(string, sizeof(string), "Font file: %s", argv[0]); /* possible overflow */
     switch (rendermethod) {
@@ -427,8 +431,8 @@ int main(int argc, char *argv[])
     done = 0;
     while (!done) {
         if (!SDL_WaitEvent(&event)) {
-            SDL_Log("SDL_PullEvent() error: %s\n", SDL_GetError());
-            done = 1;
+            // SDL_Log("SDL_PullEvent() error: %s\n", SDL_GetError());
+            //  done = 1;
             continue;
         }
         switch (event.type) {
@@ -440,7 +444,7 @@ int main(int argc, char *argv[])
             draw_scene(renderer, &scene);
             break;
 
-        case SDL_EVENT_KEY_DOWN:
+        // case SDL_EVENT_KEY_DOWN:
         case SDL_EVENT_QUIT:
             done = 1;
             break;
