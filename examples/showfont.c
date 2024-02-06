@@ -36,7 +36,13 @@
 #define HEIGHT         800
 
 #define TTF_SHOWFONT_USAGE \
-    "Usage: %s [-windowsize w,h] [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-utf8txtfile pathName] <font>.ttf [ptsize] [text]\n"
+    "Usage:\n"             \
+    "    %s [-windowsize w,h] [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight | -hintmono | -hintnone] [-nokerning] [-wrap] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-utf8txtfile pathName] <font>.ttf [ptsize] [text] \n"
+
+#define TTF_SHOWFONT_USAGE_WITH_EXAMPLE                                                                                    \
+    TTF_SHOWFONT_USAGE##"Example:\n"                                                                                       \
+                        "    %s -b -wrap -fgcol 255,0,255,255 -bgcol 64,64,64,255 NotoSansSC.ttf 32 \"This is a test.\"\n" \
+                        "    %s -windowsize 1920,1200 -utf8txtfile content.txt NotoSansSC.ttf"
 
 typedef enum
 {
@@ -47,13 +53,13 @@ typedef enum
 
 typedef struct
 {
-    SDL_Texture* caption;
+    SDL_Texture *caption;
     SDL_FRect captionRect;
-    SDL_Texture* message;
+    SDL_Texture *message;
     SDL_FRect messageRect;
 } Scene;
 
-static void draw_scene(SDL_Renderer* renderer, Scene* scene)
+static void draw_scene(SDL_Renderer *renderer, Scene *scene)
 {
     /* Clear the background to background color */
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -71,9 +77,9 @@ static void cleanup(int exitcode)
     exit(exitcode);
 }
 
-int load_file(char** bufferAddr, const char* pathName)
+int load_file(char **bufferAddr, const char *pathName)
 {
-    FILE* file = fopen(pathName, "rb");
+    FILE *file = fopen(pathName, "rb");
     if (file == NULL)
     {
         perror("Error opening file");
@@ -92,7 +98,7 @@ int load_file(char** bufferAddr, const char* pathName)
     fseek(file, 0, SEEK_SET);
 
     *bufferAddr = malloc(file_size + 1);
-    char* buffer = *bufferAddr;
+    char *buffer = *bufferAddr;
     memset(buffer, 0, file_size + 1);
 
     size_t bytesRead = fread(buffer, 1, file_size, file);
@@ -121,20 +127,20 @@ int load_file(char** bufferAddr, const char* pathName)
     return 0;
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-    char* argv0 = argv[0];
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-    TTF_Font* font;
-    SDL_Surface* text = NULL;
+    char *argv0 = argv[0];
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    TTF_Font *font;
+    SDL_Surface *text = NULL;
     Scene scene;
     int ptsize;
     int i, done;
     SDL_Color white = { 0xFF, 0xFF, 0xFF, 0 };
     SDL_Color black = { 0x00, 0x00, 0x00, 0 };
-    SDL_Color* forecol;
-    SDL_Color* backcol;
+    SDL_Color *forecol;
+    SDL_Color *backcol;
     SDL_Event event;
     TextRenderMethod rendermethod;
     int renderstyle;
@@ -152,7 +158,7 @@ int main(int argc, char* argv[])
         RENDER_UTF8,
         RENDER_UNICODE
     } rendertype;
-    char* message, * fileMessage, string[128];
+    char *message, *fileMessage, string[128];
     fileMessage = NULL;
 
     /* Look for special execution mode */
@@ -170,7 +176,7 @@ int main(int argc, char* argv[])
 
     if (argc == 1)
     {
-        SDL_Log(TTF_SHOWFONT_USAGE, argv0);
+        printf(TTF_SHOWFONT_USAGE_WITH_EXAMPLE, argv0, argv0, argv0);
         return (1);
     }
 
@@ -179,64 +185,50 @@ int main(int argc, char* argv[])
         if (SDL_strcmp(argv[i], "-solid") == 0)
         {
             rendermethod = TextRenderSolid;
-        }
-        else if (SDL_strcmp(argv[i], "-shaded") == 0)
+        } else if (SDL_strcmp(argv[i], "-shaded") == 0)
         {
             rendermethod = TextRenderShaded;
-        }
-        else if (SDL_strcmp(argv[i], "-blended") == 0)
+        } else if (SDL_strcmp(argv[i], "-blended") == 0)
         {
             rendermethod = TextRenderBlended;
-        }
-        else if (SDL_strcmp(argv[i], "-b") == 0)
+        } else if (SDL_strcmp(argv[i], "-b") == 0)
         {
             renderstyle |= TTF_STYLE_BOLD;
-        }
-        else if (SDL_strcmp(argv[i], "-i") == 0)
+        } else if (SDL_strcmp(argv[i], "-i") == 0)
         {
             renderstyle |= TTF_STYLE_ITALIC;
-        }
-        else if (SDL_strcmp(argv[i], "-u") == 0)
+        } else if (SDL_strcmp(argv[i], "-u") == 0)
         {
             renderstyle |= TTF_STYLE_UNDERLINE;
-        }
-        else if (SDL_strcmp(argv[i], "-s") == 0)
+        } else if (SDL_strcmp(argv[i], "-s") == 0)
         {
             renderstyle |= TTF_STYLE_STRIKETHROUGH;
-        }
-        else if (SDL_strcmp(argv[i], "-outline") == 0)
+        } else if (SDL_strcmp(argv[i], "-outline") == 0)
         {
             if (SDL_sscanf(argv[++i], "%d", &outline) != 1)
             {
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
                 return (1);
             }
-        }
-        else if (SDL_strcmp(argv[i], "-hintlight") == 0)
+        } else if (SDL_strcmp(argv[i], "-hintlight") == 0)
         {
             hinting = TTF_HINTING_LIGHT;
-        }
-        else if (SDL_strcmp(argv[i], "-hintmono") == 0)
+        } else if (SDL_strcmp(argv[i], "-hintmono") == 0)
         {
             hinting = TTF_HINTING_MONO;
-        }
-        else if (SDL_strcmp(argv[i], "-hintnone") == 0)
+        } else if (SDL_strcmp(argv[i], "-hintnone") == 0)
         {
             hinting = TTF_HINTING_NONE;
-        }
-        else if (SDL_strcmp(argv[i], "-nokerning") == 0)
+        } else if (SDL_strcmp(argv[i], "-nokerning") == 0)
         {
             kerning = 0;
-        }
-        else if (SDL_strcmp(argv[i], "-wrap") == 0)
+        } else if (SDL_strcmp(argv[i], "-wrap") == 0)
         {
             wrap = 1;
-        }
-        else if (SDL_strcmp(argv[i], "-dump") == 0)
+        } else if (SDL_strcmp(argv[i], "-dump") == 0)
         {
             dump = 1;
-        }
-        else if (SDL_strcmp(argv[i], "-fgcol") == 0)
+        } else if (SDL_strcmp(argv[i], "-fgcol") == 0)
         {
             int r, g, b, a = 0xFF;
             if (SDL_sscanf(argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3)
@@ -248,8 +240,7 @@ int main(int argc, char* argv[])
             forecol->g = (Uint8)g;
             forecol->b = (Uint8)b;
             forecol->a = (Uint8)a;
-        }
-        else if (SDL_strcmp(argv[i], "-bgcol") == 0)
+        } else if (SDL_strcmp(argv[i], "-bgcol") == 0)
         {
             int r, g, b, a = 0xFF;
             if (SDL_sscanf(argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3)
@@ -261,14 +252,12 @@ int main(int argc, char* argv[])
             backcol->g = (Uint8)g;
             backcol->b = (Uint8)b;
             backcol->a = (Uint8)a;
-        }
-        else if (SDL_strcmp(argv[i], "-utf8txtfile") == 0)
+        } else if (SDL_strcmp(argv[i], "-utf8txtfile") == 0)
         {
             load_file(&fileMessage, argv[++i]);
             rendertype = RENDER_UTF8;
             wrap = 1;
-        }
-        else if (SDL_strcmp(argv[i], "-windowsize") == 0)
+        } else if (SDL_strcmp(argv[i], "-windowsize") == 0)
         {
             if (SDL_sscanf(argv[++i], "%d,%d", &winWidth, &winHeight) < 2)
             {
@@ -276,8 +265,7 @@ int main(int argc, char* argv[])
                 return (1);
             }
             wrapWidth = winWidth - 10;
-        }
-        else
+        } else
         {
             SDL_Log(TTF_SHOWFONT_USAGE, argv0);
             return (1);
@@ -311,8 +299,7 @@ int main(int argc, char* argv[])
     {
         i = 2;
         ptsize = DEFAULT_PTSIZE;
-    }
-    else
+    } else
     {
         i = 3;
     }
@@ -320,7 +307,7 @@ int main(int argc, char* argv[])
     if (font == NULL)
     {
         SDL_Log("Couldn't load %d pt font from %s: %s\n",
-            ptsize, argv[0], SDL_GetError());
+                ptsize, argv[0], SDL_GetError());
         cleanup(2);
     }
     TTF_SetFontStyle(font, renderstyle);
@@ -332,7 +319,7 @@ int main(int argc, char* argv[])
     {
         for (i = 48; i < 123; i++)
         {
-            SDL_Surface* glyph = NULL;
+            SDL_Surface *glyph = NULL;
 
             glyph = TTF_RenderGlyph_Shaded(font, i, *forecol, *backcol);
 
@@ -386,14 +373,12 @@ int main(int argc, char* argv[])
     if (fileMessage != NULL)
     {
         message = fileMessage;
-    }
-    else
+    } else
     {
         if (argc > 2)
         {
             message = argv[2];
-        }
-        else
+        } else
         {
             message = DEFAULT_TEXT;
         }
@@ -408,8 +393,7 @@ int main(int argc, char* argv[])
             if (wrap)
             {
                 text = TTF_RenderText_Solid_Wrapped(font, message, *forecol, wrapWidth);
-            }
-            else
+            } else
             {
                 text = TTF_RenderText_Solid(font, message, *forecol);
             }
@@ -418,8 +402,7 @@ int main(int argc, char* argv[])
             if (wrap)
             {
                 text = TTF_RenderText_Shaded_Wrapped(font, message, *forecol, *backcol, wrapWidth);
-            }
-            else
+            } else
             {
                 text = TTF_RenderText_Shaded(font, message, *forecol, *backcol);
             }
@@ -428,8 +411,7 @@ int main(int argc, char* argv[])
             if (wrap)
             {
                 text = TTF_RenderText_Blended_Wrapped(font, message, *forecol, wrapWidth);
-            }
-            else
+            } else
             {
                 text = TTF_RenderText_Blended(font, message, *forecol);
             }
@@ -444,8 +426,7 @@ int main(int argc, char* argv[])
             if (wrap)
             {
                 text = TTF_RenderUTF8_Solid_Wrapped(font, message, *forecol, wrapWidth);
-            }
-            else
+            } else
             {
                 text = TTF_RenderUTF8_Solid(font, message, *forecol);
             }
@@ -454,8 +435,7 @@ int main(int argc, char* argv[])
             if (wrap)
             {
                 text = TTF_RenderUTF8_Shaded_Wrapped(font, message, *forecol, *backcol, wrapWidth);
-            }
-            else
+            } else
             {
                 text = TTF_RenderUTF8_Shaded(font, message, *forecol, *backcol);
             }
@@ -464,8 +444,7 @@ int main(int argc, char* argv[])
             if (wrap)
             {
                 text = TTF_RenderUTF8_Blended_Wrapped(font, message, *forecol, wrapWidth);
-            }
-            else
+            } else
             {
                 text = TTF_RenderUTF8_Blended(font, message, *forecol);
             }
@@ -475,15 +454,14 @@ int main(int argc, char* argv[])
 
     case RENDER_UNICODE:
     {
-        Uint16* unicode_text = SDL_iconv_utf8_ucs2(message);
+        Uint16 *unicode_text = SDL_iconv_utf8_ucs2(message);
         switch (rendermethod)
         {
         case TextRenderSolid:
             if (wrap)
             {
                 text = TTF_RenderUNICODE_Solid_Wrapped(font, unicode_text, *forecol, wrapWidth);
-            }
-            else
+            } else
             {
                 text = TTF_RenderUNICODE_Solid(font, unicode_text, *forecol);
             }
@@ -492,8 +470,7 @@ int main(int argc, char* argv[])
             if (wrap)
             {
                 text = TTF_RenderUNICODE_Shaded_Wrapped(font, unicode_text, *forecol, *backcol, wrapWidth);
-            }
-            else
+            } else
             {
                 text = TTF_RenderUNICODE_Shaded(font, unicode_text, *forecol, *backcol);
             }
@@ -502,15 +479,15 @@ int main(int argc, char* argv[])
             if (wrap)
             {
                 text = TTF_RenderUNICODE_Blended_Wrapped(font, unicode_text, *forecol, wrapWidth);
-            }
-            else
+            } else
             {
                 text = TTF_RenderUNICODE_Blended(font, unicode_text, *forecol);
             }
             break;
         }
         SDL_free(unicode_text);
-    } break;
+    }
+    break;
     }
     if (text == NULL)
     {
@@ -524,7 +501,7 @@ int main(int argc, char* argv[])
     scene.messageRect.h = (float)text->h;
     scene.message = SDL_CreateTextureFromSurface(renderer, text);
     SDL_Log("Font is generally %d big, and string is %d big\n",
-        TTF_FontHeight(font), text->h);
+            TTF_FontHeight(font), text->h);
 
     draw_scene(renderer, &scene);
 
