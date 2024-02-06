@@ -342,7 +342,7 @@ int main(int argc, char *argv[])
 
     if (window)
     {
-        SDL_SetWindowTitle(window, "Show Font");
+        SDL_SetWindowTitle(window, argv0);
     }
 
     /* Show which font file we're looking at */
