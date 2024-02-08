@@ -177,9 +177,6 @@
     <ClCompile Include="..\external\harfbuzz\src\hb-number.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ms-feature-ranges.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
     <ClCompile Include="..\external\harfbuzz\src\hb-ot-cff1-table.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
@@ -205,42 +202,6 @@
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
     <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-arabic.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-default.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-hangul.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-hebrew.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-indic.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-indic-table.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-khmer.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-myanmar.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-syllabic.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-thai.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-use.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-vowel-constraints.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
     <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-fallback.cc">
@@ -279,6 +240,50 @@
     <ClCompile Include="..\external\freetype\src\gzip\ftgzip.c">
       <Filter>Sources\FreeType</Filter>
     </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\graph\gsubgpos-context.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-buffer-verify.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-cairo-utils.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-cairo.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-coretext.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-directwrite.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-draw.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-face-builder.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-gdi.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-glib.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-gobject-structs.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-graphite2.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-icu.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-map.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-color.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-meta.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-name.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-arabic.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-default.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-hangul.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-hebrew.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-indic-table.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-indic.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-khmer.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-myanmar.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-syllabic.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-thai.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-use.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-vowel-constraints.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-outline.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-paint-extents.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-paint.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-style.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-cff-common.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-cff1.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-cff2.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-input.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-instancer-solver.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-plan.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-repacker.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-uniscribe.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-wasm-api.cc" />
+    <ClCompile Include="..\external\harfbuzz\src\hb-wasm-shape.cc" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\version.rc">
