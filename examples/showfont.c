@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
     int dump;
     int winWidth = WIDTH;
     int winHeight = HEIGHT;
-    int wrapWidth = WIDTH - 10;
+    int wrapWidth = WIDTH;
     enum
     {
         RENDER_LATIN1,
@@ -453,7 +453,7 @@ int main(int argc, char *argv[])
             draw_scene(renderer, &scene);
             break;
 
-            // case SDL_EVENT_KEY_DOWN:
+        case SDL_EVENT_KEY_DOWN:
         case SDL_EVENT_QUIT:
             done = 1;
             break;
