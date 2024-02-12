@@ -66,11 +66,11 @@ SDL_COMPILE_TIME_ASSERT(SDL_BUILD_MICRO_VERSION,
 
 #if defined(SDL_COMPILE_TIME_ASSERT)
 SDL_COMPILE_TIME_ASSERT(SDL_TTF_MAJOR_VERSION_min, SDL_TTF_MAJOR_VERSION >= 0);
-/* Limited only by the need to fit in SDL_version */
+/* Limited only by the need to fit in SDL_Version */
 SDL_COMPILE_TIME_ASSERT(SDL_TTF_MAJOR_VERSION_max, SDL_TTF_MAJOR_VERSION <= 255);
 
 SDL_COMPILE_TIME_ASSERT(SDL_TTF_MINOR_VERSION_min, SDL_TTF_MINOR_VERSION >= 0);
-/* Limited only by the need to fit in SDL_version */
+/* Limited only by the need to fit in SDL_Version */
 SDL_COMPILE_TIME_ASSERT(SDL_TTF_MINOR_VERSION_max, SDL_TTF_MINOR_VERSION <= 255);
 
 SDL_COMPILE_TIME_ASSERT(SDL_TTF_PATCHLEVEL_min, SDL_TTF_PATCHLEVEL >= 0);
@@ -982,7 +982,7 @@ static SDL_INLINE void BG_NEON(const TTF_Image *image, Uint8 *destination, Sint3
 static void Draw_Line(TTF_Font *font, const SDL_Surface *textbuf, int column, int row, int line_width, int line_thickness, Uint32 color, const render_mode_t render_mode)
 {
     int tmp    = row + line_thickness - textbuf->h;
-    int x_offset = column * textbuf->format->BytesPerPixel;
+    int x_offset = column * textbuf->format->bytes_per_pixel;
     Uint8 *dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch + x_offset;
 #if TTF_USE_HARFBUZZ
     hb_direction_t hb_direction = font->hb_direction;
@@ -1599,9 +1599,9 @@ static SDL_Surface* Create_Surface_LCD(int width, int height, SDL_Color fg, SDL_
 
 
 /* rcg06192001 get linked library's version. */
-const SDL_version* TTF_Linked_Version(void)
+const SDL_Version* TTF_Linked_Version(void)
 {
-    static SDL_version linked_version;
+    static SDL_Version linked_version;
     SDL_TTF_VERSION(&linked_version);
     return &linked_version;
 }
