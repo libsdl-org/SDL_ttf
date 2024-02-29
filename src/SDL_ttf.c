@@ -3226,7 +3226,14 @@ static int TTF_Size_Internal(TTF_Font *font,
 
     /* Layout the text */
     hb_buffer_add_utf8(hb_buffer, text, -1, 0, -1);
-    hb_shape(font->hb_font, hb_buffer, NULL, 0);
+    
+    hb_feature_t userfeatures[1];
+    userfeatures[0].tag = HB_TAG('k','e','r','n');
+    userfeatures[0].value = font->use_kerning;
+    userfeatures[0].start = HB_FEATURE_GLOBAL_START;
+    userfeatures[0].end = HB_FEATURE_GLOBAL_END;
+
+    hb_shape(font->hb_font, hb_buffer, userfeatures, 1);
 
     /* Get the result */
     hb_glyph_info = hb_buffer_get_glyph_infos(hb_buffer, &glyph_count);
