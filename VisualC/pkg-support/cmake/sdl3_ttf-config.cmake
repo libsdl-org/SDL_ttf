@@ -1,5 +1,5 @@
-# SDL3_image CMake configuration file:
-# This file is meant to be placed in a cmake subfolder of SDL3_image-devel-3.x.y-VC
+# SDL3_ttf CMake configuration file:
+# This file is meant to be placed in a cmake subfolder of SDL3_ttf-devel-3.x.y-VC
 
 include(FeatureSummary)
 set_package_properties(SDL3_ttf PROPERTIES
@@ -22,7 +22,7 @@ elseif(CMAKE_SIZEOF_VOID_P STREQUAL "8")
     set(_sdl_arch_subdir "x64")
 else()
     unset(_sdl_arch_subdir)
-    set(SDL3_image_FOUND FALSE)
+    set(SDL3_ttf_FOUND FALSE)
     return()
 endif()
 
@@ -31,7 +31,7 @@ set(_sdl3ttf_library      "${CMAKE_CURRENT_LIST_DIR}/../lib/${_sdl_arch_subdir}/
 set(_sdl3ttf_dll          "${CMAKE_CURRENT_LIST_DIR}/../lib/${_sdl_arch_subdir}/SDL3_ttf.dll")
 
 # All targets are created, even when some might not be requested though COMPONENTS.
-# This is done for compatibility with CMake generated SDL3_image-target.cmake files.
+# This is done for compatibility with CMake generated SDL3_ttf-target.cmake files.
 
 if(NOT TARGET SDL3_ttf::SDL3_ttf)
     add_library(SDL3_ttf::SDL3_ttf SHARED IMPORTED)
