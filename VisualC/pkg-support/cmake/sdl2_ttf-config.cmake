@@ -1,5 +1,5 @@
-# SDL2_image CMake configuration file:
-# This file is meant to be placed in a cmake subfolder of SDL2_image-devel-2.x.y-VC
+# SDL2_ttf CMake configuration file:
+# This file is meant to be placed in a cmake subfolder of SDL2_ttf-devel-2.x.y-VC
 
 include(FeatureSummary)
 set_package_properties(SDL2_ttf PROPERTIES
@@ -22,7 +22,7 @@ elseif(CMAKE_SIZEOF_VOID_P STREQUAL "8")
     set(_sdl_arch_subdir "x64")
 else()
     unset(_sdl_arch_subdir)
-    set(SDL2_image_FOUND FALSE)
+    set(SDL2_ttf_FOUND FALSE)
     return()
 endif()
 
@@ -31,7 +31,7 @@ set(_sdl2ttf_library      "${CMAKE_CURRENT_LIST_DIR}/../lib/${_sdl_arch_subdir}/
 set(_sdl2ttf_dll          "${CMAKE_CURRENT_LIST_DIR}/../lib/${_sdl_arch_subdir}/SDL2_ttf.dll")
 
 # All targets are created, even when some might not be requested though COMPONENTS.
-# This is done for compatibility with CMake generated SDL2_image-target.cmake files.
+# This is done for compatibility with CMake generated SDL2_ttf-target.cmake files.
 
 if(NOT TARGET SDL2_ttf::SDL2_ttf)
     add_library(SDL2_ttf::SDL2_ttf SHARED IMPORTED)
