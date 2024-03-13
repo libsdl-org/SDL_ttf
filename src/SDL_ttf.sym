@@ -20,6 +20,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetFontWrappedAlign;
     TTF_GetFreeTypeVersion;
     TTF_GetHarfBuzzVersion;
+    TTF_GetSubpixelMode;
     TTF_GlyphIsProvided;
     TTF_GlyphIsProvided32;
     TTF_GlyphMetrics;
@@ -82,6 +83,10 @@ SDL3_ttf_0.0.0 {
     TTF_SetFontSizeDPI;
     TTF_SetFontStyle;
     TTF_SetFontWrappedAlign;
+    TTF_SetLCDFilter;
+    TTF_SetLCDFilterWeights;
+    TTF_SetLCDGeometry;
+    TTF_SetScript;
     TTF_SizeText;
     TTF_SizeUNICODE;
     TTF_SizeUTF8;

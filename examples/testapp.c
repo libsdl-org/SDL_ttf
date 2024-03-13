@@ -99,6 +99,7 @@ static void help(void)
     SDL_Log("t   : ticks elapsed for 50 rendering");
     SDL_Log("d   : display normal texture, no screen update, stream texture ");
     SDL_Log("r   : start/stop random test");
+    SDL_Log("l   : change LCD filters");
     SDL_Log("m   : render mode Solid/Blended/Shaded");
     SDL_Log("n   : change direction");
     SDL_Log("9/0 : -/+ alpha color fg");
@@ -179,6 +180,8 @@ static int kerning = 1;
 static int wrap = 0;
 static int sdf = 0;
 static int hinting = 0;
+static int lcd_cleartype = -1;
+static int lcd_harmony = -1;
 static int curr_str = 0;
 static int curr_font = 1;
 static int curr_size = 50;
@@ -213,6 +216,14 @@ static const int direction_count = SDL_arraysize(directions);
 //static const char *hinting_desc[] = { "normal", "light", "light_subpix", "lcd_subpix", "mono", "none" };
 static const char *hinting_desc[] = { "normal", "light", "light_subpix", "mono", "none" };
 static const int hinting_count = SDL_arraysize(hinting_desc);
+
+static const char *lcd_cleartype_desc[] = { "none", "default", "light", "legacy1", "legacy", "weights 1", "weights 2"  };
+static const int lcd_cleartype_count = SDL_arraysize(lcd_cleartype_desc);
+
+static const char *lcd_harmony_desc[] = { "default", "default-BGR", "vertical-RGB", "other" };
+static const int lcd_harmony_count = SDL_arraysize(lcd_harmony_desc);
+
+
 
 static int mode_random_test = 0;
 static int random_cnt = 0;
@@ -391,7 +402,6 @@ static int wait_for_input(void)
                     if (curr_font >= test_fonts_count) curr_font = test_fonts_count - 1;
                     SDL_Log("Switch to font %s", test_fonts[curr_font]);
                 }
-
                 if (event.key.keysym.sym == SDLK_o) {
                     outline -= 1;
                     if (outline < -1) outline = -1;
@@ -501,6 +511,19 @@ static int wait_for_input(void)
                     hinting += 1;
                     hinting %= hinting_count;
                     SDL_Log("hinting: %s", hinting_desc[hinting]);
+                }
+                if (event.key.keysym.sym == SDLK_l) {
+                    done = 1;
+                    if (TTF_GetSubpixelMode() == TTF_SUBPIXEL_MODE_CLEARTYPE_STYLE) {
+                        lcd_cleartype += 1;
+                        lcd_cleartype %= lcd_cleartype_count;
+                        SDL_Log("LCD ClearType-style: %s", lcd_cleartype_desc[lcd_cleartype]);
+                    }
+                    if (TTF_GetSubpixelMode() == TTF_SUBPIXEL_MODE_HARMONY) {
+                        lcd_harmony += 1;
+                        lcd_harmony %= lcd_harmony_count;
+                        SDL_Log("LCD Harmony: %s", lcd_harmony_desc[lcd_harmony]);
+                    }
                 }
                 if (event.key.keysym.sym == SDLK_r) {
                     done = 1;
@@ -820,6 +843,44 @@ int main(void)
                 TTF_SetFontHinting(font, h);
              }
           }
+       }
+
+       if (lcd_harmony != -1) {
+            int pixel_coordinates[6];
+            SDL_zeroa(pixel_coordinates);
+            if (lcd_harmony == 0) {
+                pixel_coordinates[0] = -21;
+                pixel_coordinates[4] = 21;
+            }
+            if (lcd_harmony == 1) {
+                pixel_coordinates[0] = 21;
+                pixel_coordinates[4] = -21;
+            }
+            if (lcd_harmony == 2) {
+                pixel_coordinates[1] = 21;
+                pixel_coordinates[5] = -21;
+            }
+            if (lcd_harmony == 3) {
+                pixel_coordinates[0] = -11;
+                pixel_coordinates[1] = 16;
+                pixel_coordinates[2] = -11;
+                pixel_coordinates[3] = -16;
+                pixel_coordinates[4] = 22;
+                pixel_coordinates[5] = 0;
+            }
+            TTF_SetLCDGeometry(font, pixel_coordinates);
+       }
+
+       if (lcd_cleartype != -1) {
+           if (lcd_cleartype == 5) {
+               const unsigned char w[5] = { 1, 2, 100, 100, 0 };
+               TTF_SetLCDFilterWeights(font, w);
+           } else if (lcd_cleartype == 6) {
+               const unsigned char w[5] = { 100, 200, 1, 1, 200 };
+               TTF_SetLCDFilterWeights(font, w);
+           } else {
+               TTF_SetLCDFilter(font, (TTF_LcdFilter)lcd_cleartype);
+           }
        }
 
        /* Get some console output out in case we crash next... */
