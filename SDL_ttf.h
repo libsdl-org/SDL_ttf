@@ -2307,6 +2307,21 @@ extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction d
  */
 extern DECLSPEC int SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char *script);
 
+/**
+ * Retrieves the script to which unicode character belongs.
+ *
+ * The supplied script value must be exactly four characters.
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns -1.
+ *
+ * \param ch the character code to check.
+ * \param script the script output string.
+ * \returns 0 on success, or -1 on error.
+ *
+ * \since This function is available since SDL_ttf ?.
+ */
+extern DECLSPEC int SDLCALL TTF_GetScript(Uint32 ch, char* script);
+
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }
