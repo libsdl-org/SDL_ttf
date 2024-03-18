@@ -32,12 +32,12 @@ SDL3_ttf_0.0.0 {
     TTF_MeasureUTF8;
     TTF_OpenFont;
     TTF_OpenFontDPI;
-    TTF_OpenFontDPIRW;
+    TTF_OpenFontDPIIO;
     TTF_OpenFontIndex;
     TTF_OpenFontIndexDPI;
-    TTF_OpenFontIndexDPIRW;
-    TTF_OpenFontIndexRW;
-    TTF_OpenFontRW;
+    TTF_OpenFontIndexDPIIO;
+    TTF_OpenFontIndexIO;
+    TTF_OpenFontIO;
     TTF_Quit;
     TTF_RenderGlyph32_Blended;
     TTF_RenderGlyph32_LCD;
