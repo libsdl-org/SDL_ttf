@@ -250,8 +250,8 @@ struct _TTF_Font {
     FT_UInt cache_index[128];
 
     /* We are responsible for closing the font stream */
-    SDL_RWops *src;
-    SDL_bool freesrc;
+    SDL_IOStream *src;
+    SDL_bool closeio;
     FT_Open_Args args;
 
     /* Internal buffer to store positions computed by TTF_Size_Internal()
@@ -1719,21 +1719,21 @@ void TTF_GetHarfBuzzVersion(int *major, int *minor, int *patch)
     }
 }
 
-static unsigned long RWread(
+static unsigned long IOread(
     FT_Stream stream,
     unsigned long offset,
     unsigned char *buffer,
     unsigned long count
 )
 {
-    SDL_RWops *src;
+    SDL_IOStream *src;
 
-    src = (SDL_RWops *)stream->descriptor.pointer;
-    SDL_RWseek(src, offset, SDL_RW_SEEK_SET);
-    return SDL_RWread(src, buffer, count);
+    src = (SDL_IOStream *)stream->descriptor.pointer;
+    SDL_SeekIO(src, offset, SDL_IO_SEEK_SET);
+    return SDL_ReadIO(src, buffer, count);
 }
 
-TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
+TTF_Font* TTF_OpenFontIndexDPIIO(SDL_IOStream *src, SDL_bool closeio, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
 {
     TTF_Font *font;
     FT_Error error;
@@ -1745,8 +1745,8 @@ TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, l
 
     if (!TTF_initialized) {
         TTF_SetError("Library not initialized");
-        if (src && freesrc) {
-            SDL_RWclose(src);
+        if (src && closeio) {
+            SDL_CloseIO(src);
         }
         return NULL;
     }
@@ -1757,11 +1757,11 @@ TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, l
     }
 
     /* Check to make sure we can seek in this stream */
-    position = SDL_RWtell(src);
+    position = SDL_TellIO(src);
     if (position < 0) {
         TTF_SetError("Can't seek in stream");
-        if (freesrc) {
-            SDL_RWclose(src);
+        if (closeio) {
+            SDL_CloseIO(src);
         }
         return NULL;
     }
@@ -1769,15 +1769,15 @@ TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, l
     font = (TTF_Font *)SDL_malloc(sizeof (*font));
     if (font == NULL) {
         TTF_SetError("Out of memory");
-        if (freesrc) {
-            SDL_RWclose(src);
+        if (closeio) {
+            SDL_CloseIO(src);
         }
         return NULL;
     }
     SDL_memset(font, 0, sizeof (*font));
 
     font->src = src;
-    font->freesrc = freesrc;
+    font->closeio = closeio;
 
     stream = (FT_Stream)SDL_malloc(sizeof (*stream));
     if (stream == NULL) {
@@ -1787,10 +1787,10 @@ TTF_Font* TTF_OpenFontIndexDPIRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, l
     }
     SDL_memset(stream, 0, sizeof (*stream));
 
-    stream->read = RWread;
+    stream->read = IOread;
     stream->descriptor.pointer = src;
     stream->pos = (unsigned long)position;
-    stream->size = (unsigned long)(SDL_RWsize(src) - position);
+    stream->size = (unsigned long)(SDL_GetIOSize(src) - position);
 
     font->args.flags = FT_OPEN_STREAM;
     font->args.stream = stream;
@@ -2007,28 +2007,28 @@ static int TTF_initFontMetrics(TTF_Font *font)
     return 0;
 }
 
-TTF_Font* TTF_OpenFontDPIRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, unsigned int hdpi, unsigned int vdpi)
+TTF_Font* TTF_OpenFontDPIIO(SDL_IOStream *src, SDL_bool closeio, int ptsize, unsigned int hdpi, unsigned int vdpi)
 {
-    return TTF_OpenFontIndexDPIRW(src, freesrc, ptsize, 0, hdpi, vdpi);
+    return TTF_OpenFontIndexDPIIO(src, closeio, ptsize, 0, hdpi, vdpi);
 }
 
-TTF_Font* TTF_OpenFontIndexRW(SDL_RWops *src, SDL_bool freesrc, int ptsize, long index)
+TTF_Font* TTF_OpenFontIndexIO(SDL_IOStream *src, SDL_bool closeio, int ptsize, long index)
 {
-    return TTF_OpenFontIndexDPIRW(src, freesrc, ptsize, index, 0, 0);
+    return TTF_OpenFontIndexDPIIO(src, closeio, ptsize, index, 0, 0);
 }
 
 TTF_Font* TTF_OpenFontIndexDPI(const char *file, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
 {
-    SDL_RWops *rw = SDL_RWFromFile(file, "rb");
+    SDL_IOStream *rw = SDL_IOFromFile(file, "rb");
     if ( rw == NULL ) {
         return NULL;
     }
-    return TTF_OpenFontIndexDPIRW(rw, 1, ptsize, index, hdpi, vdpi);
+    return TTF_OpenFontIndexDPIIO(rw, 1, ptsize, index, hdpi, vdpi);
 }
 
-TTF_Font* TTF_OpenFontRW(SDL_RWops *src, SDL_bool freesrc, int ptsize)
+TTF_Font* TTF_OpenFontIO(SDL_IOStream *src, SDL_bool closeio, int ptsize)
 {
-    return TTF_OpenFontIndexRW(src, freesrc, ptsize, 0);
+    return TTF_OpenFontIndexIO(src, closeio, ptsize, 0);
 }
 
 TTF_Font* TTF_OpenFontDPI(const char *file, int ptsize, unsigned int hdpi, unsigned int vdpi)
@@ -2729,8 +2729,8 @@ void TTF_CloseFont(TTF_Font *font)
         if (font->args.stream) {
             SDL_free(font->args.stream);
         }
-        if (font->freesrc) {
-            SDL_RWclose(font->src);
+        if (font->closeio) {
+            SDL_CloseIO(font->src);
         }
         if (font->pos_buf) {
             SDL_free(font->pos_buf);
@@ -3226,7 +3226,7 @@ static int TTF_Size_Internal(TTF_Font *font,
 
     /* Layout the text */
     hb_buffer_add_utf8(hb_buffer, text, -1, 0, -1);
-    
+
     hb_feature_t userfeatures[1];
     userfeatures[0].tag = HB_TAG('k','e','r','n');
     userfeatures[0].value = font->use_kerning;
