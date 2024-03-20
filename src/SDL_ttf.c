@@ -235,7 +235,9 @@ struct _TTF_Font {
 
     /* Whether kerning is desired */
     int allow_kerning;
+#if !TTF_USE_HARFBUZZ
     int use_kerning;
+#endif
 
     /* Extra width in glyph bounds for text styles */
     int glyph_overhang;
@@ -2992,7 +2994,11 @@ int TTF_GetFontKerning(const TTF_Font *font)
 void TTF_SetFontKerning(TTF_Font *font, int allowed)
 {
     font->allow_kerning = allowed;
+#if TTF_USE_HARFBUZZ
+    /* Harfbuzz can do kerning positioning even if the font hasn't the data */
+#else
     font->use_kerning   = allowed && FT_HAS_KERNING(font->face);
+#endif
 }
 
 long TTF_FontFaces(const TTF_Font *font)
@@ -3229,7 +3235,7 @@ static int TTF_Size_Internal(TTF_Font *font,
 
     hb_feature_t userfeatures[1];
     userfeatures[0].tag = HB_TAG('k','e','r','n');
-    userfeatures[0].value = font->use_kerning;
+    userfeatures[0].value = font->allow_kerning;
     userfeatures[0].start = HB_FEATURE_GLOBAL_START;
     userfeatures[0].end = HB_FEATURE_GLOBAL_END;
 
