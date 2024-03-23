@@ -120,11 +120,11 @@ if(NOT ANDROID)
         DEBUG_POSTFIX "${SDL2TTF_DEBUG_POSTFIX}"
     )
     if(APPLE)
-        # the SOVERSION property corresponds to the compatibility version and VERSION corresponds to the current version
-        # https://cmake.org/cmake/help/latest/prop_tgt/SOVERSION.html#mach-o-versions
+        cmake_minimum_required(VERSION 3.17)
         set_target_properties(SDL2_ttf PROPERTIES
-            SOVERSION "${DYLIB_COMPATIBILITY_VERSION}"
-            VERSION "${DYLIB_CURRENT_VERSION}"
+            SOVERSION "${LT_MAJOR}"
+            MACHO_COMPATIBILITY_VERSION "${DYLIB_COMPATIBILITY_VERSION}"
+            MACHO_CURRENT_VERSION "${MACHO_CURRENT_VERSION}"
         )
     else()
         set_target_properties(SDL2_ttf PROPERTIES
@@ -262,23 +262,6 @@ elseif (UNIX AND NOT APPLE AND NOT ANDROID)
         SOVERSION "${LT_MAJOR}"
         VERSION "${LT_VERSION}"
     )
-endif()
-if (BUILD_SHARED_LIBS)
-    if (WIN32 OR OS2)
-        set_target_properties(SDL2_ttf PROPERTIES
-            PREFIX ""
-        )
-    endif()
-    if (OS2)
-        # OS/2 doesn't support a DLL name longer than 8 characters.
-        set_target_properties(SDL2_ttf PROPERTIES
-           OUTPUT_NAME "SDL2ttf"
-        )
-    elseif (UNIX AND NOT APPLE AND NOT ANDROID)
-        set_target_properties(SDL2_ttf PROPERTIES
-            OUTPUT_NAME "SDL2_ttf-${LT_RELEASE}"
-        )
-    endif()
 endif()
 
 # Restore BUILD_SHARED_LIBS variable
