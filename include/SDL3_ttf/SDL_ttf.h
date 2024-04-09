@@ -71,7 +71,7 @@ extern "C" {
 #define TTF_VERSION(X)      SDL_TTF_VERSION(X)
 
 /**
- *  This macro will evaluate to true if compiled with SDL_ttf at least X.Y.Z.
+ * This macro will evaluate to true if compiled with SDL_ttf at least X.Y.Z.
  */
 #define SDL_TTF_VERSION_ATLEAST(X, Y, Z) \
     ((SDL_TTF_MAJOR_VERSION >= X) && \
@@ -140,7 +140,9 @@ extern DECLSPEC void SDLCALL TTF_GetHarfBuzzVersion(int *major, int *minor, int 
 extern DECLSPEC void SDLCALL TTF_ByteSwappedUNICODE(SDL_bool swapped);
 
 /**
- * The internal structure containing font information. Opaque data!
+ * The internal structure containing font information.
+ *
+ * Opaque data!
  */
 typedef struct _TTF_Font TTF_Font;
 
