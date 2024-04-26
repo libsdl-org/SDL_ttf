@@ -2212,7 +2212,7 @@ extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction d
  *
  * If SDL_ttf was not built with HarfBuzz support, this function returns -1.
  *
- * \param font the font to specify a direction for.
+ * \param font the font to specify a script name for.
  * \param script null-terminated string of exactly 4 characters.
  * \returns 0 on success, or -1 on error.
  *
