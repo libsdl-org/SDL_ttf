@@ -118,18 +118,14 @@ set_target_properties(SDL2_ttf PROPERTIES
 if(NOT ANDROID)
     set_target_properties(SDL2_ttf PROPERTIES
         DEBUG_POSTFIX "${SDL2TTF_DEBUG_POSTFIX}"
+        SOVERSION "${LT_MAJOR}"
+        VERSION "${LT_VERSION}"
     )
     if(APPLE)
         cmake_minimum_required(VERSION 3.17)
         set_target_properties(SDL2_ttf PROPERTIES
-            SOVERSION "${LT_MAJOR}"
             MACHO_COMPATIBILITY_VERSION "${DYLIB_COMPATIBILITY_VERSION}"
             MACHO_CURRENT_VERSION "${MACHO_CURRENT_VERSION}"
-        )
-    else()
-        set_target_properties(SDL2_ttf PROPERTIES
-            SOVERSION "${LT_MAJOR}"
-            VERSION "${LT_VERSION}"
         )
     endif()
 endif()
