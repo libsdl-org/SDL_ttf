@@ -50,7 +50,6 @@ jobs:
             freetype \
             harfbuzz \
             libtool \
-            ninja \
             pkg-config \
             sdl2 \
             ${NULL+}
@@ -68,7 +67,6 @@ jobs:
           libharfbuzz-dev \
           libsdl2-dev \
           libtool \
-          ninja-build \
           pkg-config \
           ${NULL+}
     - uses: actions/checkout@v2
@@ -81,11 +79,9 @@ jobs:
       run: |
         .github/fetch_sdl_vc.ps1
         echo "SDL2_DIR=$Env:GITHUB_WORKSPACE/SDL2-devel-VC" >> $Env:GITHUB_ENV
-    - name: Setup Ninja for MSVC
-      if: "matrix.platform.msvc"
-      uses: ashutoshvarma/setup-ninja@master
-      with:
-        version: 1.10.2
+    - name: Setup Ninja
+      if: ${{ !contains(matrix.platform.shell, 'msys2') }}
+      uses: aseprite/get-ninja@main
     - uses: ilammy/msvc-dev-cmd@v1
       if: "matrix.platform.msvc"
       with:
