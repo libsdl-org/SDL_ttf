@@ -134,17 +134,15 @@ set_target_properties(${sdl3_ttf_target_name} PROPERTIES
     C_VISIBILITY_PRESET "hidden"
 )
 if(NOT ANDROID)
+    set_target_properties(${sdl3_ttf_target_name} PROPERTIES
+        SOVERSION "${SO_VERSION_MAJOR}"
+        VERSION "${SO_VERSION}"
+    )
     if(APPLE)
-        # the SOVERSION property corresponds to the compatibility version and VERSION corresponds to the current version
-        # https://cmake.org/cmake/help/latest/prop_tgt/SOVERSION.html#mach-o-versions
+        cmake_minimum_required(VERSION 3.17)
         set_target_properties(${sdl3_ttf_target_name} PROPERTIES
-            SOVERSION "${DYLIB_COMPAT_VERSION}"
-            VERSION "${DYLIB_CURRENT_VERSION}"
-        )
-    else()
-        set_target_properties(${sdl3_ttf_target_name} PROPERTIES
-            SOVERSION "${SO_VERSION_MAJOR}"
-            VERSION "${SO_VERSION}"
+            MACHO_COMPATIBILITY_VERSION "${DYLIB_COMPAT_VERSION}"
+            MACHO_CURRENT_VERSION "${DYLIB_CURRENT_VERSION}"
         )
     endif()
 endif()
