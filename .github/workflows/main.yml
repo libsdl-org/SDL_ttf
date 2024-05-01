@@ -29,9 +29,7 @@ jobs:
         arch: x64
     - name: Set up Ninja
       if: ${{ !contains(matrix.platform.shell, 'msys2') }}
-      uses: ashutoshvarma/setup-ninja@master
-      with:
-        version: 1.11.1
+      uses: aseprite/get-ninja@main
     - name: Set up MSYS2
       if: ${{ matrix.platform.shell == 'msys2 {0}' }}
       uses: msys2/setup-msys2@v2
@@ -60,7 +58,6 @@ jobs:
           brew install \
             freetype \
             harfbuzz \
-            ninja \
             pkg-config \
             ${NULL+}
     - name: Set up Linux dependencies
@@ -73,7 +70,6 @@ jobs:
           fonts-dejavu-core \
           libfreetype-dev \
           libharfbuzz-dev \
-          ninja-build \
           pkg-config \
           ${NULL+}
     - uses: actions/checkout@v4
