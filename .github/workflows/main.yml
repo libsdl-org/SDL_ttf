@@ -94,6 +94,7 @@ jobs:
           -DSDL3TTF_WERROR=ON \
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           -DCMAKE_BUILD_TYPE=Release \
+          -DSDL3TTF_INSTALL_MAN=ON \
           -DCMAKE_INSTALL_PREFIX=prefix_cmake \
           ${{ matrix.platform.cmake }}
     - name: Build

@@ -59,7 +59,7 @@ option(CMAKE_POSITION_INDEPENDENT_CODE "Build static libraries with -fPIC" ${PLA
 cmake_dependent_option(BUILD_SHARED_LIBS "Build the library as a shared library" ON PLATFORM_SUPPORTS_SHARED OFF)
 
 cmake_dependent_option(SDL3TTF_INSTALL "Enable SDL3_ttf install target" ${SDL3TTF_ROOTPROJECT} "${sdl3ttf_install_enableable}" OFF)
-cmake_dependent_option(SDL3TTF_INSTALL_MAN "Install man pages for SDL3_ttf" ${SDL3TTF_ROOTPROJECT} "SDL3TTF_INSTALL" OFF)
+cmake_dependent_option(SDL3TTF_INSTALL_MAN "Install man pages for SDL3_ttf" OFF "SDL3TTF_INSTALL" OFF)
 option(SDL3TTF_VENDORED "Use vendored third-party libraries" ${vendored_default})
 option(SDL3TTF_WERROR "Treat warnings as errors" OFF)
 
