@@ -3788,7 +3788,6 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
                 strLines = (char **)SDL_realloc(strLines, maxNumLines * sizeof (*strLines));
                 if (strLines == NULL) {
                     strLines = saved;
-                    SDL_OutOfMemory();
                     goto failure;
                 }
             }
