@@ -183,6 +183,7 @@ typedef struct _TTF_Font TTF_Font;
  * \since This function is available since SDL_ttf 2.0.12.
  *
  * \sa TTF_Quit
+ * \sa TTF_WasInit
  */
 extern DECLSPEC int SDLCALL TTF_Init(void);
 
