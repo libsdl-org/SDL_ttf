@@ -2210,7 +2210,7 @@ extern DECLSPEC SDL_bool TTF_GetFontSDF(const TTF_Font *font);
  *
  * \sa TTF_SetFontDirection
  */
-typedef enum
+typedef enum TTF_Direction
 {
   TTF_DIRECTION_LTR = 0,    /* Left to Right */
   TTF_DIRECTION_RTL,        /* Right to Left */
