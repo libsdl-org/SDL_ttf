@@ -1618,6 +1618,9 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended(TTF_Font *font,
  * \param font the font to render with.
  * \param text text to render, in Latin1 encoding.
  * \param fg the foreground color for the text.
+ * \param wrapLength the text is wrapped to multiple lines on line endings and
+ *                   on word boundaries if it extends beyond this value in
+ *                   pixels.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 2.0.18.
