@@ -86,5 +86,15 @@ SDL3_ttf_0.0.0 {
     TTF_SizeUNICODE;
     TTF_SizeUTF8;
     TTF_WasInit;
+
+    TTF_AtlasLoadAll;
+    TTF_DestroyAtlas;
+    TTF_AtlasInit;
+    TTF_AtlasDeinitWithPixels;
+    TTF_AtlasDeinitWithSurface;
+    TTF_AtlasDeinitWithTexture;
+    TTF_SetAtlasSizeDPI;
+    TTF_AtlasLoad;
+    TTF_AtlasLoadPredicate;
   local: *;
 };

@@ -2248,6 +2248,57 @@ extern DECLSPEC int TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp
  */
 extern DECLSPEC SDL_bool TTF_IsFontScalable(const TTF_Font *font);
 
+/**************************** Atlas ****************************/
+
+/*
+    TODO write documentation and a better header after feedback
+*/
+
+typedef struct TTF_AtlasEntry { short canvasX, canvasY, width, height, left, ascent, xAdv, yAdv; } TTF_AtlasEntry;
+
+
+typedef struct TTF_AtlasInfo {
+	TTF_AtlasEntry*entries;
+	Uint64*ids;
+	SDL_Surface*surface;
+	void*pixels;
+	int width, height, entryLength, errorCode, spaceXAdv;
+} TTF_AtlasInfo;
+
+//Returns null on error, check atlasInfo->errorCode for a hint. The file may not exist or the texture grew too large
+//On success a SDL_Texture is returned. You must free the texture and destroy atlasInfo with TTF_DestroyAtlas
+//atlasInfo is an out (write only) parameter
+extern DECLSPEC SDL_Texture*TTF_AtlasLoadAll(const char*filename, int fontSize, SDL_Renderer*renderer, TTF_AtlasInfo*atlasInfo);
+extern DECLSPEC void TTF_DestroyAtlas(TTF_AtlasInfo*atlasInfo);
+
+//////////
+
+typedef struct TTF_AtlasState TTF_AtlasState;
+
+//atlasInfo will be overwritten and a copy of the pointer will be held
+//If width or height is 0 we'll use a default value (512)
+//when fixedSize is set we will return an error instead of grow
+extern DECLSPEC TTF_AtlasState*TTF_AtlasInit(TTF_AtlasInfo*atlasInfo, int width, int height, int fixedSize);
+
+//These destroy the state and return a pointer. Only the texture is cleaned up by you, we'll clean up the others during TTF_DestroyAtlas
+extern DECLSPEC void*TTF_AtlasDeinitWithPixels(TTF_AtlasState*state);
+extern DECLSPEC SDL_Surface*TTF_AtlasDeinitWithSurface(TTF_AtlasState*state);
+extern DECLSPEC SDL_Texture*TTF_AtlasDeinitWithTexture(TTF_AtlasState*state, SDL_Renderer*renderer);
+
+extern DECLSPEC void TTF_SetAtlasSizeDPI(TTF_AtlasState*state, int hdpi, int vdpi);
+
+//Range is a list of inclusive pairs. rangeLength should always be an even number
+//if range and utf8List are both null than every glyph is loaded (except ones that are blank)
+//Return the xAdvance of whitespace or negative if there's an error
+extern DECLSPEC int TTF_AtlasLoad(const char*filename, int fontSize, TTF_AtlasState*state, int*range, int rangeLength, const char*utf8List, Uint64 IDXor);
+
+//Return 0 to say the glyph should not be loaded, otherwise return an ID
+typedef Uint64 (*SDL_AtlasPred)(void*user, int glyph);
+extern DECLSPEC int TTF_AtlasLoadPredicate(const char*filename, int fontSize, TTF_AtlasState*state, SDL_AtlasPred pred, void*user);
+
+/**************************** End Atlas ****************************/
+
+
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }
