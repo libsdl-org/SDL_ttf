@@ -1,11 +1,9 @@
-#include <SDL3/SDL_render.h>
-#include <SDL3/SDL_surface.h>
 #include <stdio.h>
 #include <SDL3/SDL.h>
-#include "SDL_ttf_atlas.h"
+#include <SDL3_ttf/SDL_ttf.h>
 #include <unordered_map>
 
-SDL_bool useDark, forceDark = 1;
+SDL_bool useDark, forceDark = 0;
 int renderStyle = 0;
 SDL_Texture*fontTexture;
 SDL_Renderer*renderer;
@@ -31,12 +29,11 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
-#ifdef __WIN32__
+#ifdef SDL_PLATFORM_WINDOWS
 	if (!filename) {
-		#error "TODO"
-		filename="some path.ttf";
+		filename="C:\\Windows\\Fonts\\arial.ttf";
 	}
-#else
+#elif defined(SDL_PLATFORM_MACOS) or defined(SDL_PLATFORM_LINUX)
 	if (!filename) {
 		buffer[0] = 0;
 		FILE*f = popen("fc-match -f %{file}", "r");
@@ -47,10 +44,12 @@ int main(int argc, char *argv[])
 			filename = buffer;
 		}
 	}
+#else
+	#error "Unsupported Platform"
 #endif
 
 	TTF_Init();
-
+	
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		fprintf(stderr, "SDL init failed\n");
 		return 1;
@@ -70,25 +69,30 @@ int main(int argc, char *argv[])
 
 	Uint64 tag16 = 16ULL << 32;
 	Uint64 tag20 = 20ULL << 32;
-	auto atlasState = TTF_AtlasInit(&atlas, 0, 0, 0);
+	auto atlasState = TTF_AtlasInit(&atlas, 0);
+	//auto pixels = SDL_malloc(1024*1024*4);
+	//auto atlasState = TTF_AtlasInitFixed(&atlas, 1024, 1024, 1024*4, pixels, SDL_PIXELFORMAT_ARGB8888);
+	//auto atlasState = TTF_AtlasInitFixed(&atlas, 1024, 1024, 0, 0, SDL_PIXELFORMAT_UNKNOWN);
+
 	//spaceXAdv16 = TTF_AtlasLoadPredicate(filename, 16, atlasState, AtlasPred, (void*)tag16); //This works too
 	spaceXAdv16 = TTF_AtlasLoad(filename, 16, atlasState, 0, 0, 0, tag16); //null range and null list means load everything
-	
+
+	//We can use these functions to reserve space for us to draw in
+	int reservePairs[] = {10, 4, 8, 16}; //First icon is 10pixels wide, 4 tall, Second is 8 wide 16 tall
+	int entryIndex = TTF_AtlasReserveEntry2(atlasState, reservePairs, 4, reservePairs); //last param overwrites reserveTwoIcons	
+	int reserveTriples[] = {10, 4, 99, 8, 16, 98};
+	entryIndex = TTF_AtlasReserveEntry3(atlasState, reserveTriples, 6, 0);
+
+
 	int range20[]={'a', 'z'};
 	//Y is intentionally missing to show we didn't load everything
 	spaceXAdv20 = TTF_AtlasLoad(filename, 20, atlasState, range20, 2, "TE\uFFFD", tag20);
 
 	/*
-	auto pixels = TTF_AtlasDeinitWithPixels(atlasState);
-	SDL_Surface*canvas = SDL_CreateSurfaceFrom(pixels, atlas.width, atlas.height, atlas.width*4, SDL_PIXELFORMAT_ARGB8888);
-	fontTexture = SDL_CreateTextureFromSurface(renderer, canvas);
-	SDL_DestroySurface(canvas); //*/
-
-	/*
 	TTF_AtlasDeinitWithSurface(atlasState);
 	fontTexture = SDL_CreateTextureFromSurface(renderer, atlas.surface); //*/
 	
-	fontTexture = TTF_AtlasDeinitWithTexture(atlasState, renderer);
+	fontTexture = TTF_AtlasDeinitState(atlasState, renderer);
 	if (!fontTexture) {
 		fprintf(stderr, "Failed to create font texture. Error code %d\n", atlas.errorCode);
 		return 1;
@@ -131,8 +135,7 @@ int main(int argc, char *argv[])
 		DrawWindow(atlas.width, atlas.height);
 	}
 	
-	SDL_DestroyTexture(fontTexture); //Perhaps destory atlas also handle this?
-	TTF_DestroyAtlas(&atlas);
+	TTF_AtlasDeinitInfo(&atlas);
 	TTF_Quit();
 	return 0;
 }

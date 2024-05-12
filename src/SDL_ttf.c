@@ -4272,6 +4272,10 @@ SDL_bool TTF_IsFontScalable(const TTF_Font *font)
 
 /**************************** Atlas ****************************/
 
+#ifdef SDL_PLATFORM_WINDOWS
+#define _Static_assert(X, Y)
+#endif
+
 #define DeclVLA(T) \
 	_Static_assert(sizeof(T) <= 64, "Grow is hardcoded to start at 64, this is larger."); /* Grow doesn't handle > 64. You probably don't want to be using the functions below which passes data by value */ \
 	typedef struct VLA_ ## T { \
@@ -4293,82 +4297,129 @@ SDL_bool TTF_IsFontScalable(const TTF_Font *font)
 DeclVLA(int);
 DeclVLA(Uint64);
 DeclVLA(TTF_AtlasEntry);
-
 //TODO Look how error handling is done in SDL3
 #define E2BIG 7
 #define EINVAL 22
 
 typedef struct TTF_AtlasState {
-	TTF_AtlasInfo*atlas;
+	TTF_AtlasInfo*info;
 	char*pixels;
-	int width, height;
-	SDL_bool mayGrow;
+	int fixed; //Positive value we manage, nonzero is fixed length
 	int hdpi, vdpi;
 	VLA_int heights, XPositions;
-	VLA_Uint64 chars;
+	VLA_Uint64 ids;
 	VLA_TTF_AtlasEntry entries;
 } TTF_AtlasState;
 
-TTF_AtlasState*TTF_AtlasInit(TTF_AtlasInfo*atlas, int width, int height, int fixedSize) {
-	if (!atlas) return 0;
-	memset(atlas, 0, sizeof(TTF_AtlasInfo));
-	atlas->errorCode = EINVAL;
-	if (fixedSize) {
-		if (!width || !height)
-			return 0;
-	} else {
-		if (!width) { width = 512; }
-		if (!height) { height = 512; }
-	}
+TTF_AtlasState*TTF_AtlasInit(TTF_AtlasInfo*info, int canvasWidthHeight) {
+	if (!info) return 0;
+	memset(info, 0, sizeof(TTF_AtlasInfo));
+	info->errorCode = EINVAL;
+	if (canvasWidthHeight == 0) { canvasWidthHeight = 512; } else if (canvasWidthHeight < 0) return 0;
 
 	TTF_AtlasState*state = SDL_calloc(1, sizeof(TTF_AtlasState));
-	state->atlas = atlas;
-	state->width = width;
-	state->height = height;
-	state->mayGrow = !fixedSize;
-	atlas->errorCode = 0;
+	state->info = info;
+	state->info->width = canvasWidthHeight;
+	state->info->height = canvasWidthHeight;
+	info->errorCode = 0;
 	return state;
 }
 
-void TTF_DestroyAtlas(TTF_AtlasInfo*atlas) {
-	if (atlas->entries) { SDL_free(atlas->entries); }
-	if (atlas->ids) { SDL_free(atlas->ids); }
-	if (atlas->surface) { SDL_DestroySurface(atlas->surface); }
-	if (atlas->pixels) { SDL_free(atlas->pixels); }
+TTF_AtlasState*TTF_AtlasInitFixed(TTF_AtlasInfo*info, int width, int height, int pitch, void*pixels, SDL_PixelFormatEnum format) {
+	if (!info) return 0;
+	memset(info, 0, sizeof(TTF_AtlasInfo));
+	info->errorCode = EINVAL;
+	if (!width || !height) return 0;
+	if (format != SDL_PIXELFORMAT_UNKNOWN && format != SDL_PIXELFORMAT_ARGB8888) return 0;
+	if (pixels && format != SDL_PIXELFORMAT_ARGB8888) return 0;
+
+	TTF_AtlasState*state = SDL_calloc(1, sizeof(TTF_AtlasState));
+	state->info = info;
+	state->info->width = width;
+	state->info->height = height;
+	if (pixels) {
+		state->pixels = pixels;
+		state->info->pitch = pitch;
+		state->fixed = -1; //managed by caller
+		info->userManagedPixels = 1;
+	} else {
+		state->fixed = 1;
+	}
+	info->errorCode = 0;
+	return state;
 }
 
-void TTF_SetAtlasSizeDPI(TTF_AtlasState*state, int hdpi, int vdpi) {
+void TTF_AtlasSetDPI(TTF_AtlasState*state, int hdpi, int vdpi) {
+	if (!state) return;
 	state->hdpi = hdpi;
 	state->vdpi = vdpi;
 }
 
+static int Reserve(TTF_AtlasState*state, int width, int height, int addToEntry, int*dstX) {
+	int dstY = 0;
+	TTF_AtlasInfo*info = state->info;
+	int i=0;
+	for(; i<state->heights.len; i++) {
+		if (state->heights.ptr[i] == height && state->XPositions.ptr[i] + width <= info->width)
+			break;
+		dstY += state->heights.ptr[i];
+	}
+	if (i == state->heights.len) {
+		if (dstY + height > info->height) {
+			if (state->fixed) { info->errorCode = E2BIG; return -1; } //Failed, font doesn't fit in a single texture
+			
+			int newPitch = info->pitch*2;
+			int newHeight = info->height*2;
+			info->pixels = state->pixels = SDL_realloc(state->pixels, newPitch * newHeight);
+			for(int i = dstY-1; i >= 0; i--) {
+				SDL_memcpy(state->pixels + i*newPitch, state->pixels + i*info->pitch, info->width * 4);
+				SDL_memset(state->pixels + i*newPitch + info->width * 4, 0, info->width * 4);
+			}
+			info->width = info->width*2;
+			info->height = newHeight;
+			info->pitch = newPitch;
+		}
+		if (addToEntry) {
+			VLA_int_push(&state->heights, height);
+			VLA_int_push(&state->XPositions, 0);
+		}
+	}
+	*dstX = state->XPositions.ptr[i];
+	state->XPositions.ptr[i] += width;
+	return dstY;
+}
+
 static int TTF_AtlasLoad_Internal(const char*filename, int fontSize, TTF_AtlasState*state, int wantAll, int*range, int rangeLength, const char*utf8List, Uint64 IDXor, SDL_AtlasPred pred, void*user)
 {
-	if (!state) return -EINVAL;
-	state->atlas->errorCode = EINVAL;
+	if (!state || state->info->errorCode) return -EINVAL;
+	state->info->errorCode = EINVAL;
 	if (!filename || fontSize <= 0) return -EINVAL;
-	if (rangeLength & 1) return -EINVAL;
+	if (rangeLength & 1) return -EINVAL; //Range should always have a start/inclusiveEnd pair and be even
 	if (rangeLength && !range) return -EINVAL;
 
+	TTF_AtlasInfo*info = state->info;
+	
 	FT_Face face=0;
 	if (FT_New_Face(library, filename, 0, &face)) return -EINVAL;
 	if (FT_Set_Char_Size(face, 0, fontSize*64, state->hdpi, state->vdpi)) goto cleanup;
 
-	int pixelPitch = state->width*4;
+	int pixelPitch = info->pitch;
 	if (!state->pixels) {
-		state->pixels = SDL_realloc(0, pixelPitch * state->height);
+		pixelPitch = info->pitch = info->width * 4;
+		info->pixels = state->pixels = SDL_realloc(0, pixelPitch * info->height);
+		info->format = SDL_PIXELFORMAT_ARGB8888;
 	}
 
 	int utf8ListLen = !utf8List ? 0 : strlen(utf8List);
 
 	FT_UInt index;
-	FT_ULong c = FT_Get_First_Char(face, &index);
-	state->atlas->spaceXAdv = 0;
+	int c = (int)FT_Get_First_Char(face, &index);
+	info->spaceXAdv = 0;
 	while (index)
 	{
 		if (c == ' ') {
 			if (!FT_Load_Glyph(face, index, 0)) {
-				state->atlas->spaceXAdv = face->glyph->advance.x/64;
+				info->spaceXAdv = face->glyph->advance.x/64;
 				c = FT_Get_Next_Char(face, c, &index);
 			}
 		}
@@ -4380,11 +4431,11 @@ static int TTF_AtlasLoad_Internal(const char*filename, int fontSize, TTF_AtlasSt
 				wanted = 1;
 			}
 		} else {
-			for(int i=0; i<rangeLength; i += 2) { if (c >= (FT_ULong)range[i] && c <= (FT_ULong)range[i+1]) { wanted = 1; break; } }
+			for(int i=0; i<rangeLength; i += 2) { if (c >= range[i] && c <= range[i+1]) { wanted = 1; break; } }
 			if (!wanted) {
 				for(int i=0; i<utf8ListLen; ) {
 					int inc=0;
-					if (c == UTF8_getch(utf8List+i, utf8ListLen-i, &inc)) {
+					if (c == (int)UTF8_getch(utf8List+i, utf8ListLen-i, &inc)) {
 						wanted = 1;
 						break;
 					} else {
@@ -4400,36 +4451,13 @@ static int TTF_AtlasLoad_Internal(const char*filename, int fontSize, TTF_AtlasSt
 				continue;
 			}
 			if (!FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL)) {
-				int dstY = 0;
-				int i=0;
-				for(; i<state->heights.len; i++) {
-					if (state->heights.ptr[i] == (int)face->glyph->bitmap.rows && state->XPositions.ptr[i] + (int)face->glyph->bitmap.width <= state->width)
-						break;
-					dstY += state->heights.ptr[i];
-				}
-				if (i == state->heights.len) {
-					if (dstY + (int)face->glyph->bitmap.rows > state->height) {
-						if (!state->mayGrow) { state->atlas->errorCode = E2BIG; goto cleanup; } //Failed, font doesn't fit in a single texture
-						
-						int newPitch = pixelPitch*2;
-						int newHeight = state->height*2;
-						state->pixels = SDL_realloc(state->pixels, newPitch * newHeight);
-						for(int i = dstY-1; i >= 0; i--) {
-							SDL_memcpy(state->pixels + i*newPitch, state->pixels + i*pixelPitch, state->width * 4);
-							SDL_memset(state->pixels + i*newPitch + state->width * 4, 0, state->width * 4);
-						}
-						state->width = state->width*2;
-						state->height = newHeight;
-						pixelPitch = newPitch;
-					}
-					VLA_int_push(&state->heights, face->glyph->bitmap.rows);
-					VLA_int_push(&state->XPositions, 0);
-				}
-
-				int dstX = state->XPositions.ptr[i];
-				for(int y=0; y<(int)face->glyph->bitmap.rows; y++) {
+				int dstY = 0, dstX;
+				dstY = Reserve(state, face->glyph->bitmap.width, face->glyph->bitmap.rows, 1, &dstX);
+				pixelPitch = info->pitch;
+				if (dstY < 0) { goto cleanup; }
+				for(int y=0; y < (int)face->glyph->bitmap.rows; y++) {
 					unsigned*dst = (unsigned*)(state->pixels + (dstY+y)*pixelPitch);
-					for(int x=0; x<(int)face->glyph->bitmap.width; x++) {
+					for(int x=0; x < (int)face->glyph->bitmap.width; x++) {
 						unsigned char* src = (unsigned char*)&face->glyph->bitmap.buffer[y*face->glyph->bitmap.pitch+x];
 						dst[dstX + x] = 0x00FFFFFF | ((Uint32)*src << 24);
 					}
@@ -4437,66 +4465,115 @@ static int TTF_AtlasLoad_Internal(const char*filename, int fontSize, TTF_AtlasSt
 				#pragma GCC diagnostic push
 				#pragma GCC diagnostic error "-Wnarrowing"
 				TTF_AtlasEntry e={dstX, dstY, face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap_left, face->glyph->bitmap_top, face->glyph->advance.x/64, face->glyph->advance.y/64};
-				VLA_Uint64_push(&state->chars, c ^ IDXor);
+				VLA_Uint64_push(&state->ids, c ^ IDXor);
 				VLA_TTF_AtlasEntry_push(&state->entries, e);
 				#pragma GCC diagnostic pop
-				state->XPositions.ptr[i] += face->glyph->bitmap.width;
+				
 			}
 		}
 		c = FT_Get_Next_Char(face, c, &index);
 	}
 
+	info->errorCode = 0;
 cleanup:
+	info->entryLength = state->entries.len;
+	info->entries = state->entries.ptr;
+	info->ids = state->ids.ptr;
 	if (face) { FT_Done_Face(face); }
-	return state->atlas->spaceXAdv;
+	return info->spaceXAdv;
 }
 
 int TTF_AtlasLoad(const char*filename, int fontSize, TTF_AtlasState*state, int*range, int rangeLength, const char*utf8List, Uint64 IDXor) {
 	return TTF_AtlasLoad_Internal(filename, fontSize, state, range == 0 && utf8List == 0, range, rangeLength, utf8List, IDXor, 0, 0);
 }
-int TTF_AtlasLoadPredicate(const char*filename, int fontSize, TTF_AtlasState*state, SDL_AtlasPred pred, void*user) { 
-	return TTF_AtlasLoad_Internal(filename, fontSize, state, 0, 0, 0, 0, 0, pred, user);
-}
-SDL_Texture*TTF_AtlasLoadAll(const char*filename, int fontSize, SDL_Renderer*renderer, TTF_AtlasInfo*atlas) {
-	if (!renderer) return 0;
-	TTF_AtlasState*state = TTF_AtlasInit(atlas, 0, 0, 0);
-	if (state == 0) return 0;
-	TTF_AtlasLoad_Internal(filename, fontSize, state, 1, 0, 0, 0, 0, 0, 0);
-	return TTF_AtlasDeinitWithTexture(state, renderer);
-}
 
-static void AtlasDeinitShared(TTF_AtlasState*state)
-{
-	TTF_AtlasInfo*atlas = state->atlas;
-	atlas->entries = state->entries.ptr;
-	atlas->ids = state->chars.ptr;
-	atlas->width = state->width;
-	atlas->height = state->height;
-	atlas->entryLength = state->entries.len;
-	atlas->errorCode = 0;
-
+SDL_Texture*TTF_AtlasDeinitState(TTF_AtlasState*state, SDL_Renderer*renderer) {
+	if (!state) return 0;
+	if (renderer) {
+		SDL_Surface*canvas = SDL_CreateSurfaceFrom(state->pixels, state->info->width, state->info->height, state->info->pitch, SDL_PIXELFORMAT_ARGB8888);
+		state->info->texture = SDL_CreateTextureFromSurface(renderer, canvas);
+		SDL_DestroySurface(canvas);
+		if (state->fixed >= 0 && state->pixels) { 
+			SDL_free(state->pixels);
+		}
+		state->info->pixels = 0;
+	}
+	SDL_Texture*t = state->info->texture;
 	SDL_free(state->XPositions.ptr);
 	SDL_free(state->heights.ptr);
 	SDL_free(state);
+	return t;
+}
+SDL_Texture*TTF_AtlasLoadAll(const char*filename, int fontSize, SDL_Renderer*renderer, TTF_AtlasInfo*atlas) {
+	if (!renderer) return 0;
+	TTF_AtlasState*state = TTF_AtlasInit(atlas, 0);
+	if (state == 0) return 0;
+	TTF_AtlasLoad_Internal(filename, fontSize, state, 1, 0, 0, 0, 0, 0, 0);
+	return TTF_AtlasDeinitState(state, renderer);
 }
 
-void*TTF_AtlasDeinitWithPixels(TTF_AtlasState*state) {
-	state->atlas->pixels = state->pixels;
-	void*pixels = state->pixels;
-	AtlasDeinitShared(state);
-	return pixels;
+int TTF_AtlasLoadPredicate(const char*filename, int fontSize, TTF_AtlasState*state, SDL_AtlasPred pred, void*user) { 
+	return TTF_AtlasLoad_Internal(filename, fontSize, state, 0, 0, 0, 0, 0, pred, user);
 }
-SDL_Surface*TTF_AtlasDeinitWithSurface(TTF_AtlasState*state) {
-	SDL_Surface*canvas = SDL_CreateSurfaceFrom(state->pixels, state->width, state->height, state->width*4, SDL_PIXELFORMAT_ARGB8888);
-	state->atlas->surface = canvas;
-	state->atlas->pixels = state->pixels;
-	AtlasDeinitShared(state);
-	return canvas;
+int TTF_AtlasReserveEntry2(TTF_AtlasState*state, int*pairs, int length, int*outList) {
+	if (!state || state->info->errorCode) return EINVAL;
+	if (!pairs || length & 1) return EINVAL;
+	int startIndex = state->entries.len;
+	for(int i=0; i<length; i += 2) {
+		int dstX, dstY = Reserve(state, pairs[i], pairs[i+1], !outList, &dstX);
+		if (dstY < 0) return E2BIG;
+		if (outList) {
+			outList[i] = dstX;
+			outList[i + 1] = dstY;
+		} else {
+			TTF_AtlasEntry e;
+			memset(&e, 0, sizeof(TTF_AtlasEntry));
+			e.canvasX = dstX;
+			e.canvasY = dstY;
+			VLA_TTF_AtlasEntry_push(&state->entries, e);
+			VLA_Uint64_push(&state->ids, 0);
+		}
+	}
+    if (outList)
+        return 0; //List means we don't do anything with entries
+	
+    state->info->entryLength = state->entries.len;
+    state->info->entries = state->entries.ptr;
+    state->info->ids = state->ids.ptr;
+    return startIndex;
 }
-SDL_Texture*TTF_AtlasDeinitWithTexture(TTF_AtlasState*state, SDL_Renderer*renderer) {
-	SDL_Surface*canvas = SDL_CreateSurfaceFrom(state->pixels, state->width, state->height, state->width*4, SDL_PIXELFORMAT_ARGB8888);
-	SDL_Texture*texture = SDL_CreateTextureFromSurface(renderer, canvas);
-	SDL_DestroySurface(canvas);
-	AtlasDeinitShared(state);
-	return texture;
+int TTF_AtlasReserveEntry3(TTF_AtlasState*state, int*triples, int length, int*outList) {
+	if (!state || state->info->errorCode) return EINVAL;
+	if (!triples || length & 1) return EINVAL;
+	int startIndex = state->entries.len;
+	for(int i=0; i<length; i += 3) {
+		int dstX, dstY = Reserve(state, triples[i], triples[i+1], !outList, &dstX);
+		if (dstY < 0) return E2BIG;
+		if (outList) {
+			outList[i] = dstX;
+			outList[i + 1] = dstY;
+		} else {
+			TTF_AtlasEntry e;
+			memset(&e, 0, sizeof(TTF_AtlasEntry));
+			e.canvasX = dstX;
+			e.canvasY = dstY;
+			VLA_TTF_AtlasEntry_push(&state->entries, e);
+			VLA_Uint64_push(&state->ids, triples[i+2]);
+		}
+	}
+    if (outList)
+        return 0; //List means we don't do anything with entries
+	
+    state->info->entryLength = state->entries.len;
+    state->info->entries = state->entries.ptr;
+    state->info->ids = state->ids.ptr;
+    return startIndex;
 }
+
+void TTF_AtlasDeinitInfo(TTF_AtlasInfo*info) {
+	if (info->entries) { SDL_free(info->entries); }
+	if (info->ids) { SDL_free(info->ids); }
+	if (!info->userManagedPixels && info->pixels) { SDL_free(info->pixels); }
+	if (info->texture) { SDL_DestroyTexture(info->texture); }
+}
+/**************************** End Atlas ****************************/

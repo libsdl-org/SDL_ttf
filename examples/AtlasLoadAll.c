@@ -3,7 +3,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-SDL_bool useDark, forceDark = 1;
+SDL_bool useDark, forceDark = 0;
 TTF_AtlasInfo atlas;
 SDL_Texture*fontTexture;
 SDL_Renderer*renderer;
@@ -24,12 +24,11 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
-#ifdef __WIN32__
+#ifdef SDL_PLATFORM_WINDOWS
 	if (!filename) {
-		#error "TODO"
-		filename="some path.ttf";
+		filename="C:\\Windows\\Fonts\\arial.ttf";
 	}
-#else
+#elif defined(SDL_PLATFORM_MACOS) || defined(SDL_PLATFORM_LINUX)
 	if (!filename) {
 		buffer[0] = 0;
 		FILE*f = popen("fc-match -f %{file}", "r");
@@ -40,6 +39,8 @@ int main(int argc, char *argv[])
 			filename = buffer;
 		}
 	}
+#else
+	#error "Unsupported Platform"
 #endif
 
 	TTF_Init();
@@ -103,8 +104,7 @@ int main(int argc, char *argv[])
 		DrawWindow();
 	}
 	
-	SDL_DestroyTexture(fontTexture); //Perhaps destory atlas also handle this?
-	TTF_DestroyAtlas(&atlas);
+	TTF_AtlasDeinitInfo(&atlas);
 	TTF_Quit();
 	return 0;
 }
