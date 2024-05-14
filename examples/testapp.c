@@ -647,7 +647,7 @@ int main(void)
 
     // SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
     // SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles2");
-    renderer = SDL_CreateRenderer(window, NULL, 0);
+    renderer = SDL_CreateRenderer(window, NULL);
     if (renderer == NULL) {
        quit("SDL renderer setup failed");
     }
