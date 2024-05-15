@@ -72,7 +72,7 @@ extern "C" {
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern DECLSPEC int SDLCALL IMG_Version(void);
+extern DECLSPEC int SDLCALL TTF_Version(void);
 
 /**
  * Query the version of the FreeType library in use.

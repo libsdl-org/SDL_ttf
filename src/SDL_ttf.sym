@@ -26,7 +26,6 @@ SDL3_ttf_0.0.0 {
     TTF_GlyphMetrics32;
     TTF_Init;
     TTF_IsFontScalable;
-    TTF_Linked_Version;
     TTF_MeasureText;
     TTF_MeasureUNICODE;
     TTF_MeasureUTF8;
@@ -85,6 +84,7 @@ SDL3_ttf_0.0.0 {
     TTF_SizeText;
     TTF_SizeUNICODE;
     TTF_SizeUTF8;
+    TTF_Version;
     TTF_WasInit;
   local: *;
 };
