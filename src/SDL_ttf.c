@@ -55,28 +55,22 @@
 #  define TTF_USE_HARFBUZZ 0
 #endif
 
-#if defined(SDL_BUILD_MAJOR_VERSION) && defined(SDL_COMPILE_TIME_ASSERT)
+#if defined(SDL_BUILD_MAJOR_VERSION)
 SDL_COMPILE_TIME_ASSERT(SDL_BUILD_MAJOR_VERSION,
                         SDL_TTF_MAJOR_VERSION == SDL_BUILD_MAJOR_VERSION);
 SDL_COMPILE_TIME_ASSERT(SDL_BUILD_MINOR_VERSION,
                         SDL_TTF_MINOR_VERSION == SDL_BUILD_MINOR_VERSION);
 SDL_COMPILE_TIME_ASSERT(SDL_BUILD_MICRO_VERSION,
-                        SDL_TTF_PATCHLEVEL == SDL_BUILD_MICRO_VERSION);
+                        SDL_TTF_MICRO_VERSION == SDL_BUILD_MICRO_VERSION);
 #endif
 
-#if defined(SDL_COMPILE_TIME_ASSERT)
+/* Limited by its encoding in SDL_VERSIONNUM */
 SDL_COMPILE_TIME_ASSERT(SDL_TTF_MAJOR_VERSION_min, SDL_TTF_MAJOR_VERSION >= 0);
-/* Limited only by the need to fit in SDL_Version */
-SDL_COMPILE_TIME_ASSERT(SDL_TTF_MAJOR_VERSION_max, SDL_TTF_MAJOR_VERSION <= 255);
-
+SDL_COMPILE_TIME_ASSERT(SDL_TTF_MAJOR_VERSION_max, SDL_TTF_MAJOR_VERSION <= 10);
 SDL_COMPILE_TIME_ASSERT(SDL_TTF_MINOR_VERSION_min, SDL_TTF_MINOR_VERSION >= 0);
-/* Limited only by the need to fit in SDL_Version */
-SDL_COMPILE_TIME_ASSERT(SDL_TTF_MINOR_VERSION_max, SDL_TTF_MINOR_VERSION <= 255);
-
-SDL_COMPILE_TIME_ASSERT(SDL_TTF_PATCHLEVEL_min, SDL_TTF_PATCHLEVEL >= 0);
-/* Limited by its encoding in SDL_VERSIONNUM and in the ABI versions */
-SDL_COMPILE_TIME_ASSERT(SDL_TTF_PATCHLEVEL_max, SDL_TTF_PATCHLEVEL <= 99);
-#endif
+SDL_COMPILE_TIME_ASSERT(SDL_TTF_MINOR_VERSION_max, SDL_TTF_MINOR_VERSION <= 999);
+SDL_COMPILE_TIME_ASSERT(SDL_TTF_MICRO_VERSION_min, SDL_TTF_MICRO_VERSION >= 0);
+SDL_COMPILE_TIME_ASSERT(SDL_TTF_MICRO_VERSION_max, SDL_TTF_MICRO_VERSION <= 999);
 
 #if TTF_USE_HARFBUZZ
 #include <hb.h>
@@ -1601,11 +1595,9 @@ static SDL_Surface* Create_Surface_LCD(int width, int height, SDL_Color fg, SDL_
 
 
 /* rcg06192001 get linked library's version. */
-const SDL_Version* TTF_Linked_Version(void)
+int TTF_Version(void)
 {
-    static SDL_Version linked_version;
-    SDL_TTF_VERSION(&linked_version);
-    return &linked_version;
+    return SDL_TTF_VERSION;
 }
 
 /* This function tells the library whether UNICODE text is generally

@@ -7,7 +7,7 @@
 * Bump version number to 3.EVEN.0 in all these locations:
 
     * `include/SDL3/SDL_ttf.h`:
-        `SDL_TTF_MAJOR_VERSION`, `SDL_TTF_MINOR_VERSION`, `SDL_TTF_PATCHLEVEL`
+        `SDL_TTF_MAJOR_VERSION`, `SDL_TTF_MINOR_VERSION`, `SDL_TTF_MICRO_VERSION`
     * `CMakeLists.txt`:
         `MAJOR_VERSION`, `MINOR_VERSION`, `MICRO_VERSION`
     * `version.rc`:
@@ -46,7 +46,7 @@
 
 	* `Xcode/SDL_ttf.xcodeproj/project.pbxproj`:
 	  `DYLIB_CURRENT_VERSION`, `DYLIB_COMPATIBILITY_VERSION`
-		* set second number in `DYLIB_CURRENT_VERSION` to *patchlevel*
+		* set second number in `DYLIB_CURRENT_VERSION` to *micro*
         * Leave `DYLIB_COMPATIBILITY_VERSION` unchanged
 
 * Regenerate `configure`
@@ -83,7 +83,7 @@
 	* `Xcode/SDL_ttf.xcodeproj/project.pbxproj`:
 	  `DYLIB_CURRENT_VERSION`, `DYLIB_COMPATIBILITY_VERSION`
 		* set first number in `DYLIB_CURRENT_VERSION` to
-		  (100 * *minor*) + *patchlevel* + 1
+		  (100 * *minor*) + *micro* + 1
 		* set second number in `DYLIB_CURRENT_VERSION` to 0
         * set `DYLIB_COMPATIBILITY_VERSION` to the same value
 

@@ -45,30 +45,17 @@ extern "C" {
 #endif
 
 /**
- * Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
+ * Printable format: "%d.%d.%d", MAJOR, MINOR, MICRO
  */
 #define SDL_TTF_MAJOR_VERSION   3
 #define SDL_TTF_MINOR_VERSION   0
-#define SDL_TTF_PATCHLEVEL      0
+#define SDL_TTF_MICRO_VERSION   0
 
 /**
- * This macro can be used to fill a version structure with the compile-time
- * version of the SDL_ttf library.
+ * This is the version number macro for the current SDL_ttf version.
  */
-#define SDL_TTF_VERSION(X)                          \
-{                                                   \
-    (X)->major = SDL_TTF_MAJOR_VERSION;             \
-    (X)->minor = SDL_TTF_MINOR_VERSION;             \
-    (X)->patch = SDL_TTF_PATCHLEVEL;                \
-}
-
-/**
- * Backwards compatibility
- */
-#define TTF_MAJOR_VERSION   SDL_TTF_MAJOR_VERSION
-#define TTF_MINOR_VERSION   SDL_TTF_MINOR_VERSION
-#define TTF_PATCHLEVEL      SDL_TTF_PATCHLEVEL
-#define TTF_VERSION(X)      SDL_TTF_VERSION(X)
+#define SDL_TTF_VERSION \
+    SDL_VERSIONNUM(SDL_TTF_MAJOR_VERSION, SDL_TTF_MINOR_VERSION, SDL_TTF_MICRO_VERSION)
 
 /**
  * This macro will evaluate to true if compiled with SDL_ttf at least X.Y.Z.
@@ -76,22 +63,16 @@ extern "C" {
 #define SDL_TTF_VERSION_ATLEAST(X, Y, Z) \
     ((SDL_TTF_MAJOR_VERSION >= X) && \
      (SDL_TTF_MAJOR_VERSION > X || SDL_TTF_MINOR_VERSION >= Y) && \
-     (SDL_TTF_MAJOR_VERSION > X || SDL_TTF_MINOR_VERSION > Y || SDL_TTF_PATCHLEVEL >= Z))
+     (SDL_TTF_MAJOR_VERSION > X || SDL_TTF_MINOR_VERSION > Y || SDL_TTF_MICRO_VERSION >= Z))
 
 /**
- * Query the version of SDL_ttf that the program is linked against.
- *
  * This function gets the version of the dynamically linked SDL_ttf library.
- * This is separate from the SDL_TTF_VERSION() macro, which tells you what
- * version of the SDL_ttf headers you compiled against.
  *
- * This returns static internal data; do not free or modify it!
- *
- * \returns a pointer to the version information.
+ * \returns SDL_ttf version
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern DECLSPEC const SDL_Version * SDLCALL TTF_Linked_Version(void);
+extern DECLSPEC int SDLCALL IMG_Version(void);
 
 /**
  * Query the version of the FreeType library in use.
