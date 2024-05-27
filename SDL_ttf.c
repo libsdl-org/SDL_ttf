@@ -3128,6 +3128,46 @@ int TTF_SetFontScriptName(TTF_Font *font, const char *script)
 #endif
 }
 
+int TTF_GetScriptName(Uint32 ch, char *script, size_t script_size)
+{
+#if TTF_USE_HARFBUZZ
+
+    TTF_CHECK_POINTER(script, -1);
+    if (script_size < 5) {
+        return TTF_SetError("Insufficient script buffer size");
+    }
+
+    hb_buffer_t* hb_buffer = hb_buffer_create();
+
+    if (hb_buffer == NULL) {
+        return TTF_SetError("Cannot create harfbuzz buffer");
+    }
+
+    hb_unicode_funcs_t* hb_unicode_functions = hb_buffer_get_unicode_funcs(hb_buffer);
+
+    if (hb_unicode_functions == NULL) {
+        hb_buffer_destroy(hb_buffer);
+        return TTF_SetError("Cannot get harfbuzz unicode funcs");
+    }
+
+    hb_buffer_clear_contents(hb_buffer);
+    hb_buffer_set_content_type(hb_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
+
+    uint8_t const untagged_script[4] = { HB_UNTAG(hb_unicode_script(hb_unicode_functions, ch)) };
+    script[0] = (char)untagged_script[0];
+    script[1] = (char)untagged_script[1];
+    script[2] = (char)untagged_script[2];
+    script[3] = (char)untagged_script[3];
+    script[4] = '\0';
+
+    hb_buffer_destroy(hb_buffer);
+    return 0;
+
+#else
+    return TTF_SetError("Unsupported");
+#endif
+}
+
 static int TTF_Size_Internal(TTF_Font *font,
         const char *text, const str_type_t str_type,
         int *w, int *h, int *xstart, int *ystart,
