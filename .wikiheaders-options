@@ -14,3 +14,5 @@ wikiurl = https://wiki.libsdl.org/SDL_ttf
 bugreporturl = https://github.com/libsdl-org/sdlwiki/issues/new
 warn_about_missing = 0
 wikipreamble = (This function is part of SDL_ttf, a separate library from SDL.)
+wikiheaderfiletext = Defined in [<SDL3_ttf/%fname%>](https://github.com/libsdl-org/SDL_ttf/blob/main/include/SDL3_ttf/%fname%)
+manpageheaderfiletext = Defined in SDL3_ttf/%fname%

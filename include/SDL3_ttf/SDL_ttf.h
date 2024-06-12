@@ -861,9 +861,9 @@ extern SDL_DECLSPEC int SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *te
  * \param font the font to query.
  * \param text text to calculate, in Latin1 encoding.
  * \param measure_width maximum width, in pixels, available for the string.
+ * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
  *              rendered.
- * \param extent on return, filled with latest calculated width.
  * \returns 0 if successful, -1 on error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
@@ -885,9 +885,9 @@ extern SDL_DECLSPEC int SDLCALL TTF_MeasureText(TTF_Font *font, const char *text
  * \param font the font to query.
  * \param text text to calculate, in UTF-8 encoding.
  * \param measure_width maximum width, in pixels, available for the string.
+ * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
  *              rendered.
- * \param extent on return, filled with latest calculated width.
  * \returns 0 if successful, -1 on error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
@@ -914,9 +914,9 @@ extern SDL_DECLSPEC int SDLCALL TTF_MeasureUTF8(TTF_Font *font, const char *text
  * \param font the font to query.
  * \param text text to calculate, in UCS-2 encoding.
  * \param measure_width maximum width, in pixels, available for the string.
+ * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
  *              rendered.
- * \param extent on return, filled with latest calculated width.
  * \returns 0 if successful, -1 on error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
