@@ -68,7 +68,7 @@ extern "C" {
 /**
  * This function gets the version of the dynamically linked SDL_ttf library.
  *
- * \returns SDL_ttf version
+ * \returns SDL_ttf version.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -114,7 +114,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_GetHarfBuzzVersion(int *major, int *minor, 
  * A UNICODE BOM character in a string will override this setting for the
  * remainder of that string.
  *
- * \param swapped boolean to indicate whether text is byteswapped
+ * \param swapped boolean to indicate whether text is byteswapped.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -368,7 +368,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPIIO(SDL_IOStream *src,
  *
  * \param font the font to resize.
  * \param ptsize the new point size.
- * \returns 0 if successful, -1 on error
+ * \returns 0 if successful, -1 on error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
