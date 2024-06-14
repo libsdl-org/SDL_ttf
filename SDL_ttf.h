@@ -151,7 +151,7 @@ extern DECLSPEC void SDLCALL TTF_GetHarfBuzzVersion(int *major, int *minor, int 
  * A UNICODE BOM character in a string will override this setting for the
  * remainder of that string.
  *
- * \param swapped boolean to indicate whether text is byteswapped
+ * \param swapped boolean to indicate whether text is byteswapped.
  *
  * \since This function is available since SDL_ttf 2.0.12.
  */
@@ -406,7 +406,7 @@ extern DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPIRW(SDL_RWops *src, int fr
  *
  * \param font the font to resize.
  * \param ptsize the new point size.
- * \returns 0 if successful, -1 on error
+ * \returns 0 if successful, -1 on error.
  *
  * \since This function is available since SDL_ttf 2.0.18.
  */
