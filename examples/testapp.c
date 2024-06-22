@@ -354,96 +354,96 @@ static int wait_for_input(void)
 
         switch (event.type) {
             case SDL_EVENT_KEY_DOWN:
-                if (event.key.keysym.sym == SDLK_F1) {
+                if (event.key.key == SDLK_F1) {
                     help();
                     done = 1;
                 }
-                if (event.key.keysym.sym == SDLK_SPACE) {
+                if (event.key.key == SDLK_SPACE) {
                     iter++;
                     sum++;
                     done = 1;
                 }
-                if (event.key.keysym.sym == SDLK_BACKSPACE) {
+                if (event.key.key == SDLK_BACKSPACE) {
                     iter--;
                     sum++;
                     done = 1;
                 }
-                if (event.key.keysym.sym == SDLK_DOWN) {
+                if (event.key.key == SDLK_DOWN) {
                     curr_size -= 1;
                     if (curr_size < -1) curr_size = -1;
                     done = 1;
                     SDL_Log("size: %d", curr_size);
                 }
-                if (event.key.keysym.sym == SDLK_UP) {
+                if (event.key.key == SDLK_UP) {
                     curr_size += 1;
                     done = 1;
                     SDL_Log("size: %d", curr_size);
                 }
-                if (event.key.keysym.sym == SDLK_c) {
+                if (event.key.key == SDLK_c) {
                     curr_font -= 1;
                     if (curr_font < 0) curr_font = 0;
                     done = 1;
                     SDL_Log("Switch to font %s", test_fonts[curr_font]);
                 }
-                if (event.key.keysym.sym == SDLK_v) {
+                if (event.key.key == SDLK_v) {
                     curr_font += 1;
                     done = 1;
                     if (curr_font >= test_fonts_count) curr_font = test_fonts_count - 1;
                     SDL_Log("Switch to font %s", test_fonts[curr_font]);
                 }
 
-                if (event.key.keysym.sym == SDLK_o) {
+                if (event.key.key == SDLK_o) {
                     outline -= 1;
                     if (outline < -1) outline = -1;
                     done = 1;
                     SDL_Log("outline: %d", outline);
                 }
-                if (event.key.keysym.sym == SDLK_p) {
+                if (event.key.key == SDLK_p) {
                     outline += 1;
                     done = 1;
                     SDL_Log("outline: %d", outline);
                 }
-                if (event.key.keysym.sym == SDLK_q) {
+                if (event.key.key == SDLK_q) {
                     wrap_size -= 1;
                     done = 1;
                     SDL_Log("wrap_size: %d", wrap_size);
                 }
-                if (event.key.keysym.sym == SDLK_a) {
+                if (event.key.key == SDLK_a) {
                     w_align += 1;
                     if (w_align == 3) w_align = 0;
                     done = 1;
                     SDL_Log("wrap_align: %d", w_align);
                 }
-                if (event.key.keysym.sym == SDLK_e) {
+                if (event.key.key == SDLK_e) {
                     wrap_size += 1;
                     done = 1;
                     SDL_Log("wrap_size: %d", wrap_size);
                 }
-                if (event.key.keysym.sym == SDLK_i) {
+                if (event.key.key == SDLK_i) {
                     int s = TTF_STYLE_ITALIC;
                     SDL_Log("italic %s", (font_style & s) ? "removed" : "added");
                     font_style ^= s;
                     done = 1;
                 }
-                if (event.key.keysym.sym == SDLK_b) {
+                if (event.key.key == SDLK_b) {
                     int s = TTF_STYLE_BOLD;
                     SDL_Log("bold %s", (font_style & s) ? "removed" : "added");
                     font_style ^= s;
                     done = 1;
                 }
-                if (event.key.keysym.sym == SDLK_u) {
+                if (event.key.key == SDLK_u) {
                     int s = TTF_STYLE_UNDERLINE;
                     SDL_Log("underline %s", (font_style & s) ? "removed" : "added");
                     font_style ^= s;
                     done = 1;
                 }
-                if (event.key.keysym.sym == SDLK_s) {
+                if (event.key.key == SDLK_s) {
                     int s = TTF_STYLE_STRIKETHROUGH;
                     SDL_Log("strike-through %s", (font_style & s) ? "removed" : "added");
                     font_style ^= s;
                     done = 1;
                 }
-                if (event.key.keysym.sym == SDLK_k) {
+                if (event.key.key == SDLK_k) {
                     done = 1;
                     kerning ^= 1;
                     if (kerning) {
@@ -452,7 +452,7 @@ static int wait_for_input(void)
                         SDL_Log("kerning removed");
                     }
                 }
-                if (event.key.keysym.sym == SDLK_w) {
+                if (event.key.key == SDLK_w) {
                     done = 1;
                     wrap ^= 1;
                     if (wrap) {
@@ -461,7 +461,7 @@ static int wait_for_input(void)
                         SDL_Log("wrap removed");
                     }
                 }
-                if (event.key.keysym.sym == SDLK_f) {
+                if (event.key.key == SDLK_f) {
                     done = 1;
                     sdf ^= 1;
                     if (sdf) {
@@ -470,7 +470,7 @@ static int wait_for_input(void)
                         SDL_Log("SDF removed");
                     }
                 }
-                if (event.key.keysym.sym == SDLK_t) {
+                if (event.key.key == SDLK_t) {
                     done = 1;
                     print_elapsed_ticks ^= 1;
                     if (print_elapsed_ticks) {
@@ -479,7 +479,7 @@ static int wait_for_input(void)
                         SDL_Log("print_elapsed_ticks hidden");
                     }
                 }
-                if (event.key.keysym.sym == SDLK_d) {
+                if (event.key.key == SDLK_d) {
                     done = 1;
                     update_screen_mode += 1;
                     update_screen_mode %= 2;
@@ -490,66 +490,66 @@ static int wait_for_input(void)
                         SDL_Log("texture not displayed");
                     }
                 }
-                if (event.key.keysym.sym == SDLK_g) {
+                if (event.key.key == SDLK_g) {
                     done = 1;
                     hinting -= 1;
                     if (hinting < 0) hinting = 0;
                     SDL_Log("hinting: %s", hinting_desc[hinting]);
                 }
-                if (event.key.keysym.sym == SDLK_h) {
+                if (event.key.key == SDLK_h) {
                     done = 1;
                     hinting += 1;
                     hinting %= hinting_count;
                     SDL_Log("hinting: %s", hinting_desc[hinting]);
                 }
-                if (event.key.keysym.sym == SDLK_r) {
+                if (event.key.key == SDLK_r) {
                     done = 1;
                     mode_random_test = 1;
                     random_cnt = 0;
                     SDL_Log("start random test");
                 }
-                if (event.key.keysym.sym == SDLK_m) {
+                if (event.key.key == SDLK_m) {
                     done = 1;
                     render_mode += 1;
                     render_mode %= render_mode_count;
                     render_mode_overwrite = render_mode;
                     SDL_Log("render mode: %s", render_mode_desc[render_mode]);
                 }
-                if (event.key.keysym.sym == SDLK_n) {
+                if (event.key.key == SDLK_n) {
                     done = 1;
                     direction += 1;
                     direction %= direction_count;
                     SDL_Log("direction: %s", directions[direction].description);
                 }
-                if (event.key.keysym.sym == SDLK_F2) {
+                if (event.key.key == SDLK_F2) {
                     done = 1;
                     save_to_bmp = 1;
                 }
-                if (event.key.keysym.sym == SDLK_9) {
+                if (event.key.key == SDLK_9) {
                     done = 1;
                     fg_alpha -= 1;
                     if (fg_alpha < 0) fg_alpha = 0;
                     SDL_Log("color fg alpha = %d", fg_alpha);
                 }
-                if (event.key.keysym.sym == SDLK_0) {
+                if (event.key.key == SDLK_0) {
                     done = 1;
                     fg_alpha += 1;
                     if (fg_alpha > 255) fg_alpha = 255;
                     SDL_Log("color fg alpha = %d", fg_alpha);
                 }
-                if (event.key.keysym.sym == SDLK_7) {
+                if (event.key.key == SDLK_7) {
                     done = 1;
                     bg_alpha -= 1;
                     if (bg_alpha < 0) bg_alpha = 0;
                     SDL_Log("color bg alpha = %d", bg_alpha);
                 }
-                if (event.key.keysym.sym == SDLK_8) {
+                if (event.key.key == SDLK_8) {
                     done = 1;
                     bg_alpha += 1;
                     if (bg_alpha > 255) bg_alpha = 255;
                     SDL_Log("color bg alpha = %d", bg_alpha);
                 }
-                if (event.key.keysym.sym == SDLK_6) {
+                if (event.key.key == SDLK_6) {
                     SDL_Color tmp = textcol;
                     textcol = boardcol;
                     boardcol = tmp;
@@ -558,22 +558,22 @@ static int wait_for_input(void)
                     SDL_Log("Invert BG / FG color");
                     done = 1;
                 }
-                if (event.key.keysym.sym == SDLK_3) {
+                if (event.key.key == SDLK_3) {
                     done = 1;
                     textcol.r += 1;
                     SDL_Log("color fg: r=%d g=%d b=%d alpha=%d", textcol.r, textcol.g, textcol.b, textcol.a);
                 }
-                if (event.key.keysym.sym == SDLK_4) {
+                if (event.key.key == SDLK_4) {
                     done = 1;
                     textcol.g += 1;
                     SDL_Log("color fg: r=%d g=%d b=%d alpha=%d", textcol.r, textcol.g, textcol.b, textcol.a);
                 }
-                if (event.key.keysym.sym == SDLK_5) {
+                if (event.key.key == SDLK_5) {
                     done = 1;
                     textcol.b += 1;
                     SDL_Log("color fg: r=%d g=%d b=%d alpha=%d", textcol.r, textcol.g, textcol.b, textcol.a);
                 }
-                if (event.key.keysym.sym == SDLK_2) {
+                if (event.key.key == SDLK_2) {
                     const char *str[6] = {"Black", "Red", "Green", "Blue", "White", "Gray" };
                     background_color += 1;
                     if (background_color == 6) background_color = 0;
@@ -581,7 +581,7 @@ static int wait_for_input(void)
                     done = 1;
                 }
 
-                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                if (event.key.key == SDLK_ESCAPE) {
                     SDL_Log("ESC");
                     return 1;
                 }
