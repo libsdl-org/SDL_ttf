@@ -2229,6 +2229,76 @@ extern SDL_DECLSPEC int TTF_SetFontLanguage(TTF_Font *font, const char *language
  */
 extern SDL_DECLSPEC SDL_bool TTF_IsFontScalable(const TTF_Font *font);
 
+/**************************** Atlas ****************************/
+
+/*
+    TODO write documentation and a better header after feedback
+*/
+
+typedef struct TTF_AtlasState TTF_AtlasState;
+typedef struct TTF_AtlasEntry { short canvasX, canvasY, width, height, left, ascent, xAdv, yAdv; } TTF_AtlasEntry;
+
+//Read only please
+typedef struct TTF_AtlasInfo {
+	TTF_AtlasEntry*entries;
+	Uint64*ids;
+	int width, height, pitch, entryLength, errorCode, spaceXAdv;
+	SDL_PixelFormatEnum format;
+	void*pixels;
+	SDL_bool userManagedPixels;
+	SDL_Texture*texture;
+} TTF_AtlasInfo;
+
+//Returns null on error, check info->errorCode for a hint. The file may not exist or the texture grew too large
+//On success a SDL_Texture is returned. You must free the texture and destroy info with TTF_AtlasDeinitInfo
+//info is an out (write only) parameter
+extern DECLSPEC SDL_Texture*TTF_AtlasLoadAll(const char*filename, int fontSize, SDL_Renderer*renderer, TTF_AtlasInfo*info);
+extern DECLSPEC void TTF_AtlasDeinitInfo(TTF_AtlasInfo*info);
+
+//info will be overwritten
+//If canvasWidthHeight is 0 we'll use a default value (512)
+extern DECLSPEC TTF_AtlasState*TTF_AtlasInit(TTF_AtlasInfo*info, int canvasWidthHeight);
+
+//This version will not grow
+//info will be overwritten
+//width and height must not be zero
+//pitch is used only when pixels is not null
+//pixels may be null. If not null the caller manages it and we will not free the pixels in any deinit functions
+//format of the pixels. May be SDL_PIXELFORMAT_UNKNOWN if pixels is null. Right now only SDL_PIXELFORMAT_ARGB8888 is supported
+//Returns the state which must be cleaned up by TTF_AtlasDeinitState
+extern DECLSPEC TTF_AtlasState*TTF_AtlasInitFixed(TTF_AtlasInfo*info, int width, int height, int pitch, void*pixels, SDL_PixelFormatEnum format);
+
+//This will clean up a TTF_AtlasState pointer. You must call TTF_AtlasDeinitInfo seperately
+//This is called when you're finished creating the texture and TTF_AtlasDeinitInfo is when you're finished with the atlas info struct
+//state must not be null
+//renderer may be null if you don't want this to create/manage the texture (and free the pixels in certain conditions)
+extern DECLSPEC SDL_Texture*TTF_AtlasDeinitState(TTF_AtlasState*state, SDL_Renderer*renderer);
+
+extern DECLSPEC void TTF_AtlasSetDPI(TTF_AtlasState*state, int hdpi, int vdpi);
+
+//Pairs are in the form of {width, height}, length must be a multiple of 2.
+//triples are in the form of {width, height, id}, length must be a multiple of 3.
+//length is the amount of int's in the list. Two pairs would be 4 and two triples would be 6
+//If outList is null the request widths/heights can be access by AtlasInfo entries field
+//If outList is not null, the array must be 2* the amount of pairs/triples. The out values are in the form of {x, y}
+//Return value is negative if error, the entry index if outList is null otherwise 0
+//It's safe for the pair or triple to be reused as the outlist
+extern DECLSPEC int TTF_AtlasReserveEntry2(TTF_AtlasState*state, int*pairs, int length, int*outList);
+extern DECLSPEC int TTF_AtlasReserveEntry3(TTF_AtlasState*state, int*triples, int length, int*outList);
+
+//Range is a list of inclusive pairs. rangeLength should always be an even number
+//if range and utf8List are both null than every glyph is loaded (except ones that are blank)
+//Return the xAdvance of whitespace or negative if there's an error
+extern DECLSPEC int TTF_AtlasLoad(const char*filename, int fontSize, TTF_AtlasState*state, int*range, int rangeLength, const char*utf8List, Uint64 IDXor);
+
+//Return 0 to say the glyph should not be loaded, otherwise return an ID
+typedef Uint64 (*SDL_AtlasPred)(void*user, int glyph);
+extern DECLSPEC int TTF_AtlasLoadPredicate(const char*filename, int fontSize, TTF_AtlasState*state, SDL_AtlasPred pred, void*user);
+
+
+/**************************** End Atlas ****************************/
+
+
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }

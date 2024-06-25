@@ -350,6 +350,8 @@ if(SDL3TTF_SAMPLES)
     add_executable(glfont examples/glfont.c)
     add_executable(showfont examples/showfont.c)
     add_executable(testapp examples/testapp.c)
+    add_executable(AtlasLoadAll examples/AtlasLoadAll.c)
+    #add_executable(Atlas examples/Atlas.cpp)
 
     set(OpenGL_GL_PREFERENCE GLVND)
     find_package(OpenGL)
@@ -361,7 +363,7 @@ if(SDL3TTF_SAMPLES)
         target_link_libraries(glfont PRIVATE OpenGL::GL)
     endif()
 
-    foreach(prog glfont showfont testapp)
+    foreach(prog glfont showfont testapp AtlasLoadAll) #Atlas is cpp so it's not supported?
         sdl_add_warning_options(${prog} WARNING_AS_ERROR ${SDL3TTF_WERROR})
         target_link_libraries(${prog} PRIVATE SDL3_ttf::${sdl3_ttf_target_name})
         target_link_libraries(${prog} PRIVATE ${sdl3_target_name})
