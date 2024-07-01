@@ -379,71 +379,71 @@ static int wait_for_input(void)
                     done = 1;
                     SDL_Log("size: %d", curr_size);
                 }
-                if (event.key.key == SDLK_c) {
+                if (event.key.key == SDLK_C) {
                     curr_font -= 1;
                     if (curr_font < 0) curr_font = 0;
                     done = 1;
                     SDL_Log("Switch to font %s", test_fonts[curr_font]);
                 }
-                if (event.key.key == SDLK_v) {
+                if (event.key.key == SDLK_V) {
                     curr_font += 1;
                     done = 1;
                     if (curr_font >= test_fonts_count) curr_font = test_fonts_count - 1;
                     SDL_Log("Switch to font %s", test_fonts[curr_font]);
                 }
 
-                if (event.key.key == SDLK_o) {
+                if (event.key.key == SDLK_O) {
                     outline -= 1;
                     if (outline < -1) outline = -1;
                     done = 1;
                     SDL_Log("outline: %d", outline);
                 }
-                if (event.key.key == SDLK_p) {
+                if (event.key.key == SDLK_P) {
                     outline += 1;
                     done = 1;
                     SDL_Log("outline: %d", outline);
                 }
-                if (event.key.key == SDLK_q) {
+                if (event.key.key == SDLK_Q) {
                     wrap_size -= 1;
                     done = 1;
                     SDL_Log("wrap_size: %d", wrap_size);
                 }
-                if (event.key.key == SDLK_a) {
+                if (event.key.key == SDLK_A) {
                     w_align += 1;
                     if (w_align == 3) w_align = 0;
                     done = 1;
                     SDL_Log("wrap_align: %d", w_align);
                 }
-                if (event.key.key == SDLK_e) {
+                if (event.key.key == SDLK_E) {
                     wrap_size += 1;
                     done = 1;
                     SDL_Log("wrap_size: %d", wrap_size);
                 }
-                if (event.key.key == SDLK_i) {
+                if (event.key.key == SDLK_I) {
                     int s = TTF_STYLE_ITALIC;
                     SDL_Log("italic %s", (font_style & s) ? "removed" : "added");
                     font_style ^= s;
                     done = 1;
                 }
-                if (event.key.key == SDLK_b) {
+                if (event.key.key == SDLK_B) {
                     int s = TTF_STYLE_BOLD;
                     SDL_Log("bold %s", (font_style & s) ? "removed" : "added");
                     font_style ^= s;
                     done = 1;
                 }
-                if (event.key.key == SDLK_u) {
+                if (event.key.key == SDLK_U) {
                     int s = TTF_STYLE_UNDERLINE;
                     SDL_Log("underline %s", (font_style & s) ? "removed" : "added");
                     font_style ^= s;
                     done = 1;
                 }
-                if (event.key.key == SDLK_s) {
+                if (event.key.key == SDLK_S) {
                     int s = TTF_STYLE_STRIKETHROUGH;
                     SDL_Log("strike-through %s", (font_style & s) ? "removed" : "added");
                     font_style ^= s;
                     done = 1;
                 }
-                if (event.key.key == SDLK_k) {
+                if (event.key.key == SDLK_K) {
                     done = 1;
                     kerning ^= 1;
                     if (kerning) {
@@ -452,7 +452,7 @@ static int wait_for_input(void)
                         SDL_Log("kerning removed");
                     }
                 }
-                if (event.key.key == SDLK_w) {
+                if (event.key.key == SDLK_W) {
                     done = 1;
                     wrap ^= 1;
                     if (wrap) {
@@ -461,7 +461,7 @@ static int wait_for_input(void)
                         SDL_Log("wrap removed");
                     }
                 }
-                if (event.key.key == SDLK_f) {
+                if (event.key.key == SDLK_F) {
                     done = 1;
                     sdf ^= 1;
                     if (sdf) {
@@ -470,7 +470,7 @@ static int wait_for_input(void)
                         SDL_Log("SDF removed");
                     }
                 }
-                if (event.key.key == SDLK_t) {
+                if (event.key.key == SDLK_T) {
                     done = 1;
                     print_elapsed_ticks ^= 1;
                     if (print_elapsed_ticks) {
@@ -479,7 +479,7 @@ static int wait_for_input(void)
                         SDL_Log("print_elapsed_ticks hidden");
                     }
                 }
-                if (event.key.key == SDLK_d) {
+                if (event.key.key == SDLK_D) {
                     done = 1;
                     update_screen_mode += 1;
                     update_screen_mode %= 2;
@@ -490,32 +490,32 @@ static int wait_for_input(void)
                         SDL_Log("texture not displayed");
                     }
                 }
-                if (event.key.key == SDLK_g) {
+                if (event.key.key == SDLK_G) {
                     done = 1;
                     hinting -= 1;
                     if (hinting < 0) hinting = 0;
                     SDL_Log("hinting: %s", hinting_desc[hinting]);
                 }
-                if (event.key.key == SDLK_h) {
+                if (event.key.key == SDLK_H) {
                     done = 1;
                     hinting += 1;
                     hinting %= hinting_count;
                     SDL_Log("hinting: %s", hinting_desc[hinting]);
                 }
-                if (event.key.key == SDLK_r) {
+                if (event.key.key == SDLK_R) {
                     done = 1;
                     mode_random_test = 1;
                     random_cnt = 0;
                     SDL_Log("start random test");
                 }
-                if (event.key.key == SDLK_m) {
+                if (event.key.key == SDLK_M) {
                     done = 1;
                     render_mode += 1;
                     render_mode %= render_mode_count;
                     render_mode_overwrite = render_mode;
                     SDL_Log("render mode: %s", render_mode_desc[render_mode]);
                 }
-                if (event.key.key == SDLK_n) {
+                if (event.key.key == SDLK_N) {
                     done = 1;
                     direction += 1;
                     direction %= direction_count;
