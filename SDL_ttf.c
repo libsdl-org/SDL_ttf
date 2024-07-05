@@ -3234,6 +3234,7 @@ static int TTF_Size_Internal(TTF_Font *font,
     /* Set global configuration */
     hb_buffer_set_direction(hb_buffer, hb_direction);
     hb_buffer_set_script(hb_buffer, hb_script);
+    hb_buffer_guess_segment_properties(hb_buffer);
 
     /* Layout the text */
     hb_buffer_add_utf8(hb_buffer, text, -1, 0, -1);
