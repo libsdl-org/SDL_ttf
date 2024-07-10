@@ -978,7 +978,7 @@ static SDL_INLINE void BG_NEON(const TTF_Image *image, Uint8 *destination, Sint3
 static void Draw_Line(TTF_Font *font, const SDL_Surface *textbuf, int column, int row, int line_width, int line_thickness, Uint32 color, const render_mode_t render_mode)
 {
     int tmp    = row + line_thickness - textbuf->h;
-    int x_offset = column * textbuf->format->bytes_per_pixel;
+    int x_offset = column * SDL_BYTESPERPIXEL(textbuf->format);
     Uint8 *dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch + x_offset;
 #if TTF_USE_HARFBUZZ
     hb_direction_t hb_direction = font->hb_direction;
@@ -1371,7 +1371,7 @@ static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel,
  * Otherwise, the low byte of format is used to initialize each byte
  * in the image data.
  */
-static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_PixelFormatEnum format, Uint32 bgcolor)
+static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_PixelFormat format, Uint32 bgcolor)
 {
     const size_t alignment = Get_Alignment() - 1;
     const size_t bytes_per_pixel = SDL_BYTESPERPIXEL(format);
@@ -1439,15 +1439,15 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
         return NULL;
     }
 
-    textbuf = SDL_CreateSurfaceFrom(pixels, (int)width, (int)height, (int)pitch, format);
+    textbuf = SDL_CreateSurfaceFrom((int)width, (int)height, format, pixels, (int)pitch);
     if (textbuf == NULL) {
         SDL_aligned_free(pixels);
         return NULL;
     }
 
     /* Let SDL handle the memory allocation */
-    textbuf->flags &= ~SDL_PREALLOC;
-    textbuf->flags |= SDL_SIMD_ALIGNED;
+    textbuf->flags &= ~SDL_SURFACE_PREALLOCATED;
+    textbuf->flags |= SDL_SURFACE_SIMD_ALIGNED;
 
     if (bytes_per_pixel == 4) {
         SDL_memset4(pixels, bgcolor, size / 4);
@@ -1471,7 +1471,7 @@ static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Ui
 
     /* Fill the palette: 1 is foreground */
     {
-        SDL_Palette *palette = textbuf->format->palette;
+        SDL_Palette *palette = SDL_GetSurfacePalette(textbuf);
         palette->colors[0].r = 255 - fg.r;
         palette->colors[0].g = 255 - fg.g;
         palette->colors[0].b = 255 - fg.b;
@@ -1509,7 +1509,7 @@ static SDL_Surface* Create_Surface_Shaded(int width, int height, SDL_Color fg, S
 
     /* Fill the palette with NUM_GRAYS levels of shading from bg to fg */
     {
-        SDL_Palette *palette = textbuf->format->palette;
+        SDL_Palette *palette = SDL_GetSurfacePalette(textbuf);
         int rdiff  = fg.r - bg.r;
         int gdiff  = fg.g - bg.g;
         int bdiff  = fg.b - bg.b;

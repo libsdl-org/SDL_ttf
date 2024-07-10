@@ -498,7 +498,7 @@ int main(int argc, char *argv[])
         /* Swap the buffers so everything is visible */
         SDL_GL_SwapWindow(window);
     }
-    SDL_GL_DeleteContext(context);
+    SDL_GL_DestroyContext(context);
     TTF_CloseFont(font);
     cleanup(0);
 
