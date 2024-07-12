@@ -1444,13 +1444,20 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
         SDL_aligned_free(pixels);
         return NULL;
     }
-    if (SDL_ISPIXELFORMAT_INDEXED(format)) {
-        SDL_SetSurfacePalette(textbuf, SDL_CreatePalette(1 << SDL_BITSPERPIXEL(format)));
-    }
 
     /* Let SDL handle the memory allocation */
     textbuf->flags &= ~SDL_SURFACE_PREALLOCATED;
     textbuf->flags |= SDL_SURFACE_SIMD_ALIGNED;
+
+    /* Allocate a palette if needed */
+    if (SDL_ISPIXELFORMAT_INDEXED(format)) {
+        SDL_Palette *palette = SDL_CreatePalette(1 << SDL_BITSPERPIXEL(format));
+        if (!palette) {
+            SDL_DestroySurface(textbuf);
+            return NULL;
+        }
+        SDL_SetSurfacePalette(textbuf, palette);
+    }
 
     if (bytes_per_pixel == 4) {
         SDL_memset4(pixels, bgcolor, size / 4);
