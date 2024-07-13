@@ -1451,12 +1451,10 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
 
     /* Allocate a palette if needed */
     if (SDL_ISPIXELFORMAT_INDEXED(format)) {
-        SDL_Palette *palette = SDL_CreatePalette(1 << SDL_BITSPERPIXEL(format));
-        if (!palette) {
+        if (!SDL_CreateSurfacePalette(textbuf)) {
             SDL_DestroySurface(textbuf);
             return NULL;
         }
-        SDL_SetSurfacePalette(textbuf, palette);
     }
 
     if (bytes_per_pixel == 4) {
