@@ -162,7 +162,7 @@ extern DECLSPEC void SDLCALL TTF_ByteSwappedUNICODE(SDL_bool swapped);
  *
  * Opaque data!
  */
-typedef struct _TTF_Font TTF_Font;
+typedef struct TTF_Font TTF_Font;
 
 /**
  * Initialize SDL_ttf.
