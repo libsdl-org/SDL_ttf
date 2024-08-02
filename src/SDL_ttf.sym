@@ -86,5 +86,16 @@ SDL3_ttf_0.0.0 {
     TTF_SizeUTF8;
     TTF_Version;
     TTF_WasInit;
+
+    TTF_AtlasLoadAll;
+    TTF_AtlasDeinitInfo;
+    TTF_AtlasInit;
+    TTF_AtlasInitFixed;
+    TTF_AtlasDeinitState;
+    TTF_AtlasSetDPI;
+    TTF_AtlasReserveEntry2;
+    TTF_AtlasReserveEntry3;
+    TTF_AtlasLoad;
+    TTF_AtlasLoadPredicate;
   local: *;
 };
