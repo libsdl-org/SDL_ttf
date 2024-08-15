@@ -12,10 +12,10 @@ set_package_properties(SDL3_ttf PROPERTIES
 
 set(SDL3_ttf_FOUND TRUE)
 
-set(SDL3TTF_VENDORED TRUE)
+set(SDLTTF_VENDORED TRUE)
 
-set(SDL3TTF_HARFBUZZ TRUE)
-set(SDL3TTF_FREETYPE TRUE)
+set(SDLTTF_HARFBUZZ TRUE)
+set(SDLTTF_FREETYPE TRUE)
 
 string(REGEX REPLACE "SDL3_ttf\\.framework.*" "SDL3_ttf.framework" _sdl3ttf_framework_path "${CMAKE_CURRENT_LIST_DIR}")
 string(REGEX REPLACE "SDL3_ttf\\.framework.*" "" _sdl3ttf_framework_parent_path "${CMAKE_CURRENT_LIST_DIR}")
