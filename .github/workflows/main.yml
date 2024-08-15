@@ -15,12 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-        - { name: Windows (MSVC+CMake),         os: windows-latest, shell: sh,   cmake: '-DPerl_ROOT=C:/Strawberry/perl/bin/ -DSDL3TTF_VENDORED=ON -GNinja', msvc: 1, shared: 1, static: 0 }
+        - { name: Windows (MSVC+CMake),         os: windows-latest, shell: sh,   cmake: '-DPerl_ROOT=C:/Strawberry/perl/bin/ -DSDLTTF_VENDORED=ON -GNinja', msvc: 1, shared: 1, static: 0 }
         - { name: Windows (mingw64+CMake),      os: windows-latest, shell: 'msys2 {0}', msystem: mingw64, msys-env: mingw-w64-x86_64, shared: 1, static: 0,
-            cmake: '-DSDL3TTF_VENDORED=OFF -G "Ninja Multi-Config"' }
-        - { name: Linux,                        os: ubuntu-20.04,   shell: sh,   cmake: '-DSDL3TTF_VENDORED=ON -GNinja', shared: 1, static: 0 }
+            cmake: '-DSDLTTF_VENDORED=OFF -G "Ninja Multi-Config"' }
+        - { name: Linux,                        os: ubuntu-20.04,   shell: sh,   cmake: '-DSDLTTF_VENDORED=ON -GNinja', shared: 1, static: 0 }
         - { name: 'Linux (static)',             os: ubuntu-20.04,   shell: sh,   cmake: '-GNinja -DBUILD_SHARED_LIBS=OFF', shared: 0, static: 1 }
-        - { name: Macos,                        os: macos-latest,   shell: sh,   cmake: '-DSDL3TTF_VENDORED=ON -GNinja', shared: 1, static: 0 }
+        - { name: Macos,                        os: macos-latest,   shell: sh,   cmake: '-DSDLTTF_VENDORED=ON -GNinja', shared: 1, static: 0 }
 
     steps:
     - uses: ilammy/msvc-dev-cmd@v1
@@ -89,12 +89,12 @@ jobs:
       run: |
         cmake -B build-cmake \
           -DBUILD_SHARED_LIBS=ON \
-          -DSDL3TTF_HARFBUZZ=ON \
-          -DSDL3TTF_SAMPLES=ON \
-          -DSDL3TTF_WERROR=ON \
+          -DSDLTTF_HARFBUZZ=ON \
+          -DSDLTTF_SAMPLES=ON \
+          -DSDLTTF_WERROR=ON \
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           -DCMAKE_BUILD_TYPE=Release \
-          -DSDL3TTF_INSTALL_MAN=ON \
+          -DSDLTTF_INSTALL_MAN=ON \
           -DCMAKE_INSTALL_PREFIX=prefix_cmake \
           ${{ matrix.platform.cmake }}
     - name: Build
