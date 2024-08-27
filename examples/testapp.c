@@ -631,7 +631,7 @@ int main(void)
     T_min  = SDL_min(T_min, T2 - T1);                                                   \
 
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
        quit("SDL init failed");
     }
 

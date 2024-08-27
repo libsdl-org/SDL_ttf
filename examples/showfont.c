@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
     }
 
     /* Create a window */
-    if (SDL_CreateWindowAndRenderer("showfont demo", WIDTH, HEIGHT, 0, &window, &renderer) < 0) {
+    if (!SDL_CreateWindowAndRenderer("showfont demo", WIDTH, HEIGHT, 0, &window, &renderer)) {
         SDL_Log("SDL_CreateWindowAndRenderer() failed: %s\n", SDL_GetError());
         cleanup(2);
     }
