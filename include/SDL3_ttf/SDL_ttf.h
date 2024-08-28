@@ -705,7 +705,8 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *f
  *
  * \param font the font to query.
  * \param ch the character code to check.
- * \returns SDL_TRUE if font provides a glyph for this character, SDL_FALSE if not.
+ * \returns SDL_TRUE if font provides a glyph for this character, SDL_FALSE if
+ *          not.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -723,7 +724,8 @@ extern SDL_DECLSPEC SDL_bool SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint16 
  *
  * \param font the font to query.
  * \param ch the character code to check.
- * \returns SDL_TRUE if font provides a glyph for this character, SDL_FALSE if not.
+ * \returns SDL_TRUE if font provides a glyph for this character, SDL_FALSE if
+ *          not.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
