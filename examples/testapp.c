@@ -635,7 +635,7 @@ int main(void)
        quit("SDL init failed");
     }
 
-    if (TTF_Init() < 0) {
+    if (!TTF_Init()) {
        SDL_Quit();
        quit("SDL_ttf init failed");
     }
@@ -898,7 +898,7 @@ int main(void)
              }
           }
 #endif
-          if (TTF_SizeUTF8(font, text, &w, &h) < 0) {
+          if (!TTF_SizeUTF8(font, text, &w, &h)) {
              SDL_Log("size failed");
           }
           if (w == 0) {

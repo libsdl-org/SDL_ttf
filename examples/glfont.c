@@ -266,7 +266,7 @@ int main(int argc, char *argv[])
     }
 
     /* Initialize the TTF library */
-    if (TTF_Init() < 0) {
+    if (!TTF_Init()) {
         fprintf(stderr, "Couldn't initialize TTF: %s\n",SDL_GetError());
         SDL_Quit();
         return(2);

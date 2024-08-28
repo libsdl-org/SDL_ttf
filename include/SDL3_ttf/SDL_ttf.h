@@ -132,7 +132,7 @@ typedef struct TTF_Font TTF_Font;
  *
  * You must successfully call this function before it is safe to call any
  * other function in this library, with one exception: a human-readable error
- * message can be retrieved from TTF_GetError() if this function fails.
+ * message can be retrieved from SDL_GetError() if this function fails.
  *
  * SDL must be initialized before calls to functions in this library, because
  * this library uses utility functions from the SDL library.
@@ -141,13 +141,14 @@ typedef struct TTF_Font TTF_Font;
  * calls, and decrements it on each call to TTF_Quit, so you must pair your
  * init and quit calls.
  *
- * \returns 0 on success, -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_Quit
  */
-extern SDL_DECLSPEC int SDLCALL TTF_Init(void);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_Init(void);
 
 /**
  * Create a font from a file, using a specified point size.
@@ -368,11 +369,12 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPIIO(SDL_IOStream *src,
  *
  * \param font the font to resize.
  * \param ptsize the new point size.
- * \returns 0 if successful, -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
 
 /**
  * Set font size dynamically with target resolutions (in DPI).
@@ -383,11 +385,12 @@ extern SDL_DECLSPEC int SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
  * \param ptsize the new point size.
  * \param hdpi the target horizontal DPI.
  * \param vdpi the target vertical DPI.
- * \returns 0 if successful, -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsigned int hdpi, unsigned int vdpi);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsigned int hdpi, unsigned int vdpi);
 
 /**
  * Font style flags
@@ -606,17 +609,17 @@ extern SDL_DECLSPEC int SDLCALL TTF_FontDescent(const TTF_Font *font);
 extern SDL_DECLSPEC int SDLCALL TTF_FontLineSkip(const TTF_Font *font);
 
 /**
- * Query whether or not kerning is allowed for a font.
+ * Query whether or not kerning is enabled for a font.
  *
  * \param font the font to query.
- * \returns non-zero if kerning is enabled, zero otherwise.
+ * \returns SDL_TRUE if kerning is enabled, SDL_FALSE otherwise.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_GetFontKerning(const TTF_Font *font);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_GetFontKerning(const TTF_Font *font);
 
 /**
- * Set if kerning is allowed for a font.
+ * Set if kerning is enabled for a font.
  *
  * Newly-opened fonts default to allowing kerning. This is generally a good
  * policy unless you have a strong reason to disable it, as it tends to
@@ -624,11 +627,11 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontKerning(const TTF_Font *font);
  * the word `kerning` as something that looks like `keming` for example).
  *
  * \param font the font to set kerning on.
- * \param allowed non-zero to allow kerning, zero to disallow.
+ * \param enabled SDL_TRUE to enable kerning, SDL_FALSE to disable.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC void SDLCALL TTF_SetFontKerning(TTF_Font *font, int allowed);
+extern SDL_DECLSPEC void SDLCALL TTF_SetFontKerning(TTF_Font *font, SDL_bool enabled);
 
 /**
  * Query the number of faces of a font.
@@ -650,11 +653,11 @@ extern SDL_DECLSPEC long SDLCALL TTF_FontFaces(const TTF_Font *font);
  * are more likely to not be fixed-width in most cases.
  *
  * \param font the font to query.
- * \returns non-zero if fixed-width, zero if not.
+ * \returns SDL_TRUE if fixed-width, SDL_FALSE if not.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_FontFaceIsFixedWidth(const TTF_Font *font);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_FontFaceIsFixedWidth(const TTF_Font *font);
 
 /**
  * Query a font's family name.
@@ -702,13 +705,13 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *f
  *
  * \param font the font to query.
  * \param ch the character code to check.
- * \returns non-zero if font provides a glyph for this character, zero if not.
+ * \returns SDL_TRUE if font provides a glyph for this character, SDL_FALSE if not.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GlyphIsProvided32
  */
-extern SDL_DECLSPEC int SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint16 ch);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint16 ch);
 
 /**
  * Check whether a glyph is provided by the font for a 32-bit codepoint.
@@ -720,11 +723,11 @@ extern SDL_DECLSPEC int SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint16 ch);
  *
  * \param font the font to query.
  * \param ch the character code to check.
- * \returns non-zero if font provides a glyph for this character, zero if not.
+ * \returns SDL_TRUE if font provides a glyph for this character, SDL_FALSE if not.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_GlyphIsProvided32(TTF_Font *font, Uint32 ch);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_GlyphIsProvided32(TTF_Font *font, Uint32 ch);
 
 /**
  * Query the metrics (dimensions) of a font's 16-bit glyph.
@@ -744,12 +747,14 @@ extern SDL_DECLSPEC int SDLCALL TTF_GlyphIsProvided32(TTF_Font *font, Uint32 ch)
  *
  * \param font the font to query.
  * \param ch the character code to check.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GlyphMetrics32
  */
-extern SDL_DECLSPEC int SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
                         int *minx, int *maxx,
                         int *miny, int *maxy, int *advance);
 
@@ -767,10 +772,12 @@ extern SDL_DECLSPEC int SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
  *
  * \param font the font to query.
  * \param ch the character code to check.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
                         int *minx, int *maxx,
                         int *miny, int *maxy, int *advance);
 
@@ -791,14 +798,15 @@ extern SDL_DECLSPEC int SDLCALL TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
  * \param text text to calculate, in Latin1 encoding.
  * \param w will be filled with width, in pixels, on return.
  * \param h will be filled with height, in pixels, on return.
- * \returns 0 if successful, -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SizeUTF8
  * \sa TTF_SizeUNICODE
  */
-extern SDL_DECLSPEC int SDLCALL TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h);
 
 /**
  * Calculate the dimensions of a rendered string of UTF-8 text.
@@ -812,13 +820,14 @@ extern SDL_DECLSPEC int SDLCALL TTF_SizeText(TTF_Font *font, const char *text, i
  * \param text text to calculate, in UTF-8 encoding.
  * \param w will be filled with width, in pixels, on return.
  * \param h will be filled with height, in pixels, on return.
- * \returns 0 if successful, -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SizeUNICODE
  */
-extern SDL_DECLSPEC int SDLCALL TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h);
 
 /**
  * Calculate the dimensions of a rendered string of UCS-2 text.
@@ -837,13 +846,14 @@ extern SDL_DECLSPEC int SDLCALL TTF_SizeUTF8(TTF_Font *font, const char *text, i
  * \param text text to calculate, in UCS-2 encoding.
  * \param w will be filled with width, in pixels, on return.
  * \param h will be filled with height, in pixels, on return.
- * \returns 0 if successful, -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SizeUTF8
  */
-extern SDL_DECLSPEC int SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h);
 
 /**
  * Calculate how much of a Latin1 string will fit in a given width.
@@ -864,7 +874,8 @@ extern SDL_DECLSPEC int SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *te
  * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
  *              rendered.
- * \returns 0 if successful, -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -872,7 +883,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *te
  * \sa TTF_MeasureUTF8
  * \sa TTF_MeasureUNICODE
  */
-extern SDL_DECLSPEC int SDLCALL TTF_MeasureText(TTF_Font *font, const char *text, int measure_width, int *extent, int *count);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_MeasureText(TTF_Font *font, const char *text, int measure_width, int *extent, int *count);
 
 /**
  * Calculate how much of a UTF-8 string will fit in a given width.
@@ -888,7 +899,8 @@ extern SDL_DECLSPEC int SDLCALL TTF_MeasureText(TTF_Font *font, const char *text
  * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
  *              rendered.
- * \returns 0 if successful, -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -896,7 +908,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_MeasureText(TTF_Font *font, const char *text
  * \sa TTF_MeasureUTF8
  * \sa TTF_MeasureUNICODE
  */
-extern SDL_DECLSPEC int SDLCALL TTF_MeasureUTF8(TTF_Font *font, const char *text, int measure_width, int *extent, int *count);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_MeasureUTF8(TTF_Font *font, const char *text, int measure_width, int *extent, int *count);
 
 /**
  * Calculate how much of a UCS-2 string will fit in a given width.
@@ -917,7 +929,8 @@ extern SDL_DECLSPEC int SDLCALL TTF_MeasureUTF8(TTF_Font *font, const char *text
  * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
  *              rendered.
- * \returns 0 if successful, -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -925,7 +938,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_MeasureUTF8(TTF_Font *font, const char *text
  * \sa TTF_MeasureUTF8
  * \sa TTF_MeasureUNICODE
  */
-extern SDL_DECLSPEC int SDLCALL TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int measure_width, int *extent, int *count);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int measure_width, int *extent, int *count);
 
 /**
  * Render Latin1 text at fast quality to a new 8-bit surface.
@@ -2115,15 +2128,15 @@ extern SDL_DECLSPEC int TTF_GetFontKerningSizeGlyphs32(TTF_Font *font, Uint32 pr
  * This clears already-generated glyphs, if any, from the cache.
  *
  * \param font the font to set SDF support on.
- * \param on_off SDL_TRUE to enable SDF, SDL_FALSE to disable.
- *
- * \returns 0 on success, -1 on error.
+ * \param enabled SDL_TRUE to enable SDF, SDL_FALSE to disable.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GetFontSDF
  */
-extern SDL_DECLSPEC int TTF_SetFontSDF(TTF_Font *font, SDL_bool on_off);
+extern SDL_DECLSPEC SDL_bool TTF_SetFontSDF(TTF_Font *font, SDL_bool enabled);
 
 /**
  * Query whether Signed Distance Field rendering is enabled for a font.
@@ -2137,20 +2150,6 @@ extern SDL_DECLSPEC int TTF_SetFontSDF(TTF_Font *font, SDL_bool on_off);
  * \sa TTF_SetFontSDF
  */
 extern SDL_DECLSPEC SDL_bool TTF_GetFontSDF(const TTF_Font *font);
-
-/**
- * Report SDL_ttf errors
- *
- * \sa TTF_GetError
- */
-#define TTF_SetError    SDL_SetError
-
-/**
- * Get last SDL_ttf error
- *
- * \sa TTF_SetError
- */
-#define TTF_GetError    SDL_GetError
 
 /**
  * Direction flags
@@ -2179,11 +2178,12 @@ typedef enum TTF_Direction
  *
  * \param font the font to specify a direction for.
  * \param direction the new direction for text to flow.
- * \returns 0 on success, or -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction);
 
 /**
  * Set script to be used for text shaping by a font.
@@ -2195,11 +2195,12 @@ extern SDL_DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Directi
  *
  * \param font the font to specify a script name for.
  * \param script null-terminated string of exactly 4 characters.
- * \returns 0 on success, or -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char *script);
+extern SDL_DECLSPEC SDL_bool SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char *script);
 
 /**
  * Set language to be used for text shaping by a font.
@@ -2208,11 +2209,12 @@ extern SDL_DECLSPEC int SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char
  *
  * \param font the font to specify a language for.
  * \param language_bcp47 a null-terminated string containing the desired language's BCP47 code. Or null to reset the value.
- * \returns 0 on success, or -1 on error.
+ * \returns SDL_TRUE on success or SDL_FALSE on failure; call SDL_GetError()
+ *          for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
+extern SDL_DECLSPEC SDL_bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
 
 /**
  * Query whether a font is scalable or not.
