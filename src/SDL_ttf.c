@@ -1422,14 +1422,14 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
      */
     if (width > SDL_MAX_SINT32 ||
         height > SDL_MAX_SINT32 ||
-        SDL_size_add_overflow(width, alignment, &pitch) ||
-        SDL_size_mul_overflow(pitch, bytes_per_pixel, &pitch) ||
+        !SDL_size_add_check_overflow(width, alignment, &pitch) ||
+        !SDL_size_mul_check_overflow(pitch, bytes_per_pixel, &pitch) ||
         pitch > SDL_MAX_SINT32) {
         return NULL;
     }
     pitch &= ~alignment;
 
-    if (SDL_size_mul_overflow(height, pitch, &size)) {
+    if (!SDL_size_mul_check_overflow(height, pitch, &size)) {
         /* Overflow... */
         return NULL;
     }
