@@ -141,8 +141,8 @@ typedef struct TTF_Font TTF_Font;
  * calls, and decrements it on each call to TTF_Quit, so you must pair your
  * init and quit calls.
  *
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -200,15 +200,14 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int p
  * size becomes the index of choosing which size. If the value is too high,
  * the last indexed size will be the default.
  *
- * If `closeio` is true, `src` will be automatically closed once the font
- * is closed. Otherwise you should close `src` yourself after closing the
- * font.
+ * If `closeio` is true, `src` will be automatically closed once the font is
+ * closed. Otherwise you should close `src` yourself after closing the font.
  *
  * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
  *
  * \param src an SDL_IOStream to provide a font file's data.
- * \param closeio true to close `src` when the font is closed, false
- *                to leave it open.
+ * \param closeio true to close `src` when the font is closed, false to leave
+ *                it open.
  * \param ptsize point size to use for the newly-opened font.
  * \returns a valid TTF_Font, or NULL on error.
  *
@@ -225,9 +224,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  * size becomes the index of choosing which size. If the value is too high,
  * the last indexed size will be the default.
  *
- * If `closeio` is true `src` will be automatically closed once the font
- * is closed. Otherwise you should close `src` yourself after closing the
- * font.
+ * If `closeio` is true `src` will be automatically closed once the font is
+ * closed. Otherwise you should close `src` yourself after closing the font.
  *
  * Some fonts have multiple "faces" included. The index specifies which face
  * to use from the font file. Font files with only one face should specify
@@ -236,8 +234,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
  *
  * \param src an SDL_IOStream to provide a font file's data.
- * \param closeio true to close `src` when the font is closed, false
- *                to leave it open.
+ * \param closeio true to close `src` when the font is closed, false to leave
+ *                it open.
  * \param ptsize point size to use for the newly-opened font.
  * \param index index of the face in the font file.
  * \returns a valid TTF_Font, or NULL on error.
@@ -308,15 +306,14 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPI(const char *file, in
  * size becomes the index of choosing which size. If the value is too high,
  * the last indexed size will be the default.
  *
- * If `closeio` is true `src` will be automatically closed once the font
- * is closed. Otherwise you should close `src` yourself after closing the
- * font.
+ * If `closeio` is true `src` will be automatically closed once the font is
+ * closed. Otherwise you should close `src` yourself after closing the font.
  *
  * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
  *
  * \param src an SDL_IOStream to provide a font file's data.
- * \param closeio true to close `src` when the font is closed, false
- *                to leave it open.
+ * \param closeio true to close `src` when the font is closed, false to leave
+ *                it open.
  * \param ptsize point size to use for the newly-opened font.
  * \param hdpi the target horizontal DPI.
  * \param vdpi the target vertical DPI.
@@ -337,9 +334,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontDPIIO(SDL_IOStream *src, bool
  * size becomes the index of choosing which size. If the value is too high,
  * the last indexed size will be the default.
  *
- * If `closeio` is true `src` will be automatically closed once the font
- * is closed. Otherwise you should close `src` yourself after closing the
- * font.
+ * If `closeio` is true `src` will be automatically closed once the font is
+ * closed. Otherwise you should close `src` yourself after closing the font.
  *
  * Some fonts have multiple "faces" included. The index specifies which face
  * to use from the font file. Font files with only one face should specify
@@ -348,8 +344,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontDPIIO(SDL_IOStream *src, bool
  * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
  *
  * \param src an SDL_IOStream to provide a font file's data.
- * \param closeio true to close `src` when the font is closed, false
- *                to leave it open.
+ * \param closeio true to close `src` when the font is closed, false to leave
+ *                it open.
  * \param ptsize point size to use for the newly-opened font.
  * \param index index of the face in the font file.
  * \param hdpi the target horizontal DPI.
@@ -369,8 +365,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPIIO(SDL_IOStream *src,
  *
  * \param font the font to resize.
  * \param ptsize the new point size.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -385,8 +381,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
  * \param ptsize the new point size.
  * \param hdpi the target horizontal DPI.
  * \param vdpi the target vertical DPI.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -705,8 +701,7 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *f
  *
  * \param font the font to query.
  * \param ch the character code to check.
- * \returns true if font provides a glyph for this character, false if
- *          not.
+ * \returns true if font provides a glyph for this character, false if not.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -724,8 +719,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint16 ch);
  *
  * \param font the font to query.
  * \param ch the character code to check.
- * \returns true if font provides a glyph for this character, false if
- *          not.
+ * \returns true if font provides a glyph for this character, false if not.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -749,8 +743,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GlyphIsProvided32(TTF_Font *font, Uint32 ch
  *
  * \param font the font to query.
  * \param ch the character code to check.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -774,8 +768,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
  *
  * \param font the font to query.
  * \param ch the character code to check.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -800,8 +794,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
  * \param text text to calculate, in Latin1 encoding.
  * \param w will be filled with width, in pixels, on return.
  * \param h will be filled with height, in pixels, on return.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -822,8 +816,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SizeText(TTF_Font *font, const char *text, 
  * \param text text to calculate, in UTF-8 encoding.
  * \param w will be filled with width, in pixels, on return.
  * \param h will be filled with height, in pixels, on return.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -848,8 +842,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SizeUTF8(TTF_Font *font, const char *text, 
  * \param text text to calculate, in UCS-2 encoding.
  * \param w will be filled with width, in pixels, on return.
  * \param h will be filled with height, in pixels, on return.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -876,8 +870,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *t
  * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
  *              rendered.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -901,8 +895,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_MeasureText(TTF_Font *font, const char *tex
  * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
  *              rendered.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -931,8 +925,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_MeasureUTF8(TTF_Font *font, const char *tex
  * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
  *              rendered.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -2180,8 +2174,8 @@ typedef enum TTF_Direction
  *
  * \param font the font to specify a direction for.
  * \param direction the new direction for text to flow.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -2197,8 +2191,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direct
  *
  * \param font the font to specify a script name for.
  * \param script null-terminated string of exactly 4 characters.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
