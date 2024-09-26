@@ -570,11 +570,18 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint32 ch);
  *
  * \param font the font to query.
  * \param ch the character code to check.
- * \param minx a pointer filled in with the minimum x coordinate of the glyph from the left edge of its bounding box. This value may be negative.
- * \param maxx a pointer filled in with the maximum x coordinate of the glyph from the left edge of its bounding box.
- * \param miny a pointer filled in with the minimum y coordinate of the glyph from the bottom edge of its bounding box. This value may be negative.
- * \param maxy a pointer filled in with the maximum y coordinate of the glyph from the bottom edge of its bounding box.
- * \param advance a pointer filled in with the distance to the next glyph from the left edge of this glyph's bounding box.
+ * \param minx a pointer filled in with the minimum x coordinate of the glyph
+ *             from the left edge of its bounding box. This value may be
+ *             negative.
+ * \param maxx a pointer filled in with the maximum x coordinate of the glyph
+ *             from the left edge of its bounding box.
+ * \param miny a pointer filled in with the minimum y coordinate of the glyph
+ *             from the bottom edge of its bounding box. This value may be
+ *             negative.
+ * \param maxy a pointer filled in with the maximum y coordinate of the glyph
+ *             from the bottom edge of its bounding box.
+ * \param advance a pointer filled in with the distance to the next glyph from
+ *                the left edge of this glyph's bounding box.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
@@ -680,7 +687,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font, c
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
  * \param fg the foreground color for the text.
- * \param wrapLength the maximum width of the text surface or 0 to wrap on newline characters.
+ * \param wrapLength the maximum width of the text surface or 0 to wrap on
+ *                   newline characters.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
@@ -775,7 +783,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font, 
  *               text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
- * \param wrapLength the maximum width of the text surface or 0 to wrap on newline characters.
+ * \param wrapLength the maximum width of the text surface or 0 to wrap on
+ *                   newline characters.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
@@ -868,7 +877,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
  * \param fg the foreground color for the text.
- * \param wrapLength the maximum width of the text surface or 0 to wrap on newline characters.
+ * \param wrapLength the maximum width of the text surface or 0 to wrap on
+ *                   newline characters.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
@@ -962,7 +972,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, con
  *               text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
- * \param wrapLength the maximum width of the text surface or 0 to wrap on newline characters.
+ * \param wrapLength the maximum width of the text surface or 0 to wrap on
+ *                   newline characters.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
