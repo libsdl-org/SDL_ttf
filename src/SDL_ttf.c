@@ -3335,7 +3335,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     Uint32 color;
     int width, height;
     SDL_Surface *textbuf = NULL;
-    Uint8 *utf8_alloc;
+    Uint8 *utf8_alloc = NULL;
 
     int i, numLines, rowHeight, lineskip;
     char **strLines = NULL, *text_cpy;

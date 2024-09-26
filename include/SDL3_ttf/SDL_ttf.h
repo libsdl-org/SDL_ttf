@@ -553,11 +553,6 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *f
 /**
  * Check whether a glyph is provided by the font for a 32-bit codepoint.
  *
- * This is the same as TTF_GlyphIsProvided(), but takes a 32-bit character
- * instead of 16-bit, and thus can query a larger range. If you are sure
- * you'll have an SDL_ttf that's version 2.0.18 or newer, there's no reason
- * not to use this function exclusively.
- *
  * \param font the font to query.
  * \param ch the character code to check.
  * \returns true if font provides a glyph for this character, false if not.
@@ -573,13 +568,13 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint32 ch);
  *
  * https://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
  *
- * This is the same as TTF_GlyphMetrics(), but takes a 32-bit character
- * instead of 16-bit, and thus can query a larger range. If you are sure
- * you'll have an SDL_ttf that's version 2.0.18 or newer, there's no reason
- * not to use this function exclusively.
- *
  * \param font the font to query.
  * \param ch the character code to check.
+ * \param minx a pointer filled in with the minimum x coordinate of the glyph from the left edge of its bounding box. This value may be negative.
+ * \param maxx a pointer filled in with the maximum x coordinate of the glyph from the left edge of its bounding box.
+ * \param miny a pointer filled in with the minimum y coordinate of the glyph from the bottom edge of its bounding box. This value may be negative.
+ * \param maxy a pointer filled in with the maximum y coordinate of the glyph from the bottom edge of its bounding box.
+ * \param advance a pointer filled in with the distance to the next glyph from the left edge of this glyph's bounding box.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
@@ -685,6 +680,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font, c
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
  * \param fg the foreground color for the text.
+ * \param wrapLength the maximum width of the text surface or 0 to wrap on newline characters.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
@@ -778,6 +774,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font, 
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
  * \param fg the foreground color for the text.
+ * \param bg the background color for the text.
+ * \param wrapLength the maximum width of the text surface or 0 to wrap on newline characters.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
@@ -806,6 +804,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font
  * \param font the font to render with.
  * \param ch the character to render.
  * \param fg the foreground color for the text.
+ * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
@@ -869,6 +868,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
  * \param fg the foreground color for the text.
+ * \param wrapLength the maximum width of the text surface or 0 to wrap on newline characters.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
@@ -962,6 +962,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, con
  *               text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
+ * \param wrapLength the maximum width of the text surface or 0 to wrap on newline characters.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
@@ -1073,11 +1074,6 @@ extern SDL_DECLSPEC int SDLCALL TTF_WasInit(void);
 
 /**
  * Query the kerning size of two 32-bit glyphs.
- *
- * This is the same as TTF_GetFontKerningSizeGlyphs(), but takes 32-bit
- * characters instead of 16-bit, and thus can manage a larger range. If
- * you are sure you'll have an SDL_ttf that's version 2.0.18 or newer,
- * there's no reason not to use this function exclusively.
  *
  * \param font the font to query.
  * \param previous_ch the previous character's code, 32 bits.
