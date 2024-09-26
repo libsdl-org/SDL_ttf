@@ -143,7 +143,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_Init(void);
  *
  * \param file path to font file.
  * \param ptsize point size to use for the newly-opened font.
- * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more information.
+ * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -167,7 +168,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFont(const char *file, int ptsize
  * \param closeio true to close `src` when the font is closed, false to leave
  *                it open.
  * \param ptsize point size to use for the newly-opened font.
- * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more information.
+ * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -180,16 +182,30 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  *
  * These are the supported properties:
  *
- * - `TTF_PROP_FONT_FILENAME_STRING`: the font file to open, if an SDL_IOStream isn't being used. This is required if `TTF_PROP_FONT_IOSTREAM_POINTER` isn't set.
- * - `TTF_PROP_FONT_IOSTREAM_POINTER`: an SDL_IOStream containing the font to be opened. This should not be closed until the font is closed. This is required if `TTF_PROP_FONT_FILENAME_STRING` isn't set.
- * - `TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the font should also close the associated SDL_IOStream.
- * - `TTF_PROP_FONT_SIZE_NUMBER`: the point size of the font. Some .fon fonts will have several sizes embedded in the file, so the point size becomes the index of choosing which size. If the value is too high, the last indexed size will be the default.
- * - `TTF_PROP_FONT_FACE_NUMBER`: the face index of the font, if the font contains multiple font faces.
- * - `TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER`: the horizontal DPI to use for font rendering, defaults to `TTF_PROP_FONT_VERTICAL_DPI_NUMBER` if set, or 72 otherwise.
- * - `TTF_PROP_FONT_VERTICAL_DPI_NUMBER`: the vertical DPI to use for font rendering, defaults to `TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER` if set, or 72 otherwise.
+ * - `TTF_PROP_FONT_FILENAME_STRING`: the font file to open, if an
+ *   SDL_IOStream isn't being used. This is required if
+ *   `TTF_PROP_FONT_IOSTREAM_POINTER` isn't set.
+ * - `TTF_PROP_FONT_IOSTREAM_POINTER`: an SDL_IOStream containing the font to
+ *   be opened. This should not be closed until the font is closed. This is
+ *   required if `TTF_PROP_FONT_FILENAME_STRING` isn't set.
+ * - `TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the font
+ *   should also close the associated SDL_IOStream.
+ * - `TTF_PROP_FONT_SIZE_NUMBER`: the point size of the font. Some .fon fonts
+ *   will have several sizes embedded in the file, so the point size becomes
+ *   the index of choosing which size. If the value is too high, the last
+ *   indexed size will be the default.
+ * - `TTF_PROP_FONT_FACE_NUMBER`: the face index of the font, if the font
+ *   contains multiple font faces.
+ * - `TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER`: the horizontal DPI to use for font
+ *   rendering, defaults to `TTF_PROP_FONT_VERTICAL_DPI_NUMBER` if set, or 72
+ *   otherwise.
+ * - `TTF_PROP_FONT_VERTICAL_DPI_NUMBER`: the vertical DPI to use for font
+ *   rendering, defaults to `TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER` if set, or
+ *   72 otherwise.
  *
  * \param props the properties to use.
- * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more information.
+ * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more
+ *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -581,7 +597,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint32 ch, int
  *
  * \param font the font to query.
  * \param text text to calculate, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated text.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
  * \param w will be filled with width, in pixels, on return.
  * \param h will be filled with height, in pixels, on return.
  * \returns true on success or false on failure; call SDL_GetError() for more
@@ -601,7 +618,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SizeText(TTF_Font *font, const char *text, 
  *
  * \param font the font to query.
  * \param text text to calculate, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated text.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
  * \param measure_width maximum width, in pixels, available for the string.
  * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
@@ -632,7 +650,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_MeasureText(TTF_Font *font, const char *tex
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated text.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
@@ -663,7 +682,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font, c
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated text.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
@@ -722,7 +742,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font, 
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated text.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
@@ -754,7 +775,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font, 
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated text.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
@@ -813,7 +835,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated text.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
@@ -843,7 +866,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated text.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
@@ -901,7 +925,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated text.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
@@ -933,7 +958,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, con
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated text.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
