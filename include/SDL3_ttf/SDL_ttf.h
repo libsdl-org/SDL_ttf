@@ -143,37 +143,13 @@ extern SDL_DECLSPEC bool SDLCALL TTF_Init(void);
  *
  * \param file path to font file.
  * \param ptsize point size to use for the newly-opened font.
- * \returns a valid TTF_Font, or NULL on error.
+ * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CloseFont
  */
 extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFont(const char *file, int ptsize);
-
-/**
- * Create a font from a file, using a specified face index.
- *
- * Some .fon fonts will have several sizes embedded in the file, so the point
- * size becomes the index of choosing which size. If the value is too high,
- * the last indexed size will be the default.
- *
- * Some fonts have multiple "faces" included. The index specifies which face
- * to use from the font file. Font files with only one face should specify
- * zero for the index.
- *
- * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
- *
- * \param file path to font file.
- * \param ptsize point size to use for the newly-opened font.
- * \param index index of the face in the font file.
- * \returns a valid TTF_Font, or NULL on error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_CloseFont
- */
-extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int ptsize, long index);
 
 /**
  * Create a font from an SDL_IOStream, using a specified point size.
@@ -191,7 +167,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int p
  * \param closeio true to close `src` when the font is closed, false to leave
  *                it open.
  * \param ptsize point size to use for the newly-opened font.
- * \returns a valid TTF_Font, or NULL on error.
+ * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -200,145 +176,34 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndex(const char *file, int p
 extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool closeio, int ptsize);
 
 /**
- * Create a font from an SDL_IOStream, using a specified face index.
+ * Create a font with the specified properties.
  *
- * Some .fon fonts will have several sizes embedded in the file, so the point
- * size becomes the index of choosing which size. If the value is too high,
- * the last indexed size will be the default.
+ * These are the supported properties:
  *
- * If `closeio` is true `src` will be automatically closed once the font is
- * closed. Otherwise you should close `src` yourself after closing the font.
+ * - `TTF_PROP_FONT_FILENAME_STRING`: the font file to open, if an SDL_IOStream isn't being used. This is required if `TTF_PROP_FONT_IOSTREAM_POINTER` isn't set.
+ * - `TTF_PROP_FONT_IOSTREAM_POINTER`: an SDL_IOStream containing the font to be opened. This should not be closed until the font is closed. This is required if `TTF_PROP_FONT_FILENAME_STRING` isn't set.
+ * - `TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the font should also close the associated SDL_IOStream.
+ * - `TTF_PROP_FONT_SIZE_NUMBER`: the point size of the font. Some .fon fonts will have several sizes embedded in the file, so the point size becomes the index of choosing which size. If the value is too high, the last indexed size will be the default.
+ * - `TTF_PROP_FONT_FACE_NUMBER`: the face index of the font, if the font contains multiple font faces.
+ * - `TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER`: the horizontal DPI to use for font rendering, defaults to `TTF_PROP_FONT_VERTICAL_DPI_NUMBER` if set, or 72 otherwise.
+ * - `TTF_PROP_FONT_VERTICAL_DPI_NUMBER`: the vertical DPI to use for font rendering, defaults to `TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER` if set, or 72 otherwise.
  *
- * Some fonts have multiple "faces" included. The index specifies which face
- * to use from the font file. Font files with only one face should specify
- * zero for the index.
- *
- * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
- *
- * \param src an SDL_IOStream to provide a font file's data.
- * \param closeio true to close `src` when the font is closed, false to leave
- *                it open.
- * \param ptsize point size to use for the newly-opened font.
- * \param index index of the face in the font file.
- * \returns a valid TTF_Font, or NULL on error.
+ * \param props the properties to use.
+ * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CloseFont
  */
-extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexIO(SDL_IOStream *src, bool closeio, int ptsize, long index);
+extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_PropertiesID props);
 
-/**
- * Create a font from a file, using target resolutions (in DPI).
- *
- * DPI scaling only applies to scalable fonts (e.g. TrueType).
- *
- * Some .fon fonts will have several sizes embedded in the file, so the point
- * size becomes the index of choosing which size. If the value is too high,
- * the last indexed size will be the default.
- *
- * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
- *
- * \param file path to font file.
- * \param ptsize point size to use for the newly-opened font.
- * \param hdpi the target horizontal DPI.
- * \param vdpi the target vertical DPI.
- * \returns a valid TTF_Font, or NULL on error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_CloseFont
- */
-extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontDPI(const char *file, int ptsize, unsigned int hdpi, unsigned int vdpi);
-
-/**
- * Create a font from a file, using target resolutions (in DPI).
- *
- * DPI scaling only applies to scalable fonts (e.g. TrueType).
- *
- * Some .fon fonts will have several sizes embedded in the file, so the point
- * size becomes the index of choosing which size. If the value is too high,
- * the last indexed size will be the default.
- *
- * Some fonts have multiple "faces" included. The index specifies which face
- * to use from the font file. Font files with only one face should specify
- * zero for the index.
- *
- * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
- *
- * \param file path to font file.
- * \param ptsize point size to use for the newly-opened font.
- * \param index index of the face in the font file.
- * \param hdpi the target horizontal DPI.
- * \param vdpi the target vertical DPI.
- * \returns a valid TTF_Font, or NULL on error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_CloseFont
- */
-extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPI(const char *file, int ptsize, long index, unsigned int hdpi, unsigned int vdpi);
-
-/**
- * Opens a font from an SDL_IOStream with target resolutions (in DPI).
- *
- * DPI scaling only applies to scalable fonts (e.g. TrueType).
- *
- * Some .fon fonts will have several sizes embedded in the file, so the point
- * size becomes the index of choosing which size. If the value is too high,
- * the last indexed size will be the default.
- *
- * If `closeio` is true `src` will be automatically closed once the font is
- * closed. Otherwise you should close `src` yourself after closing the font.
- *
- * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
- *
- * \param src an SDL_IOStream to provide a font file's data.
- * \param closeio true to close `src` when the font is closed, false to leave
- *                it open.
- * \param ptsize point size to use for the newly-opened font.
- * \param hdpi the target horizontal DPI.
- * \param vdpi the target vertical DPI.
- * \returns a valid TTF_Font, or NULL on error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_CloseFont
- */
-extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontDPIIO(SDL_IOStream *src, bool closeio, int ptsize, unsigned int hdpi, unsigned int vdpi);
-
-/**
- * Opens a font from an SDL_IOStream with target resolutions (in DPI).
- *
- * DPI scaling only applies to scalable fonts (e.g. TrueType).
- *
- * Some .fon fonts will have several sizes embedded in the file, so the point
- * size becomes the index of choosing which size. If the value is too high,
- * the last indexed size will be the default.
- *
- * If `closeio` is true `src` will be automatically closed once the font is
- * closed. Otherwise you should close `src` yourself after closing the font.
- *
- * Some fonts have multiple "faces" included. The index specifies which face
- * to use from the font file. Font files with only one face should specify
- * zero for the index.
- *
- * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
- *
- * \param src an SDL_IOStream to provide a font file's data.
- * \param closeio true to close `src` when the font is closed, false to leave
- *                it open.
- * \param ptsize point size to use for the newly-opened font.
- * \param index index of the face in the font file.
- * \param hdpi the target horizontal DPI.
- * \param vdpi the target vertical DPI.
- * \returns a valid TTF_Font, or NULL on error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_CloseFont
- */
-extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIndexDPIIO(SDL_IOStream *src, bool closeio, int ptsize, long index, unsigned int hdpi, unsigned int vdpi);
+#define TTF_PROP_FONT_FILENAME_STRING               "SDL_ttf.font.filename"
+#define TTF_PROP_FONT_IOSTREAM_POINTER              "SDL_ttf.font.iostream"
+#define TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN    "SDL_ttf.font.iostream.autoclose"
+#define TTF_PROP_FONT_SIZE_NUMBER                   "SDL_ttf.font.size"
+#define TTF_PROP_FONT_FACE_NUMBER                   "SDL_ttf.font.face"
+#define TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER         "SDL_ttf.font.hdpi"
+#define TTF_PROP_FONT_VERTICAL_DPI_NUMBER           "SDL_ttf.font.vdpi"
 
 /**
  * Set a font's size dynamically.
@@ -1191,7 +1056,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_WasInit(void);
  * \param font the font to query.
  * \param previous_ch the previous character's code, 32 bits.
  * \param ch the current character's code, 32 bits.
- * \returns The kerning size between the two specified characters, in pixels, or -1 on error.
+ * \returns The kerning size between the two specified characters, in pixels, or -1 on failure; call SDL_GetError() for more information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */

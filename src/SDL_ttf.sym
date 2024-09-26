@@ -24,13 +24,8 @@ SDL3_ttf_0.0.0 {
     TTF_IsFontScalable;
     TTF_MeasureText;
     TTF_OpenFont;
-    TTF_OpenFontDPI;
-    TTF_OpenFontDPIIO;
     TTF_OpenFontIO;
-    TTF_OpenFontIndex;
-    TTF_OpenFontIndexDPI;
-    TTF_OpenFontIndexDPIIO;
-    TTF_OpenFontIndexIO;
+    TTF_OpenFontWithProperties;
     TTF_Quit;
     TTF_RenderGlyph_Blended;
     TTF_RenderGlyph_LCD;

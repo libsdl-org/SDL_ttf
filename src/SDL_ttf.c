@@ -1722,8 +1722,15 @@ static unsigned long IOread(
     return SDL_ReadIO(src, buffer, count);
 }
 
-TTF_Font* TTF_OpenFontIndexDPIIO(SDL_IOStream *src, bool closeio, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
+TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
 {
+    const char *file = SDL_GetStringProperty(props, TTF_PROP_FONT_FILENAME_STRING, NULL);
+    SDL_IOStream *src = SDL_GetPointerProperty(props, TTF_PROP_FONT_IOSTREAM_POINTER, NULL);
+    bool closeio = SDL_GetBooleanProperty(props, TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN, false);
+    int ptsize = (int)SDL_GetNumberProperty(props, TTF_PROP_FONT_SIZE_NUMBER, 0);
+    long index = (long)SDL_GetNumberProperty(props, TTF_PROP_FONT_FACE_NUMBER, 0);
+    unsigned int hdpi = (unsigned int)SDL_GetNumberProperty(props, TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER, 0);
+    unsigned int vdpi = (unsigned int)SDL_GetNumberProperty(props, TTF_PROP_FONT_VERTICAL_DPI_NUMBER, 0);
     TTF_Font *font;
     FT_Error error;
     FT_Face face;
@@ -1741,8 +1748,16 @@ TTF_Font* TTF_OpenFontIndexDPIIO(SDL_IOStream *src, bool closeio, int ptsize, lo
     }
 
     if (!src) {
-        SDL_SetError("Passed a NULL font source");
-        return NULL;
+        if (!file) {
+            SDL_SetError("You must set either TTF_PROP_FONT_FILENAME_STRING or TTF_PROP_FONT_IOSTREAM_POINTER");
+            return NULL;
+        }
+
+        src = SDL_IOFromFile(file, "rb");
+        if (!src) {
+            return NULL;
+        }
+        closeio = true;
     }
 
     /* Check to make sure we can seek in this stream */
@@ -1864,6 +1879,33 @@ TTF_Font* TTF_OpenFontIndexDPIIO(SDL_IOStream *src, bool closeio, int ptsize, lo
         TTF_SetFTError("Couldn't set font size", error);
         TTF_CloseFont(font);
         return NULL;
+    }
+    return font;
+}
+
+TTF_Font *TTF_OpenFont(const char *file, int ptsize)
+{
+    TTF_Font *font = NULL;
+    SDL_PropertiesID props = SDL_CreateProperties();
+    if (props) {
+        SDL_SetStringProperty(props, TTF_PROP_FONT_FILENAME_STRING, file);
+        SDL_SetNumberProperty(props, TTF_PROP_FONT_SIZE_NUMBER, ptsize);
+        font = TTF_OpenFontWithProperties(props);
+        SDL_DestroyProperties(props);
+    }
+    return font;
+}
+
+TTF_Font *TTF_OpenFontIO(SDL_IOStream *src, bool closeio, int ptsize)
+{
+    TTF_Font *font = NULL;
+    SDL_PropertiesID props = SDL_CreateProperties();
+    if (props) {
+        SDL_SetPointerProperty(props, TTF_PROP_FONT_IOSTREAM_POINTER, src);
+        SDL_SetBooleanProperty(props, TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN, closeio);
+        SDL_SetNumberProperty(props, TTF_PROP_FONT_SIZE_NUMBER, ptsize);
+        font = TTF_OpenFontWithProperties(props);
+        SDL_DestroyProperties(props);
     }
     return font;
 }
@@ -1990,45 +2032,6 @@ static int TTF_initFontMetrics(TTF_Font *font)
     font->glyph_overhang = face->size->metrics.y_ppem / 10;
 
     return 0;
-}
-
-TTF_Font* TTF_OpenFontDPIIO(SDL_IOStream *src, bool closeio, int ptsize, unsigned int hdpi, unsigned int vdpi)
-{
-    return TTF_OpenFontIndexDPIIO(src, closeio, ptsize, 0, hdpi, vdpi);
-}
-
-TTF_Font* TTF_OpenFontIndexIO(SDL_IOStream *src, bool closeio, int ptsize, long index)
-{
-    return TTF_OpenFontIndexDPIIO(src, closeio, ptsize, index, 0, 0);
-}
-
-TTF_Font* TTF_OpenFontIndexDPI(const char *file, int ptsize, long index, unsigned int hdpi, unsigned int vdpi)
-{
-    SDL_IOStream *rw = SDL_IOFromFile(file, "rb");
-    if ( rw == NULL ) {
-        return NULL;
-    }
-    return TTF_OpenFontIndexDPIIO(rw, 1, ptsize, index, hdpi, vdpi);
-}
-
-TTF_Font* TTF_OpenFontIO(SDL_IOStream *src, bool closeio, int ptsize)
-{
-    return TTF_OpenFontIndexIO(src, closeio, ptsize, 0);
-}
-
-TTF_Font* TTF_OpenFontDPI(const char *file, int ptsize, unsigned int hdpi, unsigned int vdpi)
-{
-    return TTF_OpenFontIndexDPI(file, ptsize, 0, hdpi, vdpi);
-}
-
-TTF_Font* TTF_OpenFontIndex(const char *file, int ptsize, long index)
-{
-    return TTF_OpenFontIndexDPI(file, ptsize, index, 0, 0);
-}
-
-TTF_Font* TTF_OpenFont(const char *file, int ptsize)
-{
-    return TTF_OpenFontIndex(file, ptsize, 0);
 }
 
 static void Flush_Glyph_Image(TTF_Image *image) {

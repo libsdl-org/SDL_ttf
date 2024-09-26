@@ -58,6 +58,12 @@ The following functions have been renamed:
 The following functions have been removed:
 * TTF_ByteSwappedUNICODE()
 * TTF_MeasureUNICODE()
+* TTF_OpenFontDPI() - replaced with TTF_OpenFontWithProperties()
+* TTF_OpenFontDPIIO() - replaced with TTF_OpenFontWithProperties()
+* TTF_OpenFontIndex() - replaced with TTF_OpenFontWithProperties()
+* TTF_OpenFontIndexDPI() - replaced with TTF_OpenFontWithProperties()
+* TTF_OpenFontIndexDPIIO() - replaced with TTF_OpenFontWithProperties()
+* TTF_OpenFontIndexIO() - replaced with TTF_OpenFontWithProperties()
 * TTF_RenderUNICODE_Blended()
 * TTF_RenderUNICODE_Blended_Wrapped()
 * TTF_RenderUNICODE_LCD()
