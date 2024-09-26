@@ -3426,7 +3426,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
 
             while (textlen > 0) {
                 int is_delim;
-                Uint32 c = SDL_StepUTF8(&text_cpy, &textlen);
+                Uint32 c = SDL_StepUTF8((const char **)&text_cpy, &textlen);
 
                 if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
                     continue;

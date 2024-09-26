@@ -898,7 +898,7 @@ int main(void)
              }
           }
 #endif
-          if (!TTF_SizeText(font, text, &w, &h)) {
+          if (!TTF_SizeText(font, text, 0, &w, &h)) {
              SDL_Log("size failed");
           }
           if (w == 0) {
@@ -933,7 +933,7 @@ int main(void)
 #endif
                       break;
                    case 0:
-                      text_surface = SDL_RenderText_Solid(font, text, 0, textcol);
+                      text_surface = TTF_RenderText_Solid(font, text, 0, textcol);
                       break;
                 }
 
@@ -961,7 +961,7 @@ int main(void)
 #endif
                       break;
                    case 0:
-                      text_surface = SDL_RenderText_Solid(font, text, 0, textcol);
+                      text_surface = TTF_RenderText_Solid(font, text, 0, textcol);
                       break;
                 }
 
