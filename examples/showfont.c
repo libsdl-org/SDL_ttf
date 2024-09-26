@@ -35,7 +35,7 @@
 #define HEIGHT  480
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-solid] [-shaded] [-blended] [-wrapped] [-utf8|-unicode] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
@@ -91,11 +91,6 @@ int main(int argc, char *argv[])
     int kerning;
     int wrap;
     int dump;
-    enum {
-        RENDER_LATIN1,
-        RENDER_UTF8,
-        RENDER_UNICODE
-    } rendertype;
     char *message, string[128];
 
     /* Look for special execution mode */
@@ -103,7 +98,6 @@ int main(int argc, char *argv[])
     /* Look for special rendering types */
     rendermethod = TextRenderShaded;
     renderstyle = TTF_STYLE_NORMAL;
-    rendertype = RENDER_LATIN1;
     outline = 0;
     hinting = TTF_HINTING_NORMAL;
     kerning = 1;
@@ -119,12 +113,6 @@ int main(int argc, char *argv[])
         } else
         if (SDL_strcmp(argv[i], "-blended") == 0) {
             rendermethod = TextRenderBlended;
-        } else
-        if (SDL_strcmp(argv[i], "-utf8") == 0) {
-            rendertype = RENDER_UTF8;
-        } else
-        if (SDL_strcmp(argv[i], "-unicode") == 0) {
-            rendertype = RENDER_UNICODE;
         } else
         if (SDL_strcmp(argv[i], "-b") == 0) {
             renderstyle |= TTF_STYLE_BOLD;
@@ -252,13 +240,13 @@ int main(int argc, char *argv[])
     SDL_snprintf(string, sizeof(string), "Font file: %s", argv[0]);  /* possible overflow */
     switch (rendermethod) {
     case TextRenderSolid:
-        text = TTF_RenderText_Solid(font, string, *forecol);
+        text = TTF_RenderText_Solid(font, string, 0, *forecol);
         break;
     case TextRenderShaded:
-        text = TTF_RenderText_Shaded(font, string, *forecol, *backcol);
+        text = TTF_RenderText_Shaded(font, string, 0, *forecol, *backcol);
         break;
     case TextRenderBlended:
-        text = TTF_RenderText_Blended(font, string, *forecol);
+        text = TTF_RenderText_Blended(font, string, 0, *forecol);
         break;
     }
     if (text != NULL) {
@@ -276,86 +264,26 @@ int main(int argc, char *argv[])
     } else {
         message = DEFAULT_TEXT;
     }
-    switch (rendertype) {
-        case RENDER_LATIN1:
-            switch (rendermethod) {
-            case TextRenderSolid:
-                if (wrap) {
-                    text = TTF_RenderText_Solid_Wrapped(font, message, *forecol, 0);
-                } else {
-                    text = TTF_RenderText_Solid(font, message, *forecol);
-                }
-                break;
-            case TextRenderShaded:
-                if (wrap) {
-                    text = TTF_RenderText_Shaded_Wrapped(font, message, *forecol, *backcol, 0);
-                } else {
-                    text = TTF_RenderText_Shaded(font, message, *forecol, *backcol);
-                }
-                break;
-            case TextRenderBlended:
-                if (wrap) {
-                    text = TTF_RenderText_Blended_Wrapped(font, message, *forecol, 0);
-                } else {
-                    text = TTF_RenderText_Blended(font, message, *forecol);
-                }
-                break;
-            }
-            break;
-
-        case RENDER_UTF8:
-            switch (rendermethod) {
-            case TextRenderSolid:
-                if (wrap) {
-                    text = TTF_RenderUTF8_Solid_Wrapped(font, message, *forecol, 0);
-                } else {
-                    text = TTF_RenderUTF8_Solid(font, message, *forecol);
-                }
-                break;
-            case TextRenderShaded:
-                if (wrap) {
-                    text = TTF_RenderUTF8_Shaded_Wrapped(font, message, *forecol, *backcol, 0);
-                } else {
-                    text = TTF_RenderUTF8_Shaded(font, message, *forecol, *backcol);
-                }
-                break;
-            case TextRenderBlended:
-                if (wrap) {
-                    text = TTF_RenderUTF8_Blended_Wrapped(font, message, *forecol, 0);
-                } else {
-                    text = TTF_RenderUTF8_Blended(font, message, *forecol);
-                }
-                break;
-            }
-            break;
-
-        case RENDER_UNICODE:
-        {
-            Uint16 *unicode_text = SDL_iconv_utf8_ucs2(message);
-            switch (rendermethod) {
-            case TextRenderSolid:
-                if (wrap) {
-                    text = TTF_RenderUNICODE_Solid_Wrapped(font, unicode_text, *forecol, 0);
-                } else {
-                    text = TTF_RenderUNICODE_Solid(font, unicode_text, *forecol);
-                }
-                break;
-            case TextRenderShaded:
-                if (wrap) {
-                    text = TTF_RenderUNICODE_Shaded_Wrapped(font, unicode_text, *forecol, *backcol, 0);
-                } else {
-                    text = TTF_RenderUNICODE_Shaded(font, unicode_text, *forecol, *backcol);
-                }
-                break;
-            case TextRenderBlended:
-                if (wrap) {
-                    text = TTF_RenderUNICODE_Blended_Wrapped(font, unicode_text, *forecol, 0);
-                } else {
-                    text = TTF_RenderUNICODE_Blended(font, unicode_text, *forecol);
-                }
-                break;
-            }
-            SDL_free(unicode_text);
+    switch (rendermethod) {
+    case TextRenderSolid:
+        if (wrap) {
+            text = TTF_RenderText_Solid_Wrapped(font, message, 0, *forecol, 0);
+        } else {
+            text = TTF_RenderText_Solid(font, message, 0, *forecol);
+        }
+        break;
+    case TextRenderShaded:
+        if (wrap) {
+            text = TTF_RenderText_Shaded_Wrapped(font, message, 0, *forecol, *backcol, 0);
+        } else {
+            text = TTF_RenderText_Shaded(font, message, 0, *forecol, *backcol);
+        }
+        break;
+    case TextRenderBlended:
+        if (wrap) {
+            text = TTF_RenderText_Blended_Wrapped(font, message, 0, *forecol, 0);
+        } else {
+            text = TTF_RenderText_Blended(font, message, 0, *forecol);
         }
         break;
     }

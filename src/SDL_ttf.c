@@ -55,6 +55,12 @@
 #  define TTF_USE_HARFBUZZ 0
 #endif
 
+/**
+ * ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark)
+ */
+#define UNICODE_BOM_NATIVE  0xFEFF
+#define UNICODE_BOM_SWAPPED 0xFFFE
+
 #if defined(SDL_BUILD_MAJOR_VERSION)
 SDL_COMPILE_TIME_ASSERT(SDL_BUILD_MAJOR_VERSION,
                         SDL_TTF_MAJOR_VERSION == SDL_BUILD_MAJOR_VERSION);
@@ -285,7 +291,6 @@ struct TTF_Font {
 /* The FreeType font engine/library */
 static FT_Library library = NULL;
 static int TTF_initialized = 0;
-static bool TTF_byteswapped = false;
 
 #define TTF_CHECK_INITIALIZED(errval)                   \
     if (!TTF_initialized) {                             \
@@ -293,11 +298,14 @@ static bool TTF_byteswapped = false;
         return errval;                                  \
     }
 
-#define TTF_CHECK_POINTER(p, errval)                    \
+#define TTF_CHECK_POINTER(name, p, errval)              \
     if (!(p)) {                                         \
-        SDL_SetError("Passed a NULL pointer");          \
+        SDL_InvalidParamError(name);                    \
         return errval;                                  \
     }
+
+#define TTF_CHECK_FONT(font, errval)                    \
+    TTF_CHECK_POINTER("font", font, errval)
 
 typedef enum {
     RENDER_SOLID = 0,
@@ -306,30 +314,19 @@ typedef enum {
     RENDER_LCD
 } render_mode_t;
 
-typedef enum {
-    STR_UTF8 = 0,
-    STR_TEXT,
-    STR_UNICODE
-} str_type_t;
-
 static int TTF_initFontMetrics(TTF_Font *font);
 
-static bool TTF_Size_Internal(TTF_Font *font, const char *text, str_type_t str_type,
-        int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count);
+static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count);
 
 #define NO_MEASUREMENT  \
         0, NULL, NULL
 
 
-static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, str_type_t str_type,
-        SDL_Color fg, SDL_Color bg, render_mode_t render_mode);
+static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, render_mode_t render_mode);
 
-static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, str_type_t str_type,
-        SDL_Color fg, SDL_Color bg, Uint32 wrapLength, render_mode_t render_mode);
+static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength, render_mode_t render_mode);
 
-static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
-        int want_bitmap, int want_pixmap, int want_color, int want_lcd, int want_subpixel,
-        int translation, c_glyph **out_glyph, TTF_Image **out_image);
+static int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx, int want_bitmap, int want_pixmap, int want_color, int want_lcd, int want_subpixel, int translation, c_glyph **out_glyph, TTF_Image **out_image);
 
 static void Flush_Cache(TTF_Font *font);
 
@@ -364,7 +361,7 @@ static void Flush_Cache(TTF_Font *font);
 
 
 /* Blend colored glyphs */
-static SDL_INLINE void BG_Blended_Color(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
+static void BG_Blended_Color(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
 {
     const Uint32 *src   = (Uint32 *)image->buffer;
     Uint32      *dst    = destination;
@@ -405,7 +402,7 @@ static SDL_INLINE void BG_Blended_Color(const TTF_Image *image, Uint32 *destinat
 }
 
 /* Blend with LCD rendering */
-static SDL_INLINE void BG_Blended_LCD(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, SDL_Color *fg)
+static void BG_Blended_LCD(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, SDL_Color *fg)
 {
     const Uint32 *src   = (Uint32 *)image->buffer;
     Uint32      *dst    = destination;
@@ -468,7 +465,7 @@ static SDL_INLINE void BG_Blended_LCD(const TTF_Image *image, Uint32 *destinatio
 #if TTF_USE_SDF
 
 /* Blended Opaque SDF */
-static SDL_INLINE void BG_Blended_Opaque_SDF(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
+static void BG_Blended_Opaque_SDF(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
 {
     const Uint8 *src    = image->buffer;
     Uint32      *dst    = destination;
@@ -495,7 +492,7 @@ static SDL_INLINE void BG_Blended_Opaque_SDF(const TTF_Image *image, Uint32 *des
 }
 
 /* Blended non-opaque SDF */
-static SDL_INLINE void BG_Blended_SDF(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
+static void BG_Blended_SDF(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
 {
     const Uint8 *src    = image->buffer;
     Uint32      *dst    = destination;
@@ -526,7 +523,7 @@ static SDL_INLINE void BG_Blended_SDF(const TTF_Image *image, Uint32 *destinatio
 #endif /* TTF_USE_SDF */
 
 /* Blended Opaque */
-static SDL_INLINE void BG_Blended_Opaque(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
+static void BG_Blended_Opaque(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
 {
     const Uint8 *src    = image->buffer;
     Uint32      *dst    = destination;
@@ -545,7 +542,7 @@ static SDL_INLINE void BG_Blended_Opaque(const TTF_Image *image, Uint32 *destina
 }
 
 /* Blended non-opaque */
-static SDL_INLINE void BG_Blended(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
+static void BG_Blended(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
 {
     const Uint8 *src    = image->buffer;
     Uint32      *dst    = destination;
@@ -567,7 +564,7 @@ static SDL_INLINE void BG_Blended(const TTF_Image *image, Uint32 *destination, S
 }
 
 #if defined(HAVE_BLIT_GLYPH_32) || defined(HAVE_BLIT_GLYPH_64)
-static SDL_INLINE void BG_Blended_Opaque_32(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
+static void BG_Blended_Opaque_32(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
 {
     const Uint8 *src    = image->buffer;
     Uint32      *dst    = destination;
@@ -588,7 +585,7 @@ static SDL_INLINE void BG_Blended_Opaque_32(const TTF_Image *image, Uint32 *dest
     }
 }
 
-static SDL_INLINE void BG_Blended_32(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
+static void BG_Blended_32(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
 {
     const Uint8 *src    = image->buffer;
     Uint32      *dst    = destination;
@@ -618,7 +615,7 @@ static SDL_INLINE void BG_Blended_32(const TTF_Image *image, Uint32 *destination
 
 #if defined(HAVE_SSE2_INTRINSICS)
 /* Apply: alpha_table[i] = i << 24; */
-static SDL_INLINE void BG_Blended_Opaque_SSE(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
+static void BG_Blended_Opaque_SSE(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
 {
     const __m128i *src    = (__m128i *)image->buffer;
     __m128i       *dst    = (__m128i *)destination;
@@ -665,7 +662,7 @@ static SDL_INLINE void BG_Blended_Opaque_SSE(const TTF_Image *image, Uint32 *des
     }
 }
 
-static SDL_INLINE void BG_Blended_SSE(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
+static void BG_Blended_SSE(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
 {
     const __m128i *src    = (__m128i *)image->buffer;
     __m128i       *dst    = (__m128i *)destination;
@@ -736,7 +733,7 @@ static SDL_INLINE void BG_Blended_SSE(const TTF_Image *image, Uint32 *destinatio
 
 #if defined(HAVE_NEON_INTRINSICS)
 /* Apply: alpha_table[i] = i << 24; */
-static SDL_INLINE void BG_Blended_Opaque_NEON(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
+static void BG_Blended_Opaque_NEON(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
 {
     const Uint32 *src    = (Uint32 *)image->buffer;
     Uint32       *dst    = destination;
@@ -783,7 +780,7 @@ static SDL_INLINE void BG_Blended_Opaque_NEON(const TTF_Image *image, Uint32 *de
 }
 
 /* Non-opaque, computes alpha blending on the fly */
-static SDL_INLINE void BG_Blended_NEON(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
+static void BG_Blended_NEON(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
 {
     const Uint32 *src    = (Uint32 *)image->buffer;
     Uint32       *dst    = destination;
@@ -858,7 +855,7 @@ static SDL_INLINE void BG_Blended_NEON(const TTF_Image *image, Uint32 *destinati
 }
 #endif
 
-static SDL_INLINE void BG(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, Uint32 dstskip)
+static void BG(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, Uint32 dstskip)
 {
     const Uint8 *src    = image->buffer;
     Uint8       *dst    = destination;
@@ -877,7 +874,7 @@ static SDL_INLINE void BG(const TTF_Image *image, Uint8 *destination, Sint32 src
 }
 
 #if defined(HAVE_BLIT_GLYPH_64)
-static SDL_INLINE void BG_64(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, Uint32 dstskip)
+static void BG_64(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, Uint32 dstskip)
 {
     const Uint64 *src    = (Uint64 *)image->buffer;
     Uint64       *dst    = (Uint64 *)destination;
@@ -898,7 +895,7 @@ static SDL_INLINE void BG_64(const TTF_Image *image, Uint8 *destination, Sint32 
     }
 }
 #elif defined(HAVE_BLIT_GLYPH_32)
-static SDL_INLINE void BG_32(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, Uint32 dstskip)
+static void BG_32(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, Uint32 dstskip)
 {
     const Uint32 *src    = (Uint32 *)image->buffer;
     Uint32       *dst    = (Uint32 *)destination;
@@ -921,7 +918,7 @@ static SDL_INLINE void BG_32(const TTF_Image *image, Uint8 *destination, Sint32 
 #endif
 
 #if defined(HAVE_SSE2_INTRINSICS)
-static SDL_INLINE void BG_SSE(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, Uint32 dstskip)
+static void BG_SSE(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, Uint32 dstskip)
 {
     const __m128i *src    = (__m128i *)image->buffer;
     __m128i       *dst    = (__m128i *)destination;
@@ -948,7 +945,7 @@ static SDL_INLINE void BG_SSE(const TTF_Image *image, Uint8 *destination, Sint32
 #endif
 
 #if defined(HAVE_NEON_INTRINSICS)
-static SDL_INLINE void BG_NEON(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, Uint32 dstskip)
+static void BG_NEON(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, Uint32 dstskip)
 {
     const Uint8 *src    = image->buffer;
     Uint8       *dst    = destination;
@@ -1106,10 +1103,9 @@ static int Get_Alignment(void)
 #endif
 #define BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, IS_LCD, WB_WP_WC, WS, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) \
                                                                                                                         \
-static SDL_INLINE                                                                                                       \
-int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg)                     \
+static int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg)              \
 {                                                                                                                       \
-    const int alignment = Get_Alignment() - 1;                                                                         \
+    const int alignment = Get_Alignment() - 1;                                                                          \
     const int bpp = ((IS_BLENDED || IS_LCD) ? 4 : 1);                                                                   \
     unsigned int i;                                                                                                     \
     Uint8 fg_alpha = (fg ? fg->a : 0);                                                                                  \
@@ -1297,7 +1293,7 @@ static int (*Render_Line_SDF_LCD_SP)(TTF_Font *font, SDL_Surface *textbuf, int x
 #pragma GCC diagnostic pop
 #endif
 
-static SDL_INLINE int Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color fg)
+static int Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color fg)
 {
     /* Render line (pos_buf) to textbuf at (xstart, ystart) */
 
@@ -1606,14 +1602,6 @@ static SDL_Surface* Create_Surface_LCD(int width, int height, SDL_Color fg, SDL_
 int TTF_Version(void)
 {
     return SDL_TTF_VERSION;
-}
-
-/* This function tells the library whether UNICODE text is generally
-   byteswapped.  A UNICODE BOM character at the beginning of a string
-   will override this setting for that string.  */
-void TTF_ByteSwappedUNICODE(bool swapped)
-{
-    TTF_byteswapped = swapped;
 }
 
 #if defined(USE_FREETYPE_ERRORS)
@@ -2586,7 +2574,7 @@ ft_failure:
     return -1;
 }
 
-static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
+static int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         int want_bitmap, int want_pixmap, int want_color, int want_lcd, int want_subpixel,
         int translation, c_glyph **out_glyph, TTF_Image **out_image)
 {
@@ -2689,7 +2677,7 @@ static SDL_INLINE int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
     }
 }
 
-static SDL_INLINE FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
+static FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
 {
     Uint32 cache_index_size = sizeof (font->cache_index) / sizeof (font->cache_index[0]);
 
@@ -2707,7 +2695,7 @@ static SDL_INLINE FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
 }
 
 
-static SDL_INLINE int Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out_glyph)
+static int Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out_glyph)
 {
     FT_UInt idx = get_char_index(font, ch);
     return Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, out_glyph, NULL);
@@ -2736,258 +2724,45 @@ void TTF_CloseFont(TTF_Font *font)
     }
 }
 
-/* Gets the number of bytes needed to convert a Latin-1 string to UTF-8 */
-static size_t LATIN1_to_UTF8_len(const char *text)
-{
-    size_t bytes = 1;
-    while (*text) {
-        Uint8 ch = *(const Uint8 *)text++;
-        if (ch <= 0x7F) {
-            bytes += 1;
-        } else {
-            bytes += 2;
-        }
-    }
-    return bytes;
-}
-
-/* Gets the number of bytes needed to convert a UCS2 string to UTF-8 */
-static size_t UCS2_to_UTF8_len(const Uint16 *text)
-{
-    bool swapped = TTF_byteswapped;
-    size_t bytes = 1;
-    while (*text) {
-        Uint16 ch = *text++;
-        if (ch == UNICODE_BOM_NATIVE) {
-            swapped = false;
-            continue;
-        }
-        if (ch == UNICODE_BOM_SWAPPED) {
-            swapped = true;
-            continue;
-        }
-        if (swapped) {
-            ch = SDL_Swap16(ch);
-        }
-        if (ch <= 0x7F) {
-            bytes += 1;
-        } else if (ch <= 0x7FF) {
-            bytes += 2;
-        } else {
-            bytes += 3;
-        }
-    }
-    return bytes;
-}
-
-/* Convert a Latin-1 string to a UTF-8 string */
-static void LATIN1_to_UTF8(const char *src, Uint8 *dst)
-{
-    while (*src) {
-        Uint8 ch = *(const Uint8 *)src++;
-        if (ch <= 0x7F) {
-            *dst++ = ch;
-        } else {
-            *dst++ = 0xC0 | ((ch >> 6) & 0x1F);
-            *dst++ = 0x80 | (ch & 0x3F);
-        }
-    }
-    *dst = '\0';
-}
-
-/* Convert a UCS-2 string to a UTF-8 string */
-static void UCS2_to_UTF8(const Uint16 *src, Uint8 *dst)
-{
-    bool swapped = TTF_byteswapped;
-
-    while (*src) {
-        Uint16 ch = *src++;
-        if (ch == UNICODE_BOM_NATIVE) {
-            swapped = false;
-            continue;
-        }
-        if (ch == UNICODE_BOM_SWAPPED) {
-            swapped = true;
-            continue;
-        }
-        if (swapped) {
-            ch = SDL_Swap16(ch);
-        }
-        if (ch <= 0x7F) {
-            *dst++ = (Uint8) ch;
-        } else if (ch <= 0x7FF) {
-            *dst++ = 0xC0 | (Uint8) ((ch >> 6) & 0x1F);
-            *dst++ = 0x80 | (Uint8) (ch & 0x3F);
-        } else {
-            *dst++ = 0xE0 | (Uint8) ((ch >> 12) & 0x0F);
-            *dst++ = 0x80 | (Uint8) ((ch >> 6) & 0x3F);
-            *dst++ = 0x80 | (Uint8) (ch & 0x3F);
-        }
-    }
-    *dst = '\0';
-}
-
-/* Convert a unicode char to a UTF-8 string */
-static bool Char_to_UTF8(Uint32 ch, Uint8 *dst)
-{
-    if (ch <= 0x7F) {
-        *dst++ = (Uint8) ch;
-    } else if (ch <= 0x7FF) {
-        *dst++ = 0xC0 | (Uint8) ((ch >> 6) & 0x1F);
-        *dst++ = 0x80 | (Uint8) (ch & 0x3F);
-    } else if (ch <= 0xFFFF) {
-        *dst++ = 0xE0 | (Uint8) ((ch >> 12) & 0x0F);
-        *dst++ = 0x80 | (Uint8) ((ch >> 6) & 0x3F);
-        *dst++ = 0x80 | (Uint8) (ch & 0x3F);
-    } else if (ch <= 0x1FFFFF) {
-        *dst++ = 0xF0 | (Uint8) ((ch >> 18) & 0x07);
-        *dst++ = 0x80 | (Uint8) ((ch >> 12) & 0x3F);
-        *dst++ = 0x80 | (Uint8) ((ch >> 6) & 0x3F);
-        *dst++ = 0x80 | (Uint8) (ch & 0x3F);
-    } else if (ch <= 0x3FFFFFF) {
-        *dst++ = 0xF8 | (Uint8) ((ch >> 24) & 0x03);
-        *dst++ = 0x80 | (Uint8) ((ch >> 18) & 0x3F);
-        *dst++ = 0x80 | (Uint8) ((ch >> 12) & 0x3F);
-        *dst++ = 0x80 | (Uint8) ((ch >> 6) & 0x3F);
-        *dst++ = 0x80 | (Uint8) (ch & 0x3F);
-    } else if (ch < 0x7FFFFFFF) {
-        *dst++ = 0xFC | (Uint8) ((ch >> 30) & 0x01);
-        *dst++ = 0x80 | (Uint8) ((ch >> 24) & 0x3F);
-        *dst++ = 0x80 | (Uint8) ((ch >> 18) & 0x3F);
-        *dst++ = 0x80 | (Uint8) ((ch >> 12) & 0x3F);
-        *dst++ = 0x80 | (Uint8) ((ch >> 6) & 0x3F);
-        *dst++ = 0x80 | (Uint8) (ch & 0x3F);
-    } else {
-        SDL_SetError("Invalid character");
-        return false;
-    }
-    *dst = '\0';
-    return true;
-}
-
-/* Gets a unicode value from a UTF-8 encoded string
- * Ouputs increment to advance the string */
-#define UNKNOWN_UNICODE 0xFFFD
-static Uint32 UTF8_getch(const char *src, size_t srclen, int *inc)
-{
-    const Uint8 *p = (const Uint8 *)src;
-    size_t left = 0;
-    size_t save_srclen = srclen;
-    bool overlong = false;
-    bool underflow = false;
-    Uint32 ch = UNKNOWN_UNICODE;
-
-    if (srclen == 0) {
-        return UNKNOWN_UNICODE;
-    }
-    if (p[0] >= 0xFC) {
-        if ((p[0] & 0xFE) == 0xFC) {
-            if (p[0] == 0xFC && (p[1] & 0xFC) == 0x80) {
-                overlong = true;
-            }
-            ch = (Uint32) (p[0] & 0x01);
-            left = 5;
-        }
-    } else if (p[0] >= 0xF8) {
-        if ((p[0] & 0xFC) == 0xF8) {
-            if (p[0] == 0xF8 && (p[1] & 0xF8) == 0x80) {
-                overlong = true;
-            }
-            ch = (Uint32) (p[0] & 0x03);
-            left = 4;
-        }
-    } else if (p[0] >= 0xF0) {
-        if ((p[0] & 0xF8) == 0xF0) {
-            if (p[0] == 0xF0 && (p[1] & 0xF0) == 0x80) {
-                overlong = true;
-            }
-            ch = (Uint32) (p[0] & 0x07);
-            left = 3;
-        }
-    } else if (p[0] >= 0xE0) {
-        if ((p[0] & 0xF0) == 0xE0) {
-            if (p[0] == 0xE0 && (p[1] & 0xE0) == 0x80) {
-                overlong = true;
-            }
-            ch = (Uint32) (p[0] & 0x0F);
-            left = 2;
-        }
-    } else if (p[0] >= 0xC0) {
-        if ((p[0] & 0xE0) == 0xC0) {
-            if ((p[0] & 0xDE) == 0xC0) {
-                overlong = true;
-            }
-            ch = (Uint32) (p[0] & 0x1F);
-            left = 1;
-        }
-    } else {
-        if ((p[0] & 0x80) == 0x00) {
-            ch = (Uint32) p[0];
-        }
-    }
-    --srclen;
-    while (left > 0 && srclen > 0) {
-        ++p;
-        if ((p[0] & 0xC0) != 0x80) {
-            ch = UNKNOWN_UNICODE;
-            break;
-        }
-        ch <<= 6;
-        ch |= (p[0] & 0x3F);
-        --srclen;
-        --left;
-    }
-    if (left > 0) {
-        underflow = true;
-    }
-    /* Technically overlong sequences are invalid and should not be interpreted.
-       However, it doesn't cause a security risk here and I don't see any harm in
-       displaying them. The application is responsible for any other side effects
-       of allowing overlong sequences (e.g. string compares failing, etc.)
-       See bug 1931 for sample input that triggers this.
-    */
-    /* if (overlong) return UNKNOWN_UNICODE; */
-
-    (void) overlong;
-
-    if (underflow ||
-        (ch >= 0xD800 && ch <= 0xDFFF) ||
-        (ch == 0xFFFE || ch == 0xFFFF) || ch > 0x10FFFF) {
-        ch = UNKNOWN_UNICODE;
-    }
-
-    *inc = (int)(save_srclen - srclen);
-
-    return ch;
-}
-
 int TTF_FontHeight(const TTF_Font *font)
 {
+    TTF_CHECK_FONT(font, 0);
+
     return font->height;
 }
 
 int TTF_FontAscent(const TTF_Font *font)
 {
+    TTF_CHECK_FONT(font, 0);
+
     return font->ascent + 2 * font->outline_val;
 }
 
 int TTF_FontDescent(const TTF_Font *font)
 {
+    TTF_CHECK_FONT(font, 0);
+
     return font->descent;
 }
 
 int TTF_FontLineSkip(const TTF_Font *font)
 {
+    TTF_CHECK_FONT(font, 0);
+
     return font->lineskip;
 }
 
 bool TTF_GetFontKerning(const TTF_Font *font)
 {
+    TTF_CHECK_FONT(font, false);
+
     return font->enable_kerning;
 }
 
 void TTF_SetFontKerning(TTF_Font *font, bool enabled)
 {
+    TTF_CHECK_FONT(font,);
+
     font->enable_kerning = enabled;
 #if TTF_USE_HARFBUZZ
     /* Harfbuzz can do kerning positioning even if the font hasn't the data */
@@ -2998,48 +2773,44 @@ void TTF_SetFontKerning(TTF_Font *font, bool enabled)
 
 long TTF_FontFaces(const TTF_Font *font)
 {
+    TTF_CHECK_FONT(font, 0);
+
     return font->face->num_faces;
 }
 
 bool TTF_FontFaceIsFixedWidth(const TTF_Font *font)
 {
+    TTF_CHECK_FONT(font, false);
+
     return FT_IS_FIXED_WIDTH(font->face);
 }
 
-const char *
-TTF_FontFaceFamilyName(const TTF_Font *font)
+const char *TTF_FontFaceFamilyName(const TTF_Font *font)
 {
+    TTF_CHECK_FONT(font, NULL);
+
     return font->face->family_name;
 }
 
-const char *
-TTF_FontFaceStyleName(const TTF_Font *font)
+const char *TTF_FontFaceStyleName(const TTF_Font *font)
 {
+    TTF_CHECK_FONT(font, NULL);
+
     return font->face->style_name;
 }
 
-bool TTF_GlyphIsProvided(TTF_Font *font, Uint16 ch)
+bool TTF_GlyphIsProvided(TTF_Font *font, Uint32 ch)
 {
+    TTF_CHECK_FONT(font, false);
+
     return (get_char_index(font, ch) > 0);
 }
 
-bool TTF_GlyphIsProvided32(TTF_Font *font, Uint32 ch)
-{
-    return (get_char_index(font, ch) > 0);
-}
-
-bool TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
-                     int *minx, int *maxx, int *miny, int *maxy, int *advance)
-{
-    return TTF_GlyphMetrics32(font, ch, minx, maxx, miny, maxy, advance);
-}
-
-bool TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
-                     int *minx, int *maxx, int *miny, int *maxy, int *advance)
+bool TTF_GlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *miny, int *maxy, int *advance)
 {
     c_glyph *glyph;
 
-    TTF_CHECK_POINTER(font, false);
+    TTF_CHECK_FONT(font, false);
 
     if (Find_GlyphMetrics(font, ch, &glyph) < 0) {
         return false;
@@ -3067,6 +2838,8 @@ bool TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
 
 bool TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
 {
+    TTF_CHECK_FONT(font, false);
+
 #if TTF_USE_HARFBUZZ
     hb_direction_t dir;
     if (direction == TTF_DIRECTION_LTR) {
@@ -3078,19 +2851,19 @@ bool TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
     } else if (direction == TTF_DIRECTION_BTT) {
         dir = HB_DIRECTION_TTB;
     } else {
-        return false;
+        return SDL_InvalidParamError("direction");
     }
     font->hb_direction = dir;
     return true;
 #else
-    (void) font;
-    (void) direction;
-    return false;
+    return SDL_SetError("Unsupported");
 #endif
 }
 
 bool TTF_SetFontScriptName(TTF_Font *font, const char *script)
 {
+    TTF_CHECK_FONT(font, false);
+
 #if TTF_USE_HARFBUZZ
     Uint8 a, b, c, d;
     hb_script_t scr;
@@ -3108,17 +2881,15 @@ bool TTF_SetFontScriptName(TTF_Font *font, const char *script)
     font->hb_script = scr;
     return true;
 #else
-    (void) font;
-    (void) script;
-    return false;
+    return SDL_SetError("Unsupported");
 #endif
 }
 
 bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
 {
-#if TTF_USE_HARFBUZZ
-    TTF_CHECK_POINTER(font, false);
+    TTF_CHECK_FONT(font, false);
 
+#if TTF_USE_HARFBUZZ
     if (language_bcp47 == NULL) {
         font->hb_language = hb_language_from_string("", -1);
     } else {
@@ -3126,22 +2897,16 @@ bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
     }
     return true;
 #else
-    (void) font;
-    (void) language_bcp47;
     return SDL_SetError("Unsupported");
 #endif
 }
 
-static bool TTF_Size_Internal(TTF_Font *font,
-        const char *text, const str_type_t str_type,
-        int *w, int *h, int *xstart, int *ystart,
-        int measure_width, int *extent, int *count)
+static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count)
 {
     int x = 0;
     int pos_x, pos_y;
     int minx = 0, maxx = 0;
     int miny = 0, maxy = 0;
-    Uint8 *utf8_alloc = NULL;
     c_glyph *glyph;
 #if TTF_USE_HARFBUZZ
     hb_direction_t hb_direction;
@@ -3154,7 +2919,6 @@ static bool TTF_Size_Internal(TTF_Font *font,
     int y = 0;
     int advance_if_bold = 0;
 #else
-    size_t textlen;
     int skip_first = 1;
     FT_UInt prev_index = 0;
     FT_Pos  prev_delta = 0;
@@ -3166,27 +2930,11 @@ static bool TTF_Size_Internal(TTF_Font *font,
     int current_width = 0;
 
     TTF_CHECK_INITIALIZED(false);
-    TTF_CHECK_POINTER(font, false);
-    TTF_CHECK_POINTER(text, false);
+    TTF_CHECK_POINTER("font", font, false);
+    TTF_CHECK_POINTER("text", text, false);
 
-    /* Convert input string to default encoding UTF-8 */
-    if (str_type == STR_TEXT) {
-        utf8_alloc = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        LATIN1_to_UTF8(text, utf8_alloc);
-        text = (const char *)utf8_alloc;
-    } else if (str_type == STR_UNICODE) {
-        const Uint16 *text16 = (const Uint16 *) text;
-        utf8_alloc = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text16));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        UCS2_to_UTF8(text16, utf8_alloc);
-        text = (const char *)utf8_alloc;
+    if (!length) {
+        length = SDL_strlen(text);
     }
 
     maxy = font->height;
@@ -3227,7 +2975,7 @@ static bool TTF_Size_Internal(TTF_Font *font,
     hb_buffer_guess_segment_properties(hb_buffer);
 
     /* Layout the text */
-    hb_buffer_add_utf8(hb_buffer, text, -1, 0, -1);
+    hb_buffer_add_utf8(hb_buffer, text, (int)length, 0, -1);
 
     hb_feature_t userfeatures[1];
     userfeatures[0].tag = HB_TAG('k','e','r','n');
@@ -3251,13 +2999,9 @@ static bool TTF_Size_Internal(TTF_Font *font,
         int y_offset  = hb_glyph_position[g].y_offset;
 #else
     /* Load each character and sum it's bounding box */
-    textlen = SDL_strlen(text);
-    while (textlen > 0) {
-        int inc = 0;
-        Uint32 c = UTF8_getch(text, textlen, &inc);
+    while (length > 0) {
+        Uint32 c = SDL_StepUTF8(&text, &length);
         FT_UInt idx = get_char_index(font, c);
-        text += inc;
-        textlen -= inc;
 
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
@@ -3414,9 +3158,6 @@ static bool TTF_Size_Internal(TTF_Font *font,
         hb_buffer_destroy(hb_buffer);
     }
 #endif
-    if (utf8_alloc) {
-        SDL_stack_free(utf8_alloc);
-    }
     return true;
 failure:
 #if TTF_USE_HARFBUZZ
@@ -3424,77 +3165,36 @@ failure:
         hb_buffer_destroy(hb_buffer);
     }
 #endif
-    if (utf8_alloc) {
-        SDL_stack_free(utf8_alloc);
-    }
     return false;
 }
 
-bool TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h)
+bool TTF_SizeText(TTF_Font *font, const char *text, size_t length, int *w, int *h)
 {
-    return TTF_Size_Internal(font, text, STR_TEXT, w, h, NULL, NULL, NO_MEASUREMENT);
+    return TTF_Size_Internal(font, text, length, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
-bool TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h)
+bool TTF_MeasureText(TTF_Font *font, const char *text, size_t length, int width, int *extent, int *count)
 {
-    return TTF_Size_Internal(font, text, STR_UTF8, w, h, NULL, NULL, NO_MEASUREMENT);
+    return TTF_Size_Internal(font, text, length, NULL, NULL, NULL, NULL, width, extent, count);
 }
 
-bool TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
-{
-    return TTF_Size_Internal(font, (const char *)text, STR_UNICODE, w, h, NULL, NULL, NO_MEASUREMENT);
-}
-
-bool TTF_MeasureText(TTF_Font *font, const char *text, int width, int *extent, int *count)
-{
-    return TTF_Size_Internal(font, text, STR_TEXT, NULL, NULL, NULL, NULL, width, extent, count);
-}
-
-bool TTF_MeasureUTF8(TTF_Font *font, const char *text, int width, int *extent, int *count)
-{
-    return TTF_Size_Internal(font, text, STR_UTF8, NULL, NULL, NULL, NULL, width, extent, count);
-}
-
-bool TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int width, int *extent, int *count)
-{
-    return TTF_Size_Internal(font, (const char *)text, STR_UNICODE, NULL, NULL, NULL, NULL, width, extent, count);
-}
-
-static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const str_type_t str_type,
-        SDL_Color fg, SDL_Color bg, const render_mode_t render_mode)
+static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, const render_mode_t render_mode)
 {
     Uint32 color;
     int xstart, ystart, width, height;
     SDL_Surface *textbuf = NULL;
-    Uint8 *utf8_alloc = NULL;
 
     TTF_CHECK_INITIALIZED(NULL);
-    TTF_CHECK_POINTER(font, NULL);
-    TTF_CHECK_POINTER(text, NULL);
+    TTF_CHECK_POINTER("font", font, NULL);
+    TTF_CHECK_POINTER("text", text, NULL);
+
+    if (!length) {
+        length = SDL_strlen(text);
+    }
 
     if (render_mode == RENDER_LCD && !FT_IS_SCALABLE(font->face)) {
         SDL_SetError("LCD rendering is not available for non-scalable font");
         goto failure;
-    }
-
-    /* Convert input string to default encoding UTF-8 */
-    if (str_type == STR_TEXT) {
-        utf8_alloc = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        LATIN1_to_UTF8(text, utf8_alloc);
-        text = (const char *)utf8_alloc;
-    } else if (str_type == STR_UNICODE) {
-        const Uint16 *text16 = (const Uint16 *) text;
-        utf8_alloc = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text16));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        UCS2_to_UTF8(text16, utf8_alloc);
-        text = (const char *)utf8_alloc;
     }
 
 #if TTF_USE_SDF
@@ -3508,7 +3208,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
 #endif
 
     /* Get the dimensions of the text surface */
-    if (!TTF_Size_Internal(font, text, STR_UTF8, &width, &height, &xstart, &ystart, NO_MEASUREMENT) || !width) {
+    if (!TTF_Size_Internal(font, text, length, &width, &height, &xstart, &ystart, NO_MEASUREMENT) || !width) {
         SDL_SetError("Text has zero width");
         goto failure;
     }
@@ -3546,132 +3246,69 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, const 
         Draw_Line(font, textbuf, 0, ystart + font->strikethrough_top_row, width, font->line_thickness, color, render_mode);
     }
 
-    if (utf8_alloc) {
-        SDL_stack_free(utf8_alloc);
-    }
     return textbuf;
 failure:
     if (textbuf) {
         SDL_DestroySurface(textbuf);
     }
-    if (utf8_alloc) {
-        SDL_stack_free(utf8_alloc);
-    }
     return NULL;
 }
 
-SDL_Surface* TTF_RenderText_Solid(TTF_Font *font, const char *text, SDL_Color fg)
+SDL_Surface* TTF_RenderText_Solid(TTF_Font *font, const char *text, size_t length, SDL_Color fg)
 {
-    return TTF_Render_Internal(font, text, STR_TEXT, fg, fg /* unused */, RENDER_SOLID);
+    return TTF_Render_Internal(font, text, length, fg, fg /* unused */, RENDER_SOLID);
 }
 
-SDL_Surface* TTF_RenderUTF8_Solid(TTF_Font *font, const char *text, SDL_Color fg)
+SDL_Surface* TTF_RenderGlyph_Solid(TTF_Font *font, Uint32 ch, SDL_Color fg)
 {
-    return TTF_Render_Internal(font, text, STR_UTF8, fg, fg /* unused */, RENDER_SOLID);
+    char utf8[4], *end;
+
+    end = SDL_UCS4ToUTF8(ch, utf8);
+
+    return TTF_RenderText_Solid(font, utf8, (end - utf8), fg);
 }
 
-SDL_Surface* TTF_RenderUNICODE_Solid(TTF_Font *font, const Uint16 *text, SDL_Color fg)
+SDL_Surface* TTF_RenderText_Shaded(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg)
 {
-    return TTF_Render_Internal(font, (const char *)text, STR_UNICODE, fg, fg /* unused */, RENDER_SOLID);
+    return TTF_Render_Internal(font, text, length, fg, bg, RENDER_SHADED);
 }
 
-SDL_Surface* TTF_RenderGlyph_Solid(TTF_Font *font, Uint16 ch, SDL_Color fg)
+SDL_Surface* TTF_RenderGlyph_Shaded(TTF_Font *font, Uint32 ch, SDL_Color fg, SDL_Color bg)
 {
-    return TTF_RenderGlyph32_Solid(font, ch, fg);
+    char utf8[4], *end;
+
+    end = SDL_UCS4ToUTF8(ch, utf8);
+
+    return TTF_RenderText_Shaded(font, utf8, (end - utf8), fg, bg);
 }
 
-SDL_Surface* TTF_RenderGlyph32_Solid(TTF_Font *font, Uint32 ch, SDL_Color fg)
+SDL_Surface* TTF_RenderText_Blended(TTF_Font *font, const char *text, size_t length, SDL_Color fg)
 {
-    Uint8 utf8[7];
-
-    TTF_CHECK_POINTER(font, NULL);
-
-    if (!Char_to_UTF8(ch, utf8)) {
-        return NULL;
-    }
-
-    return TTF_RenderUTF8_Solid(font, (char *)utf8, fg);
+    return TTF_Render_Internal(font, text, length, fg, fg /* unused */, RENDER_BLENDED);
 }
 
-SDL_Surface* TTF_RenderText_Shaded(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg)
+SDL_Surface* TTF_RenderGlyph_Blended(TTF_Font *font, Uint32 ch, SDL_Color fg)
 {
-    return TTF_Render_Internal(font, text, STR_TEXT, fg, bg, RENDER_SHADED);
+    char utf8[4], *end;
+
+    end = SDL_UCS4ToUTF8(ch, utf8);
+
+    return TTF_RenderText_Blended(font, utf8, (end - utf8), fg);
 }
 
-SDL_Surface* TTF_RenderUTF8_Shaded(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg)
+SDL_Surface* TTF_RenderText_LCD(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg)
 {
-    return TTF_Render_Internal(font, text, STR_UTF8, fg, bg, RENDER_SHADED);
+    return TTF_Render_Internal(font, text, length, fg, bg, RENDER_LCD);
 }
 
-SDL_Surface* TTF_RenderUNICODE_Shaded(TTF_Font *font, const Uint16 *text, SDL_Color fg, SDL_Color bg)
+
+SDL_Surface* TTF_RenderGlyph_LCD(TTF_Font *font, Uint32 ch, SDL_Color fg, SDL_Color bg)
 {
-    return TTF_Render_Internal(font, (const char *)text, STR_UNICODE, fg, bg, RENDER_SHADED);
-}
+    char utf8[4], *end;
 
-SDL_Surface* TTF_RenderGlyph_Shaded(TTF_Font *font, Uint16 ch, SDL_Color fg, SDL_Color bg)
-{
-    return TTF_RenderGlyph32_Shaded(font, ch, fg, bg);
-}
+    end = SDL_UCS4ToUTF8(ch, utf8);
 
-SDL_Surface* TTF_RenderGlyph32_Shaded(TTF_Font *font, Uint32 ch, SDL_Color fg, SDL_Color bg)
-{
-    Uint8 utf8[7];
-
-    TTF_CHECK_POINTER(font, NULL);
-
-    if (!Char_to_UTF8(ch, utf8)) {
-        return NULL;
-    }
-
-    return TTF_RenderUTF8_Shaded(font, (char *)utf8, fg, bg);
-}
-
-SDL_Surface* TTF_RenderText_Blended(TTF_Font *font, const char *text, SDL_Color fg)
-{
-    return TTF_Render_Internal(font, text, STR_TEXT, fg, fg /* unused */, RENDER_BLENDED);
-}
-
-SDL_Surface* TTF_RenderUTF8_Blended(TTF_Font *font, const char *text, SDL_Color fg)
-{
-    return TTF_Render_Internal(font, text, STR_UTF8, fg, fg /* unused */, RENDER_BLENDED);
-}
-
-SDL_Surface* TTF_RenderUNICODE_Blended(TTF_Font *font, const Uint16 *text, SDL_Color fg)
-{
-    return TTF_Render_Internal(font, (const char *)text, STR_UNICODE, fg, fg /* unused */, RENDER_BLENDED);
-}
-
-SDL_Surface* TTF_RenderText_LCD(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg)
-{
-    return TTF_Render_Internal(font, text, STR_TEXT, fg, bg, RENDER_LCD);
-}
-
-SDL_Surface* TTF_RenderUTF8_LCD(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg)
-{
-    return TTF_Render_Internal(font, text, STR_UTF8, fg, bg, RENDER_LCD);
-}
-
-SDL_Surface* TTF_RenderUNICODE_LCD(TTF_Font *font, const Uint16 *text, SDL_Color fg, SDL_Color bg)
-{
-    return TTF_Render_Internal(font, (const char *)text, STR_UNICODE, fg, bg, RENDER_LCD);
-}
-
-SDL_Surface* TTF_RenderGlyph_LCD(TTF_Font *font, Uint16 ch, SDL_Color fg, SDL_Color bg)
-{
-    return TTF_RenderGlyph32_LCD(font, ch, fg, bg);
-}
-
-SDL_Surface* TTF_RenderGlyph32_LCD(TTF_Font *font, Uint32 ch, SDL_Color fg, SDL_Color bg)
-{
-    Uint8 utf8[7];
-
-    TTF_CHECK_POINTER(font, NULL);
-
-    if (!Char_to_UTF8(ch, utf8)) {
-        return NULL;
-    }
-
-    return TTF_RenderUTF8_LCD(font, (char *)utf8, fg, bg);
+    return TTF_RenderText_LCD(font, utf8, (end - utf8), fg, bg);
 }
 
 static bool CharacterIsDelimiter(Uint32 c)
@@ -3690,54 +3327,49 @@ static bool CharacterIsNewLine(Uint32 c)
     return false;
 }
 
-static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, const str_type_t str_type,
-        SDL_Color fg, SDL_Color bg, Uint32 wrapLength, const render_mode_t render_mode)
+static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength, const render_mode_t render_mode)
 {
     Uint32 color;
     int width, height;
     SDL_Surface *textbuf = NULL;
-    Uint8 *utf8_alloc = NULL;
+    Uint8 *utf8_alloc;
 
     int i, numLines, rowHeight, lineskip;
     char **strLines = NULL, *text_cpy;
 
     TTF_CHECK_INITIALIZED(NULL);
-    TTF_CHECK_POINTER(font, NULL);
-    TTF_CHECK_POINTER(text, NULL);
+    TTF_CHECK_POINTER("font", font, NULL);
+    TTF_CHECK_POINTER("text", text, NULL);
+
+    if (!length) {
+        length = SDL_strlen(text);
+    }
 
     if (render_mode == RENDER_LCD && !FT_IS_SCALABLE(font->face)) {
         SDL_SetError("LCD rendering is not available for non-scalable font");
         goto failure;
     }
 
-    /* Convert input string to default encoding UTF-8 */
-    if (str_type == STR_TEXT) {
-        utf8_alloc = SDL_stack_alloc(Uint8, LATIN1_to_UTF8_len(text));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        LATIN1_to_UTF8(text, utf8_alloc);
-        text_cpy = (char *)utf8_alloc;
-    } else if (str_type == STR_UNICODE) {
-        const Uint16 *text16 = (const Uint16 *) text;
-        utf8_alloc = SDL_stack_alloc(Uint8, UCS2_to_UTF8_len(text16));
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        UCS2_to_UTF8(text16, utf8_alloc);
-        text_cpy = (char *)utf8_alloc;
-    } else {
-        /* Use a copy anyway */
-        size_t str_len = SDL_strlen(text);
-        utf8_alloc = SDL_stack_alloc(Uint8, str_len + 1);
-        if (utf8_alloc == NULL) {
-            SDL_OutOfMemory();
-            goto failure;
-        }
-        SDL_memcpy(utf8_alloc, text, str_len + 1);
-        text_cpy = (char *)utf8_alloc;
+    /* Use a copy of the text */
+    utf8_alloc = SDL_stack_alloc(Uint8, length + 1);
+    if (utf8_alloc == NULL) {
+        SDL_OutOfMemory();
+        goto failure;
+    }
+    SDL_memcpy(utf8_alloc, text, length);
+    utf8_alloc[length] = 0;
+    text_cpy = (char *)utf8_alloc;
+
+    /* Get the dimensions of the text surface */
+    if (!TTF_SizeText(font, text_cpy, length, &width, &height) || !width) {
+        SDL_SetError("Text has zero width");
+        goto failure;
+    }
+
+    /* wrapLength is unsigned, but don't allow negative values */
+    if (wrapLength < 0) {
+        SDL_InvalidParamError("wrapLength");
+        goto failure;
     }
 
 #if TTF_USE_SDF
@@ -3750,23 +3382,11 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     }
 #endif
 
-    /* Get the dimensions of the text surface */
-    if (!TTF_SizeUTF8(font, text_cpy, &width, &height) || !width) {
-        SDL_SetError("Text has zero width");
-        goto failure;
-    }
-
-    /* wrapLength is unsigned, but don't allow negative values */
-    if ((int)wrapLength < 0) {
-        SDL_SetError("Invalid parameter 'wrapLength'");
-        goto failure;
-    }
-
     numLines = 1;
 
     if (*text_cpy) {
         int maxNumLines = 0;
-        size_t textlen = SDL_strlen(text_cpy);
+        size_t textlen = length;
         numLines = 0;
 
         do {
@@ -3790,7 +3410,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
 
             strLines[numLines++] = text_cpy;
 
-            if (!TTF_MeasureUTF8(font, text_cpy, wrapLength, &extent, &max_count)) {
+            if (!TTF_MeasureText(font, text_cpy, 0, wrapLength, &extent, &max_count)) {
                 SDL_SetError("Error measure text");
                 goto failure;
             }
@@ -3802,11 +3422,8 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
             }
 
             while (textlen > 0) {
-                int inc = 0;
                 int is_delim;
-                Uint32 c = UTF8_getch(text_cpy, textlen, &inc);
-                text_cpy += inc;
-                textlen -= inc;
+                Uint32 c = SDL_StepUTF8(&text_cpy, &textlen);
 
                 if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
                     continue;
@@ -3862,7 +3479,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
                     }
                 }
 
-                if (TTF_SizeUTF8(font, text, &w, &h)) {
+                if (TTF_SizeText(font, text, 0, &w, &h)) {
                     width = SDL_max(w, width);
                 }
 
@@ -3920,7 +3537,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         }
 
         /* Initialize xstart, ystart and compute positions */
-        if (!TTF_Size_Internal(font, text, STR_UTF8, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
+        if (!TTF_Size_Internal(font, text, length, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
             goto failure;
         }
 
@@ -3978,82 +3595,24 @@ failure:
     return NULL;
 }
 
-SDL_Surface* TTF_RenderText_Solid_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, Uint32 wrapLength)
+SDL_Surface* TTF_RenderText_Solid_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, int wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, text, STR_TEXT, fg, fg /* unused */, wrapLength, RENDER_SOLID);
+    return TTF_Render_Wrapped_Internal(font, text, length, fg, fg /* unused */, wrapLength, RENDER_SOLID);
 }
 
-SDL_Surface* TTF_RenderUTF8_Solid_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, Uint32 wrapLength)
+SDL_Surface* TTF_RenderText_Shaded_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, text, STR_UTF8, fg, fg /* unused */, wrapLength, RENDER_SOLID);
+    return TTF_Render_Wrapped_Internal(font, text, length, fg, bg, wrapLength, RENDER_SHADED);
 }
 
-SDL_Surface* TTF_RenderUNICODE_Solid_Wrapped(TTF_Font *font, const Uint16 *text, SDL_Color fg, Uint32 wrapLength)
+SDL_Surface* TTF_RenderText_Blended_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, int wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, (const char *)text, STR_UNICODE, fg, fg /* unused */, wrapLength, RENDER_SOLID);
+    return TTF_Render_Wrapped_Internal(font, text, length, fg, fg /* unused */, wrapLength, RENDER_BLENDED);
 }
 
-SDL_Surface* TTF_RenderText_Shaded_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
+SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength)
 {
-    return TTF_Render_Wrapped_Internal(font, text, STR_TEXT, fg, bg, wrapLength, RENDER_SHADED);
-}
-
-SDL_Surface* TTF_RenderUTF8_Shaded_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
-{
-    return TTF_Render_Wrapped_Internal(font, text, STR_UTF8, fg, bg, wrapLength, RENDER_SHADED);
-}
-
-SDL_Surface* TTF_RenderUNICODE_Shaded_Wrapped(TTF_Font *font, const Uint16 *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
-{
-    return TTF_Render_Wrapped_Internal(font, (const char *)text, STR_UNICODE, fg, bg, wrapLength, RENDER_SHADED);
-}
-
-SDL_Surface* TTF_RenderText_Blended_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, Uint32 wrapLength)
-{
-    return TTF_Render_Wrapped_Internal(font, text, STR_TEXT, fg, fg /* unused */, wrapLength, RENDER_BLENDED);
-}
-
-SDL_Surface* TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, Uint32 wrapLength)
-{
-    return TTF_Render_Wrapped_Internal(font, text, STR_UTF8, fg, fg /* unused */, wrapLength, RENDER_BLENDED);
-}
-
-SDL_Surface* TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font, const Uint16 *text, SDL_Color fg, Uint32 wrapLength)
-{
-    return TTF_Render_Wrapped_Internal(font, (const char *)text, STR_UNICODE, fg, fg /* unused */, wrapLength, RENDER_BLENDED);
-}
-
-SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
-{
-    return TTF_Render_Wrapped_Internal(font, text, STR_TEXT, fg, bg, wrapLength, RENDER_LCD);
-}
-
-SDL_Surface* TTF_RenderUTF8_LCD_Wrapped(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
-{
-    return TTF_Render_Wrapped_Internal(font, text, STR_UTF8, fg, bg, wrapLength, RENDER_LCD);
-}
-
-SDL_Surface* TTF_RenderUNICODE_LCD_Wrapped(TTF_Font *font, const Uint16 *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength)
-{
-    return TTF_Render_Wrapped_Internal(font, (const char *)text, STR_UNICODE, fg, bg, wrapLength, RENDER_LCD);
-}
-
-SDL_Surface* TTF_RenderGlyph_Blended(TTF_Font *font, Uint16 ch, SDL_Color fg)
-{
-    return TTF_RenderGlyph32_Blended(font, ch, fg);
-}
-
-SDL_Surface* TTF_RenderGlyph32_Blended(TTF_Font *font, Uint32 ch, SDL_Color fg)
-{
-    Uint8 utf8[7];
-
-    TTF_CHECK_POINTER(font, NULL);
-
-    if (!Char_to_UTF8(ch, utf8)) {
-        return NULL;
-    }
-
-    return TTF_RenderUTF8_Blended(font, (char *)utf8, fg);
+    return TTF_Render_Wrapped_Internal(font, text, length, fg, bg, wrapLength, RENDER_LCD);
 }
 
 void TTF_SetFontStyle(TTF_Font *font, int style)
@@ -4061,7 +3620,7 @@ void TTF_SetFontStyle(TTF_Font *font, int style)
     int prev_style;
     long face_style;
 
-    TTF_CHECK_POINTER(font,);
+    TTF_CHECK_FONT(font,);
 
     prev_style = font->style;
     face_style = font->face->style_flags;
@@ -4090,7 +3649,7 @@ int TTF_GetFontStyle(const TTF_Font *font)
     int style;
     long face_style;
 
-    TTF_CHECK_POINTER(font, -1);
+    TTF_CHECK_FONT(font, -1);
 
     style = font->style;
     face_style = font->face->style_flags;
@@ -4108,7 +3667,7 @@ int TTF_GetFontStyle(const TTF_Font *font)
 
 void TTF_SetFontOutline(TTF_Font *font, int outline)
 {
-    TTF_CHECK_POINTER(font,);
+    TTF_CHECK_FONT(font,);
 
     font->outline_val = SDL_max(0, outline);
     TTF_initFontMetrics(font);
@@ -4117,14 +3676,14 @@ void TTF_SetFontOutline(TTF_Font *font, int outline)
 
 int TTF_GetFontOutline(const TTF_Font *font)
 {
-    TTF_CHECK_POINTER(font, -1);
+    TTF_CHECK_FONT(font, -1);
 
     return font->outline_val;
 }
 
 void TTF_SetFontHinting(TTF_Font *font, int hinting)
 {
-    TTF_CHECK_POINTER(font,);
+    TTF_CHECK_FONT(font,);
 
     if (hinting == TTF_HINTING_LIGHT || hinting == TTF_HINTING_LIGHT_SUBPIXEL) {
         font->ft_load_target = FT_LOAD_TARGET_LIGHT;
@@ -4147,7 +3706,7 @@ void TTF_SetFontHinting(TTF_Font *font, int hinting)
 
 int TTF_GetFontHinting(const TTF_Font *font)
 {
-    TTF_CHECK_POINTER(font, -1);
+    TTF_CHECK_FONT(font, -1);
 
     if (font->ft_load_target == FT_LOAD_TARGET_LIGHT) {
         if (font->render_subpixel == 0) {
@@ -4165,7 +3724,7 @@ int TTF_GetFontHinting(const TTF_Font *font)
 
 bool TTF_SetFontSDF(TTF_Font *font, bool enabled)
 {
-    TTF_CHECK_POINTER(font, false);
+    TTF_CHECK_FONT(font, false);
 #if TTF_USE_SDF
     font->render_sdf = enabled;
     Flush_Cache(font);
@@ -4178,13 +3737,14 @@ bool TTF_SetFontSDF(TTF_Font *font, bool enabled)
 
 bool TTF_GetFontSDF(const TTF_Font *font)
 {
-    TTF_CHECK_POINTER(font, false);
+    TTF_CHECK_FONT(font, false);
+
     return font->render_sdf;
 }
 
 void TTF_SetFontWrappedAlign(TTF_Font *font, int align)
 {
-    TTF_CHECK_POINTER(font,);
+    TTF_CHECK_FONT(font,);
 
     /* input not checked, unknown values assumed to be TTF_WRAPPED_ALIGN_LEFT */
     if (align == TTF_WRAPPED_ALIGN_CENTER) {
@@ -4198,7 +3758,8 @@ void TTF_SetFontWrappedAlign(TTF_Font *font, int align)
 
 int TTF_GetFontWrappedAlign(const TTF_Font *font)
 {
-    TTF_CHECK_POINTER(font,-1);
+    TTF_CHECK_FONT(font,-1);
+
     return font->horizontal_align;
 }
 
@@ -4217,18 +3778,13 @@ int TTF_WasInit(void)
     return TTF_initialized;
 }
 
-int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous_ch, Uint16 ch)
-{
-    return TTF_GetFontKerningSizeGlyphs32(font, previous_ch, ch);
-}
-
-int TTF_GetFontKerningSizeGlyphs32(TTF_Font *font, Uint32 previous_ch, Uint32 ch)
+int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint32 previous_ch, Uint32 ch)
 {
     FT_Error error;
     c_glyph *prev_glyph, *glyph;
     FT_Vector delta;
 
-    TTF_CHECK_POINTER(font, -1);
+    TTF_CHECK_FONT(font, -1);
 
     if (ch == UNICODE_BOM_NATIVE || ch == UNICODE_BOM_SWAPPED) {
         return 0;
@@ -4256,7 +3812,8 @@ int TTF_GetFontKerningSizeGlyphs32(TTF_Font *font, Uint32 previous_ch, Uint32 ch
 
 bool TTF_IsFontScalable(const TTF_Font *font)
 {
-    TTF_CHECK_POINTER(font, false);
+    TTF_CHECK_FONT(font, false);
+
     return FT_IS_SCALABLE(font->face);
 }
 

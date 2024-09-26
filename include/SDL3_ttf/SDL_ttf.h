@@ -103,24 +103,6 @@ extern SDL_DECLSPEC void SDLCALL TTF_GetFreeTypeVersion(int *major, int *minor, 
 extern SDL_DECLSPEC void SDLCALL TTF_GetHarfBuzzVersion(int *major, int *minor, int *patch);
 
 /**
- * ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark)
- */
-#define UNICODE_BOM_NATIVE  0xFEFF
-#define UNICODE_BOM_SWAPPED 0xFFFE
-
-/**
- * Tell SDL_ttf whether UNICODE text is generally byteswapped.
- *
- * A UNICODE BOM character in a string will override this setting for the
- * remainder of that string.
- *
- * \param swapped boolean to indicate whether text is byteswapped.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- */
-extern SDL_DECLSPEC void SDLCALL TTF_ByteSwappedUNICODE(bool swapped);
-
-/**
  * The internal structure containing font information.
  *
  * Opaque data!
@@ -649,7 +631,7 @@ extern SDL_DECLSPEC long SDLCALL TTF_FontFaces(const TTF_Font *font);
  * are more likely to not be fixed-width in most cases.
  *
  * \param font the font to query.
- * \returns true if fixed-width, false if not.
+ * \returns true if the font is fixed-width, false otherwise.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -688,28 +670,6 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_FontFaceFamilyName(const TTF_Font *
 extern SDL_DECLSPEC const char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *font);
 
 /**
- * Check whether a glyph is provided by the font for a 16-bit codepoint.
- *
- * Note that this version of the function takes a 16-bit character code, which
- * covers the Basic Multilingual Plane, but is insufficient to cover the
- * entire set of possible Unicode values, including emoji glyphs. You should
- * use TTF_GlyphIsProvided32() instead, which offers the same functionality
- * but takes a 32-bit codepoint instead.
- *
- * The only reason to use this function is that it was available since the
- * beginning of time, more or less.
- *
- * \param font the font to query.
- * \param ch the character code to check.
- * \returns true if font provides a glyph for this character, false if not.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_GlyphIsProvided32
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint16 ch);
-
-/**
  * Check whether a glyph is provided by the font for a 32-bit codepoint.
  *
  * This is the same as TTF_GlyphIsProvided(), but takes a 32-bit character
@@ -723,36 +683,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint16 ch);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_GlyphIsProvided32(TTF_Font *font, Uint32 ch);
-
-/**
- * Query the metrics (dimensions) of a font's 16-bit glyph.
- *
- * To understand what these metrics mean, here is a useful link:
- *
- * https://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
- *
- * Note that this version of the function takes a 16-bit character code, which
- * covers the Basic Multilingual Plane, but is insufficient to cover the
- * entire set of possible Unicode values, including emoji glyphs. You should
- * use TTF_GlyphMetrics32() instead, which offers the same functionality but
- * takes a 32-bit codepoint instead.
- *
- * The only reason to use this function is that it was available since the
- * beginning of time, more or less.
- *
- * \param font the font to query.
- * \param ch the character code to check.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_GlyphMetrics32
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
-                        int *minx, int *maxx,
-                        int *miny, int *maxy, int *advance);
+extern SDL_DECLSPEC bool SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint32 ch);
 
 /**
  * Query the metrics (dimensions) of a font's 32-bit glyph.
@@ -773,36 +704,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_GlyphMetrics32(TTF_Font *font, Uint32 ch,
-                        int *minx, int *maxx,
-                        int *miny, int *maxy, int *advance);
-
-/**
- * Calculate the dimensions of a rendered string of Latin1 text.
- *
- * This will report the width and height, in pixels, of the space that the
- * specified string will take to fully render.
- *
- * This does not need to render the string to do this calculation.
- *
- * You almost certainly want TTF_SizeUTF8() unless you're sure you have a
- * 1-byte Latin1 encoding. US ASCII characters will work with either function,
- * but most other Unicode characters packed into a `const char *` will need
- * UTF-8.
- *
- * \param font the font to query.
- * \param text text to calculate, in Latin1 encoding.
- * \param w will be filled with width, in pixels, on return.
- * \param h will be filled with height, in pixels, on return.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SizeUTF8
- * \sa TTF_SizeUNICODE
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_SizeText(TTF_Font *font, const char *text, int *w, int *h);
+extern SDL_DECLSPEC bool SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *miny, int *maxy, int *advance);
 
 /**
  * Calculate the dimensions of a rendered string of UTF-8 text.
@@ -814,72 +716,15 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SizeText(TTF_Font *font, const char *text, 
  *
  * \param font the font to query.
  * \param text text to calculate, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated text.
  * \param w will be filled with width, in pixels, on return.
  * \param h will be filled with height, in pixels, on return.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SizeUNICODE
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_SizeUTF8(TTF_Font *font, const char *text, int *w, int *h);
-
-/**
- * Calculate the dimensions of a rendered string of UCS-2 text.
- *
- * This will report the width and height, in pixels, of the space that the
- * specified string will take to fully render.
- *
- * This does not need to render the string to do this calculation.
- *
- * Please note that this function is named "Unicode" but currently expects
- * UCS-2 encoding (16 bits per codepoint). This does not give you access to
- * large Unicode values, such as emoji glyphs. These codepoints are accessible
- * through the UTF-8 version of this function.
- *
- * \param font the font to query.
- * \param text text to calculate, in UCS-2 encoding.
- * \param w will be filled with width, in pixels, on return.
- * \param h will be filled with height, in pixels, on return.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SizeUTF8
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h);
-
-/**
- * Calculate how much of a Latin1 string will fit in a given width.
- *
- * This reports the number of characters that can be rendered before reaching
- * `measure_width`.
- *
- * This does not need to render the string to do this calculation.
- *
- * You almost certainly want TTF_MeasureUTF8() unless you're sure you have a
- * 1-byte Latin1 encoding. US ASCII characters will work with either function,
- * but most other Unicode characters packed into a `const char *` will need
- * UTF-8.
- *
- * \param font the font to query.
- * \param text text to calculate, in Latin1 encoding.
- * \param measure_width maximum width, in pixels, available for the string.
- * \param extent on return, filled with latest calculated width.
- * \param count on return, filled with number of characters that can be
- *              rendered.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_MeasureText
- * \sa TTF_MeasureUTF8
- * \sa TTF_MeasureUNICODE
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_MeasureText(TTF_Font *font, const char *text, int measure_width, int *extent, int *count);
+extern SDL_DECLSPEC bool SDLCALL TTF_SizeText(TTF_Font *font, const char *text, size_t length, int *w, int *h);
 
 /**
  * Calculate how much of a UTF-8 string will fit in a given width.
@@ -891,6 +736,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_MeasureText(TTF_Font *font, const char *tex
  *
  * \param font the font to query.
  * \param text text to calculate, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated text.
  * \param measure_width maximum width, in pixels, available for the string.
  * \param extent on return, filled with latest calculated width.
  * \param count on return, filled with number of characters that can be
@@ -899,45 +745,11 @@ extern SDL_DECLSPEC bool SDLCALL TTF_MeasureText(TTF_Font *font, const char *tex
  *          information.
  *
  * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_MeasureText
- * \sa TTF_MeasureUTF8
- * \sa TTF_MeasureUNICODE
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_MeasureUTF8(TTF_Font *font, const char *text, int measure_width, int *extent, int *count);
+extern SDL_DECLSPEC bool SDLCALL TTF_MeasureText(TTF_Font *font, const char *text, size_t length, int measure_width, int *extent, int *count);
 
 /**
- * Calculate how much of a UCS-2 string will fit in a given width.
- *
- * This reports the number of characters that can be rendered before reaching
- * `measure_width`.
- *
- * This does not need to render the string to do this calculation.
- *
- * Please note that this function is named "Unicode" but currently expects
- * UCS-2 encoding (16 bits per codepoint). This does not give you access to
- * large Unicode values, such as emoji glyphs. These codepoints are accessible
- * through the UTF-8 version of this function.
- *
- * \param font the font to query.
- * \param text text to calculate, in UCS-2 encoding.
- * \param measure_width maximum width, in pixels, available for the string.
- * \param extent on return, filled with latest calculated width.
- * \param count on return, filled with number of characters that can be
- *              rendered.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_MeasureText
- * \sa TTF_MeasureUTF8
- * \sa TTF_MeasureUNICODE
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *text, int measure_width, int *extent, int *count);
-
-/**
- * Render Latin1 text at fast quality to a new 8-bit surface.
+ * Render UTF-8 text at fast quality to a new 8-bit surface.
  *
  * This function will allocate a new 8-bit, palettized surface. The surface's
  * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
@@ -950,124 +762,24 @@ extern SDL_DECLSPEC bool SDLCALL TTF_MeasureUNICODE(TTF_Font *font, const Uint16
  *
  * This will not wrap on newline characters.
  *
- * You almost certainly want TTF_RenderUTF8_Solid() unless you're sure you
- * have a 1-byte Latin1 encoding. US ASCII characters will work with either
- * function, but most other Unicode characters packed into a `const char *`
- * will need UTF-8.
- *
  * You can render at other quality levels with TTF_RenderText_Shaded,
  * TTF_RenderText_Blended, and TTF_RenderText_LCD.
  *
  * \param font the font to render with.
- * \param text text to render, in Latin1 encoding.
- * \param fg the foreground color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Solid
- * \sa TTF_RenderUNICODE_Solid
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font,
-                const char *text, SDL_Color fg);
-
-/**
- * Render UTF-8 text at fast quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
- * will be set to the text color.
- *
- * This will not word-wrap the string; you'll get a surface with a single line
- * of text, as long as the string requires. You can use
- * TTF_RenderUTF8_Solid_Wrapped() instead if you need to wrap the output to
- * multiple lines.
- *
- * This will not wrap on newline characters.
- *
- * You can render at other quality levels with TTF_RenderUTF8_Shaded,
- * TTF_RenderUTF8_Blended, and TTF_RenderUTF8_LCD.
- *
- * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated text.
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderUTF8_Shaded
- * \sa TTF_RenderUTF8_Blended
- * \sa TTF_RenderUTF8_LCD
+ * \sa TTF_RenderText_Blended
+ * \sa TTF_RenderText_LCD
+ * \sa TTF_RenderText_Shaded
+ * \sa TTF_RenderText_Solid
+ * \sa TTF_RenderText_Solid_Wrapped
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid(TTF_Font *font,
-                const char *text, SDL_Color fg);
-
-/**
- * Render UCS-2 text at fast quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
- * will be set to the text color.
- *
- * This will not word-wrap the string; you'll get a surface with a single line
- * of text, as long as the string requires. You can use
- * TTF_RenderUNICODE_Solid_Wrapped() instead if you need to wrap the output to
- * multiple lines.
- *
- * This will not wrap on newline characters.
- *
- * Please note that this function is named "Unicode" but currently expects
- * UCS-2 encoding (16 bits per codepoint). This does not give you access to
- * large Unicode values, such as emoji glyphs. These codepoints are accessible
- * through the UTF-8 version of this function.
- *
- * You can render at other quality levels with TTF_RenderUNICODE_Shaded,
- * TTF_RenderUNICODE_Blended, and TTF_RenderUNICODE_LCD.
- *
- * \param font the font to render with.
- * \param text text to render, in UCS-2 encoding.
- * \param fg the foreground color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Solid
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid(TTF_Font *font,
-                const Uint16 *text, SDL_Color fg);
-
-/**
- * Render word-wrapped Latin1 text at fast quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
- * will be set to the text color.
- *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
- *
- * If wrapLength is 0, this function will only wrap on newline characters.
- *
- * You almost certainly want TTF_RenderUTF8_Solid_Wrapped() unless you're sure
- * you have a 1-byte Latin1 encoding. US ASCII characters will work with
- * either function, but most other Unicode characters packed into a `const
- * char *` will need UTF-8.
- *
- * You can render at other quality levels with TTF_RenderText_Shaded_Wrapped,
- * TTF_RenderText_Blended_Wrapped, and TTF_RenderText_LCD_Wrapped.
- *
- * \param font the font to render with.
- * \param text text to render, in Latin1 encoding.
- * \param fg the foreground color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Solid_Wrapped
- * \sa TTF_RenderUNICODE_Solid_Wrapped
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font *font,
-                const char *text, SDL_Color fg, Uint32 wrapLength);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font, const char *text, size_t length, SDL_Color fg);
 
 /**
  * Render word-wrapped UTF-8 text at fast quality to a new 8-bit surface.
@@ -1081,89 +793,23 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font 
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
  *
- * You can render at other quality levels with TTF_RenderUTF8_Shaded_Wrapped,
- * TTF_RenderUTF8_Blended_Wrapped, and TTF_RenderUTF8_LCD_Wrapped.
+ * You can render at other quality levels with TTF_RenderText_Shaded_Wrapped,
+ * TTF_RenderText_Blended_Wrapped, and TTF_RenderText_LCD_Wrapped.
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated text.
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderUTF8_Shaded_Wrapped
- * \sa TTF_RenderUTF8_Blended_Wrapped
- * \sa TTF_RenderUTF8_LCD_Wrapped
+ * \sa TTF_RenderText_Blended_Wrapped
+ * \sa TTF_RenderText_LCD_Wrapped
+ * \sa TTF_RenderText_Shaded_Wrapped
+ * \sa TTF_RenderText_Solid
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid_Wrapped(TTF_Font *font,
-                const char *text, SDL_Color fg, Uint32 wrapLength);
-
-/**
- * Render word-wrapped UCS-2 text at fast quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
- * will be set to the text color.
- *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
- *
- * If wrapLength is 0, this function will only wrap on newline characters.
- *
- * Please note that this function is named "Unicode" but currently expects
- * UCS-2 encoding (16 bits per codepoint). This does not give you access to
- * large Unicode values, such as emoji glyphs. These codepoints are accessible
- * through the UTF-8 version of this function.
- *
- * You can render at other quality levels with
- * TTF_RenderUNICODE_Shaded_Wrapped, TTF_RenderUNICODE_Blended_Wrapped, and
- * TTF_RenderUNICODE_LCD_Wrapped.
- *
- * \param font the font to render with.
- * \param text text to render, in UCS-2 encoding.
- * \param fg the foreground color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Solid_Wrapped
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid_Wrapped(TTF_Font *font,
-                const Uint16 *text, SDL_Color fg, Uint32 wrapLength);
-
-/**
- * Render a single 16-bit glyph at fast quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
- * will be set to the text color.
- *
- * The glyph is rendered without any padding or centering in the X direction,
- * and aligned normally in the Y direction.
- *
- * Note that this version of the function takes a 16-bit character code, which
- * covers the Basic Multilingual Plane, but is insufficient to cover the
- * entire set of possible Unicode values, including emoji glyphs. You should
- * use TTF_RenderGlyph32_Solid() instead, which offers the same functionality
- * but takes a 32-bit codepoint instead.
- *
- * The only reason to use this function is that it was available since the
- * beginning of time, more or less.
- *
- * You can render at other quality levels with TTF_RenderGlyph_Shaded,
- * TTF_RenderGlyph_Blended, and TTF_RenderGlyph_LCD.
- *
- * \param font the font to render with.
- * \param ch the character to render.
- * \param fg the foreground color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderGlyph32_Solid
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font,
-                Uint16 ch, SDL_Color fg);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, int wrapLength);
 
 /**
  * Render a single 32-bit glyph at fast quality to a new 8-bit surface.
@@ -1175,13 +821,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font,
  * The glyph is rendered without any padding or centering in the X direction,
  * and aligned normally in the Y direction.
  *
- * This is the same as TTF_RenderGlyph_Solid(), but takes a 32-bit character
- * instead of 16-bit, and thus can render a larger range. If you are sure
- * you'll have an SDL_ttf that's version 2.0.18 or newer, there's no reason
- * not to use this function exclusively.
- *
- * You can render at other quality levels with TTF_RenderGlyph32_Shaded,
- * TTF_RenderGlyph32_Blended, and TTF_RenderGlyph32_LCD.
+ * You can render at other quality levels with TTF_RenderGlyph_Shaded,
+ * TTF_RenderGlyph_Blended, and TTF_RenderGlyph_LCD.
  *
  * \param font the font to render with.
  * \param ch the character to render.
@@ -1190,15 +831,14 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font,
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderGlyph32_Shaded
- * \sa TTF_RenderGlyph32_Blended
- * \sa TTF_RenderGlyph32_LCD
+ * \sa TTF_RenderGlyph_Blended
+ * \sa TTF_RenderGlyph_LCD
+ * \sa TTF_RenderGlyph_Shaded
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Solid(TTF_Font *font,
-                Uint32 ch, SDL_Color fg);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font, Uint32 ch, SDL_Color fg);
 
 /**
- * Render Latin1 text at high quality to a new 8-bit surface.
+ * Render UTF-8 text at high quality to a new 8-bit surface.
  *
  * This function will allocate a new 8-bit, palettized surface. The surface's
  * 0 pixel will be the specified background color, while other pixels have
@@ -1212,128 +852,24 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Solid(TTF_Font *font
  *
  * This will not wrap on newline characters.
  *
- * You almost certainly want TTF_RenderUTF8_Shaded() unless you're sure you
- * have a 1-byte Latin1 encoding. US ASCII characters will work with either
- * function, but most other Unicode characters packed into a `const char *`
- * will need UTF-8.
- *
  * You can render at other quality levels with TTF_RenderText_Solid,
  * TTF_RenderText_Blended, and TTF_RenderText_LCD.
  *
  * \param font the font to render with.
- * \param text text to render, in Latin1 encoding.
- * \param fg the foreground color for the text.
- * \param bg the background color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Shaded
- * \sa TTF_RenderUNICODE_Shaded
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font,
-                const char *text, SDL_Color fg, SDL_Color bg);
-
-/**
- * Render UTF-8 text at high quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the specified background color, while other pixels have
- * varying degrees of the foreground color. This function returns the new
- * surface, or NULL if there was an error.
- *
- * This will not word-wrap the string; you'll get a surface with a single line
- * of text, as long as the string requires. You can use
- * TTF_RenderUTF8_Shaded_Wrapped() instead if you need to wrap the output to
- * multiple lines.
- *
- * This will not wrap on newline characters.
- *
- * You can render at other quality levels with TTF_RenderUTF8_Solid,
- * TTF_RenderUTF8_Blended, and TTF_RenderUTF8_LCD.
- *
- * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderUNICODE_Shaded
+ * \sa TTF_RenderText_Blended
+ * \sa TTF_RenderText_LCD
+ * \sa TTF_RenderText_Shaded
+ * \sa TTF_RenderText_Solid
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded(TTF_Font *font,
-                const char *text, SDL_Color fg, SDL_Color bg);
-
-/**
- * Render UCS-2 text at high quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the specified background color, while other pixels have
- * varying degrees of the foreground color. This function returns the new
- * surface, or NULL if there was an error.
- *
- * This will not word-wrap the string; you'll get a surface with a single line
- * of text, as long as the string requires. You can use
- * TTF_RenderUNICODE_Shaded_Wrapped() instead if you need to wrap the output
- * to multiple lines.
- *
- * This will not wrap on newline characters.
- *
- * Please note that this function is named "Unicode" but currently expects
- * UCS-2 encoding (16 bits per codepoint). This does not give you access to
- * large Unicode values, such as emoji glyphs. These codepoints are accessible
- * through the UTF-8 version of this function.
- *
- * You can render at other quality levels with TTF_RenderUNICODE_Solid,
- * TTF_RenderUNICODE_Blended, and TTF_RenderUNICODE_LCD.
- *
- * \param font the font to render with.
- * \param text text to render, in UCS-2 encoding.
- * \param fg the foreground color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Shaded
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded(TTF_Font *font,
-                const Uint16 *text, SDL_Color fg, SDL_Color bg);
-
-/**
- * Render word-wrapped Latin1 text at high quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the specified background color, while other pixels have
- * varying degrees of the foreground color. This function returns the new
- * surface, or NULL if there was an error.
- *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
- *
- * If wrapLength is 0, this function will only wrap on newline characters.
- *
- * You almost certainly want TTF_RenderUTF8_Shaded_Wrapped() unless you're
- * sure you have a 1-byte Latin1 encoding. US ASCII characters will work with
- * either function, but most other Unicode characters packed into a `const
- * char *` will need UTF-8.
- *
- * You can render at other quality levels with TTF_RenderText_Solid_Wrapped,
- * TTF_RenderText_Blended_Wrapped, and TTF_RenderText_LCD_Wrapped.
- *
- * \param font the font to render with.
- * \param text text to render, in Latin1 encoding.
- * \param fg the foreground color for the text.
- * \param bg the background color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Shaded_Wrapped
- * \sa TTF_RenderUNICODE_Shaded_Wrapped
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font *font,
-                const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg);
 
 /**
  * Render word-wrapped UTF-8 text at high quality to a new 8-bit surface.
@@ -1348,92 +884,23 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
  *
- * You can render at other quality levels with TTF_RenderUTF8_Solid_Wrapped,
- * TTF_RenderUTF8_Blended_Wrapped, and TTF_RenderUTF8_LCD_Wrapped.
+ * You can render at other quality levels with TTF_RenderText_Solid_Wrapped,
+ * TTF_RenderText_Blended_Wrapped, and TTF_RenderText_LCD_Wrapped.
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated text.
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderUTF8_Solid_Wrapped
- * \sa TTF_RenderUTF8_Blended_Wrapped
- * \sa TTF_RenderUTF8_LCD_Wrapped
+ * \sa TTF_RenderText_Blended_Wrapped
+ * \sa TTF_RenderText_LCD_Wrapped
+ * \sa TTF_RenderText_Shaded
+ * \sa TTF_RenderText_Solid_Wrapped
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded_Wrapped(TTF_Font *font,
-                const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
-
-/**
- * Render word-wrapped UCS-2 text at high quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the specified background color, while other pixels have
- * varying degrees of the foreground color. This function returns the new
- * surface, or NULL if there was an error.
- *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
- *
- * If wrapLength is 0, this function will only wrap on newline characters.
- *
- * Please note that this function is named "Unicode" but currently expects
- * UCS-2 encoding (16 bits per codepoint). This does not give you access to
- * large Unicode values, such as emoji glyphs. These codepoints are accessible
- * through the UTF-8 version of this function.
- *
- * You can render at other quality levels with
- * TTF_RenderUNICODE_Solid_Wrapped, TTF_RenderUNICODE_Blended_Wrapped, and
- * TTF_RenderUNICODE_LCD_Wrapped.
- *
- * \param font the font to render with.
- * \param text text to render, in UCS-2 encoding.
- * \param fg the foreground color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Shaded_Wrapped
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded_Wrapped(TTF_Font *font,
-                const Uint16 *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
-
-/**
- * Render a single 16-bit glyph at high quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the specified background color, while other pixels have
- * varying degrees of the foreground color. This function returns the new
- * surface, or NULL if there was an error.
- *
- * The glyph is rendered without any padding or centering in the X direction,
- * and aligned normally in the Y direction.
- *
- * Note that this version of the function takes a 16-bit character code, which
- * covers the Basic Multilingual Plane, but is insufficient to cover the
- * entire set of possible Unicode values, including emoji glyphs. You should
- * use TTF_RenderGlyph32_Shaded() instead, which offers the same functionality
- * but takes a 32-bit codepoint instead.
- *
- * The only reason to use this function is that it was available since the
- * beginning of time, more or less.
- *
- * You can render at other quality levels with TTF_RenderGlyph_Solid,
- * TTF_RenderGlyph_Blended, and TTF_RenderGlyph_LCD.
- *
- * \param font the font to render with.
- * \param ch the character to render.
- * \param fg the foreground color for the text.
- * \param bg the background color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderGlyph32_Shaded
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
-                Uint16 ch, SDL_Color fg, SDL_Color bg);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength);
 
 /**
  * Render a single 32-bit glyph at high quality to a new 8-bit surface.
@@ -1446,13 +913,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
  * The glyph is rendered without any padding or centering in the X direction,
  * and aligned normally in the Y direction.
  *
- * This is the same as TTF_RenderGlyph_Shaded(), but takes a 32-bit character
- * instead of 16-bit, and thus can render a larger range. If you are sure
- * you'll have an SDL_ttf that's version 2.0.18 or newer, there's no reason
- * not to use this function exclusively.
- *
- * You can render at other quality levels with TTF_RenderGlyph32_Solid,
- * TTF_RenderGlyph32_Blended, and TTF_RenderGlyph32_LCD.
+ * You can render at other quality levels with TTF_RenderGlyph_Solid,
+ * TTF_RenderGlyph_Blended, and TTF_RenderGlyph_LCD.
  *
  * \param font the font to render with.
  * \param ch the character to render.
@@ -1461,15 +923,14 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderGlyph32_Solid
- * \sa TTF_RenderGlyph32_Blended
- * \sa TTF_RenderGlyph32_LCD
+ * \sa TTF_RenderGlyph_Blended
+ * \sa TTF_RenderGlyph_LCD
+ * \sa TTF_RenderGlyph_Solid
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Shaded(TTF_Font *font,
-                Uint32 ch, SDL_Color fg, SDL_Color bg);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font, Uint32 ch, SDL_Color fg, SDL_Color bg);
 
 /**
- * Render Latin1 text at high quality to a new ARGB surface.
+ * Render UTF-8 text at high quality to a new ARGB surface.
  *
  * This function will allocate a new 32-bit, ARGB surface, using alpha
  * blending to dither the font with the given color. This function returns the
@@ -1482,122 +943,23 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Shaded(TTF_Font *fon
  *
  * This will not wrap on newline characters.
  *
- * You almost certainly want TTF_RenderUTF8_Blended() unless you're sure you
- * have a 1-byte Latin1 encoding. US ASCII characters will work with either
- * function, but most other Unicode characters packed into a `const char *`
- * will need UTF-8.
- *
  * You can render at other quality levels with TTF_RenderText_Solid,
- * TTF_RenderText_Blended, and TTF_RenderText_LCD.
- *
- * \param font the font to render with.
- * \param text text to render, in Latin1 encoding.
- * \param fg the foreground color for the text.
- * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Shaded
- * \sa TTF_RenderUNICODE_Shaded
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
-                const char *text, SDL_Color fg);
-
-/**
- * Render UTF-8 text at high quality to a new ARGB surface.
- *
- * This function will allocate a new 32-bit, ARGB surface, using alpha
- * blending to dither the font with the given color. This function returns the
- * new surface, or NULL if there was an error.
- *
- * This will not word-wrap the string; you'll get a surface with a single line
- * of text, as long as the string requires. You can use
- * TTF_RenderUTF8_Blended_Wrapped() instead if you need to wrap the output to
- * multiple lines.
- *
- * This will not wrap on newline characters.
- *
- * You can render at other quality levels with TTF_RenderUTF8_Solid,
- * TTF_RenderUTF8_Shaded, and TTF_RenderUTF8_LCD.
+ * TTF_RenderText_Shaded, and TTF_RenderText_LCD.
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated text.
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderUNICODE_Blended
+ * \sa TTF_RenderText_Blended_Wrapped
+ * \sa TTF_RenderText_LCD
+ * \sa TTF_RenderText_Shaded
+ * \sa TTF_RenderText_Solid
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended(TTF_Font *font,
-                const char *text, SDL_Color fg);
-
-/**
- * Render UCS-2 text at high quality to a new ARGB surface.
- *
- * This function will allocate a new 32-bit, ARGB surface, using alpha
- * blending to dither the font with the given color. This function returns the
- * new surface, or NULL if there was an error.
- *
- * This will not word-wrap the string; you'll get a surface with a single line
- * of text, as long as the string requires. You can use
- * TTF_RenderUNICODE_Blended_Wrapped() instead if you need to wrap the output
- * to multiple lines.
- *
- * This will not wrap on newline characters.
- *
- * Please note that this function is named "Unicode" but currently expects
- * UCS-2 encoding (16 bits per codepoint). This does not give you access to
- * large Unicode values, such as emoji glyphs. These codepoints are accessible
- * through the UTF-8 version of this function.
- *
- * You can render at other quality levels with TTF_RenderUNICODE_Solid,
- * TTF_RenderUNICODE_Shaded, and TTF_RenderUNICODE_LCD.
- *
- * \param font the font to render with.
- * \param text text to render, in UCS-2 encoding.
- * \param fg the foreground color for the text.
- * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Blended
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended(TTF_Font *font,
-                const Uint16 *text, SDL_Color fg);
-
-/**
- * Render word-wrapped Latin1 text at high quality to a new ARGB surface.
- *
- * This function will allocate a new 32-bit, ARGB surface, using alpha
- * blending to dither the font with the given color. This function returns the
- * new surface, or NULL if there was an error.
- *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
- *
- * If wrapLength is 0, this function will only wrap on newline characters.
- *
- * You almost certainly want TTF_RenderUTF8_Blended_Wrapped() unless you're
- * sure you have a 1-byte Latin1 encoding. US ASCII characters will work with
- * either function, but most other Unicode characters packed into a `const
- * char *` will need UTF-8.
- *
- * You can render at other quality levels with TTF_RenderText_Solid_Wrapped,
- * TTF_RenderText_Shaded_Wrapped, and TTF_RenderText_LCD_Wrapped.
- *
- * \param font the font to render with.
- * \param text text to render, in Latin1 encoding.
- * \param fg the foreground color for the text.
- * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Blended_Wrapped
- * \sa TTF_RenderUNICODE_Blended_Wrapped
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Font *font,
-                const char *text, SDL_Color fg, Uint32 wrapLength);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font, const char *text, size_t length, SDL_Color fg);
 
 /**
  * Render word-wrapped UTF-8 text at high quality to a new ARGB surface.
@@ -1611,89 +973,23 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Fon
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
  *
- * You can render at other quality levels with TTF_RenderUTF8_Solid_Wrapped,
- * TTF_RenderUTF8_Shaded_Wrapped, and TTF_RenderUTF8_LCD_Wrapped.
+ * You can render at other quality levels with TTF_RenderText_Solid_Wrapped,
+ * TTF_RenderText_Shaded_Wrapped, and TTF_RenderText_LCD_Wrapped.
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated text.
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderUTF8_Solid_Wrapped
- * \sa TTF_RenderUTF8_Shaded_Wrapped
- * \sa TTF_RenderUTF8_LCD_Wrapped
+ * \sa TTF_RenderText_Blended
+ * \sa TTF_RenderText_LCD_Wrapped
+ * \sa TTF_RenderText_Shaded_Wrapped
+ * \sa TTF_RenderText_Solid_Wrapped
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended_Wrapped(TTF_Font *font,
-                const char *text, SDL_Color fg, Uint32 wrapLength);
-
-/**
- * Render word-wrapped UCS-2 text at high quality to a new ARGB surface.
- *
- * This function will allocate a new 32-bit, ARGB surface, using alpha
- * blending to dither the font with the given color. This function returns the
- * new surface, or NULL if there was an error.
- *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
- *
- * If wrapLength is 0, this function will only wrap on newline characters.
- *
- * Please note that this function is named "Unicode" but currently expects
- * UCS-2 encoding (16 bits per codepoint). This does not give you access to
- * large Unicode values, such as emoji glyphs. These codepoints are accessible
- * through the UTF-8 version of this function.
- *
- * You can render at other quality levels with
- * TTF_RenderUNICODE_Solid_Wrapped, TTF_RenderUNICODE_Shaded_Wrapped, and
- * TTF_RenderUNICODE_LCD_Wrapped.
- *
- * \param font the font to render with.
- * \param text text to render, in UCS-2 encoding.
- * \param fg the foreground color for the text.
- * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_Blended_Wrapped
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended_Wrapped(TTF_Font *font,
-                const Uint16 *text, SDL_Color fg, Uint32 wrapLength);
-
-/**
- * Render a single 16-bit glyph at high quality to a new ARGB surface.
- *
- * This function will allocate a new 32-bit, ARGB surface, using alpha
- * blending to dither the font with the given color. This function returns the
- * new surface, or NULL if there was an error.
- *
- * The glyph is rendered without any padding or centering in the X direction,
- * and aligned normally in the Y direction.
- *
- * Note that this version of the function takes a 16-bit character code, which
- * covers the Basic Multilingual Plane, but is insufficient to cover the
- * entire set of possible Unicode values, including emoji glyphs. You should
- * use TTF_RenderGlyph32_Blended() instead, which offers the same
- * functionality but takes a 32-bit codepoint instead.
- *
- * The only reason to use this function is that it was available since the
- * beginning of time, more or less.
- *
- * You can render at other quality levels with TTF_RenderGlyph_Solid,
- * TTF_RenderGlyph_Shaded, and TTF_RenderGlyph_LCD.
- *
- * \param font the font to render with.
- * \param ch the character to render.
- * \param fg the foreground color for the text.
- * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderGlyph32_Blended
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font,
-                Uint16 ch, SDL_Color fg);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, int wrapLength);
 
 /**
  * Render a single 32-bit glyph at high quality to a new ARGB surface.
@@ -1705,13 +1001,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font
  * The glyph is rendered without any padding or centering in the X direction,
  * and aligned normally in the Y direction.
  *
- * This is the same as TTF_RenderGlyph_Blended(), but takes a 32-bit character
- * instead of 16-bit, and thus can render a larger range. If you are sure
- * you'll have an SDL_ttf that's version 2.0.18 or newer, there's no reason
- * not to use this function exclusively.
- *
- * You can render at other quality levels with TTF_RenderGlyph32_Solid,
- * TTF_RenderGlyph32_Shaded, and TTF_RenderGlyph32_LCD.
+ * You can render at other quality levels with TTF_RenderGlyph_Solid,
+ * TTF_RenderGlyph_Shaded, and TTF_RenderGlyph_LCD.
  *
  * \param font the font to render with.
  * \param ch the character to render.
@@ -1720,15 +1011,14 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderGlyph32_Solid
- * \sa TTF_RenderGlyph32_Shaded
- * \sa TTF_RenderGlyph32_LCD
+ * \sa TTF_RenderGlyph_LCD
+ * \sa TTF_RenderGlyph_Shaded
+ * \sa TTF_RenderGlyph_Solid
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Blended(TTF_Font *font,
-                Uint32 ch, SDL_Color fg);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font, Uint32 ch, SDL_Color fg);
 
 /**
- * Render Latin1 text at LCD subpixel quality to a new ARGB surface.
+ * Render UTF-8 text at LCD subpixel quality to a new ARGB surface.
  *
  * This function will allocate a new 32-bit, ARGB surface, and render
  * alpha-blended text using FreeType's LCD subpixel rendering. This function
@@ -1741,127 +1031,24 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Blended(TTF_Font *fo
  *
  * This will not wrap on newline characters.
  *
- * You almost certainly want TTF_RenderUTF8_LCD() unless you're sure you have
- * a 1-byte Latin1 encoding. US ASCII characters will work with either
- * function, but most other Unicode characters packed into a `const char *`
- * will need UTF-8.
- *
  * You can render at other quality levels with TTF_RenderText_Solid,
  * TTF_RenderText_Shaded, and TTF_RenderText_Blended.
  *
  * \param font the font to render with.
- * \param text text to render, in Latin1 encoding.
- * \param fg the foreground color for the text.
- * \param bg the background color for the text.
- * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_LCD
- * \sa TTF_RenderUNICODE_LCD
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font,
-                const char *text, SDL_Color fg, SDL_Color bg);
-
-/**
- * Render UTF-8 text at LCD subpixel quality to a new ARGB surface.
- *
- * This function will allocate a new 32-bit, ARGB surface, and render
- * alpha-blended text using FreeType's LCD subpixel rendering. This function
- * returns the new surface, or NULL if there was an error.
- *
- * This will not word-wrap the string; you'll get a surface with a single line
- * of text, as long as the string requires. You can use
- * TTF_RenderUTF8_LCD_Wrapped() instead if you need to wrap the output to
- * multiple lines.
- *
- * This will not wrap on newline characters.
- *
- * You can render at other quality levels with TTF_RenderUTF8_Solid,
- * TTF_RenderUTF8_Shaded, and TTF_RenderUTF8_Blended.
- *
- * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderUNICODE_LCD
+ * \sa TTF_RenderText_Blended
+ * \sa TTF_RenderText_LCD_Wrapped
+ * \sa TTF_RenderText_Shaded
+ * \sa TTF_RenderText_Solid
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_LCD(TTF_Font *font,
-                const char *text, SDL_Color fg, SDL_Color bg);
-
-/**
- * Render UCS-2 text at LCD subpixel quality to a new ARGB surface.
- *
- * This function will allocate a new 32-bit, ARGB surface, and render
- * alpha-blended text using FreeType's LCD subpixel rendering. This function
- * returns the new surface, or NULL if there was an error.
- *
- * This will not word-wrap the string; you'll get a surface with a single line
- * of text, as long as the string requires. You can use
- * TTF_RenderUNICODE_LCD_Wrapped() instead if you need to wrap the output to
- * multiple lines.
- *
- * This will not wrap on newline characters.
- *
- * Please note that this function is named "Unicode" but currently expects
- * UCS-2 encoding (16 bits per codepoint). This does not give you access to
- * large Unicode values, such as emoji glyphs. These codepoints are accessible
- * through the UTF-8 version of this function.
- *
- * You can render at other quality levels with TTF_RenderUNICODE_Solid,
- * TTF_RenderUNICODE_Shaded, and TTF_RenderUNICODE_Blended.
- *
- * \param font the font to render with.
- * \param text text to render, in UCS-2 encoding.
- * \param fg the foreground color for the text.
- * \param bg the background color for the text.
- * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_LCD
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_LCD(TTF_Font *font,
-                const Uint16 *text, SDL_Color fg, SDL_Color bg);
-
-/**
- * Render word-wrapped Latin1 text at LCD subpixel quality to a new ARGB
- * surface.
- *
- * This function will allocate a new 32-bit, ARGB surface, and render
- * alpha-blended text using FreeType's LCD subpixel rendering. This function
- * returns the new surface, or NULL if there was an error.
- *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
- *
- * If wrapLength is 0, this function will only wrap on newline characters.
- *
- * You almost certainly want TTF_RenderUTF8_LCD_Wrapped() unless you're sure
- * you have a 1-byte Latin1 encoding. US ASCII characters will work with
- * either function, but most other Unicode characters packed into a `const
- * char *` will need UTF-8.
- *
- * You can render at other quality levels with TTF_RenderText_Solid_Wrapped,
- * TTF_RenderText_Shaded_Wrapped, and TTF_RenderText_Blended_Wrapped.
- *
- * \param font the font to render with.
- * \param text text to render, in Latin1 encoding.
- * \param fg the foreground color for the text.
- * \param bg the background color for the text.
- * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_LCD_Wrapped
- * \sa TTF_RenderUNICODE_LCD_Wrapped
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *font,
-                const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg);
 
 /**
  * Render word-wrapped UTF-8 text at LCD subpixel quality to a new ARGB
@@ -1876,61 +1063,27 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *f
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
  *
- * You can render at other quality levels with TTF_RenderUTF8_Solid_Wrapped,
- * TTF_RenderUTF8_Shaded_Wrapped, and TTF_RenderUTF8_Blended_Wrapped.
+ * You can render at other quality levels with TTF_RenderText_Solid_Wrapped,
+ * TTF_RenderText_Shaded_Wrapped, and TTF_RenderText_Blended_Wrapped.
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderUTF8_Solid_Wrapped
- * \sa TTF_RenderUTF8_Shaded_Wrapped
- * \sa TTF_RenderUTF8_Blended_Wrapped
+ * \sa TTF_RenderText_Blended_Wrapped
+ * \sa TTF_RenderText_LCD
+ * \sa TTF_RenderText_Shaded_Wrapped
+ * \sa TTF_RenderText_Solid_Wrapped
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_LCD_Wrapped(TTF_Font *font,
-                const char *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength);
 
 /**
- * Render word-wrapped UCS-2 text at LCD subpixel quality to a new ARGB
- * surface.
- *
- * This function will allocate a new 32-bit, ARGB surface, and render
- * alpha-blended text using FreeType's LCD subpixel rendering. This function
- * returns the new surface, or NULL if there was an error.
- *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
- *
- * If wrapLength is 0, this function will only wrap on newline characters.
- *
- * Please note that this function is named "Unicode" but currently expects
- * UCS-2 encoding (16 bits per codepoint). This does not give you access to
- * large Unicode values, such as emoji glyphs. These codepoints are accessible
- * through the UTF-8 version of this function.
- *
- * You can render at other quality levels with
- * TTF_RenderUNICODE_Solid_Wrapped, TTF_RenderUNICODE_Shaded_Wrapped, and
- * TTF_RenderUNICODE_Blended_Wrapped.
- *
- * \param font the font to render with.
- * \param text text to render, in UCS-2 encoding.
- * \param fg the foreground color for the text.
- * \param bg the background color for the text.
- * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderUTF8_LCD_Wrapped
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_LCD_Wrapped(TTF_Font *font,
-                const Uint16 *text, SDL_Color fg, SDL_Color bg, Uint32 wrapLength);
-
-/**
- * Render a single 16-bit glyph at LCD subpixel quality to a new ARGB surface.
+ * Render a single 32-bit glyph at LCD subpixel quality to a new ARGB surface.
  *
  * This function will allocate a new 32-bit, ARGB surface, and render
  * alpha-blended text using FreeType's LCD subpixel rendering. This function
@@ -1938,15 +1091,6 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_LCD_Wrapped(TTF_Font
  *
  * The glyph is rendered without any padding or centering in the X direction,
  * and aligned normally in the Y direction.
- *
- * Note that this version of the function takes a 16-bit character code, which
- * covers the Basic Multilingual Plane, but is insufficient to cover the
- * entire set of possible Unicode values, including emoji glyphs. You should
- * use TTF_RenderGlyph32_LCD() instead, which offers the same functionality
- * but takes a 32-bit codepoint instead.
- *
- * This function only exists for consistency with the existing API at the time
- * of its addition.
  *
  * You can render at other quality levels with TTF_RenderGlyph_Solid,
  * TTF_RenderGlyph_Shaded, and TTF_RenderGlyph_Blended.
@@ -1959,51 +1103,12 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_LCD_Wrapped(TTF_Font
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_RenderGlyph32_LCD
+ * \sa TTF_RenderGlyph_Blended
+ * \sa TTF_RenderGlyph_Shaded
+ * \sa TTF_RenderGlyph_Solid
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font,
-                Uint16 ch, SDL_Color fg, SDL_Color bg);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font, Uint32 ch, SDL_Color fg, SDL_Color bg);
 
-/**
- * Render a single 32-bit glyph at LCD subpixel quality to a new ARGB surface.
- *
- * This function will allocate a new 32-bit, ARGB surface, and render
- * alpha-blended text using FreeType's LCD subpixel rendering. This function
- * returns the new surface, or NULL if there was an error.
- *
- * The glyph is rendered without any padding or centering in the X direction,
- * and aligned normally in the Y direction.
- *
- * This is the same as TTF_RenderGlyph_LCD(), but takes a 32-bit character
- * instead of 16-bit, and thus can render a larger range. Between the two, you
- * should always use this function.
- *
- * You can render at other quality levels with TTF_RenderGlyph32_Solid,
- * TTF_RenderGlyph32_Shaded, and TTF_RenderGlyph32_Blended.
- *
- * \param font the font to render with.
- * \param ch the character to render.
- * \param fg the foreground color for the text.
- * \param bg the background color for the text.
- * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderGlyph32_Solid
- * \sa TTF_RenderGlyph32_Shaded
- * \sa TTF_RenderGlyph32_Blended
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_LCD(TTF_Font *font,
-                Uint32 ch, SDL_Color fg, SDL_Color bg);
-
-
-/* For compatibility with previous versions, here are the old functions */
-#define TTF_RenderText(font, text, fg, bg)  \
-    TTF_RenderText_Shaded(font, text, fg, bg)
-#define TTF_RenderUTF8(font, text, fg, bg)  \
-    TTF_RenderUTF8_Shaded(font, text, fg, bg)
-#define TTF_RenderUNICODE(font, text, fg, bg)   \
-    TTF_RenderUNICODE_Shaded(font, text, fg, bg)
 
 /**
  * Dispose of a previously-created font.
@@ -2076,29 +1181,6 @@ extern SDL_DECLSPEC void SDLCALL TTF_Quit(void);
 extern SDL_DECLSPEC int SDLCALL TTF_WasInit(void);
 
 /**
- * Query the kerning size of two 16-bit glyphs.
- *
- * Note that this version of the function takes 16-bit character
- * codes, which covers the Basic Multilingual Plane, but is insufficient
- * to cover the entire set of possible Unicode values, including emoji
- * glyphs. You should use TTF_GetFontKerningSizeGlyphs32() instead, which
- * offers the same functionality but takes a 32-bit codepoints instead.
- *
- * The only reason to use this function is that it was available since
- * the beginning of time, more or less.
- *
- * \param font the font to query.
- * \param previous_ch the previous character's code, 16 bits.
- * \param ch the current character's code, 16 bits.
- * \returns The kerning size between the two specified characters, in pixels, or -1 on error.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_GetFontKerningSizeGlyphs32
- */
-extern SDL_DECLSPEC int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 previous_ch, Uint16 ch);
-
-/**
  * Query the kerning size of two 32-bit glyphs.
  *
  * This is the same as TTF_GetFontKerningSizeGlyphs(), but takes 32-bit
@@ -2113,7 +1195,7 @@ extern SDL_DECLSPEC int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint16 prev
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int TTF_GetFontKerningSizeGlyphs32(TTF_Font *font, Uint32 previous_ch, Uint32 ch);
+extern SDL_DECLSPEC int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint32 previous_ch, Uint32 ch);
 
 /**
  * Enable Signed Distance Field rendering for a font.

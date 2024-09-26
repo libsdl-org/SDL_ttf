@@ -1,6 +1,5 @@
 SDL3_ttf_0.0.0 {
   global:
-    TTF_ByteSwappedUNICODE;
     TTF_CloseFont;
     TTF_FontAscent;
     TTF_FontDescent;
@@ -13,7 +12,6 @@ SDL3_ttf_0.0.0 {
     TTF_GetFontHinting;
     TTF_GetFontKerning;
     TTF_GetFontKerningSizeGlyphs;
-    TTF_GetFontKerningSizeGlyphs32;
     TTF_GetFontOutline;
     TTF_GetFontSDF;
     TTF_GetFontStyle;
@@ -21,27 +19,19 @@ SDL3_ttf_0.0.0 {
     TTF_GetFreeTypeVersion;
     TTF_GetHarfBuzzVersion;
     TTF_GlyphIsProvided;
-    TTF_GlyphIsProvided32;
     TTF_GlyphMetrics;
-    TTF_GlyphMetrics32;
     TTF_Init;
     TTF_IsFontScalable;
     TTF_MeasureText;
-    TTF_MeasureUNICODE;
-    TTF_MeasureUTF8;
     TTF_OpenFont;
     TTF_OpenFontDPI;
     TTF_OpenFontDPIIO;
+    TTF_OpenFontIO;
     TTF_OpenFontIndex;
     TTF_OpenFontIndexDPI;
     TTF_OpenFontIndexDPIIO;
     TTF_OpenFontIndexIO;
-    TTF_OpenFontIO;
     TTF_Quit;
-    TTF_RenderGlyph32_Blended;
-    TTF_RenderGlyph32_LCD;
-    TTF_RenderGlyph32_Shaded;
-    TTF_RenderGlyph32_Solid;
     TTF_RenderGlyph_Blended;
     TTF_RenderGlyph_LCD;
     TTF_RenderGlyph_Shaded;
@@ -54,22 +44,6 @@ SDL3_ttf_0.0.0 {
     TTF_RenderText_Shaded_Wrapped;
     TTF_RenderText_Solid;
     TTF_RenderText_Solid_Wrapped;
-    TTF_RenderUNICODE_Blended;
-    TTF_RenderUNICODE_Blended_Wrapped;
-    TTF_RenderUNICODE_LCD;
-    TTF_RenderUNICODE_LCD_Wrapped;
-    TTF_RenderUNICODE_Shaded;
-    TTF_RenderUNICODE_Shaded_Wrapped;
-    TTF_RenderUNICODE_Solid;
-    TTF_RenderUNICODE_Solid_Wrapped;
-    TTF_RenderUTF8_Blended;
-    TTF_RenderUTF8_Blended_Wrapped;
-    TTF_RenderUTF8_LCD;
-    TTF_RenderUTF8_LCD_Wrapped;
-    TTF_RenderUTF8_Shaded;
-    TTF_RenderUTF8_Shaded_Wrapped;
-    TTF_RenderUTF8_Solid;
-    TTF_RenderUTF8_Solid_Wrapped;
     TTF_SetFontDirection;
     TTF_SetFontHinting;
     TTF_SetFontKerning;
@@ -82,8 +56,6 @@ SDL3_ttf_0.0.0 {
     TTF_SetFontStyle;
     TTF_SetFontWrappedAlign;
     TTF_SizeText;
-    TTF_SizeUNICODE;
-    TTF_SizeUTF8;
     TTF_Version;
     TTF_WasInit;
   local: *;

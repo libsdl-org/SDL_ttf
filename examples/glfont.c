@@ -42,7 +42,7 @@
 #define HEIGHT  480
 
 #define TTF_GLFONT_USAGE \
-"Usage: %s [-utf8|-unicode] [-b] [-i] [-u] [-fgcol r,g,b] [-bgcol r,g,b] \
+"Usage: %s [-b] [-i] [-u] [-fgcol r,g,b] [-bgcol r,g,b] \
 <font>.ttf [ptsize] [text]\n"
 
 static void SDL_GL_Enter2DMode(int width, int height)
@@ -198,28 +198,16 @@ int main(int argc, char *argv[])
     SDL_Event event;
     int renderstyle;
     int dump;
-    enum {
-        RENDER_LATIN1,
-        RENDER_UTF8,
-        RENDER_UNICODE
-    } rendertype;
     char *message;
 
     /* Look for special execution mode */
     dump = 0;
     /* Look for special rendering types */
     renderstyle = TTF_STYLE_NORMAL;
-    rendertype = RENDER_LATIN1;
     /* Default is black and white */
     forecol = &black;
     backcol = &white;
     for (i=1; argv[i] && argv[i][0] == '-'; ++i) {
-        if (SDL_strcmp(argv[i], "-utf8") == 0) {
-            rendertype = RENDER_UTF8;
-        } else
-        if (SDL_strcmp(argv[i], "-unicode") == 0) {
-            rendertype = RENDER_UNICODE;
-        } else
         if (SDL_strcmp(argv[i], "-b") == 0) {
             renderstyle |= TTF_STYLE_BOLD;
         } else
@@ -326,33 +314,7 @@ int main(int argc, char *argv[])
     } else {
         message = DEFAULT_TEXT;
     }
-    switch (rendertype) {
-        case RENDER_LATIN1:
-        text = TTF_RenderText_Blended(font, message, *forecol);
-        break;
-
-        case RENDER_UTF8:
-        text = TTF_RenderUTF8_Blended(font, message, *forecol);
-        break;
-
-        case RENDER_UNICODE:
-        {
-            /* This doesn't actually work because you can't pass
-               UNICODE text in via command line, AFAIK, but...
-             */
-            Uint16 unicode_text[BUFSIZ];
-            int index;
-            for (index = 0; (message[0] || message[1]); ++index) {
-                unicode_text[index]  = ((Uint8 *)message)[0];
-                unicode_text[index] <<= 8;
-                unicode_text[index] |= ((Uint8 *)message)[1];
-                message += 2;
-            }
-            text = TTF_RenderUNICODE_Blended(font,
-                    unicode_text, *forecol);
-        }
-        break;
-    }
+    text = TTF_RenderText_Blended(font, message, 0, *forecol);
     if (text == NULL) {
         fprintf(stderr, "Couldn't render text: %s\n", SDL_GetError());
         TTF_CloseFont(font);

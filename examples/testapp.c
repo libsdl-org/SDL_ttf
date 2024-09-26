@@ -898,7 +898,7 @@ int main(void)
              }
           }
 #endif
-          if (!TTF_SizeUTF8(font, text, &w, &h)) {
+          if (!TTF_SizeText(font, text, &w, &h)) {
              SDL_Log("size failed");
           }
           if (w == 0) {
@@ -920,20 +920,20 @@ int main(void)
                 switch (render_mode)
                 {
                    case 1:
-                      text_surface = TTF_RenderUTF8_Blended(font, text, textcol);
+                      text_surface = TTF_RenderText_Blended(font, text, 0, textcol);
                       break;
                    case 2:
-                      text_surface = TTF_RenderUTF8_Shaded(font, text, textcol, boardcol);
+                      text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
                       break;
                    case 3:
 #if defined(HAVE_LCD)
-                      text_surface = TTF_RenderUTF8_LCD(font, text, textcol, boardcol);
+                      text_surface = TTF_RenderText_LCD(font, text, 0, textcol, boardcol);
 #else
-                      text_surface = TTF_RenderUTF8_Shaded(font, text, textcol, boardcol);
+                      text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
 #endif
                       break;
                    case 0:
-                      text_surface = TTF_RenderUTF8_Solid(font, text, textcol);
+                      text_surface = SDL_RenderText_Solid(font, text, 0, textcol);
                       break;
                 }
 
@@ -948,20 +948,20 @@ int main(void)
                 switch (render_mode)
                 {
                    case 1:
-                      text_surface = TTF_RenderUTF8_Blended(font, text, textcol);
+                      text_surface = TTF_RenderText_Blended(font, text, 0, textcol);
                       break;
                    case 2:
-                      text_surface = TTF_RenderUTF8_Shaded(font, text, textcol, boardcol);
+                      text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
                       break;
                    case 3:
 #if defined(HAVE_LCD)
-                      text_surface = TTF_RenderUTF8_LCD(font, text, textcol, boardcol);
+                      text_surface = TTF_RenderText_LCD(font, text, 0, textcol, boardcol);
 #else
-                      text_surface = TTF_RenderUTF8_Shaded(font, text, textcol, boardcol);
+                      text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
 #endif
                       break;
                    case 0:
-                      text_surface = TTF_RenderUTF8_Solid(font, text, textcol);
+                      text_surface = SDL_RenderText_Solid(font, text, 0, textcol);
                       break;
                 }
 
@@ -988,24 +988,24 @@ int main(void)
                 switch (render_mode)
                 {
                    case 1:
-                      text_surface = TTF_RenderUTF8_Blended_Wrapped(font, text, textcol, wrap_size);
+                      text_surface = TTF_RenderText_Blended_Wrapped(font, text, 0, textcol, wrap_size);
                       break;
                    case 2:
-                      text_surface = TTF_RenderUTF8_Shaded_Wrapped(font, text, textcol, boardcol, wrap_size);
+                      text_surface = TTF_RenderText_Shaded_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
                       break;
                    case 3:
 #if defined(HAVE_LCD)
-                      text_surface = TTF_RenderUTF8_LCD_Wrapped(font, text, textcol, boardcol, wrap_size);
+                      text_surface = TTF_RenderText_LCD_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
 #else
-                      text_surface = TTF_RenderUTF8_Shaded_Wrapped(font, text, textcol, boardcol, wrap_size);
+                      text_surface = TTF_RenderText_Shaded_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
 #endif
                       break;
                    case 0:
-                      text_surface = TTF_RenderUTF8_Solid_Wrapped(font, text, textcol, wrap_size);
+                      text_surface = TTF_RenderText_Solid_Wrapped(font, text, 0, textcol, wrap_size);
                       break;
                 }
 #else
-                text_surface = TTF_RenderUTF8_Blended_Wrapped(font, text, textcol, wrap_size);
+                text_surface = TTF_RenderText_Blended_Wrapped(font, text, 0, textcol, wrap_size);
 #endif
                 if (print_elapsed_ticks) {
                    END_MEASURE
