@@ -166,13 +166,12 @@ static SDL_INLINE int hasNEON(void)
 #define DIVIDE_BY_255(x)    DIVIDE_BY_255_SIGNED(x, 1)
 
 
-#define CACHED_METRICS  0x20
+#define CACHED_METRICS  0x10
 
-#define CACHED_BITMAP   0x01
-#define CACHED_PIXMAP   0x02
-#define CACHED_COLOR    0x04
-#define CACHED_LCD      0x08
-#define CACHED_SUBPIX   0x10
+#define CACHED_PIXMAP   0x01
+#define CACHED_COLOR    0x02
+#define CACHED_LCD      0x04
+#define CACHED_SUBPIX   0x08
 
 
 typedef struct {
@@ -189,7 +188,6 @@ typedef struct {
 typedef struct cached_glyph {
     int stored;
     FT_UInt index;
-    TTF_Image bitmap;
     TTF_Image pixmap;
     int sz_left;
     int sz_top;
@@ -342,7 +340,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t
 
 static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength, render_mode_t render_mode);
 
-static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx, int want_bitmap, int want_pixmap, int want_color, int want_lcd, int want_subpixel, int translation, c_glyph **out_glyph, TTF_Image **out_image);
+static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx, int want_pixmap, int want_color, int want_lcd, int want_subpixel, int translation, c_glyph **out_glyph, TTF_Image **out_image);
 
 static void Flush_Cache(TTF_Font *font);
 
@@ -1117,7 +1115,7 @@ static int Get_Alignment(void)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-value"
 #endif
-#define BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, IS_LCD, WB_WP_WC, WS, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) \
+#define BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, IS_LCD, WP_WC, WS, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) \
                                                                                                                         \
 static int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg)              \
 {                                                                                                                       \
@@ -1131,7 +1129,7 @@ static int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, 
         int y       = font->pos_buf[i].y;                                                                               \
         TTF_Image *image;                                                                                               \
                                                                                                                         \
-        if (Find_GlyphByIndex(font, idx, WB_WP_WC, WS, x & 63, NULL, &image)) {                                    \
+        if (Find_GlyphByIndex(font, idx, WP_WC, WS, x & 63, NULL, &image)) {                                    \
             int above_w, above_h;                                                                                       \
             Uint32 dstskip;                                                                                             \
             Sint32 srcskip; /* Can be negative */                                                                       \
@@ -1227,14 +1225,13 @@ static int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, 
 }                                                                                                                       \
                                                                                                                         \
 
-#define BITMAP  CACHED_BITMAP, 0, 0, 0
-#define PIXMAP  0, CACHED_PIXMAP, 0, 0
-#define COLOR   0, 0, CACHED_COLOR, 0
-#define LCD     0, 0, 0, CACHED_LCD
+#define PIXMAP  CACHED_PIXMAP, 0, 0
+#define COLOR   0, CACHED_COLOR, 0
+#define LCD     0, 0, CACHED_LCD
 
 #define SUBPIX  CACHED_SUBPIX
 
-/* BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, WANT_BITMAP_PIXMAP_COLOR_LCD, WANT_SUBPIXEL, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) */
+/* BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, WANT_PIXMAP_COLOR_LCD, WANT_SUBPIXEL, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) */
 
 #if defined(HAVE_SSE2_INTRINSICS)
 BUILD_RENDER_LINE(SSE_Shaded            , 0, 0, 0, PIXMAP, 0     ,                       ,                , BG_SSE     )
@@ -2056,7 +2053,6 @@ static void Flush_Glyph(c_glyph *glyph)
     glyph->stored = 0;
     glyph->index = 0;
     Flush_Glyph_Image(&glyph->pixmap);
-    Flush_Glyph_Image(&glyph->bitmap);
 }
 
 static void Flush_Cache(TTF_Font *font)
@@ -2168,21 +2164,17 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
         cached->stored |= CACHED_METRICS;
     }
 
-    if (((want & CACHED_BITMAP) && !(cached->stored & CACHED_BITMAP)) ||
-        ((want & CACHED_PIXMAP) && !(cached->stored & CACHED_PIXMAP)) ||
+    if (((want & CACHED_PIXMAP) && !(cached->stored & CACHED_PIXMAP)) ||
         ((want & CACHED_COLOR) && !(cached->stored & CACHED_COLOR)) ||
         ((want & CACHED_LCD) && !(cached->stored & CACHED_LCD)) ||
          (want & CACHED_SUBPIX)
        ) {
-        const int  mono  = (want & CACHED_BITMAP);
-        TTF_Image *dst   = (mono ? &cached->bitmap : &cached->pixmap);
+        TTF_Image *dst   = &cached->pixmap;
         FT_Glyph   glyph = NULL;
         FT_Bitmap *src;
         FT_Render_Mode ft_render_mode;
 
-        if (mono) {
-            ft_render_mode = FT_RENDER_MODE_MONO;
-        } else {
+        {
             ft_render_mode = FT_RENDER_MODE_NORMAL;
 #if TTF_USE_SDF
             if ((want & CACHED_COLOR) && font->render_sdf) {
@@ -2409,29 +2401,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
                     }                                                       \
                 }
 
-                if (mono) {
-                    if (src->pixel_mode == FT_PIXEL_MODE_MONO) {
-                        while (quotient--) {
-                            MONO_MONO(8);
-                        }
-                        MONO_MONO(remainder);
-                    } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY2) {
-                        while (quotient--) {
-                            MONO_GRAY2(4);
-                        }
-                        MONO_GRAY2(remainder);
-                    } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY4) {
-                        while (quotient--) {
-                            MONO_GRAY4(2);
-                        }
-                        MONO_GRAY4(remainder);
-                    } else {
-                        while (quotient--) {
-                            unsigned char c = *srcp++;
-                            *dstp++ = (c >= 0x80) ? 1 : 0;
-                        }
-                    }
-                } else if (src->pixel_mode == FT_PIXEL_MODE_MONO) {
+                if (src->pixel_mode == FT_PIXEL_MODE_MONO) {
                     /* This special case wouldn't be here if the FT_Render_Glyph()
                      * function wasn't buggy when it tried to render a .fon font with 256
                      * shades of gray.  Instead, it returns a black and white surface
@@ -2508,9 +2478,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
                 /* SDL_memset(pixmap + dst->width - font->glyph_overhang, 0, font->glyph_overhang); */
                 for (offset = 1; offset <= font->glyph_overhang; ++offset) {
                     for (col = dst->width - 1; col > 0; --col) {
-                        if (mono) {
-                            pixmap[col] |= pixmap[col-1];
-                        } else {
+                        {
                             int pixel = (pixmap[col] + pixmap[col-1]);
                             if (pixel > NUM_GRAYS - 1) {
                                 pixel = NUM_GRAYS - 1;
@@ -2538,9 +2506,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
 #endif
 
         /* Mark that we rendered this format */
-        if (mono) {
-            cached->stored |= CACHED_BITMAP;
-        } else if (src->pixel_mode == FT_PIXEL_MODE_LCD) {
+        if (src->pixel_mode == FT_PIXEL_MODE_LCD) {
             cached->stored |= CACHED_LCD;
         } else {
 #if TTF_USE_COLOR
@@ -2574,7 +2540,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
 }
 
 static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
-        int want_bitmap, int want_pixmap, int want_color, int want_lcd, int want_subpixel,
+        int want_pixmap, int want_color, int want_lcd, int want_subpixel,
         int translation, c_glyph **out_glyph, TTF_Image **out_image)
 {
     /* cache size is 256, get key by masking */
@@ -2588,15 +2554,11 @@ static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         *out_image = &glyph->pixmap;
     }
 
-    if (want_bitmap) {
-        *out_image = &glyph->bitmap;
-    }
-
     if (want_subpixel)
     {
         /* No a real cache, but if it always advances by integer pixels (eg translation 0 or same as previous),
          * this allows to render as fast as normal mode. */
-        int want = CACHED_METRICS | want_bitmap | want_pixmap | want_color | want_lcd | want_subpixel;
+        int want = CACHED_METRICS | want_pixmap | want_color | want_lcd | want_subpixel;
 
         if (glyph->stored && glyph->index != idx) {
             Flush_Glyph(glyph);
@@ -2619,15 +2581,11 @@ static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         glyph->index = idx;
         return Load_Glyph(font, glyph, want, translation);
     } else {
-        const int want = CACHED_METRICS | want_bitmap | want_pixmap | want_color | want_lcd;
+        const int want = CACHED_METRICS | want_pixmap | want_color | want_lcd;
 
         /* Faster check as it gets inlined */
         if (want_pixmap) {
             if ((glyph->stored & CACHED_PIXMAP) && glyph->index == idx) {
-                return true;
-            }
-        } else if (want_bitmap) {
-            if ((glyph->stored & CACHED_BITMAP) && glyph->index == idx) {
                 return true;
             }
         } else if (want_color) {
@@ -2683,7 +2641,7 @@ static FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
 static bool Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out_glyph)
 {
     FT_UInt idx = get_char_index(font, ch);
-    return Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, out_glyph, NULL);
+    return Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, out_glyph, NULL);
 }
 
 void TTF_CloseFont(TTF_Font *font)
@@ -3045,7 +3003,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
             continue;
         }
 #endif
-        if (!Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
+        if (!Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, &glyph, NULL)) {
             goto failure;
         }
 
