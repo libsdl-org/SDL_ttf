@@ -12,6 +12,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetFontKerning;
     TTF_GetFontLineSkip;
     TTF_GetFontOutline;
+    TTF_GetFontProperties;
     TTF_GetFontSDF;
     TTF_GetFontStyle;
     TTF_GetFontStyleName;
@@ -20,7 +21,6 @@ SDL3_ttf_0.0.0 {
     TTF_GetGlyphKerning;
     TTF_GetGlyphMetrics;
     TTF_GetHarfBuzzVersion;
-    TTF_GetNumFontFaces;
     TTF_Init;
     TTF_MeasureText;
     TTF_OpenFont;

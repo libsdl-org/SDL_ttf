@@ -42,7 +42,6 @@ The following functions have been renamed:
 * TTF_FontFaceFamilyName() => TTF_GetFontFamilyName()
 * TTF_FontFaceIsFixedWidth() => TTF_FontIsFixedWidth()
 * TTF_FontFaceStyleName() => TTF_GetFontStyleName()
-* TTF_FontFaces() => TTF_GetNumFontFaces()
 * TTF_FontHeight() => TTF_GetFontHeight()
 * TTF_FontLineSkip() => TTF_GetFontLineSkip()
 * TTF_GetFontWrappedAlign() => TTF_GetFontWrapAlignment()
@@ -76,6 +75,7 @@ The following functions have been removed:
 * TTF_OpenFontDPIIO() - replaced with TTF_OpenFontWithProperties()
 * TTF_OpenFontIndex() - replaced with TTF_OpenFontWithProperties()
 * TTF_OpenFontIndexDPI() - replaced with TTF_OpenFontWithProperties()
+* TTF_FontFaces() - can be retrieved from the font FT_Face, available in TTF_PROP_FONT_FACE_POINTER
 * TTF_OpenFontIndexDPIIO() - replaced with TTF_OpenFontWithProperties()
 * TTF_OpenFontIndexIO() - replaced with TTF_OpenFontWithProperties()
 * TTF_RenderUNICODE_Blended()
@@ -87,6 +87,7 @@ The following functions have been removed:
 * TTF_RenderUNICODE_Solid()
 * TTF_RenderUNICODE_Solid_Wrapped()
 * TTF_SizeUNICODE()
+
 The following symbols have been renamed:
 * TTF_WRAPPED_ALIGN_CENTER => TTF_HORIZONTAL_ALIGN_CENTER
 * TTF_WRAPPED_ALIGN_LEFT => TTF_HORIZONTAL_ALIGN_LEFT

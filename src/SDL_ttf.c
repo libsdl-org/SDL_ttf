@@ -223,6 +223,9 @@ struct TTF_Font {
     /* Freetype2 maintains all sorts of useful info itself */
     FT_Face face;
 
+    /* Properties exposed to the application */
+    SDL_PropertiesID props;
+
     /* We'll cache these ourselves */
     int height;
     int ascent;
@@ -1846,6 +1849,13 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     }
     face = font->face;
 
+    font->props = SDL_CreateProperties();
+    if (!font->props) {
+        TTF_CloseFont(font);
+        return NULL;
+    }
+    SDL_SetPointerProperty(font->props, TTF_PROP_FONT_FACE_POINTER, face);
+
     /* Set charmap for loaded font */
     found = 0;
 #if 0 /* Font debug code */
@@ -1919,6 +1929,7 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
         TTF_CloseFont(font);
         return NULL;
     }
+
     return font;
 }
 
@@ -2727,6 +2738,9 @@ void TTF_CloseFont(TTF_Font *font)
         hb_font_destroy(font->hb_font);
 #endif
         Flush_Cache(font);
+        if (font->props) {
+            SDL_DestroyProperties(font->props);
+        }
         if (font->face) {
             FT_Done_Face(font->face);
         }

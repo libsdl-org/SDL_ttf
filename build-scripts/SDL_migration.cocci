@@ -127,11 +127,6 @@
   (...)
 @@
 @@
-- TTF_FontFaces
-+ TTF_GetNumFontFaces
-  (...)
-@@
-@@
 - TTF_FontFaceIsFixedWidth
 + TTF_FontIsFixedWidth
   (...)
