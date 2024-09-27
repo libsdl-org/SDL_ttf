@@ -2788,6 +2788,13 @@ int TTF_GetFontLineSkip(const TTF_Font *font)
     return font->lineskip;
 }
 
+void TTF_SetFontLineSkip(TTF_Font *font, int lineskip)
+{
+    TTF_CHECK_FONT(font,);
+
+    font->lineskip = lineskip;
+}
+
 bool TTF_GetFontKerning(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, false);
