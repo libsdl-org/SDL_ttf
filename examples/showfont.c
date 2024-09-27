@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
     Scene scene;
     int ptsize;
     int i, done;
-    SDL_Color white = { 0xFF, 0xFF, 0xFF, 0 };
-    SDL_Color black = { 0x00, 0x00, 0x00, 0 };
+    SDL_Color white = { 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE };
+    SDL_Color black = { 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
     SDL_Color *forecol;
     SDL_Color *backcol;
     SDL_Event event;
@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
             dump = 1;
         } else
         if (SDL_strcmp(argv[i], "-fgcol") == 0) {
-            int r, g, b, a = 0xFF;
+            int r, g, b, a = SDL_ALPHA_OPAQUE;
             if (SDL_sscanf(argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
                 return(1);
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
             forecol->a = (Uint8)a;
         } else
         if (SDL_strcmp(argv[i], "-bgcol") == 0) {
-            int r, g, b, a = 0xFF;
+            int r, g, b, a = SDL_ALPHA_OPAQUE;
             if (SDL_sscanf(argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
                 return(1);

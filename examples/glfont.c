@@ -169,8 +169,8 @@ int main(int argc, char *argv[])
     SDL_Surface *text = NULL;
     int ptsize;
     int i, done;
-    SDL_Color white = { 0xFF, 0xFF, 0xFF, 0 };
-    SDL_Color black = { 0x00, 0x00, 0x00, 0 };
+    SDL_Color white = { 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE };
+    SDL_Color black = { 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
     SDL_Color *forecol;
     SDL_Color *backcol;
     GLenum gl_error;
