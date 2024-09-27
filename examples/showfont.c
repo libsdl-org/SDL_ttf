@@ -35,11 +35,10 @@
 #define HEIGHT  480
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
-    TextRenderSolid,
     TextRenderShaded,
     TextRenderBlended
 } TextRenderMethod;
@@ -106,9 +105,6 @@ int main(int argc, char *argv[])
     forecol = &black;
     backcol = &white;
     for (i=1; argv[i] && argv[i][0] == '-'; ++i) {
-        if (SDL_strcmp(argv[i], "-solid") == 0) {
-            rendermethod = TextRenderSolid;
-        } else
         if (SDL_strcmp(argv[i], "-shaded") == 0) {
             rendermethod = TextRenderShaded;
         } else
@@ -254,9 +250,6 @@ int main(int argc, char *argv[])
     /* Show which font file we're looking at */
     SDL_snprintf(string, sizeof(string), "Font file: %s", argv[0]);  /* possible overflow */
     switch (rendermethod) {
-    case TextRenderSolid:
-        text = TTF_RenderText_Solid(font, string, 0, *forecol);
-        break;
     case TextRenderShaded:
         text = TTF_RenderText_Shaded(font, string, 0, *forecol, *backcol);
         break;
@@ -280,13 +273,6 @@ int main(int argc, char *argv[])
         message = DEFAULT_TEXT;
     }
     switch (rendermethod) {
-    case TextRenderSolid:
-        if (wrap) {
-            text = TTF_RenderText_Solid_Wrapped(font, message, 0, *forecol, 0);
-        } else {
-            text = TTF_RenderText_Solid(font, message, 0, *forecol);
-        }
-        break;
     case TextRenderShaded:
         if (wrap) {
             text = TTF_RenderText_Shaded_Wrapped(font, message, 0, *forecol, *backcol, 0);

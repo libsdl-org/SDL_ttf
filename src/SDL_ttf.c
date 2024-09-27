@@ -325,7 +325,6 @@ static struct
     TTF_CHECK_POINTER("font", font, errval)
 
 typedef enum {
-    RENDER_SOLID = 0,
     RENDER_SHADED,
     RENDER_BLENDED,
     RENDER_LCD
@@ -1241,7 +1240,6 @@ static int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, 
 BUILD_RENDER_LINE(SSE_Shaded            , 0, 0, 0, PIXMAP, 0     ,                       ,                , BG_SSE     )
 BUILD_RENDER_LINE(SSE_Blended           , 1, 0, 0,  COLOR, 0     ,                       , BG_Blended_SSE ,            )
 BUILD_RENDER_LINE(SSE_Blended_Opaque    , 1, 1, 0,  COLOR, 0     , BG_Blended_Opaque_SSE ,                ,            )
-BUILD_RENDER_LINE(SSE_Solid             , 0, 0, 0, BITMAP, 0     ,                       ,                , BG_SSE     )
 BUILD_RENDER_LINE(SSE_Shaded_SP         , 0, 0, 0, PIXMAP, SUBPIX,                       ,                , BG_SSE     )
 BUILD_RENDER_LINE(SSE_Blended_SP        , 1, 0, 0,  COLOR, SUBPIX,                       , BG_Blended_SSE ,            )
 BUILD_RENDER_LINE(SSE_Blended_Opaque_SP , 1, 1, 0,  COLOR, SUBPIX, BG_Blended_Opaque_SSE ,                ,            )
@@ -1253,7 +1251,6 @@ BUILD_RENDER_LINE(SSE_LCD_SP            , 0, 0, 1,    LCD, SUBPIX,              
 BUILD_RENDER_LINE(NEON_Shaded           , 0, 0, 0, PIXMAP, 0     ,                       ,                , BG_NEON    )
 BUILD_RENDER_LINE(NEON_Blended          , 1, 0, 0,  COLOR, 0     ,                       , BG_Blended_NEON,            )
 BUILD_RENDER_LINE(NEON_Blended_Opaque   , 1, 1, 0,  COLOR, 0     , BG_Blended_Opaque_NEON,                ,            )
-BUILD_RENDER_LINE(NEON_Solid            , 0, 0, 0, BITMAP, 0     ,                       ,                , BG_NEON    )
 BUILD_RENDER_LINE(NEON_Shaded_SP        , 0, 0, 0, PIXMAP, SUBPIX,                       ,                , BG_NEON    )
 BUILD_RENDER_LINE(NEON_Blended_SP       , 1, 0, 0,  COLOR, SUBPIX,                       , BG_Blended_NEON,            )
 BUILD_RENDER_LINE(NEON_Blended_Opaque_SP, 1, 1, 0,  COLOR, SUBPIX, BG_Blended_Opaque_NEON,                ,            )
@@ -1265,7 +1262,6 @@ BUILD_RENDER_LINE(NEON_LCD_SP           , 0, 0, 1,    LCD, SUBPIX,              
 BUILD_RENDER_LINE(64_Shaded             , 0, 0, 0, PIXMAP, 0     ,                       ,                , BG_64      )
 BUILD_RENDER_LINE(64_Blended            , 1, 0, 0,  COLOR, 0     ,                       , BG_Blended_32  ,            )
 BUILD_RENDER_LINE(64_Blended_Opaque     , 1, 1, 0,  COLOR, 0     , BG_Blended_Opaque_32  ,                ,            )
-BUILD_RENDER_LINE(64_Solid              , 0, 0, 0, BITMAP, 0     ,                       ,                , BG_64      )
 BUILD_RENDER_LINE(64_Shaded_SP          , 0, 0, 0, PIXMAP, SUBPIX,                       ,                , BG_64      )
 BUILD_RENDER_LINE(64_Blended_SP         , 1, 0, 0,  COLOR, SUBPIX,                       , BG_Blended_32  ,            )
 BUILD_RENDER_LINE(64_Blended_Opaque_SP  , 1, 1, 0,  COLOR, SUBPIX, BG_Blended_Opaque_32  ,                ,            )
@@ -1275,7 +1271,6 @@ BUILD_RENDER_LINE(64_LCD_SP             , 0, 0, 1,    LCD, SUBPIX,              
 BUILD_RENDER_LINE(32_Shaded             , 0, 0, 0, PIXMAP, 0     ,                       ,                , BG_32      )
 BUILD_RENDER_LINE(32_Blended            , 1, 0, 0,  COLOR, 0     ,                       , BG_Blended_32  ,            )
 BUILD_RENDER_LINE(32_Blended_Opaque     , 1, 1, 0,  COLOR, 0     , BG_Blended_Opaque_32  ,                ,            )
-BUILD_RENDER_LINE(32_Solid              , 0, 0, 0, BITMAP, 0     ,                       ,                , BG_32      )
 BUILD_RENDER_LINE(32_Shaded_SP          , 0, 0, 0, PIXMAP, SUBPIX,                       ,                , BG_32      )
 BUILD_RENDER_LINE(32_Blended_SP         , 1, 0, 0,  COLOR, SUBPIX,                       , BG_Blended_32  ,            )
 BUILD_RENDER_LINE(32_Blended_Opaque_SP  , 1, 1, 0,  COLOR, SUBPIX, BG_Blended_Opaque_32  ,                ,            )
@@ -1285,7 +1280,6 @@ BUILD_RENDER_LINE(32_LCD_SP             , 0, 0, 1,    LCD, SUBPIX,              
 BUILD_RENDER_LINE(8_Shaded              , 0, 0, 0, PIXMAP, 0     ,                       ,                , BG         )
 BUILD_RENDER_LINE(8_Blended             , 1, 0, 0,  COLOR, 0     ,                       , BG_Blended     ,            )
 BUILD_RENDER_LINE(8_Blended_Opaque      , 1, 1, 0,  COLOR, 0     , BG_Blended_Opaque     ,                ,            )
-BUILD_RENDER_LINE(8_Solid               , 0, 0, 0, BITMAP, 0     ,                       ,                , BG         )
 BUILD_RENDER_LINE(8_Shaded_SP           , 0, 0, 0, PIXMAP, SUBPIX,                       ,                , BG         )
 BUILD_RENDER_LINE(8_Blended_SP          , 1, 0, 0,  COLOR, SUBPIX,                       , BG_Blended     ,            )
 BUILD_RENDER_LINE(8_Blended_Opaque_SP   , 1, 1, 0,  COLOR, SUBPIX, BG_Blended_Opaque     ,                ,            )
@@ -1298,7 +1292,6 @@ BUILD_RENDER_LINE(8_LCD_SP              , 0, 0, 1,    LCD, SUBPIX,              
 static int (*Render_Line_SDF_Shaded)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg) = NULL;
 BUILD_RENDER_LINE(SDF_Blended           , 1, 0, 0,  COLOR, 0     ,                       , BG_Blended_SDF ,            )
 BUILD_RENDER_LINE(SDF_Blended_Opaque    , 1, 1, 0,  COLOR, 0     , BG_Blended_Opaque_SDF ,                ,            )
-static int (*Render_Line_SDF_Solid)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg) = NULL;
 static int (*Render_Line_SDF_Shaded_SP)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg) = NULL;
 BUILD_RENDER_LINE(SDF_Blended_SP        , 1, 0, 0,  COLOR, SUBPIX,                       , BG_Blended_SDF ,            )
 BUILD_RENDER_LINE(SDF_Blended_Opaque_SP , 1, 1, 0,  COLOR, SUBPIX, BG_Blended_Opaque_SDF ,                ,            )
@@ -1314,8 +1307,6 @@ static int Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font *
 {
     /* Render line (pos_buf) to textbuf at (xstart, ystart) */
 
-    /* Subpixel with RENDER_SOLID doesn't make sense. */
-    /* (and 'cached->subpixel.translation' would need to distinguish bitmap/pixmap). */
     int is_opaque = (fg.a == SDL_ALPHA_OPAQUE);
 
 #define Call_Specific_Render_Line(NAME)                                                                     \
@@ -1339,14 +1330,12 @@ static int Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font *
                     return Render_Line_##NAME##_Blended_SP(font, textbuf, xstart, ystart, &fg);             \
                 }                                                                                           \
             }                                                                                               \
-        } else if (render_mode == RENDER_LCD) {                                                             \
+        } else /*if (render_mode == RENDER_LCD)*/ {                                                         \
             if (subpixel == 0) {                                                                            \
                 return Render_Line_##NAME##_LCD(font, textbuf, xstart, ystart, &fg);                        \
             } else {                                                                                        \
                 return Render_Line_##NAME##_LCD_SP(font, textbuf, xstart, ystart, &fg);                     \
             }                                                                                               \
-        } else {                                                                                            \
-            return Render_Line_##NAME##_Solid(font, textbuf, xstart, ystart, NULL);                         \
         }
 
 #if TTF_USE_SDF
@@ -1405,9 +1394,9 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
      * Considerer also for instance, that when we read 1 block of 16 bytes from source, for the blended
      * format (bbp == 4), it writes(and reads) 4 blocks of 16 in the dest, like BG_Blended_SSE()).
      *
-     * Remark: for Solid/Shaded, block ratio read/write is 1:1.
+     * Remark: for Shaded, block ratio read/write is 1:1.
      * For Color / LCD / SDF, it is byte vs byte or int. They are also fallback for
-     * Solid/Shaded/Blend, when it isn't contained in textbuf, see clip_glyph()
+     * Shaded/Blend, when it isn't contained in textbuf, see clip_glyph()
      *
      * So the pitch must contain "width * bytes_per_pixel", plus in the
      * worst case, writing at last pixel (1 * bytes_per_pixel), an extra "alignment * bytes_per_pixel".
@@ -1476,33 +1465,6 @@ static SDL_Surface *AllocateAlignedPixels(size_t width, size_t height, SDL_Pixel
     else {
         SDL_memset(pixels, (bgcolor & 0xff), size);
     }
-
-    return textbuf;
-}
-
-static SDL_Surface* Create_Surface_Solid(int width, int height, SDL_Color fg, Uint32 *color)
-{
-    SDL_Surface *textbuf = AllocateAlignedPixels(width, height, SDL_PIXELFORMAT_INDEX8, 0);
-    if (textbuf == NULL) {
-        return NULL;
-    }
-
-    /* Underline/Strikethrough color style */
-    *color = 1;
-
-    /* Fill the palette: 1 is foreground */
-    {
-        SDL_Palette *palette = SDL_GetSurfacePalette(textbuf);
-        palette->colors[0].r = 255 - fg.r;
-        palette->colors[0].g = 255 - fg.g;
-        palette->colors[0].b = 255 - fg.b;
-        palette->colors[1].r = fg.r;
-        palette->colors[1].g = fg.g;
-        palette->colors[1].b = fg.b;
-        palette->colors[1].a = fg.a;
-    }
-
-    SDL_SetSurfaceColorKey(textbuf, true, 0);
 
     return textbuf;
 }
@@ -3290,9 +3252,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t
     }
 
     /* Create surface for rendering */
-    if (render_mode == RENDER_SOLID) {
-        textbuf = Create_Surface_Solid(width, height, fg, &color);
-    } else if (render_mode == RENDER_SHADED) {
+    if (render_mode == RENDER_SHADED) {
         textbuf = Create_Surface_Shaded(width, height, fg, bg, &color);
     } else if (render_mode == RENDER_BLENDED) {
         textbuf = Create_Surface_Blended(width, height, fg, &color);
@@ -3324,20 +3284,6 @@ failure:
         SDL_DestroySurface(textbuf);
     }
     return NULL;
-}
-
-SDL_Surface* TTF_RenderText_Solid(TTF_Font *font, const char *text, size_t length, SDL_Color fg)
-{
-    return TTF_Render_Internal(font, text, length, fg, fg /* unused */, RENDER_SOLID);
-}
-
-SDL_Surface* TTF_RenderGlyph_Solid(TTF_Font *font, Uint32 ch, SDL_Color fg)
-{
-    char utf8[4], *end;
-
-    end = SDL_UCS4ToUTF8(ch, utf8);
-
-    return TTF_RenderText_Solid(font, utf8, (end - utf8), fg);
 }
 
 SDL_Surface* TTF_RenderText_Shaded(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg)
@@ -3717,9 +3663,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     height = rowHeight + lineskip * (numLines - 1);
 
     /* Create surface for rendering */
-    if (render_mode == RENDER_SOLID) {
-        textbuf = Create_Surface_Solid(width, height, fg, &color);
-    } else if (render_mode == RENDER_SHADED) {
+    if (render_mode == RENDER_SHADED) {
         textbuf = Create_Surface_Shaded(width, height, fg, bg, &color);
     } else if (render_mode == RENDER_BLENDED) {
         textbuf = Create_Surface_Blended(width, height, fg, &color);
@@ -3780,11 +3724,6 @@ failure:
         SDL_free(strLines);
     }
     return NULL;
-}
-
-SDL_Surface* TTF_RenderText_Solid_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, int wrapLength)
-{
-    return TTF_Render_Wrapped_Internal(font, text, length, fg, fg /* unused */, wrapLength, RENDER_SOLID);
 }
 
 SDL_Surface* TTF_RenderText_Shaded_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength)
