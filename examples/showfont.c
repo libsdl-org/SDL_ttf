@@ -35,7 +35,7 @@
 #define HEIGHT  480
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
     int hinting;
     int kerning;
     int wrap;
+    TTF_HorizontalAlignment align = TTF_HORIZONTAL_ALIGN_LEFT;
     int dump;
     char *message, string[128];
 
@@ -146,6 +147,19 @@ int main(int argc, char *argv[])
         } else
         if (SDL_strcmp(argv[i], "-wrap") == 0) {
             wrap = 1;
+        } else
+        if (SDL_strcmp(argv[i], "-align") == 0) {
+            ++i;
+            if (SDL_strcmp(argv[i], "left") == 0) {
+                align = TTF_HORIZONTAL_ALIGN_LEFT;
+            } else if (SDL_strcmp(argv[i], "center") == 0) {
+                align = TTF_HORIZONTAL_ALIGN_CENTER;
+            } else if (SDL_strcmp(argv[i], "right") == 0) {
+                align = TTF_HORIZONTAL_ALIGN_RIGHT;
+            } else {
+                SDL_Log(TTF_SHOWFONT_USAGE, argv0);
+                return (1);
+            }
         } else
         if (SDL_strcmp(argv[i], "-dump") == 0) {
             dump = 1;
@@ -213,6 +227,7 @@ int main(int argc, char *argv[])
     TTF_SetFontOutline(font, outline);
     TTF_SetFontKerning(font, kerning);
     TTF_SetFontHinting(font, hinting);
+    TTF_SetFontWrapAlignment(font, align);
 
     if(dump) {
         for(i = 48; i < 123; i++) {
