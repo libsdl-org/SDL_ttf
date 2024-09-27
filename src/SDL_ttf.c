@@ -2903,7 +2903,7 @@ bool TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
 #endif
 }
 
-bool TTF_SetFontScriptName(TTF_Font *font, const char *script)
+bool TTF_SetFontScript(TTF_Font *font, const char *script)
 {
     TTF_CHECK_FONT(font, false);
 
@@ -2923,6 +2923,46 @@ bool TTF_SetFontScriptName(TTF_Font *font, const char *script)
     scr = HB_TAG(a, b, c, d);
     font->hb_script = scr;
     return true;
+#else
+    return SDL_SetError("Unsupported");
+#endif
+}
+
+bool TTF_GetGlyphScript(Uint32 ch, char *script, size_t script_size)
+{
+#if TTF_USE_HARFBUZZ
+    TTF_CHECK_POINTER("script", script, false);
+
+    if (script_size < 5) {
+        return SDL_SetError("Insufficient script buffer size");
+    }
+
+    hb_buffer_t *hb_buffer = hb_buffer_create();
+
+    if (hb_buffer == NULL) {
+        return SDL_SetError("Cannot create harfbuzz buffer");
+    }
+
+    hb_unicode_funcs_t* hb_unicode_functions = hb_buffer_get_unicode_funcs(hb_buffer);
+
+    if (hb_unicode_functions == NULL) {
+        hb_buffer_destroy(hb_buffer);
+        return SDL_SetError("Cannot get harfbuzz unicode functions");
+    }
+
+    hb_buffer_clear_contents(hb_buffer);
+    hb_buffer_set_content_type(hb_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
+
+    uint8_t untagged_script[4] = { HB_UNTAG(hb_unicode_script(hb_unicode_functions, ch)) };
+    script[0] = (char)untagged_script[0];
+    script[1] = (char)untagged_script[1];
+    script[2] = (char)untagged_script[2];
+    script[3] = (char)untagged_script[3];
+    script[4] = '\0';
+
+    hb_buffer_destroy(hb_buffer);
+    return true;
+
 #else
     return SDL_SetError("Unsupported");
 #endif

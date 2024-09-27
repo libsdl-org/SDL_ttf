@@ -155,3 +155,8 @@
 - TTF_IsFontScalable
 + TTF_FontIsScalable
   (...)
+@@
+@@
+- TTF_SetFontScriptName
++ TTF_SetFontScript
+  (...)

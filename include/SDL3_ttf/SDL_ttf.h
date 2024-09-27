@@ -1280,7 +1280,7 @@ typedef enum TTF_Direction
  * - `TTF_DIRECTION_TTB` (Top to Bottom)
  * - `TTF_DIRECTION_BTT` (Bottom to Top)
  *
- * If SDL_ttf was not built with HarfBuzz support, this function returns -1.
+ * If SDL_ttf was not built with HarfBuzz support, this function returns false.
  *
  * \param font the font to specify a direction for.
  * \param direction the new direction for text to flow.
@@ -1299,10 +1299,30 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direct
  * The supplied script value must be a null-terminated string of exactly four
  * characters.
  *
- * If SDL_ttf was not built with HarfBuzz support, this function returns -1.
+ * If SDL_ttf was not built with HarfBuzz support, this function returns false.
  *
  * \param font the font to specify a script name for.
  * \param script null-terminated string of exactly 4 characters.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function is not thread-safe.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScript(TTF_Font *font, const char *script);
+
+/**
+ * Get the script used by a 32-bit codepoint.
+ *
+ * The supplied script value will be a null-terminated string of exactly four
+ * characters.
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns false.
+ *
+ * \param ch the character code to check.
+ * \param script a pointer filled in with the script used by `ch`.
+ * \param script_size the size of the script buffer, which must be at least 5 characters.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
@@ -1310,12 +1330,12 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direct
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScriptName(TTF_Font *font, const char *script);
+extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphScript(Uint32 ch, char *script, size_t script_size);
 
 /**
  * Set language to be used for text shaping by a font.
  *
- * If SDL_ttf was not built with HarfBuzz support, this function returns -1.
+ * If SDL_ttf was not built with HarfBuzz support, this function returns false.
  *
  * \param font the font to specify a language for.
  * \param language_bcp47 a null-terminated string containing the desired language's BCP47 code. Or null to reset the value.
