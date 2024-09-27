@@ -158,7 +158,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_Init(void);
  *
  * \sa TTF_CloseFont
  */
-extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFont(const char *file, int ptsize);
+extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFont(const char *file, float ptsize);
 
 /**
  * Create a font from an SDL_IOStream, using a specified point size.
@@ -185,7 +185,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFont(const char *file, int ptsize
  *
  * \sa TTF_CloseFont
  */
-extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool closeio, int ptsize);
+extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool closeio, float ptsize);
 
 /**
  * Create a font with the specified properties.
@@ -231,7 +231,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_Properties
 #define TTF_PROP_FONT_IOSTREAM_POINTER              "SDL_ttf.font.iostream"
 #define TTF_PROP_FONT_IOSTREAM_OFFSET_NUMBER        "SDL_ttf.font.iostream.offset"
 #define TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN    "SDL_ttf.font.iostream.autoclose"
-#define TTF_PROP_FONT_SIZE_NUMBER                   "SDL_ttf.font.size"
+#define TTF_PROP_FONT_SIZE_FLOAT                    "SDL_ttf.font.size"
 #define TTF_PROP_FONT_FACE_NUMBER                   "SDL_ttf.font.face"
 #define TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER         "SDL_ttf.font.hdpi"
 #define TTF_PROP_FONT_VERTICAL_DPI_NUMBER           "SDL_ttf.font.vdpi"
@@ -270,7 +270,7 @@ extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetFontProperties(TTF_Font *fon
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSize(TTF_Font *font, float ptsize);
 
 /**
  * Set font size dynamically with target resolutions (in DPI).
@@ -289,7 +289,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsigned int hdpi, unsigned int vdpi);
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, float ptsize, unsigned int hdpi, unsigned int vdpi);
 
 /**
  * Font style flags
