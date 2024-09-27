@@ -99,7 +99,7 @@ static void help(void)
     SDL_Log("t   : ticks elapsed for 50 rendering");
     SDL_Log("d   : display normal texture, no screen update, stream texture ");
     SDL_Log("r   : start/stop random test");
-    SDL_Log("m   : render mode Solid/Blended/Shaded");
+    SDL_Log("m   : render mode Blended/Shaded");
     SDL_Log("n   : change direction");
     SDL_Log("9/0 : -/+ alpha color fg");
     SDL_Log("7/8 : -/+ alpha color bg (Shaded only)");
@@ -191,10 +191,10 @@ static int print_elapsed_ticks = 0;
 static int update_screen_mode = 0;
 static int save_to_bmp = 0;
 
-/* RENDER_SOLID = 0, RENDER_BLENDED = 1, RENDER_SHADED = 2, RENDER_LCD = 3 } */
+/* RENDER_BLENDED = 0, RENDER_SHADED = 1, RENDER_LCD = 2 */
 static int render_mode = -1;
 static int render_mode_overwrite;
-static const char *render_mode_desc[] = { "Solid", "Blended", "Shaded", "LCD" };
+static const char *render_mode_desc[] = { "Blended", "Shaded", "LCD" };
 static const int render_mode_count = SDL_arraysize(render_mode_desc);
 
 static int direction = 0;
@@ -683,10 +683,6 @@ int main(void)
     seed=1641805930; replay=1; font_style=9; kerning=1; sdf=1; wrap=0; wrap_size=661; w_align=2; outline=0; curr_size=20; render_mode=3; curr_str=14; curr_font=1777; hinting=1; fg_alpha=65; // light LCD
 #endif
 
-    //seed=1673390190; replay=1; font_style=12; kerning=0; sdf=1; wrap=0; wrap_size=91; w_align=0; outline=0; curr_size=16; render_mode=0; curr_str=14; curr_font=1288; hinting=0; fg_alpha=77; // none Solid
-
-    //seed=1673390190; replay=1; font_style=12; kerning=0; sdf=0; wrap=0; wrap_size=91; w_align=0; outline=0; curr_size=30; render_mode=1; curr_str=14; curr_font=1288; hinting=0; fg_alpha=77; // none Solid
-
     //seed=1673390190; replay=1; font_style=9; kerning=1; sdf=0; wrap=1; wrap_size=94; w_align=2; outline=7; curr_size=42; render_mode=1; curr_str=75; curr_font=1997; hinting=1; fg_alpha=90; // light Blended
 
     if (replay) {
@@ -919,21 +915,18 @@ int main(void)
 
                 switch (render_mode)
                 {
-                   case 1:
+                   case 0:
                       text_surface = TTF_RenderText_Blended(font, text, 0, textcol);
                       break;
-                   case 2:
+                   case 1:
                       text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
                       break;
-                   case 3:
+                   case 2:
 #if defined(HAVE_LCD)
                       text_surface = TTF_RenderText_LCD(font, text, 0, textcol, boardcol);
 #else
                       text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
 #endif
-                      break;
-                   case 0:
-                      text_surface = TTF_RenderText_Solid(font, text, 0, textcol);
                       break;
                 }
 
@@ -947,21 +940,18 @@ int main(void)
 
                 switch (render_mode)
                 {
-                   case 1:
+                   case 0:
                       text_surface = TTF_RenderText_Blended(font, text, 0, textcol);
                       break;
-                   case 2:
+                   case 1:
                       text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
                       break;
-                   case 3:
+                   case 2:
 #if defined(HAVE_LCD)
                       text_surface = TTF_RenderText_LCD(font, text, 0, textcol, boardcol);
 #else
                       text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
 #endif
-                      break;
-                   case 0:
-                      text_surface = TTF_RenderText_Solid(font, text, 0, textcol);
                       break;
                 }
 
@@ -987,21 +977,18 @@ int main(void)
 #if defined(HAVE_ALL_WRAPPED_FUNCTIONS)
                 switch (render_mode)
                 {
-                   case 1:
+                   case 0:
                       text_surface = TTF_RenderText_Blended_Wrapped(font, text, 0, textcol, wrap_size);
                       break;
-                   case 2:
+                   case 1:
                       text_surface = TTF_RenderText_Shaded_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
                       break;
-                   case 3:
+                   case 2:
 #if defined(HAVE_LCD)
                       text_surface = TTF_RenderText_LCD_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
 #else
                       text_surface = TTF_RenderText_Shaded_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
 #endif
-                      break;
-                   case 0:
-                      text_surface = TTF_RenderText_Solid_Wrapped(font, text, 0, textcol, wrap_size);
                       break;
                 }
 #else
