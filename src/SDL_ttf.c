@@ -3142,7 +3142,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         font->pos_buf[font->pos_len].index = idx;
         font->pos_len += 1;
 
-        /* Compute previsionnal global bounding box */
+        /* Compute provisional global bounding box */
         pos_x = FT_FLOOR(pos_x) + glyph->sz_left;
         pos_y = FT_FLOOR(pos_y) - glyph->sz_top;
 
@@ -3405,6 +3405,9 @@ bool TTF_GetTextSizeWrapped(TTF_Font *font, const char *text, size_t length, int
     TTF_CHECK_INITIALIZED(false);
     TTF_CHECK_POINTER("font", font, false);
     TTF_CHECK_POINTER("text", text, false);
+    if (wrapLength < 0) {
+        return SDL_InvalidParamError("wrapLength");
+    }
 
     if (!length) {
         length = SDL_strlen(text);
@@ -3423,11 +3426,6 @@ bool TTF_GetTextSizeWrapped(TTF_Font *font, const char *text, size_t length, int
     /* Get the dimensions of the text surface */
     if (!TTF_GetTextSize(font, text_cpy, length, &width, &height) || !width) {
         SDL_SetError("Text has zero width");
-        goto done;
-    }
-
-    if (wrapLength < 0) {
-        SDL_InvalidParamError("wrapLength");
         goto done;
     }
 
@@ -3592,6 +3590,10 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     TTF_CHECK_INITIALIZED(NULL);
     TTF_CHECK_POINTER("font", font, NULL);
     TTF_CHECK_POINTER("text", text, NULL);
+    if (wrapLength < 0) {
+        SDL_InvalidParamError("wrapLength");
+        return NULL;
+    }
 
     if (!length) {
         length = SDL_strlen(text);
@@ -3615,11 +3617,6 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     /* Get the dimensions of the text surface */
     if (!TTF_GetTextSize(font, text_cpy, length, &width, &height) || !width) {
         SDL_SetError("Text has zero width");
-        goto failure;
-    }
-
-    if (wrapLength < 0) {
-        SDL_InvalidParamError("wrapLength");
         goto failure;
     }
 
@@ -3784,7 +3781,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         }
 
         /* Initialize xstart, ystart and compute positions */
-        if (!TTF_Size_Internal(font, text, length, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
+        if (!TTF_Size_Internal(font, text, 0, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
             goto failure;
         }
 
