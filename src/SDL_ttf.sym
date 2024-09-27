@@ -20,6 +20,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetFreeTypeVersion;
     TTF_GetGlyphKerning;
     TTF_GetGlyphMetrics;
+    TTF_GetGlyphScript;
     TTF_GetHarfBuzzVersion;
     TTF_Init;
     TTF_MeasureText;
@@ -46,7 +47,7 @@ SDL3_ttf_0.0.0 {
     TTF_SetFontLineSkip;
     TTF_SetFontOutline;
     TTF_SetFontSDF;
-    TTF_SetFontScriptName;
+    TTF_SetFontScript;
     TTF_SetFontSize;
     TTF_SetFontSizeDPI;
     TTF_SetFontStyle;
