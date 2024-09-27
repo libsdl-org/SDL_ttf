@@ -3011,6 +3011,15 @@ int TTF_FontLineSkip(const TTF_Font *font)
     return font->lineskip;
 }
 
+void TTF_SetFontLineSkip(TTF_Font *font, int lineskip)
+{
+    if (!font) {
+        return;
+    }
+
+    font->lineskip = lineskip;
+}
+
 int TTF_GetFontKerning(const TTF_Font *font)
 {
     return font->allow_kerning;
