@@ -195,25 +195,25 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  * - `TTF_PROP_FONT_CREATE_FILENAME_STRING`: the font file to open, if an
  *   SDL_IOStream isn't being used. This is required if
  *   `TTF_PROP_FONT_CREATE_IOSTREAM_POINTER` isn't set.
- * - `TTF_PROP_FONT_CREATE_IOSTREAM_POINTER`: an SDL_IOStream containing the font to
- *   be opened. This should not be closed until the font is closed. This is
- *   required if `TTF_PROP_FONT_CREATE_FILENAME_STRING` isn't set.
- * - `TTF_PROP_FONT_CREATE_IOSTREAM_OFFSET_NUMBER`: the offset in the iostream for
- *   the beginning of the font, defaults to 0.
- * - `TTF_PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the font
- *   should also close the associated SDL_IOStream.
- * - `TTF_PROP_FONT_CREATE_SIZE_NUMBER`: the point size of the font. Some .fon fonts
- *   will have several sizes embedded in the file, so the point size becomes
- *   the index of choosing which size. If the value is too high, the last
- *   indexed size will be the default.
- * - `TTF_PROP_FONT_CREATE_FACE_NUMBER`: the face index of the font, if the font
- *   contains multiple font faces.
- * - `TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER`: the horizontal DPI to use for font
- *   rendering, defaults to `TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER` if set, or 72
- *   otherwise.
- * - `TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER`: the vertical DPI to use for font
- *   rendering, defaults to `TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER` if set, or
- *   72 otherwise.
+ * - `TTF_PROP_FONT_CREATE_IOSTREAM_POINTER`: an SDL_IOStream containing the
+ *   font to be opened. This should not be closed until the font is closed.
+ *   This is required if `TTF_PROP_FONT_CREATE_FILENAME_STRING` isn't set.
+ * - `TTF_PROP_FONT_CREATE_IOSTREAM_OFFSET_NUMBER`: the offset in the iostream
+ *   for the beginning of the font, defaults to 0.
+ * - `TTF_PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the
+ *   font should also close the associated SDL_IOStream.
+ * - `TTF_PROP_FONT_CREATE_SIZE_NUMBER`: the point size of the font. Some .fon
+ *   fonts will have several sizes embedded in the file, so the point size
+ *   becomes the index of choosing which size. If the value is too high, the
+ *   last indexed size will be the default.
+ * - `TTF_PROP_FONT_CREATE_FACE_NUMBER`: the face index of the font, if the
+ *   font contains multiple font faces.
+ * - `TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER`: the horizontal DPI to use
+ *   for font rendering, defaults to
+ *   `TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER` if set, or 72 otherwise.
+ * - `TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER`: the vertical DPI to use for
+ *   font rendering, defaults to `TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER`
+ *   if set, or 72 otherwise.
  *
  * \param props the properties to use.
  * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more
