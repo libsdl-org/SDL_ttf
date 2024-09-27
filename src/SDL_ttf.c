@@ -277,7 +277,7 @@ struct TTF_Font {
     bool render_sdf;
 
     /* Extra layout setting for wrapped text */
-    int horizontal_align;
+    TTF_HorizontalAlignment horizontal_align;
 };
 
 /* Tell if SDL_ttf has to handle the style */
@@ -2746,28 +2746,28 @@ void TTF_CloseFont(TTF_Font *font)
     }
 }
 
-int TTF_FontHeight(const TTF_Font *font)
+int TTF_GetFontHeight(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, 0);
 
     return font->height;
 }
 
-int TTF_FontAscent(const TTF_Font *font)
+int TTF_GetFontAscent(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, 0);
 
     return font->ascent + 2 * font->outline_val;
 }
 
-int TTF_FontDescent(const TTF_Font *font)
+int TTF_GetFontDescent(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, 0);
 
     return font->descent;
 }
 
-int TTF_FontLineSkip(const TTF_Font *font)
+int TTF_GetFontLineSkip(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, 0);
 
@@ -2793,42 +2793,42 @@ void TTF_SetFontKerning(TTF_Font *font, bool enabled)
 #endif
 }
 
-long TTF_FontFaces(const TTF_Font *font)
+int TTF_GetNumFontFaces(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, 0);
 
-    return font->face->num_faces;
+    return (int)font->face->num_faces;
 }
 
-bool TTF_FontFaceIsFixedWidth(const TTF_Font *font)
+bool TTF_FontIsFixedWidth(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, false);
 
     return FT_IS_FIXED_WIDTH(font->face);
 }
 
-const char *TTF_FontFaceFamilyName(const TTF_Font *font)
+const char *TTF_GetFontFamilyName(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, NULL);
 
     return font->face->family_name;
 }
 
-const char *TTF_FontFaceStyleName(const TTF_Font *font)
+const char *TTF_GetFontStyleName(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, NULL);
 
     return font->face->style_name;
 }
 
-bool TTF_GlyphIsProvided(TTF_Font *font, Uint32 ch)
+bool TTF_FontHasGlyph(TTF_Font *font, Uint32 ch)
 {
     TTF_CHECK_FONT(font, false);
 
     return (get_char_index(font, ch) > 0);
 }
 
-bool TTF_GlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *miny, int *maxy, int *advance)
+bool TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *miny, int *maxy, int *advance)
 {
     c_glyph *glyph;
 
@@ -3481,7 +3481,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         } while (textlen > 0);
     }
 
-    lineskip = TTF_FontLineSkip(font);
+    lineskip = TTF_GetFontLineSkip(font);
     rowHeight = SDL_max(height, lineskip);
 
     if (wrapLength == 0) {
@@ -3516,7 +3516,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
             width = SDL_max(width, 1);
         }
     } else {
-        if (numLines <= 1 && font->horizontal_align == TTF_WRAPPED_ALIGN_LEFT) {
+        if (numLines <= 1 && font->horizontal_align == TTF_HORIZONTAL_ALIGN_LEFT) {
             /* Don't go above wrapLength if you have only 1 line which hasn't been cut */
             width = SDL_min((int)wrapLength, width);
         } else {
@@ -3567,9 +3567,9 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         ystart += i * lineskip;
 
         /* Control left/right/center align of each bit of text */
-        if (font->horizontal_align == TTF_WRAPPED_ALIGN_RIGHT) {
+        if (font->horizontal_align == TTF_HORIZONTAL_ALIGN_RIGHT) {
             xoffset = width - line_width;
-        } else if (font->horizontal_align == TTF_WRAPPED_ALIGN_CENTER) {
+        } else if (font->horizontal_align == TTF_HORIZONTAL_ALIGN_CENTER) {
             xoffset = width / 2 - line_width / 2;
         } else {
             xoffset = 0;
@@ -3789,23 +3789,25 @@ bool TTF_GetFontSDF(const TTF_Font *font)
     return font->render_sdf;
 }
 
-void TTF_SetFontWrappedAlign(TTF_Font *font, int align)
+void TTF_SetFontWrapAlignment(TTF_Font *font, TTF_HorizontalAlignment align)
 {
     TTF_CHECK_FONT(font,);
 
-    /* input not checked, unknown values assumed to be TTF_WRAPPED_ALIGN_LEFT */
-    if (align == TTF_WRAPPED_ALIGN_CENTER) {
-        font->horizontal_align = TTF_WRAPPED_ALIGN_CENTER;
-    } else if (align == TTF_WRAPPED_ALIGN_RIGHT) {
-        font->horizontal_align = TTF_WRAPPED_ALIGN_RIGHT;
-    } else {
-        font->horizontal_align = TTF_WRAPPED_ALIGN_LEFT;
+    switch (align) {
+    case TTF_HORIZONTAL_ALIGN_LEFT:
+    case TTF_HORIZONTAL_ALIGN_CENTER:
+    case TTF_HORIZONTAL_ALIGN_RIGHT:
+        font->horizontal_align = align;
+        break;
+    default:
+        // Ignore invalid values
+        break;
     }
 }
 
-int TTF_GetFontWrappedAlign(const TTF_Font *font)
+TTF_HorizontalAlignment TTF_GetFontWrapAlignment(const TTF_Font *font)
 {
-    TTF_CHECK_FONT(font,-1);
+    TTF_CHECK_FONT(font, TTF_HORIZONTAL_ALIGN_INVALID);
 
     return font->horizontal_align;
 }
@@ -3878,7 +3880,7 @@ bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *ker
     return true;
 }
 
-bool TTF_IsFontScalable(const TTF_Font *font)
+bool TTF_FontIsScalable(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, false);
 

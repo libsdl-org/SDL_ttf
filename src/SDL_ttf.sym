@@ -1,27 +1,27 @@
 SDL3_ttf_0.0.0 {
   global:
     TTF_CloseFont;
-    TTF_FontAscent;
-    TTF_FontDescent;
-    TTF_FontFaceFamilyName;
-    TTF_FontFaceIsFixedWidth;
-    TTF_FontFaceStyleName;
-    TTF_FontFaces;
-    TTF_FontHeight;
-    TTF_FontLineSkip;
+    TTF_FontHasGlyph;
+    TTF_FontIsFixedWidth;
+    TTF_FontIsScalable;
+    TTF_GetFontAscent;
+    TTF_GetFontDescent;
+    TTF_GetFontFamilyName;
+    TTF_GetFontHeight;
     TTF_GetFontHinting;
     TTF_GetFontKerning;
+    TTF_GetFontLineSkip;
     TTF_GetFontOutline;
     TTF_GetFontSDF;
     TTF_GetFontStyle;
-    TTF_GetFontWrappedAlign;
+    TTF_GetFontStyleName;
+    TTF_GetFontWrapAlignment;
     TTF_GetFreeTypeVersion;
     TTF_GetGlyphKerning;
+    TTF_GetGlyphMetrics;
     TTF_GetHarfBuzzVersion;
-    TTF_GlyphIsProvided;
-    TTF_GlyphMetrics;
+    TTF_GetNumFontFaces;
     TTF_Init;
-    TTF_IsFontScalable;
     TTF_MeasureText;
     TTF_OpenFont;
     TTF_OpenFontIO;
@@ -49,7 +49,7 @@ SDL3_ttf_0.0.0 {
     TTF_SetFontSize;
     TTF_SetFontSizeDPI;
     TTF_SetFontStyle;
-    TTF_SetFontWrappedAlign;
+    TTF_SetFontWrapAlignment;
     TTF_SizeText;
     TTF_Version;
     TTF_WasInit;
