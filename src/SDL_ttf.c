@@ -3251,6 +3251,10 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t
         goto failure;
     }
 
+    if (fg.a == SDL_ALPHA_TRANSPARENT) {
+        fg.a = SDL_ALPHA_OPAQUE;
+    }
+
     /* Create surface for rendering */
     if (render_mode == RENDER_SHADED) {
         textbuf = Create_Surface_Shaded(width, height, fg, bg, &color);
@@ -3661,6 +3665,10 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         }
     }
     height = rowHeight + lineskip * (numLines - 1);
+
+    if (fg.a == SDL_ALPHA_TRANSPARENT) {
+        fg.a = SDL_ALPHA_OPAQUE;
+    }
 
     /* Create surface for rendering */
     if (render_mode == RENDER_SHADED) {

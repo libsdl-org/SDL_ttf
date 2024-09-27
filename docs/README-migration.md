@@ -38,7 +38,7 @@ In general we have switched to using UTF8 in the API. Functions which had 3 vari
 
 The solid color rendering functions have been removed in favor of the higher quality shaded and blended functions.
 
-The alpha in background and foreground colors is now transparent if it's equal to 0.
+The alpha in background colors is now transparent if it's equal to 0.
 
 The following functions have been renamed:
 * TTF_FontAscent() => TTF_GetFontAscent()
