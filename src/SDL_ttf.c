@@ -379,7 +379,7 @@ static void BG_Blended_Color(const TTF_Image *image, Uint32 *destination, Sint32
     Uint32       width  = image->width;
     Uint32       height = image->rows;
 
-    if (fg_alpha == 0) { /* SDL_ALPHA_OPAQUE */
+    if (fg_alpha == SDL_ALPHA_OPAQUE) {
         while (height--) {
             /* *INDENT-OFF* */
             DUFFS_LOOP4(
@@ -1571,11 +1571,6 @@ static SDL_Surface *Create_Surface_Blended(int width, int height, SDL_Color fg, 
         if (textbuf == NULL) {
             return NULL;
         }
-
-        /* Support alpha blending */
-        if (fg.a != SDL_ALPHA_OPAQUE) {
-            SDL_SetSurfaceBlendMode(textbuf, SDL_BLENDMODE_BLEND);
-        }
     }
 
     return textbuf;
@@ -1597,11 +1592,6 @@ static SDL_Surface* Create_Surface_LCD(int width, int height, SDL_Color fg, SDL_
         textbuf = AllocateAlignedPixels(width, height, SDL_PIXELFORMAT_ARGB8888, bgcolor);
         if (textbuf == NULL) {
             return NULL;
-        }
-
-        /* Support alpha blending */
-        if (bg.a != SDL_ALPHA_OPAQUE) {
-            SDL_SetSurfaceBlendMode(textbuf, SDL_BLENDMODE_BLEND);
         }
     }
 
@@ -3292,10 +3282,6 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t
         goto failure;
     }
 
-    /* Support alpha blending */
-    fg.a = fg.a ? fg.a : SDL_ALPHA_OPAQUE;
-    bg.a = bg.a ? bg.a : SDL_ALPHA_OPAQUE;
-
     /* Create surface for rendering */
     if (render_mode == RENDER_SOLID) {
         textbuf = Create_Surface_Solid(width, height, fg, &color);
@@ -3581,10 +3567,6 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         }
     }
     height = rowHeight + lineskip * (numLines - 1);
-
-    /* Support alpha blending */
-    fg.a = fg.a ? fg.a : SDL_ALPHA_OPAQUE;
-    bg.a = bg.a ? bg.a : SDL_ALPHA_OPAQUE;
 
     /* Create surface for rendering */
     if (render_mode == RENDER_SOLID) {
