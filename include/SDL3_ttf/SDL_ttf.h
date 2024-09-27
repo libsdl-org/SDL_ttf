@@ -198,7 +198,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  * - `TTF_PROP_FONT_IOSTREAM_POINTER`: an SDL_IOStream containing the font to
  *   be opened. This should not be closed until the font is closed. This is
  *   required if `TTF_PROP_FONT_FILENAME_STRING` isn't set.
- * - `TTF_PROP_FONT_IOSTREAM_OFFSET_NUMBER`: the offset in the iostream for the beginning of the font, defaults to 0.
+ * - `TTF_PROP_FONT_IOSTREAM_OFFSET_NUMBER`: the offset in the iostream for
+ *   the beginning of the font, defaults to 0.
  * - `TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the font
  *   should also close the associated SDL_IOStream.
  * - `TTF_PROP_FONT_SIZE_NUMBER`: the point size of the font. Some .fon fonts
@@ -264,7 +265,8 @@ extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetFontProperties(TTF_Font *fon
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -282,7 +284,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSize(TTF_Font *font, int ptsize);
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -335,7 +338,8 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
  * \param font the font to set a new style on.
  * \param style the new style values to set, OR'd together.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -365,7 +369,8 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -421,7 +426,8 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontHinting(const TTF_Font *font);
  * \param font the font to set a new hinter setting on.
  * \param hinting the new hinter setting.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -462,7 +468,8 @@ extern SDL_DECLSPEC TTF_HorizontalAlignment SDLCALL TTF_GetFontWrapAlignment(con
  * \param font the font to set a new wrap alignment option on.
  * \param align the new wrap alignment option.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -530,7 +537,8 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontLineSkip(const TTF_Font *font);
  * \param font the font to modify.
  * \param lineskip the new line spacing for the font.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -559,7 +567,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontKerning(const TTF_Font *font);
  * \param font the font to set kerning on.
  * \param enabled true to enable kerning, false to disable.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -643,7 +652,8 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontStyleName(const TTF_Font *fo
  * \param ch the character code to check.
  * \returns true if font provides a glyph for this character, false if not.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -673,7 +683,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_FontHasGlyph(TTF_Font *font, Uint32 ch);
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -696,7 +707,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, 
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -721,7 +733,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SizeText(TTF_Font *font, const char *text, 
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -751,7 +764,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_MeasureText(TTF_Font *font, const char *tex
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -787,7 +801,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font, c
  *                   newline characters.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -816,7 +831,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font 
  * \param fg the foreground color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -852,7 +868,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font, 
  * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -889,7 +906,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font, 
  *                   newline characters.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -920,7 +938,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font
  * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -954,7 +973,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -989,7 +1009,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
  *                   newline characters.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -1018,7 +1039,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Fon
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -1053,7 +1075,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -1090,7 +1113,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, con
  *                   newline characters.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -1120,7 +1144,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *f
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -1145,7 +1170,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font, Ui
  *
  * \param font the font to dispose of.
  *
- * \threadsafety This function should not be called while any other thread is using the font.
+ * \threadsafety This function should not be called while any other thread is
+ *               using the font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -1282,14 +1308,16 @@ typedef enum TTF_Direction
  * - `TTF_DIRECTION_TTB` (Top to Bottom)
  * - `TTF_DIRECTION_BTT` (Bottom to Top)
  *
- * If SDL_ttf was not built with HarfBuzz support, this function returns false.
+ * If SDL_ttf was not built with HarfBuzz support, this function returns
+ * false.
  *
  * \param font the font to specify a direction for.
  * \param direction the new direction for text to flow.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
@@ -1301,7 +1329,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direct
  * The supplied script value must be a null-terminated string of exactly four
  * characters.
  *
- * If SDL_ttf was not built with HarfBuzz support, this function returns false.
+ * If SDL_ttf was not built with HarfBuzz support, this function returns
+ * false.
  *
  * \param font the font to specify a script name for.
  * \param script null-terminated string of exactly 4 characters.
@@ -1320,15 +1349,18 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScript(TTF_Font *font, const char *s
  * The supplied script value will be a null-terminated string of exactly four
  * characters.
  *
- * If SDL_ttf was not built with HarfBuzz support, this function returns false.
+ * If SDL_ttf was not built with HarfBuzz support, this function returns
+ * false.
  *
  * \param ch the character code to check.
  * \param script a pointer filled in with the script used by `ch`.
- * \param script_size the size of the script buffer, which must be at least 5 characters.
+ * \param script_size the size of the script buffer, which must be at least 5
+ *                    characters.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \threadsafety This function should be called on the thread that created the font.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
