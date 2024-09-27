@@ -232,6 +232,7 @@ struct TTF_Font {
     /* The font style */
     int style;
     int outline_val;
+    FT_Stroker stroker;
 
     /* Whether kerning is desired */
     bool enable_kerning;
@@ -289,11 +290,17 @@ struct TTF_Font {
 #define TTF_STYLE_NO_GLYPH_CHANGE   (TTF_STYLE_UNDERLINE | TTF_STYLE_STRIKETHROUGH)
 
 /* The FreeType font engine/library */
-static FT_Library library = NULL;
-static int TTF_initialized = 0;
+static struct
+{
+    SDL_InitState init;
+    SDL_AtomicInt refcount;
+    SDL_Mutex *lock;
+    FT_Library library;
+} TTF_state;
 
 #define TTF_CHECK_INITIALIZED(errval)                   \
-    if (!TTF_initialized) {                             \
+    if (SDL_ShouldInit(&TTF_state.init)) {              \
+        SDL_SetInitialized(&TTF_state.init, false);     \
         SDL_SetError("Library not initialized");        \
         return errval;                                  \
     }
@@ -1660,32 +1667,61 @@ bool TTF_Init(void)
     SDL_Log("Sizeof TTF_Image: %d c_glyph: %d TTF_Font: %d", sizeof (TTF_Image), sizeof (c_glyph), sizeof (TTF_Font));
 #endif
 
-    if (!TTF_initialized) {
-        FT_Error error = FT_Init_FreeType(&library);
-        if (error) {
-            result = TTF_SetFTError("Couldn't init FreeType engine", error);
-        }
+    SDL_AtomicIncRef(&TTF_state.refcount);
+
+    if (!SDL_ShouldInit(&TTF_state.init)) {
+        return true;
     }
+
+    FT_Error error = FT_Init_FreeType(&TTF_state.library);
+    if (error) {
+        TTF_SetFTError("Couldn't init FreeType engine", error);
+        result = false;
+    }
+
     if (result) {
-        ++TTF_initialized;
 #if TTF_USE_SDF
-#  if 0
+#if 0
         /* Set various properties of the renderers. */
         int spread = 4;
         int overlaps = 0;
-        FT_Property_Set( library, "bsdf", "spread", &spread);
-        FT_Property_Set( library, "sdf", "spread", &spread);
-        FT_Property_Set( library, "sdf", "overlaps", &overlaps);
-#  endif
+        FT_Property_Set(TTF_state.library, "bsdf", "spread", &spread);
+        FT_Property_Set(TTF_state.library, "sdf", "spread", &spread);
+        FT_Property_Set(TTF_state.library, "sdf", "overlaps", &overlaps);
 #endif
+#endif
+        TTF_state.lock = SDL_CreateMutex();
+    } else {
+        (void)SDL_AtomicDecRef(&TTF_state.refcount);
     }
+    SDL_SetInitialized(&TTF_state.init, result);
+
     return result;
 }
 
-SDL_COMPILE_TIME_ASSERT(FT_Int, sizeof(int) == sizeof(FT_Int)); /* just in case. */
 void TTF_GetFreeTypeVersion(int *major, int *minor, int *patch)
 {
-    FT_Library_Version(library, major, minor, patch);
+    FT_Int ft_major = 0;
+    FT_Int ft_minor = 0;
+    FT_Int ft_patch = 0;
+
+    if (SDL_ShouldInit(&TTF_state.init)) {
+        SDL_SetInitialized(&TTF_state.init, false);
+    } else {
+        SDL_LockMutex(TTF_state.lock);
+        FT_Library_Version(TTF_state.library, &ft_major, &ft_minor, &ft_patch);
+        SDL_UnlockMutex(TTF_state.lock);
+    }
+
+    if (major) {
+        *major = (int)ft_major;
+    }
+    if (minor) {
+        *minor = (int)ft_minor;
+    }
+    if (patch) {
+        *patch = (int)ft_patch;
+    }
 }
 
 void TTF_GetHarfBuzzVersion(int *major, int *minor, int *patch)
@@ -1719,7 +1755,7 @@ static unsigned long IOread(
 
     src = (SDL_IOStream *)stream->descriptor.pointer;
     SDL_SeekIO(src, offset, SDL_IO_SEEK_SET);
-    return SDL_ReadIO(src, buffer, count);
+    return (unsigned long)SDL_ReadIO(src, buffer, count);
 }
 
 TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
@@ -1739,7 +1775,8 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     Sint64 position;
     int i;
 
-    if (!TTF_initialized) {
+    if (SDL_ShouldInit(&TTF_state.init)) {
+        SDL_SetInitialized(&TTF_state.init, false);
         SDL_SetError("Library not initialized");
         if (src && closeio) {
             SDL_CloseIO(src);
@@ -1799,7 +1836,9 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     font->args.flags = FT_OPEN_STREAM;
     font->args.stream = stream;
 
-    error = FT_Open_Face(library, &font->args, index, &font->face);
+    SDL_LockMutex(TTF_state.lock);
+    error = FT_Open_Face(TTF_state.library, &font->args, index, &font->face);
+    SDL_UnlockMutex(TTF_state.lock);
     if (error || font->face == NULL) {
         TTF_SetFTError("Couldn't load font file", error);
         TTF_CloseFont(font);
@@ -2203,8 +2242,8 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
         }
 
         /* Render as outline */
-        if ((font->outline_val > 0 && slot->format == FT_GLYPH_FORMAT_OUTLINE)
-            || slot->format == FT_GLYPH_FORMAT_BITMAP) {
+        if ((font->outline_val > 0 && slot->format == FT_GLYPH_FORMAT_OUTLINE) ||
+            slot->format == FT_GLYPH_FORMAT_BITMAP) {
 
             FT_BitmapGlyph bitmap_glyph;
 
@@ -2214,14 +2253,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
             }
 
             if (font->outline_val > 0) {
-                FT_Stroker stroker;
-                error = FT_Stroker_New(library, &stroker);
-                if (error) {
-                    goto ft_failure;
-                }
-                FT_Stroker_Set(stroker, font->outline_val * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
-                FT_Glyph_Stroke(&glyph, stroker, 1 /* delete the original glyph */);
-                FT_Stroker_Done(stroker);
+                FT_Glyph_Stroke(&glyph, font->stroker, 1 /* delete the original glyph */);
             }
 
             /* Render the glyph */
@@ -2713,6 +2745,9 @@ void TTF_CloseFont(TTF_Font *font)
         Flush_Cache(font);
         if (font->face) {
             FT_Done_Face(font->face);
+        }
+        if (font->stroker) {
+            FT_Stroker_Done(font->stroker);
         }
         if (font->args.stream) {
             SDL_free(font->args.stream);
@@ -3668,13 +3703,38 @@ int TTF_GetFontStyle(const TTF_Font *font)
     return style;
 }
 
-void TTF_SetFontOutline(TTF_Font *font, int outline)
+bool TTF_SetFontOutline(TTF_Font *font, int outline)
 {
-    TTF_CHECK_FONT(font,);
+    TTF_CHECK_FONT(font, false);
 
-    font->outline_val = SDL_max(0, outline);
+    outline = SDL_max(0, outline);
+
+    if (outline > 0) {
+        if (!font->stroker) {
+            FT_Error error;
+
+            SDL_LockMutex(TTF_state.lock);
+            error = FT_Stroker_New(TTF_state.library, &font->stroker);
+            SDL_UnlockMutex(TTF_state.lock);
+            if (error) {
+                return TTF_SetFTError("Couldn't create font stroker", error);
+            }
+        }
+
+        FT_Stroker_Set(font->stroker, outline * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+    } else {
+        if (font->stroker) {
+            FT_Stroker_Done(font->stroker);
+            font->stroker = NULL;
+        }
+    }
+
+    font->outline_val = outline;
+
     TTF_initFontMetrics(font);
     Flush_Cache(font);
+
+    return true;
 }
 
 int TTF_GetFontOutline(const TTF_Font *font)
@@ -3768,17 +3828,31 @@ int TTF_GetFontWrappedAlign(const TTF_Font *font)
 
 void TTF_Quit(void)
 {
-    if (TTF_initialized) {
-        if (--TTF_initialized == 0) {
-            FT_Done_FreeType(library);
-            library = NULL;
-        }
+    if (!SDL_ShouldQuit(&TTF_state.init)) {
+        return;
     }
+
+    if (!SDL_AtomicDecRef(&TTF_state.refcount)) {
+        SDL_SetInitialized(&TTF_state.init, true);
+        return;
+    }
+
+    if (TTF_state.library) {
+        FT_Done_FreeType(TTF_state.library);
+        TTF_state.library = NULL;
+    }
+
+    if (TTF_state.lock) {
+        SDL_DestroyMutex(TTF_state.lock);
+        TTF_state.lock = NULL;
+    }
+
+    SDL_SetInitialized(&TTF_state.init, false);
 }
 
 int TTF_WasInit(void)
 {
-    return TTF_initialized;
+    return SDL_GetAtomicInt(&TTF_state.refcount);
 }
 
 int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint32 previous_ch, Uint32 ch)
