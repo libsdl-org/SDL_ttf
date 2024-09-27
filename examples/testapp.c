@@ -972,7 +972,7 @@ int main(void)
           } else {
 
 #if defined(HAVE_WRAP_ALIGN)
-             TTF_SetFontWrappedAlign(font, w_align);
+             TTF_SetFontWrapAlignment(font, w_align);
 #endif
 
 

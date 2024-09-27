@@ -409,20 +409,20 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontHinting(const TTF_Font *font);
 extern SDL_DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting);
 
 /**
- * Special layout option for rendering wrapped text
+ * The horizontal alignment used when rendering wrapped text.
+ *
+ * \since This enum is available since SDL 3.0.0.
  */
-#define TTF_WRAPPED_ALIGN_LEFT      0
-#define TTF_WRAPPED_ALIGN_CENTER    1
-#define TTF_WRAPPED_ALIGN_RIGHT     2
+typedef enum TTF_HorizontalAlignment
+{
+    TTF_HORIZONTAL_ALIGN_INVALID = -1,
+    TTF_HORIZONTAL_ALIGN_LEFT,
+    TTF_HORIZONTAL_ALIGN_CENTER,
+    TTF_HORIZONTAL_ALIGN_RIGHT
+} TTF_HorizontalAlignment;
 
 /**
  * Query a font's current wrap alignment option.
- *
- * The wrap alignment option can be one of the following:
- *
- * - `TTF_WRAPPED_ALIGN_LEFT`
- * - `TTF_WRAPPED_ALIGN_CENTER`
- * - `TTF_WRAPPED_ALIGN_RIGHT`
  *
  * \param font the font to query.
  * \returns the font's current wrap alignment option.
@@ -431,18 +431,12 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting)
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_SetFontWrappedAlign
+ * \sa TTF_SetFontWrapAlignment
  */
-extern SDL_DECLSPEC int SDLCALL TTF_GetFontWrappedAlign(const TTF_Font *font);
+extern SDL_DECLSPEC TTF_HorizontalAlignment SDLCALL TTF_GetFontWrapAlignment(const TTF_Font *font);
 
 /**
  * Set a font's current wrap alignment option.
- *
- * The wrap alignment option can be one of the following:
- *
- * - `TTF_WRAPPED_ALIGN_LEFT`
- * - `TTF_WRAPPED_ALIGN_CENTER`
- * - `TTF_WRAPPED_ALIGN_RIGHT`
  *
  * \param font the font to set a new wrap alignment option on.
  * \param align the new wrap alignment option.
@@ -451,9 +445,9 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontWrappedAlign(const TTF_Font *font);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_GetFontWrappedAlign
+ * \sa TTF_GetFontWrapAlignment
  */
-extern SDL_DECLSPEC void SDLCALL TTF_SetFontWrappedAlign(TTF_Font *font, int align);
+extern SDL_DECLSPEC void SDLCALL TTF_SetFontWrapAlignment(TTF_Font *font, TTF_HorizontalAlignment align);
 
 /**
  * Query the total height of a font.
@@ -467,7 +461,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontWrappedAlign(TTF_Font *font, int ali
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_FontHeight(const TTF_Font *font);
+extern SDL_DECLSPEC int SDLCALL TTF_GetFontHeight(const TTF_Font *font);
 
 /**
  * Query the offset from the baseline to the top of a font.
@@ -481,7 +475,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_FontHeight(const TTF_Font *font);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_FontAscent(const TTF_Font *font);
+extern SDL_DECLSPEC int SDLCALL TTF_GetFontAscent(const TTF_Font *font);
 
 /**
  * Query the offset from the baseline to the bottom of a font.
@@ -495,7 +489,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_FontAscent(const TTF_Font *font);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_FontDescent(const TTF_Font *font);
+extern SDL_DECLSPEC int SDLCALL TTF_GetFontDescent(const TTF_Font *font);
 
 /**
  * Query the recommended spacing between lines of text for a font.
@@ -507,7 +501,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_FontDescent(const TTF_Font *font);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int SDLCALL TTF_FontLineSkip(const TTF_Font *font);
+extern SDL_DECLSPEC int SDLCALL TTF_GetFontLineSkip(const TTF_Font *font);
 
 /**
  * Query whether or not kerning is enabled for a font.
@@ -548,7 +542,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontKerning(TTF_Font *font, bool enabled
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC long SDLCALL TTF_FontFaces(const TTF_Font *font);
+extern SDL_DECLSPEC int SDLCALL TTF_GetNumFontFaces(const TTF_Font *font);
 
 /**
  * Query whether a font is fixed-width.
@@ -566,7 +560,24 @@ extern SDL_DECLSPEC long SDLCALL TTF_FontFaces(const TTF_Font *font);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_FontFaceIsFixedWidth(const TTF_Font *font);
+extern SDL_DECLSPEC bool SDLCALL TTF_FontIsFixedWidth(const TTF_Font *font);
+
+/**
+ * Query whether a font is scalable or not.
+ *
+ * Scalability lets us distinguish between outline and bitmap fonts.
+ *
+ * \param font the font to query
+ *
+ * \returns true if the font is scalable, false otherwise.
+ *
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetFontSDF
+ */
+extern SDL_DECLSPEC bool TTF_FontIsScalable(const TTF_Font *font);
 
 /**
  * Query a font's family name.
@@ -584,7 +595,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_FontFaceIsFixedWidth(const TTF_Font *font);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC const char * SDLCALL TTF_FontFaceFamilyName(const TTF_Font *font);
+extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontFamilyName(const TTF_Font *font);
 
 /**
  * Query a font's style name.
@@ -602,7 +613,7 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_FontFaceFamilyName(const TTF_Font *
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC const char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *font);
+extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontStyleName(const TTF_Font *font);
 
 /**
  * Check whether a glyph is provided by the font for a 32-bit codepoint.
@@ -615,7 +626,7 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_FontFaceStyleName(const TTF_Font *f
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint32 ch);
+extern SDL_DECLSPEC bool SDLCALL TTF_FontHasGlyph(TTF_Font *font, Uint32 ch);
 
 /**
  * Query the metrics (dimensions) of a font's 32-bit glyph.
@@ -645,7 +656,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GlyphIsProvided(TTF_Font *font, Uint32 ch);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *miny, int *maxy, int *advance);
+extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *miny, int *maxy, int *advance);
 
 /**
  * Calculate the dimensions of a rendered string of UTF-8 text.
@@ -1108,7 +1119,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font, Ui
  *
  * The font is not valid after being passed to this function. String pointers
  * from functions that return information on this font, such as
- * TTF_FontFaceFamilyName() and TTF_FontFaceStyleName(), are no longer valid
+ * TTF_GetFontFamilyName() and TTF_GetFontStyleName(), are no longer valid
  * after this call, as well.
  *
  * \param font the font to dispose of.
@@ -1297,23 +1308,6 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScriptName(TTF_Font *font, const cha
  * \since This function is available since SDL_ttf 3.0.0.
  */
 extern SDL_DECLSPEC bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
-
-/**
- * Query whether a font is scalable or not.
- *
- * Scalability lets us distinguish between outline and bitmap fonts.
- *
- * \param font the font to query
- *
- * \returns true if the font is scalable, false otherwise.
- *
- * \threadsafety It is safe to call this function from any thread.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SetFontSDF
- */
-extern SDL_DECLSPEC bool TTF_IsFontScalable(const TTF_Font *font);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus

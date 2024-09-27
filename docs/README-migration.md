@@ -37,8 +37,20 @@ Several functions have been renamed. We have provided a handy semantic patch to 
 In general we have switched to using UTF8 in the API. Functions which had 3 variants, for Latin-1, UTF-8, and UCS2, now accept UTF-8 text. In addition, those functions now have an optional length parameter which allows you to render substrings.
 
 The following functions have been renamed:
+* TTF_FontAscent() => TTF_GetFontAscent()
+* TTF_FontDescent() => TTF_GetFontDescent()
+* TTF_FontFaceFamilyName() => TTF_GetFontFamilyName()
+* TTF_FontFaceIsFixedWidth() => TTF_FontIsFixedWidth()
+* TTF_FontFaceStyleName() => TTF_GetFontStyleName()
+* TTF_FontFaces() => TTF_GetNumFontFaces()
+* TTF_FontHeight() => TTF_GetFontHeight()
+* TTF_FontLineSkip() => TTF_GetFontLineSkip()
+* TTF_GetFontWrappedAlign() => TTF_GetFontWrapAlignment()
+* TTF_GlyphIsProvided() => TTF_FontHasGlyph()
 * TTF_GlyphIsProvided32() => TTF_GlyphIsProvided()
+* TTF_GlyphMetrics() => TTF_GetGlyphMetrics()
 * TTF_GlyphMetrics32() => TTF_GlyphMetrics()
+* TTF_IsFontScalable() => TTF_FontIsScalable()
 * TTF_MeasureUTF8() => TTF_MeasureText()
 * TTF_RenderGlyph32_Blended() => TTF_RenderGlyph_Blended()
 * TTF_RenderGlyph32_LCD() => TTF_RenderGlyph_LCD()
@@ -52,6 +64,7 @@ The following functions have been renamed:
 * TTF_RenderUTF8_Shaded_Wrapped() => TTF_RenderText_Shaded_Wrapped()
 * TTF_RenderUTF8_Solid() => SDL_RenderText_Solid()
 * TTF_RenderUTF8_Solid_Wrapped() => TTF_RenderText_Solid_Wrapped()
+* TTF_SetFontWrappedAlign() => TTF_SetFontWrapAlignment()
 * TTF_SizeUTF8() => TTF_SizeText()
 
 The following functions have been removed:
@@ -74,3 +87,8 @@ The following functions have been removed:
 * TTF_RenderUNICODE_Solid()
 * TTF_RenderUNICODE_Solid_Wrapped()
 * TTF_SizeUNICODE()
+The following symbols have been renamed:
+* TTF_WRAPPED_ALIGN_CENTER => TTF_HORIZONTAL_ALIGN_CENTER
+* TTF_WRAPPED_ALIGN_LEFT => TTF_HORIZONTAL_ALIGN_LEFT
+* TTF_WRAPPED_ALIGN_RIGHT => TTF_HORIZONTAL_ALIGN_RIGHT
+

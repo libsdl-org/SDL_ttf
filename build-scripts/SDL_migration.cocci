@@ -83,3 +83,80 @@
 - TTF_RenderGlyph32_LCD
 + TTF_RenderGlyph_LCD
   (...)
+@@
+@@
+- TTF_WRAPPED_ALIGN_LEFT
++ TTF_HORIZONTAL_ALIGN_LEFT
+@@
+@@
+- TTF_WRAPPED_ALIGN_CENTER
++ TTF_HORIZONTAL_ALIGN_CENTER
+@@
+@@
+- TTF_WRAPPED_ALIGN_RIGHT
++ TTF_HORIZONTAL_ALIGN_RIGHT
+@@
+@@
+- TTF_GetFontWrappedAlign
++ TTF_GetFontWrapAlignment
+  (...)
+@@
+@@
+- TTF_SetFontWrappedAlign
++ TTF_SetFontWrapAlignment
+  (...)
+@@
+@@
+- TTF_FontHeight
++ TTF_GetFontHeight
+  (...)
+@@
+@@
+- TTF_FontAscent
++ TTF_GetFontAscent
+  (...)
+@@
+@@
+- TTF_FontDescent
++ TTF_GetFontDescent
+  (...)
+@@
+@@
+- TTF_FontLineSkip
++ TTF_GetFontLineSkip
+  (...)
+@@
+@@
+- TTF_FontFaces
++ TTF_GetNumFontFaces
+  (...)
+@@
+@@
+- TTF_FontFaceIsFixedWidth
++ TTF_FontIsFixedWidth
+  (...)
+@@
+@@
+- TTF_FontFaceFamilyName
++ TTF_GetFontFamilyName
+  (...)
+@@
+@@
+- TTF_FontFaceStyleName
++ TTF_GetFontStyleName
+  (...)
+@@
+@@
+- TTF_GlyphIsProvided
++ TTF_FontHasGlyph
+  (...)
+@@
+@@
+- TTF_GlyphMetrics
++ TTF_GetGlyphMetrics
+  (...)
+@@
+@@
+- TTF_IsFontScalable
++ TTF_FontIsScalable
+  (...)
