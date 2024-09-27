@@ -333,7 +333,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t
 
 static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength, render_mode_t render_mode);
 
-static int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx, int want_bitmap, int want_pixmap, int want_color, int want_lcd, int want_subpixel, int translation, c_glyph **out_glyph, TTF_Image **out_image);
+static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx, int want_bitmap, int want_pixmap, int want_color, int want_lcd, int want_subpixel, int translation, c_glyph **out_glyph, TTF_Image **out_image);
 
 static void Flush_Cache(TTF_Font *font);
 
@@ -1122,7 +1122,7 @@ static int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, 
         int y       = font->pos_buf[i].y;                                                                               \
         TTF_Image *image;                                                                                               \
                                                                                                                         \
-        if (Find_GlyphByIndex(font, idx, WB_WP_WC, WS, x & 63, NULL, &image) == 0) {                                    \
+        if (Find_GlyphByIndex(font, idx, WB_WP_WC, WS, x & 63, NULL, &image)) {                                    \
             int above_w, above_h;                                                                                       \
             Uint32 dstskip;                                                                                             \
             Sint32 srcskip; /* Can be negative */                                                                       \
@@ -2100,7 +2100,7 @@ static void Flush_Cache(TTF_Font *font)
     }
 }
 
-static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translation)
+static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translation)
 {
     const int alignment = Get_Alignment() - 1;
     FT_GlyphSlot slot;
@@ -2124,8 +2124,7 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
 
     if (want & CACHED_LCD) {
         if (slot->format == FT_GLYPH_FORMAT_BITMAP) {
-            SDL_SetError("LCD mode not possible with bitmap font");
-            return -1;
+            return SDL_SetError("LCD mode not possible with bitmap font");
         }
     }
 
@@ -2602,14 +2601,13 @@ static FT_Error Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int transl
     }
 
     /* We're done, this glyph is cached since 'stored' is not 0 */
-    return 0;
+    return true;
 
 ft_failure:
-    TTF_SetFTError("Couldn't find glyph", error);
-    return -1;
+    return TTF_SetFTError("Couldn't find glyph", error);
 }
 
-static int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
+static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         int want_bitmap, int want_pixmap, int want_color, int want_lcd, int want_subpixel,
         int translation, c_glyph **out_glyph, TTF_Image **out_image)
 {
@@ -2632,7 +2630,6 @@ static int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
     {
         /* No a real cache, but if it always advances by integer pixels (eg translation 0 or same as previous),
          * this allows to render as fast as normal mode. */
-        int retval;
         int want = CACHED_METRICS | want_bitmap | want_pixmap | want_color | want_lcd | want_subpixel;
 
         if (glyph->stored && glyph->index != idx) {
@@ -2644,7 +2641,7 @@ static int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         }
 
         if ((glyph->stored & want) == want) {
-            return 0;
+            return true;
         }
 
         if (want_color || want_pixmap || want_lcd) {
@@ -2654,39 +2651,31 @@ static int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         }
 
         glyph->index = idx;
-        retval = Load_Glyph(font, glyph, want, translation);
-        if (retval == 0) {
-            return 0;
-        } else {
-            return -1;
-        }
-    }
-    else
-    {
-        int retval;
+        return Load_Glyph(font, glyph, want, translation);
+    } else {
         const int want = CACHED_METRICS | want_bitmap | want_pixmap | want_color | want_lcd;
 
         /* Faster check as it gets inlined */
         if (want_pixmap) {
             if ((glyph->stored & CACHED_PIXMAP) && glyph->index == idx) {
-                return 0;
+                return true;
             }
         } else if (want_bitmap) {
             if ((glyph->stored & CACHED_BITMAP) && glyph->index == idx) {
-                return 0;
+                return true;
             }
         } else if (want_color) {
             if ((glyph->stored & CACHED_COLOR) && glyph->index == idx) {
-                return 0;
+                return true;
             }
         } else if (want_lcd) {
             if ((glyph->stored & CACHED_LCD) && glyph->index == idx) {
-                return 0;
+                return true;
             }
         } else {
             /* Get metrics */
             if (glyph->stored && glyph->index == idx) {
-                return 0;
+                return true;
             }
         }
 
@@ -2703,12 +2692,7 @@ static int Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         }
 
         glyph->index = idx;
-        retval = Load_Glyph(font, glyph, want, 0);
-        if (retval == 0) {
-            return 0;
-        } else {
-            return -1;
-        }
+        return Load_Glyph(font, glyph, want, 0);
     }
 }
 
@@ -2730,7 +2714,7 @@ static FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
 }
 
 
-static int Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out_glyph)
+static bool Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out_glyph)
 {
     FT_UInt idx = get_char_index(font, ch);
     return Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, out_glyph, NULL);
@@ -2850,7 +2834,7 @@ bool TTF_GlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *miny
 
     TTF_CHECK_FONT(font, false);
 
-    if (Find_GlyphMetrics(font, ch, &glyph) < 0) {
+    if (!Find_GlyphMetrics(font, ch, &glyph)) {
         return false;
     }
 
@@ -3045,7 +3029,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
             continue;
         }
 #endif
-        if (Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL) < 0) {
+        if (!Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
             goto failure;
         }
 
@@ -3855,36 +3839,43 @@ int TTF_WasInit(void)
     return SDL_GetAtomicInt(&TTF_state.refcount);
 }
 
-int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint32 previous_ch, Uint32 ch)
+bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *kerning)
 {
     FT_Error error;
     c_glyph *prev_glyph, *glyph;
     FT_Vector delta;
 
-    TTF_CHECK_FONT(font, -1);
+    if (kerning) {
+        *kerning = 0;
+    }
+
+    TTF_CHECK_FONT(font, false);
 
     if (ch == UNICODE_BOM_NATIVE || ch == UNICODE_BOM_SWAPPED) {
-        return 0;
+        return true;
     }
 
     if (previous_ch == UNICODE_BOM_NATIVE || previous_ch == UNICODE_BOM_SWAPPED) {
-        return 0;
+        return true;
     }
 
-    if (Find_GlyphMetrics(font, ch, &glyph) < 0) {
-        return -1;
+    if (!Find_GlyphMetrics(font, ch, &glyph)) {
+        return false;
     }
 
-    if (Find_GlyphMetrics(font, previous_ch, &prev_glyph) < 0) {
-        return -1;
+    if (!Find_GlyphMetrics(font, previous_ch, &prev_glyph)) {
+        return false;
     }
 
     error = FT_Get_Kerning(font->face, prev_glyph->index, glyph->index, FT_KERNING_DEFAULT, &delta);
     if (error) {
-        TTF_SetFTError("Couldn't get glyph kerning", error);
-        return -1;
+        return TTF_SetFTError("Couldn't get glyph kerning", error);
     }
-    return (int)(delta.x >> 6);
+
+    if (kerning) {
+        *kerning = (int)(delta.x >> 6);
+    }
+    return true;
 }
 
 bool TTF_IsFontScalable(const TTF_Font *font)

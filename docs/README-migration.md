@@ -37,7 +37,6 @@ Several functions have been renamed. We have provided a handy semantic patch to 
 In general we have switched to using UTF8 in the API. Functions which had 3 variants, for Latin-1, UTF-8, and UCS2, now accept UTF-8 text. In addition, those functions now have an optional length parameter which allows you to render substrings.
 
 The following functions have been renamed:
-* TTF_GetFontKerningSizeGlyphs32() => TTF_GetFontKerningSizeGlyphs()
 * TTF_GlyphIsProvided32() => TTF_GlyphIsProvided()
 * TTF_GlyphMetrics32() => TTF_GlyphMetrics()
 * TTF_MeasureUTF8() => TTF_MeasureText()
@@ -57,6 +56,8 @@ The following functions have been renamed:
 
 The following functions have been removed:
 * TTF_ByteSwappedUNICODE()
+* TTF_GetFontKerningSizeGlyphs() - replaced with TTF_GetGlyphKerning()
+* TTF_GetFontKerningSizeGlyphs32() - replaced with TTF_GetGlyphKerning()
 * TTF_MeasureUNICODE()
 * TTF_OpenFontDPI() - replaced with TTF_OpenFontWithProperties()
 * TTF_OpenFontDPIIO() - replaced with TTF_OpenFontWithProperties()

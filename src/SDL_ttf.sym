@@ -11,12 +11,12 @@ SDL3_ttf_0.0.0 {
     TTF_FontLineSkip;
     TTF_GetFontHinting;
     TTF_GetFontKerning;
-    TTF_GetFontKerningSizeGlyphs;
     TTF_GetFontOutline;
     TTF_GetFontSDF;
     TTF_GetFontStyle;
     TTF_GetFontWrappedAlign;
     TTF_GetFreeTypeVersion;
+    TTF_GetGlyphKerning;
     TTF_GetHarfBuzzVersion;
     TTF_GlyphIsProvided;
     TTF_GlyphMetrics;
