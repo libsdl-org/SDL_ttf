@@ -1752,14 +1752,14 @@ static unsigned long IOread(
 
 TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
 {
-    const char *file = SDL_GetStringProperty(props, TTF_PROP_FONT_FILENAME_STRING, NULL);
-    SDL_IOStream *src = SDL_GetPointerProperty(props, TTF_PROP_FONT_IOSTREAM_POINTER, NULL);
-    Sint64 src_offset = SDL_GetNumberProperty(props, TTF_PROP_FONT_IOSTREAM_OFFSET_NUMBER, 0);
-    bool closeio = SDL_GetBooleanProperty(props, TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN, false);
-    float ptsize = SDL_GetFloatProperty(props, TTF_PROP_FONT_SIZE_FLOAT, 0);
-    long index = (long)SDL_GetNumberProperty(props, TTF_PROP_FONT_FACE_NUMBER, 0);
-    unsigned int hdpi = (unsigned int)SDL_GetNumberProperty(props, TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER, 0);
-    unsigned int vdpi = (unsigned int)SDL_GetNumberProperty(props, TTF_PROP_FONT_VERTICAL_DPI_NUMBER, 0);
+    const char *file = SDL_GetStringProperty(props, TTF_PROP_FONT_CREATE_FILENAME_STRING, NULL);
+    SDL_IOStream *src = SDL_GetPointerProperty(props, TTF_PROP_FONT_CREATE_IOSTREAM_POINTER, NULL);
+    Sint64 src_offset = SDL_GetNumberProperty(props, TTF_PROP_FONT_CREATE_IOSTREAM_OFFSET_NUMBER, 0);
+    bool closeio = SDL_GetBooleanProperty(props, TTF_PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN, false);
+    float ptsize = SDL_GetFloatProperty(props, TTF_PROP_FONT_CREATE_SIZE_FLOAT, 0);
+    long index = (long)SDL_GetNumberProperty(props, TTF_PROP_FONT_CREATE_FACE_NUMBER, 0);
+    unsigned int hdpi = (unsigned int)SDL_GetNumberProperty(props, TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER, 0);
+    unsigned int vdpi = (unsigned int)SDL_GetNumberProperty(props, TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER, 0);
     TTF_Font *font;
     FT_Error error;
     FT_Face face;
@@ -1779,7 +1779,7 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
 
     if (!src) {
         if (!file) {
-            SDL_SetError("You must set either TTF_PROP_FONT_FILENAME_STRING or TTF_PROP_FONT_IOSTREAM_POINTER");
+            SDL_SetError("You must set either TTF_PROP_FONT_CREATE_FILENAME_STRING or TTF_PROP_FONT_CREATE_IOSTREAM_POINTER");
             return NULL;
         }
 
@@ -1929,8 +1929,8 @@ TTF_Font *TTF_OpenFont(const char *file, float ptsize)
     TTF_Font *font = NULL;
     SDL_PropertiesID props = SDL_CreateProperties();
     if (props) {
-        SDL_SetStringProperty(props, TTF_PROP_FONT_FILENAME_STRING, file);
-        SDL_SetFloatProperty(props, TTF_PROP_FONT_SIZE_FLOAT, ptsize);
+        SDL_SetStringProperty(props, TTF_PROP_FONT_CREATE_FILENAME_STRING, file);
+        SDL_SetFloatProperty(props, TTF_PROP_FONT_CREATE_SIZE_FLOAT, ptsize);
         font = TTF_OpenFontWithProperties(props);
         SDL_DestroyProperties(props);
     }
@@ -1942,9 +1942,9 @@ TTF_Font *TTF_OpenFontIO(SDL_IOStream *src, bool closeio, float ptsize)
     TTF_Font *font = NULL;
     SDL_PropertiesID props = SDL_CreateProperties();
     if (props) {
-        SDL_SetPointerProperty(props, TTF_PROP_FONT_IOSTREAM_POINTER, src);
-        SDL_SetBooleanProperty(props, TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN, closeio);
-        SDL_SetFloatProperty(props, TTF_PROP_FONT_SIZE_FLOAT, ptsize);
+        SDL_SetPointerProperty(props, TTF_PROP_FONT_CREATE_IOSTREAM_POINTER, src);
+        SDL_SetBooleanProperty(props, TTF_PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN, closeio);
+        SDL_SetFloatProperty(props, TTF_PROP_FONT_CREATE_SIZE_FLOAT, ptsize);
         font = TTF_OpenFontWithProperties(props);
         SDL_DestroyProperties(props);
     }

@@ -192,27 +192,27 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  *
  * These are the supported properties:
  *
- * - `TTF_PROP_FONT_FILENAME_STRING`: the font file to open, if an
+ * - `TTF_PROP_FONT_CREATE_FILENAME_STRING`: the font file to open, if an
  *   SDL_IOStream isn't being used. This is required if
- *   `TTF_PROP_FONT_IOSTREAM_POINTER` isn't set.
- * - `TTF_PROP_FONT_IOSTREAM_POINTER`: an SDL_IOStream containing the font to
+ *   `TTF_PROP_FONT_CREATE_IOSTREAM_POINTER` isn't set.
+ * - `TTF_PROP_FONT_CREATE_IOSTREAM_POINTER`: an SDL_IOStream containing the font to
  *   be opened. This should not be closed until the font is closed. This is
- *   required if `TTF_PROP_FONT_FILENAME_STRING` isn't set.
- * - `TTF_PROP_FONT_IOSTREAM_OFFSET_NUMBER`: the offset in the iostream for
+ *   required if `TTF_PROP_FONT_CREATE_FILENAME_STRING` isn't set.
+ * - `TTF_PROP_FONT_CREATE_IOSTREAM_OFFSET_NUMBER`: the offset in the iostream for
  *   the beginning of the font, defaults to 0.
- * - `TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the font
+ * - `TTF_PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the font
  *   should also close the associated SDL_IOStream.
- * - `TTF_PROP_FONT_SIZE_NUMBER`: the point size of the font. Some .fon fonts
+ * - `TTF_PROP_FONT_CREATE_SIZE_NUMBER`: the point size of the font. Some .fon fonts
  *   will have several sizes embedded in the file, so the point size becomes
  *   the index of choosing which size. If the value is too high, the last
  *   indexed size will be the default.
- * - `TTF_PROP_FONT_FACE_NUMBER`: the face index of the font, if the font
+ * - `TTF_PROP_FONT_CREATE_FACE_NUMBER`: the face index of the font, if the font
  *   contains multiple font faces.
- * - `TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER`: the horizontal DPI to use for font
- *   rendering, defaults to `TTF_PROP_FONT_VERTICAL_DPI_NUMBER` if set, or 72
+ * - `TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER`: the horizontal DPI to use for font
+ *   rendering, defaults to `TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER` if set, or 72
  *   otherwise.
- * - `TTF_PROP_FONT_VERTICAL_DPI_NUMBER`: the vertical DPI to use for font
- *   rendering, defaults to `TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER` if set, or
+ * - `TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER`: the vertical DPI to use for font
+ *   rendering, defaults to `TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER` if set, or
  *   72 otherwise.
  *
  * \param props the properties to use.
@@ -227,14 +227,14 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  */
 extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_PropertiesID props);
 
-#define TTF_PROP_FONT_FILENAME_STRING               "SDL_ttf.font.filename"
-#define TTF_PROP_FONT_IOSTREAM_POINTER              "SDL_ttf.font.iostream"
-#define TTF_PROP_FONT_IOSTREAM_OFFSET_NUMBER        "SDL_ttf.font.iostream.offset"
-#define TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN    "SDL_ttf.font.iostream.autoclose"
-#define TTF_PROP_FONT_SIZE_FLOAT                    "SDL_ttf.font.size"
-#define TTF_PROP_FONT_FACE_NUMBER                   "SDL_ttf.font.face"
-#define TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER         "SDL_ttf.font.hdpi"
-#define TTF_PROP_FONT_VERTICAL_DPI_NUMBER           "SDL_ttf.font.vdpi"
+#define TTF_PROP_FONT_CREATE_FILENAME_STRING            "SDL_ttf.font.create.filename"
+#define TTF_PROP_FONT_CREATE_IOSTREAM_POINTER           "SDL_ttf.font.create.iostream"
+#define TTF_PROP_FONT_CREATE_IOSTREAM_OFFSET_NUMBER     "SDL_ttf.font.create.iostream.offset"
+#define TTF_PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN "SDL_ttf.font.create.iostream.autoclose"
+#define TTF_PROP_FONT_CREATE_SIZE_FLOAT                 "SDL_ttf.font.create.size"
+#define TTF_PROP_FONT_CREATE_FACE_NUMBER                "SDL_ttf.font.create.face"
+#define TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER      "SDL_ttf.font.create.hdpi"
+#define TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER        "SDL_ttf.font.create.vdpi"
 
 /**
  * Get the properties associated with a font.
@@ -253,7 +253,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_Properties
  */
 extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetFontProperties(TTF_Font *font);
 
-#define TTF_PROP_FONT_FACE_POINTER                  "SDL_ttf.font.face"
+#define TTF_PROP_FONT_FACE_POINTER                      "SDL_ttf.font.face"
 
 /**
  * Set a font's size dynamically.
