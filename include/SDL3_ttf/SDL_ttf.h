@@ -249,7 +249,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_Properties
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL 3.0.0.
+ * \since This function is available since SDL_ttf 3.0.0.
  */
 extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetFontProperties(TTF_Font *font);
 
@@ -438,7 +438,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting)
 /**
  * The horizontal alignment used when rendering wrapped text.
  *
- * \since This enum is available since SDL 3.0.0.
+ * \since This enum is available since SDL_ttf 3.0.0.
  */
 typedef enum TTF_HorizontalAlignment
 {
@@ -1287,6 +1287,8 @@ extern SDL_DECLSPEC bool TTF_GetFontSDF(const TTF_Font *font);
 
 /**
  * Direction flags
+ *
+ * \since This enum is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontDirection
  */
