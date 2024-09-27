@@ -511,7 +511,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontAscent(const TTF_Font *font);
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontDescent(const TTF_Font *font);
 
 /**
- * Query the recommended spacing between lines of text for a font.
+ * Query the spacing between lines of text for a font.
  *
  * \param font the font to query.
  * \returns the font's recommended spacing.
@@ -521,6 +521,18 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontDescent(const TTF_Font *font);
  * \since This function is available since SDL_ttf 3.0.0.
  */
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontLineSkip(const TTF_Font *font);
+
+/**
+ * Set the spacing between lines of text for a font.
+ *
+ * \param font the font to modify.
+ * \param lineskip the new line spacing for the font.
+ *
+ * \threadsafety This function should be called on the thread that created the font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC void SDLCALL TTF_SetFontLineSkip(TTF_Font *font, int lineskip);
 
 /**
  * Query whether or not kerning is enabled for a font.
