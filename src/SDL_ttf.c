@@ -257,6 +257,7 @@ struct TTF_Font {
 
     /* We are responsible for closing the font stream */
     SDL_IOStream *src;
+    Sint64 src_offset;
     bool closeio;
     FT_Open_Args args;
 
@@ -1754,17 +1755,16 @@ static unsigned long IOread(
     unsigned long count
 )
 {
-    SDL_IOStream *src;
-
-    src = (SDL_IOStream *)stream->descriptor.pointer;
-    SDL_SeekIO(src, offset, SDL_IO_SEEK_SET);
-    return (unsigned long)SDL_ReadIO(src, buffer, count);
+    TTF_Font *font = (TTF_Font *)stream->descriptor.pointer;
+    SDL_SeekIO(font->src, font->src_offset + offset, SDL_IO_SEEK_SET);
+    return (unsigned long)SDL_ReadIO(font->src, buffer, count);
 }
 
 TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
 {
     const char *file = SDL_GetStringProperty(props, TTF_PROP_FONT_FILENAME_STRING, NULL);
     SDL_IOStream *src = SDL_GetPointerProperty(props, TTF_PROP_FONT_IOSTREAM_POINTER, NULL);
+    Sint64 src_offset = SDL_GetNumberProperty(props, TTF_PROP_FONT_IOSTREAM_OFFSET_NUMBER, 0);
     bool closeio = SDL_GetBooleanProperty(props, TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN, false);
     int ptsize = (int)SDL_GetNumberProperty(props, TTF_PROP_FONT_SIZE_NUMBER, 0);
     long index = (long)SDL_GetNumberProperty(props, TTF_PROP_FONT_FACE_NUMBER, 0);
@@ -1821,6 +1821,7 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     SDL_memset(font, 0, sizeof (*font));
 
     font->src = src;
+    font->src_offset = src_offset;
     font->closeio = closeio;
 
     stream = (FT_Stream)SDL_malloc(sizeof (*stream));
@@ -1832,9 +1833,9 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     SDL_memset(stream, 0, sizeof (*stream));
 
     stream->read = IOread;
-    stream->descriptor.pointer = src;
-    stream->pos = (unsigned long)position;
-    stream->size = (unsigned long)(SDL_GetIOSize(src) - position);
+    stream->descriptor.pointer = font;
+    stream->pos = 0;
+    stream->size = (unsigned long)(SDL_GetIOSize(src) - src_offset);
 
     font->args.flags = FT_OPEN_STREAM;
     font->args.stream = stream;

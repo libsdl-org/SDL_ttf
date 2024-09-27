@@ -198,6 +198,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  * - `TTF_PROP_FONT_IOSTREAM_POINTER`: an SDL_IOStream containing the font to
  *   be opened. This should not be closed until the font is closed. This is
  *   required if `TTF_PROP_FONT_FILENAME_STRING` isn't set.
+ * - `TTF_PROP_FONT_IOSTREAM_OFFSET_NUMBER`: the offset in the iostream for the beginning of the font, defaults to 0.
  * - `TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the font
  *   should also close the associated SDL_IOStream.
  * - `TTF_PROP_FONT_SIZE_NUMBER`: the point size of the font. Some .fon fonts
@@ -227,6 +228,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_Properties
 
 #define TTF_PROP_FONT_FILENAME_STRING               "SDL_ttf.font.filename"
 #define TTF_PROP_FONT_IOSTREAM_POINTER              "SDL_ttf.font.iostream"
+#define TTF_PROP_FONT_IOSTREAM_OFFSET_NUMBER        "SDL_ttf.font.iostream.offset"
 #define TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN    "SDL_ttf.font.iostream.autoclose"
 #define TTF_PROP_FONT_SIZE_NUMBER                   "SDL_ttf.font.size"
 #define TTF_PROP_FONT_FACE_NUMBER                   "SDL_ttf.font.face"
