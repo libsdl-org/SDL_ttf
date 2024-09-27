@@ -94,8 +94,9 @@ static hb_script_t    g_hb_script = HB_SCRIPT_UNKNOWN;
 #endif
 
 /* Round glyph width to 16 bytes use NEON instructions */
-#if 0 /*defined(__ARM_NEON)*/
+#if defined(__ARM_NEON)
 #  define HAVE_NEON_INTRINSICS 1
+#include <arm_neon.h>
 #endif
 
 /* Round glyph width to 8 bytes */
