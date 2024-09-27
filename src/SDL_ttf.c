@@ -3238,7 +3238,7 @@ failure:
     return false;
 }
 
-bool TTF_SizeText(TTF_Font *font, const char *text, size_t length, int *w, int *h)
+bool TTF_GetTextSize(TTF_Font *font, const char *text, size_t length, int *w, int *h)
 {
     return TTF_Size_Internal(font, text, length, w, h, NULL, NULL, NO_MEASUREMENT);
 }
@@ -3393,6 +3393,192 @@ static bool CharacterIsNewLine(Uint32 c)
     return false;
 }
 
+bool TTF_GetTextSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrapLength, int *w, int *h)
+{
+    int width, height;
+    Uint8 *utf8_alloc = NULL;
+
+    int i, numLines, rowHeight, lineskip;
+    char **strLines = NULL, *text_cpy;
+    bool result = false;
+
+    TTF_CHECK_INITIALIZED(false);
+    TTF_CHECK_POINTER("font", font, false);
+    TTF_CHECK_POINTER("text", text, false);
+
+    if (!length) {
+        length = SDL_strlen(text);
+    }
+
+    /* Use a copy of the text */
+    utf8_alloc = SDL_stack_alloc(Uint8, length + 1);
+    if (utf8_alloc == NULL) {
+        SDL_OutOfMemory();
+        goto done;
+    }
+    SDL_memcpy(utf8_alloc, text, length);
+    utf8_alloc[length] = 0;
+    text_cpy = (char *)utf8_alloc;
+
+    /* Get the dimensions of the text surface */
+    if (!TTF_GetTextSize(font, text_cpy, length, &width, &height) || !width) {
+        SDL_SetError("Text has zero width");
+        goto done;
+    }
+
+    if (wrapLength < 0) {
+        SDL_InvalidParamError("wrapLength");
+        goto done;
+    }
+
+    numLines = 1;
+
+    if (*text_cpy) {
+        int maxNumLines = 0;
+        size_t textlen = length;
+        numLines = 0;
+
+        do {
+            int extent = 0, max_count = 0, char_count = 0;
+            size_t save_textlen = (size_t)(-1);
+            char *save_text  = NULL;
+
+            if (numLines >= maxNumLines) {
+                char **saved = strLines;
+                if (wrapLength == 0) {
+                    maxNumLines += 32;
+                } else {
+                    maxNumLines += (width / wrapLength) + 1;
+                }
+                strLines = (char **)SDL_realloc(strLines, maxNumLines * sizeof (*strLines));
+                if (strLines == NULL) {
+                    strLines = saved;
+                    goto done;
+                }
+            }
+
+            strLines[numLines++] = text_cpy;
+
+            if (!TTF_MeasureText(font, text_cpy, 0, wrapLength, &extent, &max_count)) {
+                SDL_SetError("Error measure text");
+                goto done;
+            }
+
+            if (wrapLength != 0) {
+                if (max_count == 0) {
+                    max_count = 1;
+                }
+            }
+
+            while (textlen > 0) {
+                int is_delim;
+                Uint32 c = SDL_StepUTF8((const char **)&text_cpy, &textlen);
+
+                if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
+                    continue;
+                }
+
+                char_count += 1;
+
+                /* With wrapLength == 0, normal text rendering but newline aware */
+                is_delim = (wrapLength > 0) ?  CharacterIsDelimiter(c) : CharacterIsNewLine(c);
+
+                /* Record last delimiter position */
+                if (is_delim) {
+                    save_textlen = textlen;
+                    save_text = text_cpy;
+                    /* Break, if new line */
+                    if (c == '\n' || c == '\r') {
+                        *(text_cpy - 1) = '\0';
+                        break;
+                    }
+                }
+
+                /* Break, if reach the limit */
+                if (char_count == max_count) {
+                    break;
+                }
+            }
+
+            /* Cut at last delimiter/new lines, otherwise in the middle of the word */
+            if (save_text && textlen) {
+                text_cpy = save_text;
+                textlen = save_textlen;
+            }
+        } while (textlen > 0);
+    }
+
+    lineskip = TTF_GetFontLineSkip(font);
+    rowHeight = SDL_max(height, lineskip);
+
+    if (wrapLength == 0) {
+        /* Find the max of all line lengths */
+        if (numLines > 1) {
+            width = 0;
+            for (i = 0; i < numLines; i++) {
+                char save_c = 0;
+                int w, h;
+
+                /* Add end-of-line */
+                if (strLines) {
+                    text = strLines[i];
+                    if (i + 1 < numLines) {
+                        save_c = strLines[i + 1][0];
+                        strLines[i + 1][0] = '\0';
+                    }
+                }
+
+                if (TTF_GetTextSize(font, text, 0, &w, &h)) {
+                    width = SDL_max(w, width);
+                }
+
+                /* Remove end-of-line */
+                if (strLines) {
+                    if (i + 1 < numLines) {
+                        strLines[i + 1][0] = save_c;
+                    }
+                }
+            }
+            /* In case there are all newlines */
+            width = SDL_max(width, 1);
+        }
+    } else {
+        if (numLines <= 1 && font->horizontal_align == TTF_HORIZONTAL_ALIGN_LEFT) {
+            /* Don't go above wrapLength if you have only 1 line which hasn't been cut */
+            width = SDL_min((int)wrapLength, width);
+        } else {
+            width = wrapLength;
+        }
+    }
+    height = rowHeight + lineskip * (numLines - 1);
+
+    result = true;
+
+done:
+    if (result) {
+        if (w) {
+            *w = width;
+        }
+        if (h) {
+            *h = height;
+        }
+    } else {
+        if (w) {
+            *w = 0;
+        }
+        if (h) {
+            *h = 0;
+        }
+    }
+    if (strLines) {
+        SDL_free(strLines);
+    }
+    if (utf8_alloc) {
+        SDL_stack_free(utf8_alloc);
+    }
+    return result;
+}
+
 static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength, const render_mode_t render_mode)
 {
     Uint32 color;
@@ -3427,12 +3613,11 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     text_cpy = (char *)utf8_alloc;
 
     /* Get the dimensions of the text surface */
-    if (!TTF_SizeText(font, text_cpy, length, &width, &height) || !width) {
+    if (!TTF_GetTextSize(font, text_cpy, length, &width, &height) || !width) {
         SDL_SetError("Text has zero width");
         goto failure;
     }
 
-    /* wrapLength is unsigned, but don't allow negative values */
     if (wrapLength < 0) {
         SDL_InvalidParamError("wrapLength");
         goto failure;
@@ -3545,7 +3730,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
                     }
                 }
 
-                if (TTF_SizeText(font, text, 0, &w, &h)) {
+                if (TTF_GetTextSize(font, text, 0, &w, &h)) {
                     width = SDL_max(w, width);
                 }
 

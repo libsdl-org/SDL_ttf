@@ -696,8 +696,6 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, 
  * This will report the width and height, in pixels, of the space that the
  * specified string will take to fully render.
  *
- * This does not need to render the string to do this calculation.
- *
  * \param font the font to query.
  * \param text text to calculate, in UTF-8 encoding.
  * \param length the length of the text, in bytes, or 0 for null terminated
@@ -712,7 +710,35 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, 
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_SizeText(TTF_Font *font, const char *text, size_t length, int *w, int *h);
+extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSize(TTF_Font *font, const char *text, size_t length, int *w, int *h);
+
+/**
+ * Calculate the dimensions of a rendered string of UTF-8 text.
+ *
+ * This will report the width and height, in pixels, of the space that the
+ * specified string will take to fully render.
+ *
+ * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * it extends beyond `wrapLength` in pixels.
+ *
+ * If wrapLength is 0, this function will only wrap on newline characters.
+ *
+ * \param font the font to query.
+ * \param text text to calculate, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
+ * \param wrapLength the maximum width or 0 to wrap on newline characters.
+ * \param w will be filled with width, in pixels, on return.
+ * \param h will be filled with height, in pixels, on return.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrapLength, int *w, int *h);
 
 /**
  * Calculate how much of a UTF-8 string will fit in a given width.
