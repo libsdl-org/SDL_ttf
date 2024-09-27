@@ -83,8 +83,3 @@
 - TTF_RenderGlyph32_LCD
 + TTF_RenderGlyph_LCD
   (...)
-@@
-@@
-- TTF_GetFontKerningSizeGlyphs32
-+ TTF_GetFontKerningSizeGlyphs
-  (...)

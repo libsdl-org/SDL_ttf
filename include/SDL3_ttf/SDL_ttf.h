@@ -1181,13 +1181,15 @@ extern SDL_DECLSPEC int SDLCALL TTF_WasInit(void);
  * \param font the font to query.
  * \param previous_ch the previous character's code, 32 bits.
  * \param ch the current character's code, 32 bits.
- * \returns The kerning size between the two specified characters, in pixels, or -1 on failure; call SDL_GetError() for more information.
+ * \param kerning a pointer filled in with the kerning size between the two specified characters, in pixels, may be NULL.
+ * \returns true on success or false on failure; call SDL_GetError()
+ *          for more information.
  *
  * \threadsafety This function should be called on the thread that created the font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC int TTF_GetFontKerningSizeGlyphs(TTF_Font *font, Uint32 previous_ch, Uint32 ch);
+extern SDL_DECLSPEC bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *kerning);
 
 /**
  * Enable Signed Distance Field rendering for a font.
