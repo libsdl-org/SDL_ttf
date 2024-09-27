@@ -160,3 +160,8 @@
 - TTF_SetFontScriptName
 + TTF_SetFontScript
   (...)
+@@
+@@
+- TTF_SizeText
++ TTF_GetTextSize
+  (...)

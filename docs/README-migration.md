@@ -65,6 +65,7 @@ The following functions have been renamed:
 * TTF_RenderUTF8_Solid_Wrapped() => TTF_RenderText_Solid_Wrapped()
 * TTF_SetFontScriptName() => TTF_SetFontScript()
 * TTF_SetFontWrappedAlign() => TTF_SetFontWrapAlignment()
+* TTF_SizeText() => TTF_GetTextSize()
 * TTF_SizeUTF8() => TTF_SizeText()
 
 The following functions have been removed:

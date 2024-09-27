@@ -898,7 +898,7 @@ int main(void)
              }
           }
 #endif
-          if (!TTF_SizeText(font, text, 0, &w, &h)) {
+          if (!TTF_GetTextSize(font, text, 0, &w, &h)) {
              SDL_Log("size failed");
           }
           if (w == 0) {
