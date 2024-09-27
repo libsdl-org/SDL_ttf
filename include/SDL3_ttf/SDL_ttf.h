@@ -234,6 +234,25 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_Properties
 #define TTF_PROP_FONT_VERTICAL_DPI_NUMBER           "SDL_ttf.font.vdpi"
 
 /**
+ * Get the properties associated with a font.
+ *
+ * The following read-only properties are provided by SDL:
+ *
+ * - `TTF_PROP_FONT_FACE_POINTER`: the FT_Face associated with the font.
+ *
+ * \param font the font to query.
+ * \returns a valid property ID on success or 0 on failure; call
+ *          SDL_GetError() for more information.
+ *
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL 3.0.0.
+ */
+extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetFontProperties(TTF_Font *font);
+
+#define TTF_PROP_FONT_FACE_POINTER                  "SDL_ttf.font.face"
+
+/**
  * Set a font's size dynamically.
  *
  * This clears already-generated glyphs, if any, from the cache.
@@ -531,18 +550,6 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontKerning(const TTF_Font *font);
  * \since This function is available since SDL_ttf 3.0.0.
  */
 extern SDL_DECLSPEC void SDLCALL TTF_SetFontKerning(TTF_Font *font, bool enabled);
-
-/**
- * Query the number of faces of a font.
- *
- * \param font the font to query.
- * \returns the number of FreeType font faces.
- *
- * \threadsafety It is safe to call this function from any thread.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- */
-extern SDL_DECLSPEC int SDLCALL TTF_GetNumFontFaces(const TTF_Font *font);
 
 /**
  * Query whether a font is fixed-width.
