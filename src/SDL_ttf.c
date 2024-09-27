@@ -2128,7 +2128,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
 
     error = FT_Load_Glyph(font->face, cached->index, ft_load);
     if (error) {
-        goto ft_failure;
+        return TTF_SetFTError("FT_Load_Glyph() failed", error);
     }
 
     /* Get our glyph shortcut */
@@ -2260,7 +2260,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
 
             error = FT_Get_Glyph(slot, &glyph);
             if (error) {
-                goto ft_failure;
+                return TTF_SetFTError("FT_Get_Glyph() failed", error);
             }
 
             if (font->outline_val > 0) {
@@ -2271,7 +2271,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
             error = FT_Glyph_To_Bitmap(&glyph, ft_render_mode, 0, 1);
             if (error) {
                 FT_Done_Glyph(glyph);
-                goto ft_failure;
+                return TTF_SetFTError("FT_Glyph_To_Bitmap() failed", error);
             }
 
             /* Access bitmap content by typecasting */
@@ -2285,7 +2285,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
             /* Render the glyph */
             error = FT_Render_Glyph(slot, ft_render_mode);
             if (error) {
-                goto ft_failure;
+                return TTF_SetFTError("FT_Render_Glyph() failed", error);
             }
 
             /* Access bitmap from slot */
@@ -2329,10 +2329,8 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
             /* Glyph buffer is NOT aligned,
              * Extra width so it can read an 'aligned' size expanding on the left */
             dst->buffer = (unsigned char *)SDL_malloc(alignment + dst->pitch * dst->rows);
-
             if (!dst->buffer) {
-                error = FT_Err_Out_Of_Memory;
-                goto ft_failure;
+                return false;
             }
 
             /* Memset */
@@ -2614,9 +2612,6 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
 
     /* We're done, this glyph is cached since 'stored' is not 0 */
     return true;
-
-ft_failure:
-    return TTF_SetFTError("Couldn't find glyph", error);
 }
 
 static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
