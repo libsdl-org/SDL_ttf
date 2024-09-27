@@ -746,7 +746,7 @@ int main(void)
           saved_curr_size = curr_size;
           font_path = test_fonts[curr_font];
           SDL_Log("TTF_OpenFont: %s", font_path);
-          font = TTF_OpenFont(font_path, curr_size);
+          font = TTF_OpenFont(font_path, (float)curr_size);
           if (!font) {
 #if 1
              quit("Font load failed");
@@ -760,7 +760,7 @@ int main(void)
 
        if (saved_curr_size != curr_size) {
 #if defined(HAVE_SET_FONT_SIZE_FUNCTION)
-          TTF_SetFontSize(font, curr_size);
+          TTF_SetFontSize(font, (float)curr_size);
 #else
           if (font) {
              TTF_CloseFont(font);

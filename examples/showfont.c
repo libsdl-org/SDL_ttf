@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DEFAULT_PTSIZE  18
+#define DEFAULT_PTSIZE  18.0f
 #define DEFAULT_TEXT    "The quick brown fox jumped over the lazy dog"
 #define WIDTH   640
 #define HEIGHT  480
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     TTF_Font *font;
     SDL_Surface *text = NULL;
     Scene scene;
-    int ptsize;
+    float ptsize;
     int i, done;
     SDL_Color white = { 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE };
     SDL_Color black = { 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
@@ -193,11 +193,11 @@ int main(int argc, char *argv[])
     }
 
     /* Open the font file with the requested point size */
-    ptsize = 0;
+    ptsize = 0.0f;
     if (argc > 1) {
-        ptsize = SDL_atoi(argv[1]);
+        ptsize = (float)SDL_atof(argv[1]);
     }
-    if (ptsize == 0) {
+    if (ptsize == 0.0f) {
         i = 2;
         ptsize = DEFAULT_PTSIZE;
     } else {
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
     }
     font = TTF_OpenFont(argv[0], ptsize);
     if (font == NULL) {
-        SDL_Log("Couldn't load %d pt font from %s: %s\n",
+        SDL_Log("Couldn't load %g pt font from %s: %s\n",
                     ptsize, argv[0], SDL_GetError());
         cleanup(2);
     }

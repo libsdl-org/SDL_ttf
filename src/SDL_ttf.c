@@ -1756,7 +1756,7 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     SDL_IOStream *src = SDL_GetPointerProperty(props, TTF_PROP_FONT_IOSTREAM_POINTER, NULL);
     Sint64 src_offset = SDL_GetNumberProperty(props, TTF_PROP_FONT_IOSTREAM_OFFSET_NUMBER, 0);
     bool closeio = SDL_GetBooleanProperty(props, TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN, false);
-    int ptsize = (int)SDL_GetNumberProperty(props, TTF_PROP_FONT_SIZE_NUMBER, 0);
+    float ptsize = SDL_GetFloatProperty(props, TTF_PROP_FONT_SIZE_FLOAT, 0);
     long index = (long)SDL_GetNumberProperty(props, TTF_PROP_FONT_FACE_NUMBER, 0);
     unsigned int hdpi = (unsigned int)SDL_GetNumberProperty(props, TTF_PROP_FONT_HORIZONTAL_DPI_NUMBER, 0);
     unsigned int vdpi = (unsigned int)SDL_GetNumberProperty(props, TTF_PROP_FONT_VERTICAL_DPI_NUMBER, 0);
@@ -1924,34 +1924,34 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     return font;
 }
 
-TTF_Font *TTF_OpenFont(const char *file, int ptsize)
+TTF_Font *TTF_OpenFont(const char *file, float ptsize)
 {
     TTF_Font *font = NULL;
     SDL_PropertiesID props = SDL_CreateProperties();
     if (props) {
         SDL_SetStringProperty(props, TTF_PROP_FONT_FILENAME_STRING, file);
-        SDL_SetNumberProperty(props, TTF_PROP_FONT_SIZE_NUMBER, ptsize);
+        SDL_SetFloatProperty(props, TTF_PROP_FONT_SIZE_FLOAT, ptsize);
         font = TTF_OpenFontWithProperties(props);
         SDL_DestroyProperties(props);
     }
     return font;
 }
 
-TTF_Font *TTF_OpenFontIO(SDL_IOStream *src, bool closeio, int ptsize)
+TTF_Font *TTF_OpenFontIO(SDL_IOStream *src, bool closeio, float ptsize)
 {
     TTF_Font *font = NULL;
     SDL_PropertiesID props = SDL_CreateProperties();
     if (props) {
         SDL_SetPointerProperty(props, TTF_PROP_FONT_IOSTREAM_POINTER, src);
         SDL_SetBooleanProperty(props, TTF_PROP_FONT_IOSTREAM_AUTOCLOSE_BOOLEAN, closeio);
-        SDL_SetNumberProperty(props, TTF_PROP_FONT_SIZE_NUMBER, ptsize);
+        SDL_SetFloatProperty(props, TTF_PROP_FONT_SIZE_FLOAT, ptsize);
         font = TTF_OpenFontWithProperties(props);
         SDL_DestroyProperties(props);
     }
     return font;
 }
 
-bool TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsigned int hdpi, unsigned int vdpi)
+bool TTF_SetFontSizeDPI(TTF_Font *font, float ptsize, unsigned int hdpi, unsigned int vdpi)
 {
     FT_Face face = font->face;
     FT_Error error;
@@ -1961,7 +1961,7 @@ bool TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsigned int hdpi, unsigned 
         /* Set the character size using the provided DPI.  If a zero DPI
          * is provided, then the other DPI setting will be used.  If both
          * are zero, then Freetype's default 72 DPI will be used.  */
-        error = FT_Set_Char_Size(face, 0, ptsize * 64, hdpi, vdpi);
+        error = FT_Set_Char_Size(face, 0, (int)SDL_roundf(ptsize * 64), hdpi, vdpi);
         if (error) {
             return TTF_SetFTError("Couldn't set font size", error);
         }
@@ -1974,10 +1974,11 @@ bool TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsigned int hdpi, unsigned 
         }
 
         /* within [0; num_fixed_sizes - 1] */
-        ptsize = SDL_max(ptsize, 0);
-        ptsize = SDL_min(ptsize, face->num_fixed_sizes - 1);
+        int index = (int)ptsize;
+        index = SDL_max(index, 0);
+        index = SDL_min(index, face->num_fixed_sizes - 1);
 
-        error = FT_Select_Size(face, ptsize);
+        error = FT_Select_Size(face, index);
         if (error) {
             return TTF_SetFTError("Couldn't select size", error);
         }
@@ -1997,7 +1998,7 @@ bool TTF_SetFontSizeDPI(TTF_Font *font, int ptsize, unsigned int hdpi, unsigned 
     return true;
 }
 
-bool TTF_SetFontSize(TTF_Font *font, int ptsize)
+bool TTF_SetFontSize(TTF_Font *font, float ptsize)
 {
     return TTF_SetFontSizeDPI(font, ptsize, 0, 0);
 }
