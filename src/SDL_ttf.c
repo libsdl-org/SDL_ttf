@@ -3467,10 +3467,10 @@ bool TTF_GetTextSizeWrapped(TTF_Font *font, const char *text, size_t length, int
         if (numLines > 1) {
             width = 0;
             for (i = 0; i < numLines; i++) {
-                int w, h;
+                int w_tmp, h_tmp;
 
-                if (TTF_GetTextSize(font, strLines[i].text, strLines[i].length, &w, &h)) {
-                    width = SDL_max(w, width);
+                if (TTF_GetTextSize(font, strLines[i].text, strLines[i].length, &w_tmp, &h_tmp)) {
+                    width = SDL_max(w_tmp, width);
                 }
             }
             /* In case there are all newlines */
