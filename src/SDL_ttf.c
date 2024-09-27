@@ -1889,6 +1889,16 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     return font;
 }
 
+SDL_PropertiesID TTF_GetFontProperties(TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, 0);
+
+    if (font->props == 0) {
+        font->props = SDL_CreateProperties();
+    }
+    return font->props;
+}
+
 TTF_Font *TTF_OpenFont(const char *file, float ptsize)
 {
     TTF_Font *font = NULL;
