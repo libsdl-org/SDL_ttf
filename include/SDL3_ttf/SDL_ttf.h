@@ -1163,7 +1163,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, con
 extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength);
 
 /**
- * Render a single UNICODE codepoint at LCD subpixel quality to a new ARGB surface.
+ * Render a single UNICODE codepoint at LCD subpixel quality to a new ARGB
+ * surface.
  *
  * This function will allocate a new 32-bit, ARGB surface, and render
  * alpha-blended text using FreeType's LCD subpixel rendering. This function
