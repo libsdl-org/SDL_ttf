@@ -27,11 +27,6 @@
  *
  *  This library is a wrapper around the excellent FreeType 2.0 library,
  *  available at: https://www.freetype.org/
- *
- *  Note: In many places, SDL_ttf will say "glyph" when it means "code point."
- *  Unicode is hard, we learn as we go, and we apologize for adding to the
- *  confusion.
- *
  */
 #ifndef SDL_TTF_H_
 #define SDL_TTF_H_
@@ -301,31 +296,9 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, float ptsize
 #define TTF_STYLE_STRIKETHROUGH 0x08
 
 /**
- * Query a font's current style.
- *
- * The font styles are a set of bit flags, OR'd together:
- *
- * - `TTF_STYLE_NORMAL` (is zero)
- * - `TTF_STYLE_BOLD`
- * - `TTF_STYLE_ITALIC`
- * - `TTF_STYLE_UNDERLINE`
- * - `TTF_STYLE_STRIKETHROUGH`
- *
- * \param font the font to query.
- * \returns the current font style, as a set of bit flags.
- *
- * \threadsafety It is safe to call this function from any thread.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SetFontStyle
- */
-extern SDL_DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
-
-/**
  * Set a font's current style.
  *
- * Setting the style clears already-generated glyphs, if any, from the cache.
+ * This clears already-generated glyphs, if any, from the cache.
  *
  * The font styles are a set of bit flags, OR'd together:
  *
@@ -348,18 +321,26 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
 extern SDL_DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
 
 /**
- * Query a font's current outline.
+ * Query a font's current style.
+ *
+ * The font styles are a set of bit flags, OR'd together:
+ *
+ * - `TTF_STYLE_NORMAL` (is zero)
+ * - `TTF_STYLE_BOLD`
+ * - `TTF_STYLE_ITALIC`
+ * - `TTF_STYLE_UNDERLINE`
+ * - `TTF_STYLE_STRIKETHROUGH`
  *
  * \param font the font to query.
- * \returns the font's current outline value.
+ * \returns the current font style, as a set of bit flags.
  *
  * \threadsafety It is safe to call this function from any thread.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_SetFontOutline
+ * \sa TTF_SetFontStyle
  */
-extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
+extern SDL_DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
 
 /**
  * Set a font's current outline.
@@ -378,6 +359,19 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontOutline(TTF_Font *font, int outline);
 
+/**
+ * Query a font's current outline.
+ *
+ * \param font the font to query.
+ * \returns the font's current outline value.
+ *
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetFontOutline
+ */
+extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
 
 /**
  * Hinting flags
@@ -387,6 +381,31 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontOutline(TTF_Font *font, int outline)
 #define TTF_HINTING_MONO            2
 #define TTF_HINTING_NONE            3
 #define TTF_HINTING_LIGHT_SUBPIXEL  4
+
+/**
+ * Set a font's current hinter setting.
+ *
+ * This clears already-generated glyphs, if any, from the cache.
+ *
+ * The hinter setting is a single value:
+ *
+ * - `TTF_HINTING_NORMAL`
+ * - `TTF_HINTING_LIGHT`
+ * - `TTF_HINTING_MONO`
+ * - `TTF_HINTING_NONE`
+ * - `TTF_HINTING_LIGHT_SUBPIXEL` (available in SDL_ttf 3.0.0 and later)
+ *
+ * \param font the font to set a new hinter setting on.
+ * \param hinting the new hinter setting.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetFontHinting
+ */
+extern SDL_DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting);
 
 /**
  * Query a font's current FreeType hinter setting.
@@ -411,29 +430,40 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontOutline(TTF_Font *font, int outline)
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontHinting(const TTF_Font *font);
 
 /**
- * Set a font's current hinter setting.
+ * Enable Signed Distance Field rendering for a font.
  *
- * Setting it clears already-generated glyphs, if any, from the cache.
+ * This works with the Blended APIs. SDF is a technique that
+ * helps fonts look sharp even when scaling and rotating.
  *
- * The hinter setting is a single value:
+ * This clears already-generated glyphs, if any, from the cache.
  *
- * - `TTF_HINTING_NORMAL`
- * - `TTF_HINTING_LIGHT`
- * - `TTF_HINTING_MONO`
- * - `TTF_HINTING_NONE`
- * - `TTF_HINTING_LIGHT_SUBPIXEL` (available in SDL_ttf 3.0.0 and later)
+ * \param font the font to set SDF support on.
+ * \param enabled true to enable SDF, false to disable.
+ * \returns true on success or false on failure; call SDL_GetError()
+ *          for more information.
  *
- * \param font the font to set a new hinter setting on.
- * \param hinting the new hinter setting.
- *
- * \threadsafety This function should be called on the thread that created the
- *               font.
+ * \threadsafety This function should be called on the thread that created the font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_GetFontHinting
+ * \sa TTF_GetFontSDF
  */
-extern SDL_DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting);
+extern SDL_DECLSPEC bool TTF_SetFontSDF(TTF_Font *font, bool enabled);
+
+/**
+ * Query whether Signed Distance Field rendering is enabled for a font.
+ *
+ * \param font the font to query
+ *
+ * \returns true if enabled, false otherwise.
+ *
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetFontSDF
+ */
+extern SDL_DECLSPEC bool TTF_GetFontSDF(const TTF_Font *font);
 
 /**
  * The horizontal alignment used when rendering wrapped text.
@@ -449,20 +479,6 @@ typedef enum TTF_HorizontalAlignment
 } TTF_HorizontalAlignment;
 
 /**
- * Query a font's current wrap alignment option.
- *
- * \param font the font to query.
- * \returns the font's current wrap alignment option.
- *
- * \threadsafety It is safe to call this function from any thread.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SetFontWrapAlignment
- */
-extern SDL_DECLSPEC TTF_HorizontalAlignment SDLCALL TTF_GetFontWrapAlignment(const TTF_Font *font);
-
-/**
  * Set a font's current wrap alignment option.
  *
  * \param font the font to set a new wrap alignment option on.
@@ -476,6 +492,20 @@ extern SDL_DECLSPEC TTF_HorizontalAlignment SDLCALL TTF_GetFontWrapAlignment(con
  * \sa TTF_GetFontWrapAlignment
  */
 extern SDL_DECLSPEC void SDLCALL TTF_SetFontWrapAlignment(TTF_Font *font, TTF_HorizontalAlignment align);
+
+/**
+ * Query a font's current wrap alignment option.
+ *
+ * \param font the font to query.
+ * \returns the font's current wrap alignment option.
+ *
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetFontWrapAlignment
+ */
+extern SDL_DECLSPEC TTF_HorizontalAlignment SDLCALL TTF_GetFontWrapAlignment(const TTF_Font *font);
 
 /**
  * Query the total height of a font.
@@ -646,10 +676,109 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontFamilyName(const TTF_Font *f
 extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontStyleName(const TTF_Font *font);
 
 /**
- * Check whether a glyph is provided by the font for a 32-bit codepoint.
+ * Direction flags
+ *
+ * \since This enum is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetFontDirection
+ */
+typedef enum TTF_Direction
+{
+  TTF_DIRECTION_LTR = 0,    /* Left to Right */
+  TTF_DIRECTION_RTL,        /* Right to Left */
+  TTF_DIRECTION_TTB,        /* Top to Bottom */
+  TTF_DIRECTION_BTT         /* Bottom to Top */
+} TTF_Direction;
+
+/**
+ * Set direction to be used for text shaping by a font.
+ *
+ * Possible direction values are:
+ *
+ * - `TTF_DIRECTION_LTR` (Left to Right)
+ * - `TTF_DIRECTION_RTL` (Right to Left)
+ * - `TTF_DIRECTION_TTB` (Top to Bottom)
+ * - `TTF_DIRECTION_BTT` (Bottom to Top)
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns
+ * false.
+ *
+ * \param font the font to specify a direction for.
+ * \param direction the new direction for text to flow.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction);
+
+/**
+ * Set script to be used for text shaping by a font.
+ *
+ * The supplied script value must be a null-terminated string of exactly four
+ * characters.
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns
+ * false.
+ *
+ * \param font the font to specify a script name for.
+ * \param script null-terminated string of exactly 4 characters.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function is not thread-safe.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScript(TTF_Font *font, const char *script);
+
+/**
+ * Get the script used by a 32-bit codepoint.
+ *
+ * The supplied script value will be a null-terminated string of exactly four
+ * characters.
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns
+ * false.
+ *
+ * \param ch the character code to check.
+ * \param script a pointer filled in with the script used by `ch`.
+ * \param script_size the size of the script buffer, which must be at least 5
+ *                    characters.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphScript(Uint32 ch, char *script, size_t script_size);
+
+/**
+ * Set language to be used for text shaping by a font.
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns false.
+ *
+ * \param font the font to specify a language for.
+ * \param language_bcp47 a null-terminated string containing the desired language's BCP47 code. Or null to reset the value.
+ * \returns true on success or false on failure; call SDL_GetError()
+ *          for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
+
+/**
+ * Check whether a glyph is provided by the font for a UNICODE codepoint.
  *
  * \param font the font to query.
- * \param ch the character code to check.
+ * \param ch the codepoint to check.
  * \returns true if font provides a glyph for this character, false if not.
  *
  * \threadsafety This function should be called on the thread that created the
@@ -660,14 +789,14 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontStyleName(const TTF_Font *fo
 extern SDL_DECLSPEC bool SDLCALL TTF_FontHasGlyph(TTF_Font *font, Uint32 ch);
 
 /**
- * Query the metrics (dimensions) of a font's 32-bit glyph.
+ * Query the metrics (dimensions) of a font's glyph for a UNICODE codepoint.
  *
  * To understand what these metrics mean, here is a useful link:
  *
  * https://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
  *
  * \param font the font to query.
- * \param ch the character code to check.
+ * \param ch the codepoint to check.
  * \param minx a pointer filled in with the minimum x coordinate of the glyph
  *             from the left edge of its bounding box. This value may be
  *             negative.
@@ -689,6 +818,22 @@ extern SDL_DECLSPEC bool SDLCALL TTF_FontHasGlyph(TTF_Font *font, Uint32 ch);
  * \since This function is available since SDL_ttf 3.0.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *miny, int *maxy, int *advance);
+
+/**
+ * Query the kerning size between the glyphs of two UNICODE codepoints.
+ *
+ * \param font the font to query.
+ * \param previous_ch the previous codepoint.
+ * \param ch the current codepoint.
+ * \param kerning a pointer filled in with the kerning size between the two glyphs, in pixels, may be NULL.
+ * \returns true on success or false on failure; call SDL_GetError()
+ *          for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *kerning);
 
 /**
  * Calculate the dimensions of a rendered string of UTF-8 text.
@@ -835,7 +980,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font, 
 extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength);
 
 /**
- * Render a single 32-bit glyph at high quality to a new 8-bit surface.
+ * Render a single UNICODE codepoint at high quality to a new 8-bit surface.
  *
  * This function will allocate a new 8-bit, palettized surface. The surface's
  * 0 pixel will be the specified background color, while other pixels have
@@ -846,7 +991,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font
  * and aligned normally in the Y direction.
  *
  * \param font the font to render with.
- * \param ch the character to render.
+ * \param ch the codepoint to render.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
@@ -926,7 +1071,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
 extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, int wrapLength);
 
 /**
- * Render a single 32-bit glyph at high quality to a new ARGB surface.
+ * Render a single UNICODE codepoint at high quality to a new ARGB surface.
  *
  * This function will allocate a new 32-bit, ARGB surface, using alpha
  * blending to dither the font with the given color. This function returns the
@@ -936,7 +1081,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Fon
  * and aligned normally in the Y direction.
  *
  * \param font the font to render with.
- * \param ch the character to render.
+ * \param ch the codepoint to render.
  * \param fg the foreground color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
@@ -1018,7 +1163,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, con
 extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength);
 
 /**
- * Render a single 32-bit glyph at LCD subpixel quality to a new ARGB surface.
+ * Render a single UNICODE codepoint at LCD subpixel quality to a new ARGB surface.
  *
  * This function will allocate a new 32-bit, ARGB surface, and render
  * alpha-blended text using FreeType's LCD subpixel rendering. This function
@@ -1028,7 +1173,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *f
  * and aligned normally in the Y direction.
  *
  * \param font the font to render with.
- * \param ch the character to render.
+ * \param ch the codepoint to render.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
@@ -1120,157 +1265,6 @@ extern SDL_DECLSPEC void SDLCALL TTF_Quit(void);
  * \sa TTF_Quit
  */
 extern SDL_DECLSPEC int SDLCALL TTF_WasInit(void);
-
-/**
- * Query the kerning size of two 32-bit glyphs.
- *
- * \param font the font to query.
- * \param previous_ch the previous character's code, 32 bits.
- * \param ch the current character's code, 32 bits.
- * \param kerning a pointer filled in with the kerning size between the two specified characters, in pixels, may be NULL.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
- *
- * \threadsafety This function should be called on the thread that created the font.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- */
-extern SDL_DECLSPEC bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *kerning);
-
-/**
- * Enable Signed Distance Field rendering for a font.
- *
- * This works with the Blended APIs. SDF is a technique that
- * helps fonts look sharp even when scaling and rotating.
- *
- * This clears already-generated glyphs, if any, from the cache.
- *
- * \param font the font to set SDF support on.
- * \param enabled true to enable SDF, false to disable.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
- *
- * \threadsafety This function should be called on the thread that created the font.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_GetFontSDF
- */
-extern SDL_DECLSPEC bool TTF_SetFontSDF(TTF_Font *font, bool enabled);
-
-/**
- * Query whether Signed Distance Field rendering is enabled for a font.
- *
- * \param font the font to query
- *
- * \returns true if enabled, false otherwise.
- *
- * \threadsafety It is safe to call this function from any thread.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SetFontSDF
- */
-extern SDL_DECLSPEC bool TTF_GetFontSDF(const TTF_Font *font);
-
-/**
- * Direction flags
- *
- * \since This enum is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SetFontDirection
- */
-typedef enum TTF_Direction
-{
-  TTF_DIRECTION_LTR = 0,    /* Left to Right */
-  TTF_DIRECTION_RTL,        /* Right to Left */
-  TTF_DIRECTION_TTB,        /* Top to Bottom */
-  TTF_DIRECTION_BTT         /* Bottom to Top */
-} TTF_Direction;
-
-/**
- * Set direction to be used for text shaping by a font.
- *
- * Possible direction values are:
- *
- * - `TTF_DIRECTION_LTR` (Left to Right)
- * - `TTF_DIRECTION_RTL` (Right to Left)
- * - `TTF_DIRECTION_TTB` (Top to Bottom)
- * - `TTF_DIRECTION_BTT` (Bottom to Top)
- *
- * If SDL_ttf was not built with HarfBuzz support, this function returns
- * false.
- *
- * \param font the font to specify a direction for.
- * \param direction the new direction for text to flow.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \threadsafety This function should be called on the thread that created the
- *               font.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction);
-
-/**
- * Set script to be used for text shaping by a font.
- *
- * The supplied script value must be a null-terminated string of exactly four
- * characters.
- *
- * If SDL_ttf was not built with HarfBuzz support, this function returns
- * false.
- *
- * \param font the font to specify a script name for.
- * \param script null-terminated string of exactly 4 characters.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \threadsafety This function is not thread-safe.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScript(TTF_Font *font, const char *script);
-
-/**
- * Get the script used by a 32-bit codepoint.
- *
- * The supplied script value will be a null-terminated string of exactly four
- * characters.
- *
- * If SDL_ttf was not built with HarfBuzz support, this function returns
- * false.
- *
- * \param ch the character code to check.
- * \param script a pointer filled in with the script used by `ch`.
- * \param script_size the size of the script buffer, which must be at least 5
- *                    characters.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \threadsafety This function should be called on the thread that created the
- *               font.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphScript(Uint32 ch, char *script, size_t script_size);
-
-/**
- * Set language to be used for text shaping by a font.
- *
- * If SDL_ttf was not built with HarfBuzz support, this function returns false.
- *
- * \param font the font to specify a language for.
- * \param language_bcp47 a null-terminated string containing the desired language's BCP47 code. Or null to reset the value.
- * \returns true on success or false on failure; call SDL_GetError()
- *          for more information.
- *
- * \threadsafety This function should be called on the thread that created the font.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- */
-extern SDL_DECLSPEC bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus

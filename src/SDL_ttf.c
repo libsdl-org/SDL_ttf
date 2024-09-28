@@ -263,8 +263,8 @@ struct TTF_Font {
     /* Internal buffer to store positions computed by TTF_Size_Internal()
      * for rendered string by Render_Line() */
     PosBuf_t *pos_buf;
-    Uint32 pos_len;
-    Uint32 pos_max;
+    int pos_len;
+    int pos_max;
 
     /* Hinting modes */
     int ft_load_target;
@@ -329,7 +329,7 @@ typedef enum {
     RENDER_LCD
 } render_mode_t;
 
-static int TTF_initFontMetrics(TTF_Font *font);
+static int TTF_InitFontMetrics(TTF_Font *font);
 
 static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count);
 
@@ -1118,11 +1118,11 @@ static int Get_Alignment(void)
 #endif
 #define BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, IS_LCD, WP_WC, WS, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) \
                                                                                                                         \
-static int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg)              \
+static bool Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg)              \
 {                                                                                                                       \
     const int alignment = Get_Alignment() - 1;                                                                          \
     const int bpp = ((IS_BLENDED || IS_LCD) ? 4 : 1);                                                                   \
-    unsigned int i;                                                                                                     \
+    int i;                                                                                                              \
     Uint8 fg_alpha = (fg ? fg->a : 0);                                                                                  \
     for (i = 0; i < font->pos_len; i++) {                                                                               \
         FT_UInt idx = font->pos_buf[i].index;                                                                           \
@@ -1130,7 +1130,7 @@ static int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, 
         int y       = font->pos_buf[i].y;                                                                               \
         TTF_Image *image;                                                                                               \
                                                                                                                         \
-        if (Find_GlyphByIndex(font, idx, WP_WC, WS, x & 63, NULL, &image)) {                                    \
+        if (Find_GlyphByIndex(font, idx, WP_WC, WS, x & 63, NULL, &image)) {                                            \
             int above_w, above_h;                                                                                       \
             Uint32 dstskip;                                                                                             \
             Sint32 srcskip; /* Can be negative */                                                                       \
@@ -1218,11 +1218,11 @@ static int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, 
             }                                                                                                           \
             image->buffer = saved_buffer;                                                                               \
         } else {                                                                                                        \
-            return -1;                                                                                                  \
+            return false;                                                                                                  \
         }                                                                                                               \
     }                                                                                                                   \
                                                                                                                         \
-    return 0;                                                                                                           \
+    return true;                                                                                                           \
 }                                                                                                                       \
                                                                                                                         \
 
@@ -1301,7 +1301,7 @@ static int (*Render_Line_SDF_LCD_SP)(TTF_Font *font, SDL_Surface *textbuf, int x
 #pragma GCC diagnostic pop
 #endif
 
-static int Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color fg)
+static bool Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color fg)
 {
     /* Render line (pos_buf) to textbuf at (xstart, ystart) */
 
@@ -1924,60 +1924,8 @@ SDL_PropertiesID TTF_GetFontProperties(TTF_Font *font)
     return font->props;
 }
 
-bool TTF_SetFontSizeDPI(TTF_Font *font, float ptsize, unsigned int hdpi, unsigned int vdpi)
-{
-    FT_Face face = font->face;
-    FT_Error error;
-
-    /* Make sure that our font face is scalable (global metrics) */
-    if (FT_IS_SCALABLE(face)) {
-        /* Set the character size using the provided DPI.  If a zero DPI
-         * is provided, then the other DPI setting will be used.  If both
-         * are zero, then Freetype's default 72 DPI will be used.  */
-        error = FT_Set_Char_Size(face, 0, (int)SDL_roundf(ptsize * 64), hdpi, vdpi);
-        if (error) {
-            return TTF_SetFTError("Couldn't set font size", error);
-        }
-    } else {
-        /* Non-scalable font case.  ptsize determines which family
-         * or series of fonts to grab from the non-scalable format.
-         * It is not the point size of the font.  */
-        if (face->num_fixed_sizes <= 0) {
-            return SDL_SetError("Couldn't select size : no num_fixed_sizes");
-        }
-
-        /* within [0; num_fixed_sizes - 1] */
-        int index = (int)ptsize;
-        index = SDL_max(index, 0);
-        index = SDL_min(index, face->num_fixed_sizes - 1);
-
-        error = FT_Select_Size(face, index);
-        if (error) {
-            return TTF_SetFTError("Couldn't select size", error);
-        }
-    }
-
-    if (TTF_initFontMetrics(font) < 0) {
-        return SDL_SetError("Cannot initialize metrics");
-    }
-
-    Flush_Cache(font);
-
-#if TTF_USE_HARFBUZZ
-    /* Call when size or variations settings on underlying FT_Face change. */
-    hb_ft_font_changed(font->hb_font);
-#endif
-
-    return true;
-}
-
-bool TTF_SetFontSize(TTF_Font *font, float ptsize)
-{
-    return TTF_SetFontSizeDPI(font, ptsize, 0, 0);
-}
-
 /* Update font parameter depending on a style change */
-static int TTF_initFontMetrics(TTF_Font *font)
+static int TTF_InitFontMetrics(TTF_Font *font)
 {
     FT_Face face = font->face;
     int underline_offset;
@@ -2652,117 +2600,6 @@ static bool Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out_glyph)
     return Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, out_glyph, NULL);
 }
 
-void TTF_CloseFont(TTF_Font *font)
-{
-    if (font) {
-#if TTF_USE_HARFBUZZ
-        hb_font_destroy(font->hb_font);
-#endif
-        Flush_Cache(font);
-        if (font->props) {
-            SDL_DestroyProperties(font->props);
-        }
-        if (font->face) {
-            FT_Done_Face(font->face);
-        }
-        if (font->stroker) {
-            FT_Stroker_Done(font->stroker);
-        }
-        if (font->args.stream) {
-            SDL_free(font->args.stream);
-        }
-        if (font->closeio) {
-            SDL_CloseIO(font->src);
-        }
-        if (font->pos_buf) {
-            SDL_free(font->pos_buf);
-        }
-        SDL_free(font);
-    }
-}
-
-int TTF_GetFontHeight(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, 0);
-
-    return font->height;
-}
-
-int TTF_GetFontAscent(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, 0);
-
-    return font->ascent + 2 * font->outline_val;
-}
-
-int TTF_GetFontDescent(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, 0);
-
-    return font->descent;
-}
-
-int TTF_GetFontLineSkip(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, 0);
-
-    return font->lineskip;
-}
-
-void TTF_SetFontLineSkip(TTF_Font *font, int lineskip)
-{
-    TTF_CHECK_FONT(font,);
-
-    font->lineskip = lineskip;
-}
-
-bool TTF_GetFontKerning(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, false);
-
-    return font->enable_kerning;
-}
-
-void TTF_SetFontKerning(TTF_Font *font, bool enabled)
-{
-    TTF_CHECK_FONT(font,);
-
-    font->enable_kerning = enabled;
-#if TTF_USE_HARFBUZZ
-    /* Harfbuzz can do kerning positioning even if the font hasn't the data */
-#else
-    font->use_kerning   = enabled && FT_HAS_KERNING(font->face);
-#endif
-}
-
-int TTF_GetNumFontFaces(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, 0);
-
-    return (int)font->face->num_faces;
-}
-
-bool TTF_FontIsFixedWidth(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, false);
-
-    return FT_IS_FIXED_WIDTH(font->face);
-}
-
-const char *TTF_GetFontFamilyName(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, NULL);
-
-    return font->face->family_name;
-}
-
-const char *TTF_GetFontStyleName(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, NULL);
-
-    return font->face->style_name;
-}
-
 bool TTF_FontHasGlyph(TTF_Font *font, Uint32 ch)
 {
     TTF_CHECK_FONT(font, false);
@@ -2800,115 +2637,43 @@ bool TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *m
     return true;
 }
 
-bool TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
+bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *kerning)
 {
-    TTF_CHECK_FONT(font, false);
+    FT_Error error;
+    c_glyph *prev_glyph, *glyph;
+    FT_Vector delta;
 
-#if TTF_USE_HARFBUZZ
-    hb_direction_t dir;
-    if (direction == TTF_DIRECTION_LTR) {
-        dir = HB_DIRECTION_LTR;
-    } else if (direction == TTF_DIRECTION_RTL) {
-        dir = HB_DIRECTION_RTL;
-    } else if (direction == TTF_DIRECTION_TTB) {
-        dir = HB_DIRECTION_BTT;
-    } else if (direction == TTF_DIRECTION_BTT) {
-        dir = HB_DIRECTION_TTB;
-    } else {
-        return SDL_InvalidParamError("direction");
+    if (kerning) {
+        *kerning = 0;
     }
-    font->hb_direction = dir;
-    return true;
-#else
-    (void) direction;
-    return SDL_SetError("Unsupported");
-#endif
-}
 
-bool TTF_SetFontScript(TTF_Font *font, const char *script)
-{
     TTF_CHECK_FONT(font, false);
 
-#if TTF_USE_HARFBUZZ
-    Uint8 a, b, c, d;
-    hb_script_t scr;
+    if (ch == UNICODE_BOM_NATIVE || ch == UNICODE_BOM_SWAPPED) {
+        return true;
+    }
 
-    if (script == NULL || SDL_strlen(script) != 4) {
+    if (previous_ch == UNICODE_BOM_NATIVE || previous_ch == UNICODE_BOM_SWAPPED) {
+        return true;
+    }
+
+    if (!Find_GlyphMetrics(font, ch, &glyph)) {
         return false;
     }
 
-    a = script[0];
-    b = script[1];
-    c = script[2];
-    d = script[3];
-
-    scr = HB_TAG(a, b, c, d);
-    font->hb_script = scr;
-    return true;
-#else
-    (void) script;
-    return SDL_SetError("Unsupported");
-#endif
-}
-
-bool TTF_GetGlyphScript(Uint32 ch, char *script, size_t script_size)
-{
-#if TTF_USE_HARFBUZZ
-    TTF_CHECK_POINTER("script", script, false);
-
-    if (script_size < 5) {
-        return SDL_SetError("Insufficient script buffer size");
+    if (!Find_GlyphMetrics(font, previous_ch, &prev_glyph)) {
+        return false;
     }
 
-    hb_buffer_t *hb_buffer = hb_buffer_create();
-
-    if (hb_buffer == NULL) {
-        return SDL_SetError("Cannot create harfbuzz buffer");
+    error = FT_Get_Kerning(font->face, prev_glyph->index, glyph->index, FT_KERNING_DEFAULT, &delta);
+    if (error) {
+        return TTF_SetFTError("Couldn't get glyph kerning", error);
     }
 
-    hb_unicode_funcs_t* hb_unicode_functions = hb_buffer_get_unicode_funcs(hb_buffer);
-
-    if (hb_unicode_functions == NULL) {
-        hb_buffer_destroy(hb_buffer);
-        return SDL_SetError("Cannot get harfbuzz unicode functions");
-    }
-
-    hb_buffer_clear_contents(hb_buffer);
-    hb_buffer_set_content_type(hb_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
-
-    uint8_t untagged_script[4] = { HB_UNTAG(hb_unicode_script(hb_unicode_functions, ch)) };
-    script[0] = (char)untagged_script[0];
-    script[1] = (char)untagged_script[1];
-    script[2] = (char)untagged_script[2];
-    script[3] = (char)untagged_script[3];
-    script[4] = '\0';
-
-    hb_buffer_destroy(hb_buffer);
-    return true;
-
-#else
-    (void) script;
-    (void) script_size;
-    (void) ch;
-    return SDL_SetError("Unsupported");
-#endif
-}
-
-bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
-{
-    TTF_CHECK_FONT(font, false);
-
-#if TTF_USE_HARFBUZZ
-    if (language_bcp47 == NULL) {
-        font->hb_language = hb_language_from_string("", -1);
-    } else {
-        font->hb_language = hb_language_from_string(language_bcp47, -1);
+    if (kerning) {
+        *kerning = (int)(delta.x >> 6);
     }
     return true;
-#else
-    (void) language_bcp47;
-    return SDL_SetError("Unsupported");
-#endif
 }
 
 static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count)
@@ -3240,7 +3005,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t
     }
 
     /* Render one text line to textbuf at (xstart, ystart) */
-    if (Render_Line(render_mode, font->render_subpixel, font, textbuf, xstart, ystart, fg) < 0) {
+    if (!Render_Line(render_mode, font->render_subpixel, font, textbuf, xstart, ystart, fg)) {
         goto failure;
     }
 
@@ -3558,7 +3323,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         xoffset = SDL_max(0, xoffset);
 
         /* Render one text line to textbuf at (xstart, ystart) */
-        if (Render_Line(render_mode, font->render_subpixel, font, textbuf, xstart + xoffset, ystart, fg) < 0) {
+        if (!Render_Line(render_mode, font->render_subpixel, font, textbuf, xstart + xoffset, ystart, fg)) {
             goto failure;
         }
 
@@ -3602,6 +3367,58 @@ SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t
     return TTF_Render_Wrapped_Internal(font, text, length, fg, bg, wrapLength, RENDER_LCD);
 }
 
+bool TTF_SetFontSize(TTF_Font *font, float ptsize)
+{
+    return TTF_SetFontSizeDPI(font, ptsize, 0, 0);
+}
+
+bool TTF_SetFontSizeDPI(TTF_Font *font, float ptsize, unsigned int hdpi, unsigned int vdpi)
+{
+    FT_Face face = font->face;
+    FT_Error error;
+
+    /* Make sure that our font face is scalable (global metrics) */
+    if (FT_IS_SCALABLE(face)) {
+        /* Set the character size using the provided DPI.  If a zero DPI
+         * is provided, then the other DPI setting will be used.  If both
+         * are zero, then Freetype's default 72 DPI will be used.  */
+        error = FT_Set_Char_Size(face, 0, (int)SDL_roundf(ptsize * 64), hdpi, vdpi);
+        if (error) {
+            return TTF_SetFTError("Couldn't set font size", error);
+        }
+    } else {
+        /* Non-scalable font case.  ptsize determines which family
+         * or series of fonts to grab from the non-scalable format.
+         * It is not the point size of the font.  */
+        if (face->num_fixed_sizes <= 0) {
+            return SDL_SetError("Couldn't select size : no num_fixed_sizes");
+        }
+
+        /* within [0; num_fixed_sizes - 1] */
+        int index = (int)ptsize;
+        index = SDL_max(index, 0);
+        index = SDL_min(index, face->num_fixed_sizes - 1);
+
+        error = FT_Select_Size(face, index);
+        if (error) {
+            return TTF_SetFTError("Couldn't select size", error);
+        }
+    }
+
+    if (TTF_InitFontMetrics(font) < 0) {
+        return SDL_SetError("Cannot initialize metrics");
+    }
+
+    Flush_Cache(font);
+
+#if TTF_USE_HARFBUZZ
+    /* Call when size or variations settings on underlying FT_Face change. */
+    hb_ft_font_changed(font->hb_font);
+#endif
+
+    return true;
+}
+
 void TTF_SetFontStyle(TTF_Font *font, int style)
 {
     int prev_style;
@@ -3622,7 +3439,7 @@ void TTF_SetFontStyle(TTF_Font *font, int style)
 
     font->style = style;
 
-    TTF_initFontMetrics(font);
+    TTF_InitFontMetrics(font);
 
     /* Flush the cache if the style has changed.
      * Ignore styles which do not impact glyph drawning. */
@@ -3680,7 +3497,7 @@ bool TTF_SetFontOutline(TTF_Font *font, int outline)
 
     font->outline_val = outline;
 
-    TTF_initFontMetrics(font);
+    TTF_InitFontMetrics(font);
     Flush_Cache(font);
 
     return true;
@@ -3777,6 +3594,235 @@ TTF_HorizontalAlignment TTF_GetFontWrapAlignment(const TTF_Font *font)
     return font->horizontal_align;
 }
 
+int TTF_GetFontHeight(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, 0);
+
+    return font->height;
+}
+
+int TTF_GetFontAscent(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, 0);
+
+    return font->ascent + 2 * font->outline_val;
+}
+
+int TTF_GetFontDescent(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, 0);
+
+    return font->descent;
+}
+
+int TTF_GetFontLineSkip(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, 0);
+
+    return font->lineskip;
+}
+
+void TTF_SetFontLineSkip(TTF_Font *font, int lineskip)
+{
+    TTF_CHECK_FONT(font,);
+
+    font->lineskip = lineskip;
+}
+
+bool TTF_GetFontKerning(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, false);
+
+    return font->enable_kerning;
+}
+
+void TTF_SetFontKerning(TTF_Font *font, bool enabled)
+{
+    TTF_CHECK_FONT(font,);
+
+    font->enable_kerning = enabled;
+#if TTF_USE_HARFBUZZ
+    /* Harfbuzz can do kerning positioning even if the font hasn't the data */
+#else
+    font->use_kerning   = enabled && FT_HAS_KERNING(font->face);
+#endif
+}
+
+int TTF_GetNumFontFaces(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, 0);
+
+    return (int)font->face->num_faces;
+}
+
+bool TTF_FontIsFixedWidth(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, false);
+
+    return FT_IS_FIXED_WIDTH(font->face);
+}
+
+bool TTF_FontIsScalable(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, false);
+
+    return FT_IS_SCALABLE(font->face);
+}
+
+const char *TTF_GetFontFamilyName(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, NULL);
+
+    return font->face->family_name;
+}
+
+const char *TTF_GetFontStyleName(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, NULL);
+
+    return font->face->style_name;
+}
+
+bool TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
+{
+    TTF_CHECK_FONT(font, false);
+
+#if TTF_USE_HARFBUZZ
+    hb_direction_t dir;
+    if (direction == TTF_DIRECTION_LTR) {
+        dir = HB_DIRECTION_LTR;
+    } else if (direction == TTF_DIRECTION_RTL) {
+        dir = HB_DIRECTION_RTL;
+    } else if (direction == TTF_DIRECTION_TTB) {
+        dir = HB_DIRECTION_BTT;
+    } else if (direction == TTF_DIRECTION_BTT) {
+        dir = HB_DIRECTION_TTB;
+    } else {
+        return SDL_InvalidParamError("direction");
+    }
+    font->hb_direction = dir;
+    return true;
+#else
+    (void) direction;
+    return SDL_Unsupported();
+#endif
+}
+
+bool TTF_SetFontScript(TTF_Font *font, const char *script)
+{
+    TTF_CHECK_FONT(font, false);
+
+#if TTF_USE_HARFBUZZ
+    Uint8 a, b, c, d;
+    hb_script_t scr;
+
+    if (script == NULL || SDL_strlen(script) != 4) {
+        return SDL_InvalidParamError("script");
+    }
+
+    a = script[0];
+    b = script[1];
+    c = script[2];
+    d = script[3];
+
+    scr = HB_TAG(a, b, c, d);
+    font->hb_script = scr;
+    return true;
+#else
+    (void) script;
+    return SDL_Unsupported();
+#endif
+}
+
+bool TTF_GetGlyphScript(Uint32 ch, char *script, size_t script_size)
+{
+#if TTF_USE_HARFBUZZ
+    TTF_CHECK_POINTER("script", script, false);
+
+    if (script_size < 5) {
+        return SDL_SetError("Insufficient script buffer size");
+    }
+
+    hb_buffer_t *hb_buffer = hb_buffer_create();
+
+    if (hb_buffer == NULL) {
+        return SDL_SetError("Cannot create harfbuzz buffer");
+    }
+
+    hb_unicode_funcs_t* hb_unicode_functions = hb_buffer_get_unicode_funcs(hb_buffer);
+
+    if (hb_unicode_functions == NULL) {
+        hb_buffer_destroy(hb_buffer);
+        return SDL_SetError("Cannot get harfbuzz unicode functions");
+    }
+
+    hb_buffer_clear_contents(hb_buffer);
+    hb_buffer_set_content_type(hb_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
+
+    uint8_t untagged_script[4] = { HB_UNTAG(hb_unicode_script(hb_unicode_functions, ch)) };
+    script[0] = (char)untagged_script[0];
+    script[1] = (char)untagged_script[1];
+    script[2] = (char)untagged_script[2];
+    script[3] = (char)untagged_script[3];
+    script[4] = '\0';
+
+    hb_buffer_destroy(hb_buffer);
+    return true;
+
+#else
+    (void) script;
+    (void) script_size;
+    (void) ch;
+    return SDL_Unsupported();
+#endif
+}
+
+bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
+{
+    TTF_CHECK_FONT(font, false);
+
+#if TTF_USE_HARFBUZZ
+    if (language_bcp47 == NULL) {
+        font->hb_language = hb_language_from_string("", -1);
+    } else {
+        font->hb_language = hb_language_from_string(language_bcp47, -1);
+    }
+    return true;
+#else
+    (void) language_bcp47;
+    return SDL_Unsupported();
+#endif
+}
+
+void TTF_CloseFont(TTF_Font *font)
+{
+    if (font) {
+#if TTF_USE_HARFBUZZ
+        hb_font_destroy(font->hb_font);
+#endif
+        Flush_Cache(font);
+        if (font->props) {
+            SDL_DestroyProperties(font->props);
+        }
+        if (font->face) {
+            FT_Done_Face(font->face);
+        }
+        if (font->stroker) {
+            FT_Stroker_Done(font->stroker);
+        }
+        if (font->args.stream) {
+            SDL_free(font->args.stream);
+        }
+        if (font->closeio) {
+            SDL_CloseIO(font->src);
+        }
+        if (font->pos_buf) {
+            SDL_free(font->pos_buf);
+        }
+        SDL_free(font);
+    }
+}
+
 void TTF_Quit(void)
 {
     if (!SDL_ShouldQuit(&TTF_state.init)) {
@@ -3804,52 +3850,6 @@ void TTF_Quit(void)
 int TTF_WasInit(void)
 {
     return SDL_GetAtomicInt(&TTF_state.refcount);
-}
-
-bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *kerning)
-{
-    FT_Error error;
-    c_glyph *prev_glyph, *glyph;
-    FT_Vector delta;
-
-    if (kerning) {
-        *kerning = 0;
-    }
-
-    TTF_CHECK_FONT(font, false);
-
-    if (ch == UNICODE_BOM_NATIVE || ch == UNICODE_BOM_SWAPPED) {
-        return true;
-    }
-
-    if (previous_ch == UNICODE_BOM_NATIVE || previous_ch == UNICODE_BOM_SWAPPED) {
-        return true;
-    }
-
-    if (!Find_GlyphMetrics(font, ch, &glyph)) {
-        return false;
-    }
-
-    if (!Find_GlyphMetrics(font, previous_ch, &prev_glyph)) {
-        return false;
-    }
-
-    error = FT_Get_Kerning(font->face, prev_glyph->index, glyph->index, FT_KERNING_DEFAULT, &delta);
-    if (error) {
-        return TTF_SetFTError("Couldn't get glyph kerning", error);
-    }
-
-    if (kerning) {
-        *kerning = (int)(delta.x >> 6);
-    }
-    return true;
-}
-
-bool TTF_FontIsScalable(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, false);
-
-    return FT_IS_SCALABLE(font->face);
 }
 
 /* vi: set ts=4 sw=4 expandtab: */
