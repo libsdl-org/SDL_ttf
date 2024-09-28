@@ -2820,6 +2820,7 @@ bool TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
     font->hb_direction = dir;
     return true;
 #else
+    (void) direction;
     return SDL_SetError("Unsupported");
 #endif
 }
@@ -2845,6 +2846,7 @@ bool TTF_SetFontScript(TTF_Font *font, const char *script)
     font->hb_script = scr;
     return true;
 #else
+    (void) script;
     return SDL_SetError("Unsupported");
 #endif
 }
@@ -2885,6 +2887,9 @@ bool TTF_GetGlyphScript(Uint32 ch, char *script, size_t script_size)
     return true;
 
 #else
+    (void) script;
+    (void) script_size;
+    (void) ch;
     return SDL_SetError("Unsupported");
 #endif
 }
@@ -2901,6 +2906,7 @@ bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
     }
     return true;
 #else
+    (void) language_bcp47;
     return SDL_SetError("Unsupported");
 #endif
 }
