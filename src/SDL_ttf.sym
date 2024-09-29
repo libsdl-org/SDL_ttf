@@ -1,6 +1,15 @@
 SDL3_ttf_0.0.0 {
   global:
     TTF_CloseFont;
+    TTF_CreateRendererTextEngine;
+    TTF_CreateSurfaceTextEngine;
+    TTF_CreateText;
+    TTF_CreateText_Wrapped;
+    TTF_DestroyRendererTextEngine;
+    TTF_DestroySurfaceTextEngine;
+    TTF_DestroyText;
+    TTF_DrawRendererText;
+    TTF_DrawSurfaceText;
     TTF_FontHasGlyph;
     TTF_FontIsFixedWidth;
     TTF_FontIsScalable;
@@ -18,6 +27,8 @@ SDL3_ttf_0.0.0 {
     TTF_GetFontStyleName;
     TTF_GetFontWrapAlignment;
     TTF_GetFreeTypeVersion;
+    TTF_GetGlyphImage;
+    TTF_GetGlyphImageForIndex;
     TTF_GetGlyphKerning;
     TTF_GetGlyphMetrics;
     TTF_GetGlyphScript;

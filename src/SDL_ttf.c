@@ -21,6 +21,7 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3_ttf/SDL_textengine.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -225,6 +226,9 @@ struct TTF_Font {
     /* Properties exposed to the application */
     SDL_PropertiesID props;
 
+    /* The current font generation, changes when glyphs need to be rebuilt */
+    Uint32 generation;
+
     /* We'll cache these ourselves */
     int height;
     int ascent;
@@ -329,21 +333,11 @@ typedef enum {
     RENDER_LCD
 } render_mode_t;
 
-static int TTF_InitFontMetrics(TTF_Font *font);
-
-static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count);
-
 #define NO_MEASUREMENT  \
         0, NULL, NULL
 
 
-static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, render_mode_t render_mode);
-
-static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength, render_mode_t render_mode);
-
 static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx, int want_pixmap, int want_color, int want_lcd, int want_subpixel, int translation, c_glyph **out_glyph, TTF_Image **out_image);
-
-static void Flush_Cache(TTF_Font *font);
 
 #if defined(USE_DUFFS_LOOP)
 
@@ -1038,6 +1032,53 @@ static void Draw_Line(TTF_Font *font, const SDL_Surface *textbuf, int column, in
     }
 }
 
+static void Draw_Line_TextEngine(TTF_Font *font, int width, int height, int column, int row, int line_width, int line_thickness, TTF_DrawOperation *ops, int *current_op)
+{
+    int op_index = *current_op;
+    TTF_DrawOperation *op = &ops[op_index];
+    int tmp    = row + line_thickness - height;
+#if TTF_USE_HARFBUZZ
+    hb_direction_t hb_direction = font->hb_direction;
+
+    if (hb_direction == HB_DIRECTION_INVALID) {
+        hb_direction = g_hb_direction;
+    }
+
+    /* No Underline/Strikethrough style if direction is vertical */
+    if (hb_direction == HB_DIRECTION_TTB || hb_direction == HB_DIRECTION_BTT) {
+        return;
+    }
+#else
+    (void) font;
+#endif
+
+    /* Not needed because of "font->height = SDL_max(font->height, bottom_row);".
+     * But if you patch to render textshaping and break line in middle of a cluster,
+     * (which is a bad usage and a corner case), you need this to prevent out of bounds.
+     * You can get an "ystart" for the "whole line", which is different (and smaller)
+     * than the ones of the "splitted lines". */
+    if (tmp > 0) {
+        line_thickness -= tmp;
+    }
+    /* Previous case also happens with SDF (render_sdf) , because 'spread' property
+     * requires to increase 'ystart'
+     * Check for valid value anyway.  */
+    if (line_thickness <= 0) {
+        return;
+    }
+
+    /* Wrapped mode with an unbroken line: 'line_width' is greater that 'width' */
+    line_width = SDL_min(line_width, width);
+
+    op = &ops[op_index++];
+    op->cmd = TTF_DRAW_COMMAND_FILL;
+    op->fill.rect.x = column;
+    op->fill.rect.y = row;
+    op->fill.rect.w = line_width;
+    op->fill.rect.h = line_thickness;
+    *current_op = op_index;
+}
+
 static void clip_glyph(int *_x, int *_y, TTF_Image *image, const SDL_Surface *textbuf, int is_lcd)
 {
     int above_w;
@@ -1118,7 +1159,7 @@ static int Get_Alignment(void)
 #endif
 #define BUILD_RENDER_LINE(NAME, IS_BLENDED, IS_BLENDED_OPAQUE, IS_LCD, WP_WC, WS, BLIT_GLYPH_BLENDED_OPAQUE_OPTIM, BLIT_GLYPH_BLENDED_OPTIM, BLIT_GLYPH_OPTIM) \
                                                                                                                         \
-static bool Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg)              \
+static bool Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg)             \
 {                                                                                                                       \
     const int alignment = Get_Alignment() - 1;                                                                          \
     const int bpp = ((IS_BLENDED || IS_LCD) ? 4 : 1);                                                                   \
@@ -1218,11 +1259,11 @@ static bool Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart,
             }                                                                                                           \
             image->buffer = saved_buffer;                                                                               \
         } else {                                                                                                        \
-            return false;                                                                                                  \
+            return false;                                                                                               \
         }                                                                                                               \
     }                                                                                                                   \
                                                                                                                         \
-    return true;                                                                                                           \
+    return true;                                                                                                        \
 }                                                                                                                       \
                                                                                                                         \
 
@@ -1359,6 +1400,76 @@ static bool Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font 
 #else
     Call_Specific_Render_Line(8)
 #endif
+}
+
+static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int width, int height, TTF_DrawOperation *ops, int *current_op)
+{
+    int i, op_index = *current_op;
+    for (i = 0; i < font->pos_len; i++) {
+        FT_UInt idx = font->pos_buf[i].index;
+        int x       = font->pos_buf[i].x;
+        int y       = font->pos_buf[i].y;
+        c_glyph *glyph;
+
+        if (Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, &glyph, NULL)) {
+            int above_w, above_h;
+            int glyph_x = 0;
+            int glyph_y = 0;
+            int glyph_width = glyph->sz_width;
+            int glyph_rows = glyph->sz_rows;
+            TTF_DrawOperation *op;
+
+            /* Position updated after glyph rendering */
+            x = xstart + FT_FLOOR(x) + glyph->sz_left;
+            y = ystart + FT_FLOOR(y) - glyph->sz_top;
+
+            /* Make sure glyph is inside text area */
+            above_w = x + glyph_width - width;
+            above_h = y + glyph_rows  - height;
+
+            if (x < 0) {
+                int tmp = -x;
+                x = 0;
+                glyph_x += tmp;
+                glyph_width -= tmp;
+            }
+            if (above_w > 0) {
+                glyph_width -= above_w;
+            }
+            if (y < 0) {
+                int tmp = -y;
+                y = 0;
+                glyph_y += tmp;
+                glyph_rows -= tmp;
+            }
+            if (above_h > 0) {
+                glyph_rows -= above_h;
+            }
+
+            if (glyph_width <= 0 || glyph_rows <= 0) {
+                /* Completely clipped */
+                continue;
+            }
+
+            op = &ops[op_index++];
+            op->cmd = TTF_DRAW_COMMAND_COPY;
+            op->copy.glyph_index = idx;
+            op->copy.src.x = glyph_x;
+            op->copy.src.y = glyph_y;
+            op->copy.src.w = glyph_width;
+            op->copy.src.h = glyph_rows;
+            op->copy.dst.x = x;
+            op->copy.dst.y = y;
+            op->copy.dst.w = op->copy.src.w;
+            op->copy.dst.h = op->copy.src.h;
+
+        } else {
+            return false;
+        }
+    }
+
+    *current_op = op_index;
+    return true;
 }
 
 /* Create a surface with memory:
@@ -2021,6 +2132,10 @@ static void Flush_Cache(TTF_Font *font)
             Flush_Glyph(&font->cache[i]);
         }
     }
+    ++font->generation;
+    if (font->generation == 0) {
+        ++font->generation;
+    }
 }
 
 static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translation)
@@ -2510,9 +2625,8 @@ static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         *out_image = &glyph->pixmap;
     }
 
-    if (want_subpixel)
-    {
-        /* No a real cache, but if it always advances by integer pixels (eg translation 0 or same as previous),
+    if (want_subpixel) {
+        /* Not a real cache, but if it always advances by integer pixels (eg translation 0 or same as previous),
          * this allows to render as fast as normal mode. */
         int want = CACHED_METRICS | want_pixmap | want_color | want_lcd | want_subpixel;
 
@@ -2596,6 +2710,8 @@ static FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
 
 static bool Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out_glyph)
 {
+    TTF_CHECK_FONT(font, false);
+
     FT_UInt idx = get_char_index(font, ch);
     return Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, out_glyph, NULL);
 }
@@ -2605,6 +2721,70 @@ bool TTF_FontHasGlyph(TTF_Font *font, Uint32 ch)
     TTF_CHECK_FONT(font, false);
 
     return (get_char_index(font, ch) > 0);
+}
+
+SDL_Surface *TTF_GetGlyphImage(TTF_Font *font, Uint32 ch)
+{
+    FT_UInt idx;
+
+    TTF_CHECK_FONT(font, false);
+
+    idx = get_char_index(font, ch);
+    if (idx == 0) {
+        SDL_SetError("Codepoint not in font");
+        return NULL;
+    }
+
+    return TTF_GetGlyphImageForIndex(font, idx);
+}
+
+SDL_Surface *TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index)
+{
+    const int alignment = Get_Alignment() - 1;
+    TTF_Image *image;
+    SDL_Surface *surface;
+    const Uint8 *src;
+
+    TTF_CHECK_FONT(font, NULL);
+
+    if (!Find_GlyphByIndex(font, glyph_index, 1, 0, 0, 0, 0, NULL, &image)) {
+        return NULL;
+    }
+
+    surface = SDL_CreateSurface(image->width, image->rows, SDL_PIXELFORMAT_ARGB8888);
+    if (!surface) {
+        return NULL;
+    }
+
+    src = image->buffer + alignment;
+
+    if (image->is_color) {
+        if (surface->pitch == image->pitch) {
+            SDL_memcpy(surface->pixels, src, image->rows * image->pitch);
+        } else {
+            int row;
+            Uint8 *dst = (Uint8 *)surface->pixels;
+            size_t length = image->width * 4;
+            for (row = 0; row < image->rows; ++row) {
+                SDL_memcpy(dst, src, length);
+                src += image->pitch;
+                dst += surface->pitch;
+            }
+        }
+    } else {
+        int row, col;
+        Uint32 *dst = (Uint32 *)surface->pixels;
+        int skip = (surface->pitch - surface->w * 4) / 4;
+        for (row = 0; row < image->rows; ++row) {
+            for (col = 0; col < image->width; ++col) {
+                Uint32 v = src[col];
+                *dst++ = (0x00FFFFFF | v << 24);
+            }
+            src += image->pitch;
+            dst += skip;
+        }
+    }
+    return surface;
 }
 
 bool TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *miny, int *maxy, int *advance)
@@ -3365,6 +3545,204 @@ SDL_Surface* TTF_RenderText_Blended_Wrapped(TTF_Font *font, const char *text, si
 SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength)
 {
     return TTF_Render_Wrapped_Internal(font, text, length, fg, bg, wrapLength, RENDER_LCD);
+}
+
+static TTF_Text *CreateText(TTF_TextEngine *engine, const char *text, int width, int height)
+{
+    TTF_Text *result = (TTF_Text *)SDL_calloc(1, sizeof(*result));
+    if (!result) {
+        return NULL;
+    }
+
+    result->w = width;
+    result->h = height;
+    result->color.r = 1.0f;
+    result->color.g = 1.0f;
+    result->color.b = 1.0f;
+    result->color.a = 1.0f;
+    result->engine = engine;
+    return result;
+}
+
+TTF_Text *TTF_CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length)
+{
+    int xstart, ystart, width, height;
+    TTF_DrawOperation *ops = NULL;
+    int num_ops, max_ops;
+    TTF_Text *result = NULL;
+
+    TTF_CHECK_INITIALIZED(NULL);
+    TTF_CHECK_POINTER("engine", engine, NULL);
+    TTF_CHECK_POINTER("font", font, NULL);
+    TTF_CHECK_POINTER("text", text, NULL);
+
+    if (engine->version < sizeof(*engine)) {
+        // Update this to handle older versions of this interface
+        SDL_SetError("Invalid engine, should be initialized with SDL_INIT_INTERFACE()");
+        return 0;
+    }
+
+    if (!length) {
+        length = SDL_strlen(text);
+    }
+
+    /* Get the dimensions of the text surface */
+    if (!TTF_Size_Internal(font, text, length, &width, &height, &xstart, &ystart, NO_MEASUREMENT) || !width) {
+        SDL_SetError("Text has zero width");
+        return NULL;
+    }
+
+    max_ops = font->pos_len;
+    if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
+        ++max_ops;
+    }
+    if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
+        ++max_ops;
+    }
+
+    ops = (TTF_DrawOperation *)SDL_calloc(max_ops, sizeof(*ops));
+    if (!ops) {
+        goto failure;
+    }
+
+    /* Create the text drawing operations */
+    num_ops = 0;
+    if (!Render_Line_TextEngine(font, xstart, ystart, width, height, ops, &num_ops)) {
+        goto failure;
+    }
+
+    /* Apply underline or strikethrough style, if needed */
+    if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
+        Draw_Line_TextEngine(font, width, height, 0, ystart + font->underline_top_row, width, font->line_thickness, ops, &num_ops);
+    }
+
+    if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
+        Draw_Line_TextEngine(font, width, height, 0, ystart + font->strikethrough_top_row, width, font->line_thickness, ops, &num_ops);
+    }
+
+    result = CreateText(engine, text, width, height);
+    if (!result) {
+        goto failure;
+    }
+
+    if (!engine->CreateText(engine->userdata, font, font->generation, result, ops, num_ops)) {
+        goto failure;
+    }
+
+    SDL_free(ops);
+    return result;
+
+failure:
+    SDL_free(ops);
+    TTF_DestroyText(result);
+    return NULL;
+}
+
+TTF_Text *TTF_CreateText_Wrapped(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length, int wrapLength)
+{
+    int width, height;
+    int i, numLines = 0;
+    TTF_Line *strLines = NULL;
+    TTF_DrawOperation *ops = NULL, *new_ops = NULL;
+    int num_ops = 0, max_ops = 0, extra_ops = 0, additional_ops;
+    TTF_Text *result = NULL;
+
+    TTF_CHECK_POINTER("engine", engine, NULL);
+
+    if (engine->version < sizeof(*engine)) {
+        // Update this to handle older versions of this interface
+        SDL_SetError("Invalid engine, should be initialized with SDL_INIT_INTERFACE()");
+        return 0;
+    }
+
+    if (!GetWrappedLines(font, text, length, wrapLength, &strLines, &numLines, &width, &height)) {
+        return NULL;
+    }
+
+    if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
+        ++extra_ops;
+    }
+    if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
+        ++extra_ops;
+    }
+
+    /* Render each line */
+    for (i = 0; i < numLines; i++) {
+        int xstart, ystart, line_width, xoffset;
+
+        /* Initialize xstart, ystart and compute positions */
+        if (!TTF_Size_Internal(font, strLines[i].text, strLines[i].length, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
+            goto failure;
+        }
+
+        /* Move to i-th line */
+        ystart += i * font->lineskip;
+
+        /* Control left/right/center align of each bit of text */
+        if (font->horizontal_align == TTF_HORIZONTAL_ALIGN_RIGHT) {
+            xoffset = (width - line_width);
+        } else if (font->horizontal_align == TTF_HORIZONTAL_ALIGN_CENTER) {
+            xoffset = (width - line_width) / 2;
+        } else {
+            xoffset = 0;
+        }
+        xoffset = SDL_max(0, xoffset);
+
+        /* Allocate space for the operations on this line */
+        additional_ops = (font->pos_len + extra_ops);
+        new_ops = (TTF_DrawOperation *)SDL_realloc(ops, (max_ops + additional_ops) * sizeof(*ops));
+        if (!new_ops) {
+            goto failure;
+        }
+        SDL_memset(new_ops + max_ops, 0, additional_ops * sizeof(*new_ops));
+        ops = new_ops;
+        max_ops += additional_ops;
+
+        /* Create the text drawing operations */
+        if (!Render_Line_TextEngine(font, xstart + xoffset, ystart, width, height, ops, &num_ops)) {
+            goto failure;
+        }
+
+        /* Apply underline or strikethrough style, if needed */
+        if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
+            Draw_Line_TextEngine(font, width, height, xoffset, ystart + font->underline_top_row, line_width, font->line_thickness, ops, &num_ops);
+        }
+
+        if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
+            Draw_Line_TextEngine(font, width, height, xoffset, ystart + font->strikethrough_top_row, line_width, font->line_thickness, ops, &num_ops);
+        }
+    }
+
+    result = CreateText(engine, text, width, height);
+    if (!result) {
+        goto failure;
+    }
+
+    if (!engine->CreateText(engine->userdata, font, font->generation, result, ops, num_ops)) {
+        goto failure;
+    }
+
+    SDL_free(strLines);
+    SDL_free(ops);
+    return result;
+
+failure:
+    SDL_free(strLines);
+    SDL_free(ops);
+    TTF_DestroyText(result);
+    return NULL;
+}
+
+void TTF_DestroyText(TTF_Text *text)
+{
+    if (!text || !text->engine) {
+        return;
+    }
+
+    text->engine->DestroyText(text->engine->userdata, text);
+    text->engine = NULL;
+    SDL_free(text->label);
+    SDL_free(text);
 }
 
 bool TTF_SetFontSize(TTF_Font *font, float ptsize)

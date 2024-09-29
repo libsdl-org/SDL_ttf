@@ -35,7 +35,14 @@
 #define HEIGHT  480
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [-textengine surface|renderer] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
+
+typedef enum
+{
+    TextEngineNone,
+    TextEngineSurface,
+    TextEngineRenderer
+} TextEngine;
 
 typedef enum
 {
@@ -44,21 +51,58 @@ typedef enum
 } TextRenderMethod;
 
 typedef struct {
+    SDL_Window *window;
+    SDL_Surface *window_surface;
+    SDL_Renderer *renderer;
     SDL_Texture *caption;
     SDL_FRect captionRect;
     SDL_Texture *message;
     SDL_FRect messageRect;
+    TextEngine textEngine;
+    TTF_Text *text;
 } Scene;
 
-static void draw_scene(SDL_Renderer *renderer, Scene *scene)
+static void draw_scene(Scene *scene)
 {
+    SDL_Renderer *renderer = scene->renderer;
+
     /* Clear the background to background color */
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
 
+    /* Flush the renderer so we can draw to the window surface in TextEngineSurface mode */
+    SDL_FlushRenderer(renderer);
+
+    if (scene->text) {
+        int i;
+        int w, h;
+
+        SDL_GetRenderOutputSize(renderer, &w, &h);
+
+        for (i = 0; i < 100; ++i) {
+            int x = SDL_rand(w) - scene->text->w / 2;
+            int y = SDL_rand(h) - scene->text->h / 2;
+
+            switch (scene->textEngine) {
+            case TextEngineSurface:
+                TTF_DrawSurfaceText(scene->text, x, y, scene->window_surface);
+                break;
+            case TextEngineRenderer:
+                TTF_DrawRendererText(scene->text, (float)x, (float)y);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
     SDL_RenderTexture(renderer, scene->caption, NULL, &scene->captionRect);
     SDL_RenderTexture(renderer, scene->message, NULL, &scene->messageRect);
     SDL_RenderPresent(renderer);
+
+    if (scene->window_surface) {
+        SDL_UpdateWindowSurface(scene->window);
+    }
 }
 
 static void cleanup(int exitcode)
@@ -71,9 +115,7 @@ static void cleanup(int exitcode)
 int main(int argc, char *argv[])
 {
     char *argv0 = argv[0];
-    SDL_Window *window;
-    SDL_Renderer *renderer;
-    TTF_Font *font;
+    TTF_Font *font = NULL;
     SDL_Surface *text = NULL;
     Scene scene;
     float ptsize;
@@ -83,6 +125,7 @@ int main(int argc, char *argv[])
     SDL_Color *forecol;
     SDL_Color *backcol;
     SDL_Event event;
+    TTF_TextEngine *engine = NULL;
     TextRenderMethod rendermethod;
     int renderstyle;
     int outline;
@@ -96,15 +139,28 @@ int main(int argc, char *argv[])
     /* Look for special execution mode */
     dump = 0;
     /* Look for special rendering types */
+    SDL_zero(scene);
     rendermethod = TextRenderShaded;
     renderstyle = TTF_STYLE_NORMAL;
     outline = 0;
     hinting = TTF_HINTING_NORMAL;
     kerning = 1;
+    wrap = 0;
     /* Default is black and white */
     forecol = &black;
     backcol = &white;
     for (i=1; argv[i] && argv[i][0] == '-'; ++i) {
+        if (SDL_strcmp(argv[i], "-textengine") == 0 && argv[i+1]) {
+            ++i;
+            if (SDL_strcmp(argv[i], "surface") == 0) {
+                scene.textEngine = TextEngineSurface;
+            }  else if (SDL_strcmp(argv[i], "renderer") == 0) {
+                scene.textEngine = TextEngineRenderer;
+            } else {
+                SDL_Log(TTF_SHOWFONT_USAGE, argv0);
+                return(1);
+            }
+        } else
         if (SDL_strcmp(argv[i], "-shaded") == 0) {
             rendermethod = TextRenderShaded;
         } else
@@ -123,7 +179,7 @@ int main(int argc, char *argv[])
         if (SDL_strcmp(argv[i], "-s") == 0) {
             renderstyle |= TTF_STYLE_STRIKETHROUGH;
         } else
-        if (SDL_strcmp(argv[i], "-outline") == 0) {
+        if (SDL_strcmp(argv[i], "-outline") == 0 && argv[i+1]) {
             if (SDL_sscanf(argv[++i], "%d", &outline) != 1) {
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
                 return(1);
@@ -144,7 +200,7 @@ int main(int argc, char *argv[])
         if (SDL_strcmp(argv[i], "-wrap") == 0) {
             wrap = 1;
         } else
-        if (SDL_strcmp(argv[i], "-align") == 0) {
+        if (SDL_strcmp(argv[i], "-align") == 0 && argv[i+1]) {
             ++i;
             if (SDL_strcmp(argv[i], "left") == 0) {
                 align = TTF_HORIZONTAL_ALIGN_LEFT;
@@ -160,7 +216,7 @@ int main(int argc, char *argv[])
         if (SDL_strcmp(argv[i], "-dump") == 0) {
             dump = 1;
         } else
-        if (SDL_strcmp(argv[i], "-fgcol") == 0) {
+        if (SDL_strcmp(argv[i], "-fgcol") == 0 && argv[i+1]) {
             int r, g, b, a = SDL_ALPHA_OPAQUE;
             if (SDL_sscanf(argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
@@ -171,7 +227,7 @@ int main(int argc, char *argv[])
             forecol->b = (Uint8)b;
             forecol->a = (Uint8)a;
         } else
-        if (SDL_strcmp(argv[i], "-bgcol") == 0) {
+        if (SDL_strcmp(argv[i], "-bgcol") == 0 && argv[i+1]) {
             int r, g, b, a = SDL_ALPHA_OPAQUE;
             if (SDL_sscanf(argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
@@ -242,8 +298,28 @@ int main(int argc, char *argv[])
     }
 
     /* Create a window */
-    if (!SDL_CreateWindowAndRenderer("showfont demo", WIDTH, HEIGHT, 0, &window, &renderer)) {
-        SDL_Log("SDL_CreateWindowAndRenderer() failed: %s\n", SDL_GetError());
+    scene.window = SDL_CreateWindow("showfont demo", WIDTH, HEIGHT, 0);
+    if (!scene.window) {
+        SDL_Log("SDL_CreateWindow() failed: %s\n", SDL_GetError());
+        cleanup(2);
+    }
+    if (scene.textEngine == TextEngineSurface) {
+        scene.window_surface = SDL_GetWindowSurface(scene.window);
+        if (!scene.window_surface) {
+            SDL_Log("SDL_CreateWindowSurface() failed: %s\n", SDL_GetError());
+            cleanup(2);
+        }
+        SDL_SetWindowSurfaceVSync(scene.window, 1);
+
+        scene.renderer = SDL_CreateSoftwareRenderer(scene.window_surface);
+    } else {
+        scene.renderer = SDL_CreateRenderer(scene.window, NULL);
+        if (scene.renderer) {
+            SDL_SetRenderVSync(scene.renderer, 1);
+        }
+    }
+    if (!scene.renderer) {
+        SDL_Log("SDL_CreateRenderer() failed: %s\n", SDL_GetError());
         cleanup(2);
     }
 
@@ -262,7 +338,7 @@ int main(int argc, char *argv[])
         scene.captionRect.y = 4.0f;
         scene.captionRect.w = (float)text->w;
         scene.captionRect.h = (float)text->h;
-        scene.caption = SDL_CreateTextureFromSurface(renderer, text);
+        scene.caption = SDL_CreateTextureFromSurface(scene.renderer, text);
         SDL_DestroySurface(text);
     }
 
@@ -297,39 +373,75 @@ int main(int argc, char *argv[])
     scene.messageRect.y = (float)((HEIGHT - text->h)/2);
     scene.messageRect.w = (float)text->w;
     scene.messageRect.h = (float)text->h;
-    scene.message = SDL_CreateTextureFromSurface(renderer, text);
+    scene.message = SDL_CreateTextureFromSurface(scene.renderer, text);
     SDL_Log("Font is generally %d big, and string is %d big\n",
                         TTF_GetFontHeight(font), text->h);
 
-    draw_scene(renderer, &scene);
+    switch (scene.textEngine) {
+    case TextEngineSurface:
+        engine = TTF_CreateSurfaceTextEngine();
+        if (!engine) {
+            SDL_Log("Couldn't create surface text engine: %s\n", SDL_GetError());
+        }
+        break;
+    case TextEngineRenderer:
+        engine = TTF_CreateRendererTextEngine(scene.renderer);
+        if (!engine) {
+            SDL_Log("Couldn't create renderer text engine: %s\n", SDL_GetError());
+        }
+        break;
+    default:
+        break;
+    }
+    if (engine) {
+        if (wrap) {
+            scene.text = TTF_CreateText_Wrapped(engine, font, message, 0, 0);
+        } else {
+            scene.text = TTF_CreateText(engine, font, message, 0);
+        }
+        if (scene.text) {
+            scene.text->color.r = forecol->r / 255.0f;
+            scene.text->color.g = forecol->g / 255.0f;
+            scene.text->color.b = forecol->b / 255.0f;
+            scene.text->color.a = forecol->a / 255.0f;
+        }
+    }
 
     /* Wait for a keystroke, and blit text on mouse press */
     done = 0;
     while (!done) {
-        if (!SDL_WaitEvent(&event)) {
-            SDL_Log("SDL_PullEvent() error: %s\n", SDL_GetError());
-            done = 1;
-            continue;
-        }
-        switch (event.type) {
-            case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                scene.messageRect.x = (float)(event.button.x - text->w/2);
-                scene.messageRect.y = (float)(event.button.y - text->h/2);
-                scene.messageRect.w = (float)text->w;
-                scene.messageRect.h = (float)text->h;
-                draw_scene(renderer, &scene);
-                break;
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                    scene.messageRect.x = (float)(event.button.x - text->w/2);
+                    scene.messageRect.y = (float)(event.button.y - text->h/2);
+                    scene.messageRect.w = (float)text->w;
+                    scene.messageRect.h = (float)text->h;
+                    break;
 
-            case SDL_EVENT_KEY_DOWN:
-            case SDL_EVENT_QUIT:
-                done = 1;
-                break;
-            default:
-                break;
+                case SDL_EVENT_KEY_DOWN:
+                case SDL_EVENT_QUIT:
+                    done = 1;
+                    break;
+                default:
+                    break;
+            }
         }
+        draw_scene(&scene);
     }
     SDL_DestroySurface(text);
     TTF_CloseFont(font);
+    TTF_DestroyText(scene.text);
+    switch (scene.textEngine) {
+    case TextEngineSurface:
+        TTF_DestroySurfaceTextEngine(engine);
+        break;
+    case TextEngineRenderer:
+        TTF_DestroyRendererTextEngine(engine);
+        break;
+    default:
+        break;
+    }
     SDL_DestroyTexture(scene.caption);
     SDL_DestroyTexture(scene.message);
     cleanup(0);
