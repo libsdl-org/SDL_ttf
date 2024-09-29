@@ -100,6 +100,9 @@ if (LIBC_IS_GLIBC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
 endif()
 
 add_library(${sdl3_ttf_target_name}
+    src/SDL_hashtable.c
+    src/SDL_renderer_textengine.c
+    src/SDL_surface_textengine.c
     src/SDL_ttf.c
 )
 add_library(SDL3_ttf::${sdl3_ttf_target_name} ALIAS ${sdl3_ttf_target_name})

@@ -789,6 +789,38 @@ extern SDL_DECLSPEC bool TTF_SetFontLanguage(TTF_Font *font, const char *languag
 extern SDL_DECLSPEC bool SDLCALL TTF_FontHasGlyph(TTF_Font *font, Uint32 ch);
 
 /**
+ * Get the pixel image for a UNICODE codepoint.
+ *
+ * \param font the font to query.
+ * \param ch the codepoint to check.
+ * \returns an SDL_Surface containing the glyph, or NULL on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImage(TTF_Font *font, Uint32 ch);
+
+/**
+ * Get the pixel image for a character index.
+ *
+ * This is useful for text engine implementations, which can call this with the `glyph_index` in a TTF_CopyOperation
+ *
+ * \param font the font to query.
+ * \param glyph_index the index of the glyph to return.
+ * \returns an SDL_Surface containing the glyph, or NULL on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index);
+
+/**
  * Query the metrics (dimensions) of a font's glyph for a UNICODE codepoint.
  *
  * To understand what these metrics mean, here is a useful link:
@@ -1190,6 +1222,200 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *f
 extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font, Uint32 ch, SDL_Color fg, SDL_Color bg);
 
 
+/* A text engine used to create text objects
+ *
+ * This is a public interface that can be used by applications and libraries. See <SDL3_ttf/SDL_textengine.h> for details.
+ */
+typedef struct TTF_TextEngine TTF_TextEngine;
+
+/**
+ * Text created with TTF_CreateText()
+ *
+ * \since This struct is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateText
+ * \sa TTF_CreateText_Wrapped
+ * \sa TTF_DestroyText
+ */
+typedef struct TTF_Text
+{
+    char *label;            /**< A label that you can allocate with SDL_strdup() for debugging purposes, and will be automatically freed in TTF_DestroyText(). */
+    int w;                  /**< The width of this text, in pixels, read-only. */
+    int h;                  /**< The height of this text, in pixels, read-only. */
+    SDL_FColor color;       /**< The color of the text, read-write. You can change this anytime. */
+    TTF_TextEngine *engine; /**< The engine used to create this text, read-only. */
+    void *internal;         /**< The internal representation of this text, read-only */
+} TTF_Text;
+
+/**
+ * Create a text engine for drawing text on SDL surfaces.
+ *
+ * \returns a TTF_TextEngine object or NULL on failure; call SDL_GetError() for more information.
+ *
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_DestroySurfaceTextEngine
+ * \sa TTF_DrawSurfaceText
+ */
+extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateSurfaceTextEngine(void);
+
+/**
+ * Draw text to an SDL surface.
+ *
+ * `text` must have been created using a TTF_TextEngine from TTF_CreateSurfaceTextEngine().
+ *
+ * \param text the text to draw.
+ * \param x the x coordinate in pixels, positive from the left edge towards the right.
+ * \param y the y coordinate in pixels, positive from the top edge towards the bottom.
+ * \param surface the surface to draw on.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateSurfaceTextEngine
+ * \sa TTF_CreateText
+ * \sa TTF_CreateText_Wrapped
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface);
+
+/**
+ * Destroy a text engine created for drawing text on SDL surfaces.
+ *
+ * All text created by this engine should be destroyed before calling this function.
+ *
+ * \param engine a TTF_TextEngine object created with TTF_CreateSurfaceTextEngine().
+ *
+ * \threadsafety This function should be called on the thread that created the engine.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateSurfaceTextEngine
+ */
+extern SDL_DECLSPEC void SDLCALL TTF_DestroySurfaceTextEngine(TTF_TextEngine *engine);
+
+/**
+ * Create a text engine for drawing text on an SDL renderer.
+ *
+ * \param renderer the renderer to use for creating textures and drawing text.
+ * \returns a TTF_TextEngine object or NULL on failure; call SDL_GetError() for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the renderer.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_DestroyRendererTextEngine
+ */
+extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngine(SDL_Renderer *renderer);
+
+/**
+ * Draw text to an SDL renderer.
+ *
+ * `text` must have been created using a TTF_TextEngine from TTF_CreateRendererTextEngine(), and will draw using the renderer passed to that function.
+ *
+ * \param text the text to draw.
+ * \param x the x coordinate in pixels, positive from the left edge towards the right.
+ * \param y the y coordinate in pixels, positive from the top edge towards the bottom.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateRendererTextEngine
+ * \sa TTF_CreateText
+ * \sa TTF_CreateText_Wrapped
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_DrawRendererText(TTF_Text *text, float x, float y);
+
+/**
+ * Destroy a text engine created for drawing text on an SDL renderer.
+ *
+ * All text created by this engine should be destroyed before calling this function.
+ *
+ * \param engine a TTF_TextEngine object created with TTF_CreateRendererTextEngine().
+ *
+ * \threadsafety This function should be called on the thread that created the engine.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateRendererTextEngine
+ */
+extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *engine);
+
+/**
+ * Create a text object from UTF-8 text and a text engine.
+ *
+ * This will not word-wrap the string; you'll get a surface with a single line
+ * of text, as long as the string requires. You can use
+ * TTF_CreateText_Wrapped() instead if you need to wrap the output to
+ * multiple lines.
+ *
+ * This will not wrap on newline characters.
+ *
+ * \param engine the text engine to use when creating the text object.
+ * \param font the font to render with.
+ * \param text the text to use, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
+ * \returns a TTF_Text object or NULL on failure; call SDL_GetError() for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font and text engine.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateText_Wrapped
+ * \sa TTF_DestroyText
+ */
+extern SDL_DECLSPEC TTF_Text * SDLCALL TTF_CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length);
+
+/**
+ * Create a text object from word-wrapped UTF-8 text and a text engine.
+ *
+ * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * it extends beyond `wrapLength` in pixels.
+ *
+ * If wrapLength is 0, this function will only wrap on newline characters.
+ *
+ * \param engine the text engine to use when creating the text object.
+ * \param font the font to render with.
+ * \param text the text to use, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
+ * \param wrapLength the maximum width of the text surface or 0 to wrap on
+ *                   newline characters.
+ * \returns a TTF_Text object or NULL on failure; call SDL_GetError() for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateText
+ * \sa TTF_DestroyText
+ */
+extern SDL_DECLSPEC TTF_Text * SDLCALL TTF_CreateText_Wrapped(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length, int wrapLength);
+
+/**
+ * Destroy a text object created by a text engine.
+ *
+ * \param text the text to destroy.
+ *
+ * \threadsafety This function should be called on the thread that created the text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateText
+ * \sa TTF_CreateText_Wrapped
+ */
+extern SDL_DECLSPEC void SDLCALL TTF_DestroyText(TTF_Text *text);
+
 /**
  * Dispose of a previously-created font.
  *
@@ -1275,4 +1501,3 @@ extern SDL_DECLSPEC int SDLCALL TTF_WasInit(void);
 
 #endif /* SDL_TTF_H_ */
 
-/* vi: set ts=4 sw=4 expandtab: */
