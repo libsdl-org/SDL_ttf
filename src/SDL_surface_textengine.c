@@ -251,13 +251,13 @@ static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_gener
     if (!data) {
         return false;
     }
-    text->internal = data;
+    text->internal->textrep = data;
     return true;
 }
 
 static void SDLCALL DestroyText(void *userdata, TTF_Text *text)
 {
-    TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal;
+    TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal->textrep;
 
     (void)userdata;
     DestroyTextData(data);
@@ -290,10 +290,8 @@ static void UpdateColor(TTF_SurfaceTextEngineTextData *data, const SDL_FColor *c
     SDL_copyp(&data->fcolor, color);
 }
 
-static void DrawFill(TTF_Text *text, const TTF_FillOperation *op, int x, int y, SDL_Surface *surface)
+static void DrawFill(TTF_SurfaceTextEngineTextData *data, const TTF_FillOperation *op, int x, int y, SDL_Surface *surface)
 {
-    TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal;
-
     Uint32 color = SDL_MapSurfaceRGBA(surface, data->color.r, data->color.g, data->color.b, data->color.a);
 
     SDL_Rect dst;
@@ -303,9 +301,8 @@ static void DrawFill(TTF_Text *text, const TTF_FillOperation *op, int x, int y, 
     SDL_FillSurfaceRect(surface, &dst, color);
 }
 
-static void DrawCopy(TTF_Text *text, const TTF_CopyOperation *op, int x, int y, SDL_Surface *surface)
+static void DrawCopy(TTF_SurfaceTextEngineTextData *data, const TTF_CopyOperation *op, int x, int y, SDL_Surface *surface)
 {
-    TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal;
     TTF_SurfaceTextEngineGlyphData *glyph = (TTF_SurfaceTextEngineGlyphData *)op->reserved;
 
     if (data->color.r != glyph->color.r ||
@@ -328,14 +325,14 @@ bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
 {
     TTF_SurfaceTextEngineTextData *data;
 
-    if (!text || !text->engine || text->engine->CreateText != CreateText) {
+    if (!text || !text->internal || text->internal->engine->CreateText != CreateText) {
         return SDL_InvalidParamError("text");
     }
     if (!surface) {
         return SDL_InvalidParamError("surface");
     }
 
-    data = (TTF_SurfaceTextEngineTextData *)text->internal;
+    data = (TTF_SurfaceTextEngineTextData *)text->internal->textrep;
 
     if (text->color.r != data->fcolor.r ||
         text->color.g != data->fcolor.g ||
@@ -348,10 +345,10 @@ bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
         const TTF_DrawOperation *op = &data->ops[i];
         switch (op->cmd) {
         case TTF_DRAW_COMMAND_FILL:
-            DrawFill(text, &op->fill, x, y, surface);
+            DrawFill(data, &op->fill, x, y, surface);
             break;
         case TTF_DRAW_COMMAND_COPY:
-            DrawCopy(text, &op->copy, x, y, surface);
+            DrawCopy(data, &op->copy, x, y, surface);
             break;
         default:
             break;

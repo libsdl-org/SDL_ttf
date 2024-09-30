@@ -1228,6 +1228,9 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font, Ui
  */
 typedef struct TTF_TextEngine TTF_TextEngine;
 
+/* Internal data for TTF_Text */
+typedef struct TTF_TextData TTF_TextData;
+
 /**
  * Text created with TTF_CreateText()
  *
@@ -1235,6 +1238,7 @@ typedef struct TTF_TextEngine TTF_TextEngine;
  *
  * \sa TTF_CreateText
  * \sa TTF_CreateText_Wrapped
+ * \sa TTF_GetTextProperties
  * \sa TTF_DestroyText
  */
 typedef struct TTF_Text
@@ -1243,8 +1247,11 @@ typedef struct TTF_Text
     int w;                  /**< The width of this text, in pixels, read-only. */
     int h;                  /**< The height of this text, in pixels, read-only. */
     SDL_FColor color;       /**< The color of the text, read-write. You can change this anytime. */
-    TTF_TextEngine *engine; /**< The engine used to create this text, read-only. */
-    void *internal;         /**< The internal representation of this text, read-only */
+
+    int refcount;           /**< Application reference count, used when freeing surface */
+
+    TTF_TextData *internal; /**< Private */
+
 } TTF_Text;
 
 /**
@@ -1401,6 +1408,17 @@ extern SDL_DECLSPEC TTF_Text * SDLCALL TTF_CreateText(TTF_TextEngine *engine, TT
  * \sa TTF_DestroyText
  */
 extern SDL_DECLSPEC TTF_Text * SDLCALL TTF_CreateText_Wrapped(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length, int wrapLength);
+
+/**
+ * Get the properties associated with a text object.
+ *
+ * \param text the TTF_Text to query.
+ * \returns a valid property ID on success or 0 on failure; call
+ *          SDL_GetError() for more information.
+ *
+ * \since This function is available since SDL 3.0.0.
+ */
+extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetTextProperties(TTF_Text *text);
 
 /**
  * Destroy a text object created by a text engine.

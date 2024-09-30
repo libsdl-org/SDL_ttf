@@ -262,13 +262,13 @@ static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_gener
     if (!data) {
         return false;
     }
-    text->internal = data;
+    text->internal->textrep = data;
     return true;
 }
 
 static void SDLCALL DestroyText(void *userdata, TTF_Text *text)
 {
-    TTF_RendererTextEngineTextData *data = (TTF_RendererTextEngineTextData *)text->internal;
+    TTF_RendererTextEngineTextData *data = (TTF_RendererTextEngineTextData *)text->internal->textrep;
 
     (void)userdata;
     DestroyTextData(data);
@@ -333,12 +333,12 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
     TTF_RendererTextEngineTextData *data;
     SDL_Renderer *renderer;
 
-    if (!text || !text->engine || text->engine->CreateText != CreateText) {
+    if (!text || !text->internal || text->internal->engine->CreateText != CreateText) {
         return SDL_InvalidParamError("text");
     }
 
-    renderer = ((TTF_RendererTextEngineData *)text->engine->userdata)->renderer;
-    data = (TTF_RendererTextEngineTextData *)text->internal;
+    renderer = ((TTF_RendererTextEngineData *)text->internal->engine->userdata)->renderer;
+    data = (TTF_RendererTextEngineTextData *)text->internal->textrep;
 
     for (int i = 0; i < data->num_ops; ++i) {
         const TTF_DrawOperation *op = &data->ops[i];
