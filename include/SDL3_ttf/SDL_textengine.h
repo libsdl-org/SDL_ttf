@@ -29,6 +29,8 @@
 #define SDL_TTF_TEXTENGINE_H_
 
 #include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
+
 #include <SDL3/SDL_begin_code.h>
 
 /* Set up for C function definitions, even when using C++ */
@@ -37,7 +39,7 @@ extern "C" {
 #endif
 
 /* Text created with the text engine */
-typedef struct TTF_Text TTF_Text;
+struct TTF_Text;
 
 /* Private data in TTF_Text, available to implementations */
 struct TTF_TextData
@@ -109,7 +111,7 @@ typedef union TTF_DrawOperation
  *
  * \sa SDL_INIT_INTERFACE
  */
-typedef struct TTF_TextEngine
+struct TTF_TextEngine
 {
     Uint32 version;     /**< The version of this interface */
 
@@ -132,7 +134,7 @@ typedef struct TTF_TextEngine
      */
     void (SDLCALL *DestroyText)(void *userdata, TTF_Text *text);
 
-} TTF_TextEngine;
+};
 
 /* Check the size of TTF_TextEngine
  *
@@ -149,6 +151,7 @@ SDL_COMPILE_TIME_ASSERT(TTF_TextEngine_SIZE,
 #ifdef __cplusplus
 }
 #endif
+
 #include <SDL3/SDL_close_code.h>
 
 #endif /* SDL_TTF_TEXTENGINE_H_ */
