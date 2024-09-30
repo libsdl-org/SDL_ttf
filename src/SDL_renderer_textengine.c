@@ -56,14 +56,16 @@ typedef struct TTF_RendererTextEngineData
 
 static void DestroyGlyphData(TTF_RendererTextEngineGlyphData *data)
 {
-    if (data) {
-        --data->refcount;
-        if (data->refcount == 0) {
-            if (data->texture) {
-                SDL_DestroyTexture(data->texture);
-            }
-            SDL_free(data);
+    if (!data) {
+        return;
+    }
+
+    --data->refcount;
+    if (data->refcount == 0) {
+        if (data->texture) {
+            SDL_DestroyTexture(data->texture);
         }
+        SDL_free(data);
     }
 }
 
@@ -113,26 +115,27 @@ static TTF_RendererTextEngineGlyphData *GetGlyphData(SDL_Renderer *renderer, TTF
 
 static void DestroyTextData(TTF_RendererTextEngineTextData *data)
 {
-    if (data) {
-        if (data->ops) {
-            int i;
-
-            for (i = 0; i < data->num_ops; ++i) {
-                const TTF_DrawOperation *op = &data->ops[i];
-                if (op->cmd == TTF_DRAW_COMMAND_COPY) {
-                    TTF_RendererTextEngineGlyphData *glyph = (TTF_RendererTextEngineGlyphData *)op->copy.reserved;
-                    DestroyGlyphData(glyph);
-                }
-            }
-            SDL_free(data->ops);
-        }
-        SDL_free(data);
+    if (!data) {
+        return;
     }
+
+    if (data->ops) {
+        int i;
+
+        for (i = 0; i < data->num_ops; ++i) {
+            const TTF_DrawOperation *op = &data->ops[i];
+            if (op->cmd == TTF_DRAW_COMMAND_COPY) {
+                TTF_RendererTextEngineGlyphData *glyph = (TTF_RendererTextEngineGlyphData *)op->copy.reserved;
+                DestroyGlyphData(glyph);
+            }
+        }
+        SDL_free(data->ops);
+    }
+    SDL_free(data);
 }
 
 static TTF_RendererTextEngineTextData *CreateTextData(SDL_Renderer *renderer, TTF_RendererTextEngineFontData *fontdata, const TTF_DrawOperation *ops, int num_ops)
 {
-    int i;
     TTF_RendererTextEngineTextData *data = (TTF_RendererTextEngineTextData *)SDL_calloc(1, sizeof(*data));
     if (!data) {
         return NULL;
@@ -146,7 +149,7 @@ static TTF_RendererTextEngineTextData *CreateTextData(SDL_Renderer *renderer, TT
     SDL_memcpy(data->ops, ops, num_ops * sizeof(*data->ops));
     data->num_ops = num_ops;
 
-    for (i = 0; i < data->num_ops; ++i) {
+    for (int i = 0; i < data->num_ops; ++i) {
         TTF_DrawOperation *op = &data->ops[i];
         if (op->cmd == TTF_DRAW_COMMAND_COPY) {
             TTF_RendererTextEngineGlyphData *glyph = GetGlyphData(renderer, fontdata, op->copy.glyph_index);
@@ -163,12 +166,14 @@ static TTF_RendererTextEngineTextData *CreateTextData(SDL_Renderer *renderer, TT
 
 static void DestroyFontData(TTF_RendererTextEngineFontData *data)
 {
-    if (data) {
-        if (data->glyphs) {
-            SDL_DestroyHashTable(data->glyphs);
-        }
-        SDL_free(data);
+    if (!data) {
+        return;
     }
+
+    if (data->glyphs) {
+        SDL_DestroyHashTable(data->glyphs);
+    }
+    SDL_free(data);
 }
 
 static void NukeGlyphData(const void *key, const void *value, void *unused)
@@ -203,12 +208,14 @@ static TTF_RendererTextEngineFontData *CreateFontData(TTF_RendererTextEngineData
 
 static void DestroyEngineData(TTF_RendererTextEngineData *data)
 {
-    if (data) {
-        if (data->fonts) {
-            SDL_DestroyHashTable(data->fonts);
-        }
-        SDL_free(data);
+    if (!data) {
+        return;
     }
+
+    if (data->fonts) {
+        SDL_DestroyHashTable(data->fonts);
+    }
+    SDL_free(data);
 }
 
 static void NukeFontData(const void *key, const void *value, void *unused)
@@ -288,11 +295,10 @@ TTF_TextEngine *TTF_CreateRendererTextEngine(SDL_Renderer *renderer)
 static void DrawFill(SDL_Renderer *renderer, TTF_Text *text, const TTF_FillOperation *op, float x, float y)
 {
     SDL_FColor color;
-    SDL_FRect dst;
-
     SDL_GetRenderDrawColorFloat(renderer, &color.r, &color.g, &color.b, &color.a);
     SDL_SetRenderDrawColorFloat(renderer, text->color.r, text->color.g, text->color.b, text->color.a);
 
+    SDL_FRect dst;
     SDL_RectToFRect(&op->rect, &dst);
     dst.x += x;
     dst.y += y;
@@ -304,7 +310,6 @@ static void DrawFill(SDL_Renderer *renderer, TTF_Text *text, const TTF_FillOpera
 static void DrawCopy(SDL_Renderer *renderer, TTF_Text *text, const TTF_CopyOperation *op, float x, float y)
 {
     TTF_RendererTextEngineGlyphData *glyph = (TTF_RendererTextEngineGlyphData *)op->reserved;
-    SDL_FRect src, dst;
 
     if (text->color.r != glyph->color.r ||
         text->color.g != glyph->color.g ||
@@ -315,6 +320,7 @@ static void DrawCopy(SDL_Renderer *renderer, TTF_Text *text, const TTF_CopyOpera
         SDL_copyp(&glyph->color, &text->color);
     }
 
+    SDL_FRect src, dst;
     SDL_RectToFRect(&op->src, &src);
     SDL_RectToFRect(&op->dst, &dst);
     dst.x += x;
@@ -326,7 +332,6 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
 {
     TTF_RendererTextEngineTextData *data;
     SDL_Renderer *renderer;
-    int i;
 
     if (!text || !text->engine || text->engine->CreateText != CreateText) {
         return SDL_InvalidParamError("text");
@@ -335,7 +340,7 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
     renderer = ((TTF_RendererTextEngineData *)text->engine->userdata)->renderer;
     data = (TTF_RendererTextEngineTextData *)text->internal;
 
-    for (i = 0; i < data->num_ops; ++i) {
+    for (int i = 0; i < data->num_ops; ++i) {
         const TTF_DrawOperation *op = &data->ops[i];
         switch (op->cmd) {
         case TTF_DRAW_COMMAND_FILL:
