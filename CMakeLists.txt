@@ -125,6 +125,11 @@ if(SDLTTF_BUILD_SHARED_LIBS)
     target_link_libraries(${sdl3_ttf_target_name} PRIVATE SDL3::SDL3-shared)
 endif()
 sdl_add_warning_options(${sdl3_ttf_target_name} WARNING_AS_ERROR ${SDLTTF_WERROR})
+if ("c_std_99" IN_LIST CMAKE_C_COMPILE_FEATURES)
+    target_compile_features(${sdl3_ttf_target_name} PRIVATE c_std_99)
+else()
+    message(WARNING "target_compile_features does not know c_std_99 for C compiler")
+endif()
 if(WIN32 AND SDLTTF_BUILD_SHARED_LIBS)
     target_sources(${sdl3_ttf_target_name} PRIVATE
         src/version.rc
