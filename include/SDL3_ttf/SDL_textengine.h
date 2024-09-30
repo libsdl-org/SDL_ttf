@@ -38,9 +38,6 @@
 extern "C" {
 #endif
 
-/* Text created with the text engine */
-struct TTF_Text;
-
 /* Private data in TTF_Text, available to implementations */
 struct TTF_TextData
 {
@@ -151,7 +148,6 @@ SDL_COMPILE_TIME_ASSERT(TTF_TextEngine_SIZE,
 #ifdef __cplusplus
 }
 #endif
-
 #include <SDL3/SDL_close_code.h>
 
 #endif /* SDL_TTF_TEXTENGINE_H_ */
