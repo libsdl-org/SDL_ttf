@@ -3547,21 +3547,29 @@ SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t
     return TTF_Render_Wrapped_Internal(font, text, length, fg, bg, wrapLength, RENDER_LCD);
 }
 
-static TTF_Text *CreateText(TTF_TextEngine *engine, const char *text, int width, int height)
+typedef struct TTF_InternalText
 {
-    TTF_Text *result = (TTF_Text *)SDL_calloc(1, sizeof(*result));
-    if (!result) {
+    TTF_Text text;
+    TTF_TextData internal;
+} TTF_InternalText;
+
+static TTF_Text *CreateText(TTF_TextEngine *engine, int width, int height)
+{
+    TTF_InternalText *mem = (TTF_InternalText *)SDL_calloc(1, sizeof(*mem));
+    if (!mem) {
         return NULL;
     }
 
-    result->w = width;
-    result->h = height;
-    result->color.r = 1.0f;
-    result->color.g = 1.0f;
-    result->color.b = 1.0f;
-    result->color.a = 1.0f;
-    result->engine = engine;
-    return result;
+    TTF_Text *text = &mem->text;
+    text->internal = &mem->internal;
+    text->w = width;
+    text->h = height;
+    text->color.r = 1.0f;
+    text->color.g = 1.0f;
+    text->color.b = 1.0f;
+    text->color.a = 1.0f;
+    text->internal->engine = engine;
+    return text;
 }
 
 TTF_Text *TTF_CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length)
@@ -3620,7 +3628,7 @@ TTF_Text *TTF_CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *tex
         Draw_Line_TextEngine(font, width, height, 0, ystart + font->strikethrough_top_row, width, font->line_thickness, ops, &num_ops);
     }
 
-    result = CreateText(engine, text, width, height);
+    result = CreateText(engine, width, height);
     if (!result) {
         goto failure;
     }
@@ -3713,7 +3721,7 @@ TTF_Text *TTF_CreateText_Wrapped(TTF_TextEngine *engine, TTF_Font *font, const c
         }
     }
 
-    result = CreateText(engine, text, width, height);
+    result = CreateText(engine, width, height);
     if (!result) {
         goto failure;
     }
@@ -3733,14 +3741,27 @@ failure:
     return NULL;
 }
 
+SDL_PropertiesID TTF_GetTextProperties(TTF_Text *text)
+{
+    TTF_CHECK_POINTER("text", text, 0);
+    TTF_CHECK_POINTER("text", text->internal, 0);
+
+    if (!text->internal->props) {
+        text->internal->props = SDL_CreateProperties();
+    }
+    return text->internal->props;
+}
+
 void TTF_DestroyText(TTF_Text *text)
 {
-    if (!text || !text->engine) {
+    if (!text || !text->internal) {
         return;
     }
 
-    text->engine->DestroyText(text->engine->userdata, text);
-    text->engine = NULL;
+    TTF_TextEngine *engine = text->internal->engine;
+    engine->DestroyText(engine->userdata, text);
+    SDL_DestroyProperties(text->internal->props);
+    text->internal = NULL;
     SDL_free(text->label);
     SDL_free(text);
 }

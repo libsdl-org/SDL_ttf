@@ -39,6 +39,14 @@ extern "C" {
 /* Text created with the text engine */
 typedef struct TTF_Text TTF_Text;
 
+/* Private data in TTF_Text, available to implementations */
+struct TTF_TextData
+{
+    TTF_TextEngine *engine; /**< The engine used to create this text, read-only. */
+    SDL_PropertiesID props; /**< Custom properties associated with this text, read-write. */
+    void *textrep;          /**< The implementation-specific representation of this text */
+};
+
 /**
  * A font atlas draw command.
  *
