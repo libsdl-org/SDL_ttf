@@ -215,11 +215,16 @@ struct stbrp_context
 
 #ifdef _MSC_VER
 #define STBRP__NOTUSED(v)  (void)(v)
-#define STBRP__CDECL       __cdecl
 #else
 #define STBRP__NOTUSED(v)  (void)sizeof(v)
+#endif
+#ifndef STBRP__CDECL
+#ifdef _MSC_VER
+#define STBRP__CDECL       __cdecl
+#else
 #define STBRP__CDECL
 #endif
+#endif /* STBRP__CDECL */
 
 enum
 {
