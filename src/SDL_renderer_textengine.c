@@ -28,6 +28,7 @@
 #define STBRP_STATIC
 #define STBRP_SORT SDL_qsort
 #define STBRP_ASSERT SDL_assert
+#define STBRP__CDECL SDLCALL
 #include "stb_rect_pack.h"
 
 typedef struct AtlasGlyph AtlasGlyph;
