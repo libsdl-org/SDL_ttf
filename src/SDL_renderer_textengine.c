@@ -877,7 +877,7 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
 
         sequence = sequence->next;
     }
-    return false;
+    return true;
 }
 
 void TTF_DestroyRendererTextEngine(TTF_TextEngine *engine)
