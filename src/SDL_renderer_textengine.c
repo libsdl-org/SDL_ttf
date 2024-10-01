@@ -39,7 +39,7 @@ struct AtlasGlyph
     int refcount;
     AtlasTexture *atlas;
     SDL_Rect rect;
-    float texcoords[12];
+    float texcoords[8];
     AtlasGlyph *next;
 };
 
@@ -60,6 +60,7 @@ struct AtlasDrawSequence
     SDL_Rect *rects;
     float *texcoords;
     float *positions;
+    int *indices;
     AtlasDrawSequence *next;
 };
 
@@ -237,22 +238,18 @@ static AtlasGlyph *CreateGlyph(AtlasTexture *atlas, const stbrp_rect *area)
     glyph->rect.w = area->w;
     glyph->rect.h = area->h;
 
-    const float minx = (float)area->x / ATLAS_TEXTURE_SIZE;
-    const float maxx = (float)(area->x + area->w) / ATLAS_TEXTURE_SIZE;
-    const float miny = (float)area->y / ATLAS_TEXTURE_SIZE;
-    const float maxy = (float)(area->y + area->h) / ATLAS_TEXTURE_SIZE;
-    glyph->texcoords[0] = minx;
-    glyph->texcoords[1] = miny;
-    glyph->texcoords[2] = maxx;
-    glyph->texcoords[3] = miny;
-    glyph->texcoords[4] = maxx;
-    glyph->texcoords[5] = maxy;
-    glyph->texcoords[6] = minx;
-    glyph->texcoords[7] = miny;
-    glyph->texcoords[8] = maxx;
-    glyph->texcoords[9] = maxy;
-    glyph->texcoords[10] = minx;
-    glyph->texcoords[11] = maxy;
+    const float minu = (float)area->x / ATLAS_TEXTURE_SIZE;
+    const float minv = (float)area->y / ATLAS_TEXTURE_SIZE;
+    const float maxu = (float)(area->x + area->w) / ATLAS_TEXTURE_SIZE;
+    const float maxv = (float)(area->y + area->h) / ATLAS_TEXTURE_SIZE;
+    glyph->texcoords[0] = minu;
+    glyph->texcoords[1] = minv;
+    glyph->texcoords[2] = maxu;
+    glyph->texcoords[3] = minv;
+    glyph->texcoords[4] = maxu;
+    glyph->texcoords[5] = maxv;
+    glyph->texcoords[6] = minu;
+    glyph->texcoords[7] = maxv;
 
     return glyph;
 }
@@ -506,6 +503,7 @@ static void DestroyDrawSequence(AtlasDrawSequence *data)
     }
     SDL_free(data->texcoords);
     SDL_free(data->positions);
+    SDL_free(data->indices);
     SDL_free(data);
 }
 
@@ -578,10 +576,29 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
         }
     }
 
-    sequence->positions = (float *)SDL_malloc(count * 12 * sizeof(*sequence->positions));
+    sequence->positions = (float *)SDL_malloc(count * 8 * sizeof(*sequence->positions));
     if (!sequence->positions) {
         DestroyDrawSequence(sequence);
         return NULL;
+    }
+
+    sequence->indices = (int *)SDL_malloc(count * 12 * sizeof(*sequence->indices));
+    if (!sequence->indices) {
+        DestroyDrawSequence(sequence);
+        return NULL;
+    }
+
+    static const Uint8 rect_index_order[] = { 0, 1, 2, 0, 2, 3 };
+    int vertex_index = 0;
+    int *indices = sequence->indices;
+    for (int i = 0; i < count; ++i) {
+        *indices++ = vertex_index + rect_index_order[0];
+        *indices++ = vertex_index + rect_index_order[1];
+        *indices++ = vertex_index + rect_index_order[2];
+        *indices++ = vertex_index + rect_index_order[3];
+        *indices++ = vertex_index + rect_index_order[4];
+        *indices++ = vertex_index + rect_index_order[5];
+        vertex_index += 4;
     }
 
     if (count < num_ops) {
@@ -817,19 +834,15 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
             float maxx = x + dst->x + dst->w;
             float miny = y + dst->y;
             float maxy = y + dst->y + dst->h;
-            position[0] = minx;
-            position[1] = miny;
-            position[2] = maxx;
-            position[3] = miny;
-            position[4] = maxx;
-            position[5] = maxy;
-            position[6] = minx;
-            position[7] = miny;
-            position[8] = maxx;
-            position[9] = maxy;
-            position[10] = minx;
-            position[11] = maxy;
-            position += 12;
+
+            *position++ = minx;
+            *position++ = miny;
+            *position++ = maxx;
+            *position++ = miny;
+            *position++ = maxx;
+            *position++ = maxy;
+            *position++ = minx;
+            *position++ = maxy;
         }
 
         SDL_RenderGeometryRaw(renderer,
@@ -837,8 +850,8 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
                               sequence->positions, 2 * sizeof(float),
                               &text->color, 0,
                               sequence->texcoords, 2 * sizeof(float),
-                              sequence->num_rects * 6,
-                              NULL, 0, 0);
+                              sequence->num_rects * 4,
+                              sequence->indices, sequence->num_rects * 6, sizeof(*sequence->indices));
 
         sequence = sequence->next;
     }
