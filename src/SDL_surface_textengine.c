@@ -353,7 +353,7 @@ bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
             break;
         }
     }
-    return false;
+    return true;
 }
 
 void TTF_DestroySurfaceTextEngine(TTF_TextEngine *engine)
