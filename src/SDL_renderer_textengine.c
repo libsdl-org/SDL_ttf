@@ -49,7 +49,6 @@ struct AtlasTexture
     SDL_Texture *texture;
     stbrp_context packer;
     stbrp_node *packing_nodes;
-    int num_free_glyphs;
     AtlasGlyph *free_glyphs;
     AtlasTexture *next;
 };
@@ -156,10 +155,25 @@ static int SDLCALL SortOperations(const void *a, const void *b)
     return 0;
 }
 
+static void DestroyGlyph(AtlasGlyph* glyph)
+{
+    if (!glyph) {
+        return;
+    }
+
+    SDL_free(glyph);
+}
+
 static void DestroyAtlas(AtlasTexture *atlas)
 {
     if (!atlas) {
         return;
+    }
+
+    AtlasGlyph *next;
+    for (AtlasGlyph *glyph = atlas->free_glyphs; glyph; glyph = next) {
+        next = glyph->next;
+        DestroyGlyph(glyph);
     }
 
     SDL_DestroyTexture(atlas->texture);
@@ -212,7 +226,6 @@ static void ReleaseGlyph(AtlasGlyph *glyph)
                 prev = entry;
             }
 
-            ++glyph->atlas->num_free_glyphs;
             if (prev) {
                 prev->next = glyph;
             } else {
@@ -220,7 +233,7 @@ static void ReleaseGlyph(AtlasGlyph *glyph)
             }
             glyph->next = entry;
         } else {
-            SDL_free(glyph);
+            DestroyGlyph(glyph);
         }
     }
 }
@@ -267,7 +280,6 @@ static AtlasGlyph *FindUnusedGlyph(AtlasTexture *atlas, int width, int height)
             } else {
                 atlas->free_glyphs = glyph->next;
             }
-            --atlas->num_free_glyphs;
             ++glyph->refcount;
             return glyph;
         }
@@ -502,6 +514,7 @@ static void DestroyDrawSequence(AtlasDrawSequence *data)
     if (data->next) {
         DestroyDrawSequence(data->next);
     }
+    SDL_free(data->rects);
     SDL_free(data->texcoords);
     SDL_free(data->positions);
     SDL_free(data->indices);
@@ -728,12 +741,20 @@ static TTF_RendererTextEngineFontData *CreateFontData(TTF_RendererTextEngineData
 
 static void DestroyEngineData(TTF_RendererTextEngineData *data)
 {
-    if (data) {
-        if (data->fonts) {
-            SDL_DestroyHashTable(data->fonts);
-        }
-        SDL_free(data);
+    if (!data) {
+        return;
     }
+
+    if (data->fonts) {
+        SDL_DestroyHashTable(data->fonts);
+    }
+
+    AtlasTexture *next;
+    for (AtlasTexture *atlas = data->atlas; atlas; atlas = next) {
+        next = atlas->next;
+        DestroyAtlas(atlas);
+    }
+    SDL_free(data);
 }
 
 static void NukeFontData(const void *key, const void *value, void *unused)
