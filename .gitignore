@@ -55,3 +55,6 @@ Release
 *.ncb
 *.suo
 *.sdf
+
+# for Clangd
+.cache
