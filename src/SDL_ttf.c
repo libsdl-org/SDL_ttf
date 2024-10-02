@@ -4251,3 +4251,34 @@ int TTF_WasInit(void)
     return SDL_GetAtomicInt(&TTF_state.refcount);
 }
 
+#if defined(SDL_DISABLE_TEXTENGINE)
+
+TTF_TextEngine *TTF_CreateRendererTextEngine(SDL_Renderer *renderer)
+{
+    return NULL;
+}
+
+TTF_TextEngine *TTF_CreateSurfaceTextEngine(void)
+{
+    return NULL;
+}
+
+void TTF_DestroyRendererTextEngine(TTF_TextEngine *engine)
+{
+}
+
+void TTF_DestroySurfaceTextEngine(TTF_TextEngine *engine)
+{
+}
+
+bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
+{
+    return false;
+}
+
+bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
+{
+    return false;
+}
+
+#endif
