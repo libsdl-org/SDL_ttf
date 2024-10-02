@@ -966,7 +966,7 @@ extern SDL_DECLSPEC bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch,
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSize(TTF_Font *font, const char *text, size_t length, int *w, int *h);
+extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSize(TTF_Font *font, const char *text, size_t length, int *w, int *h);
 
 /**
  * Calculate the dimensions of a rendered string of UTF-8 text.
@@ -994,7 +994,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSize(TTF_Font *font, const char *tex
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrapLength, int *w, int *h);
+extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrapLength, int *w, int *h);
 
 /**
  * Calculate how much of a UTF-8 string will fit in a given width.
@@ -1020,7 +1020,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSizeWrapped(TTF_Font *font, const ch
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_MeasureText(TTF_Font *font, const char *text, size_t length, int measure_width, int *extent, int *count);
+extern SDL_DECLSPEC bool SDLCALL TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int measure_width, int *extent, int *count);
 
 /**
  * Render UTF-8 text at high quality to a new 8-bit surface.
@@ -1323,9 +1323,6 @@ typedef struct TTF_TextData TTF_TextData;
 typedef struct TTF_Text
 {
     char *text;             /**< A copy of the text used to create this text object, useful for layout and debugging. This will be freed automatically when the object is destroyed. */
-    int w;                  /**< The width of this text, in pixels, read-only. */
-    int h;                  /**< The height of this text, in pixels, read-only. */
-    TTF_Font *font;         /**< The font used by this text, read-only. You can change the font using TTF_SetTextFont(). */
     SDL_FColor color;       /**< The color of the text, read-write. You can change this anytime. */
 
     int refcount;           /**< Application reference count, used when freeing surface */
@@ -1531,6 +1528,15 @@ extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetTextProperties(TTF_Text *tex
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextEngine(TTF_Text *text, TTF_TextEngine *engine);
 
 /**
+ * Get the text engine used by a text object.
+ *
+ * \param text the TTF_Text to query.
+ * \returns the TTF_TextEngine used by the text on success or NULL on failure; call
+ *          SDL_GetError() for more information.
+ */
+extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_GetTextEngine(TTF_Text *text);
+
+/**
  * Set the font used by a text object.
  *
  * When a text object has a font, any changes to the font will automatically regenerate the text. If you set the font to NULL, the text will continue to render but changes to the font will no longer affect the text.
@@ -1539,6 +1545,15 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextEngine(TTF_Text *text, TTF_TextEngin
  * \param font the font to use, may be NULL.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextFont(TTF_Text *text, TTF_Font *font);
+
+/**
+ * Get the font used by a text object.
+ *
+ * \param text the TTF_Text to query.
+ * \returns the TTF_Font used by the text on success or NULL on failure; call
+ *          SDL_GetError() for more information.
+ */
+extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_GetTextFont(TTF_Text *text);
 
 /**
  * Set the UTF-8 text used by a text object.
@@ -1609,6 +1624,30 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapping(TTF_Text *text, bool wrap, 
  *          SDL_GetError() for more information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapping(TTF_Text *text, bool *wrap, int *wrapLength);
+
+/**
+ * Get the size of a text object.
+ *
+ * The size of the text may change when the font or font style and size change.
+ *
+ * \param text the TTF_Text to query.
+ * \param w a pointer filled in with the width of the text, in pixels, may be NULL.
+ * \param h a pointer filled in with the height of the text, in pixels, may be NULL.
+ * \returns true on success or false on failure; call
+ *          SDL_GetError() for more information.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSize(TTF_Text *text, int *w, int *h);
+
+/**
+ * Update the layout of a text object.
+ *
+ * This is automatically done when the layout is requested or the text is rendered, but you can call this if you need more control over the timing of when the layout and text engine representation are updated.
+ *
+ * \param text the TTF_Text to update.
+ * \returns true on success or false on failure; call
+ *          SDL_GetError() for more information.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_UpdateText(TTF_Text *text);
 
 /**
  * Destroy a text object created by a text engine.

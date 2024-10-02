@@ -762,7 +762,7 @@ static TTF_RendererTextEngineData *CreateEngineData(SDL_Renderer *renderer)
 
 static bool SDLCALL CreateText(void *userdata, TTF_Text *text)
 {
-    TTF_Font *font = text->font;
+    TTF_Font *font = text->internal->font;
     Uint32 font_generation = TTF_GetFontGeneration(font);
     int num_ops = text->internal->num_ops;
     TTF_DrawOperation *ops;
@@ -834,6 +834,11 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
 
     if (!text || !text->internal || text->internal->engine->CreateText != CreateText) {
         return SDL_InvalidParamError("text");
+    }
+
+    // Make sure the text is up to date
+    if (!TTF_UpdateText(text)) {
+        return false;
     }
 
     renderer = ((TTF_RendererTextEngineData *)text->internal->engine->userdata)->renderer;

@@ -38,12 +38,15 @@ SDL3_ttf_0.0.0 {
     TTF_GetGlyphMetrics;
     TTF_GetGlyphScript;
     TTF_GetHarfBuzzVersion;
+    TTF_GetStringSize;
+    TTF_GetStringSizeWrapped;
+    TTF_GetTextEngine;
+    TTF_GetTextFont;
     TTF_GetTextSize;
-    TTF_GetTextSizeWrapped;
     TTF_GetTextWrapping;
     TTF_Init;
     TTF_InsertTextString;
-    TTF_MeasureText;
+    TTF_MeasureString;
     TTF_OpenFont;
     TTF_OpenFontIO;
     TTF_OpenFontWithProperties;
@@ -73,6 +76,7 @@ SDL3_ttf_0.0.0 {
     TTF_SetTextFont;
     TTF_SetTextString;
     TTF_SetTextWrapping;
+    TTF_UpdateText;
     TTF_Version;
     TTF_WasInit;
   local: *;
