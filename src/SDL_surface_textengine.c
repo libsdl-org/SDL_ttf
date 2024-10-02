@@ -230,8 +230,10 @@ static TTF_SurfaceTextEngineData *CreateEngineData(void)
     return data;
 }
 
-static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_generation, TTF_Text *text, TTF_DrawOperation *ops, int num_ops)
+static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_generation, TTF_Text *text)
 {
+    int num_ops = text->internal->num_ops;
+    const TTF_DrawOperation *ops = text->internal->ops;
     TTF_SurfaceTextEngineData *enginedata = (TTF_SurfaceTextEngineData *)userdata;
     TTF_SurfaceTextEngineFontData *fontdata;
     TTF_SurfaceTextEngineTextData *data;
@@ -250,13 +252,13 @@ static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_gener
     if (!data) {
         return false;
     }
-    text->internal->textrep = data;
+    text->internal->engine_text = data;
     return true;
 }
 
 static void SDLCALL DestroyText(void *userdata, TTF_Text *text)
 {
-    TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal->textrep;
+    TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal->engine_text;
 
     (void)userdata;
     DestroyTextData(data);
@@ -331,7 +333,7 @@ bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
         return SDL_InvalidParamError("surface");
     }
 
-    data = (TTF_SurfaceTextEngineTextData *)text->internal->textrep;
+    data = (TTF_SurfaceTextEngineTextData *)text->internal->engine_text;
 
     if (text->color.r != data->fcolor.r ||
         text->color.g != data->fcolor.g ||

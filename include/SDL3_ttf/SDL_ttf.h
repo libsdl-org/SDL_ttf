@@ -1244,7 +1244,7 @@ typedef struct TTF_TextData TTF_TextData;
  */
 typedef struct TTF_Text
 {
-    char *label;            /**< A label that you can allocate with SDL_strdup() for debugging purposes, and will be automatically freed in TTF_DestroyText(). */
+    char *text;             /**< A copy of the text used to create this text object, useful for layout and debugging. This will be freed automatically when the object is destroyed. */
     int w;                  /**< The width of this text, in pixels, read-only. */
     int h;                  /**< The height of this text, in pixels, read-only. */
     SDL_FColor color;       /**< The color of the text, read-write. You can change this anytime. */
@@ -1384,7 +1384,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *e
  *
  * This will not wrap on newline characters.
  *
- * \param engine the text engine to use when creating the text object.
+ * \param engine the text engine to use when creating the text object, may be NULL.
  * \param font the font to render with.
  * \param text the text to use, in UTF-8 encoding.
  * \param length the length of the text, in bytes, or 0 for null terminated
@@ -1410,7 +1410,7 @@ extern SDL_DECLSPEC TTF_Text * SDLCALL TTF_CreateText(TTF_TextEngine *engine, TT
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
  *
- * \param engine the text engine to use when creating the text object.
+ * \param engine the text engine to use when creating the text object, may be NULL.
  * \param font the font to render with.
  * \param text the text to use, in UTF-8 encoding.
  * \param length the length of the text, in bytes, or 0 for null terminated

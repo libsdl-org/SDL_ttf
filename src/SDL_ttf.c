@@ -216,6 +216,7 @@ typedef struct PosBuf {
     FT_UInt index;
     int x;
     int y;
+    int offset;
 } PosBuf_t;
 
 // The structure used to hold internal font information
@@ -1409,6 +1410,7 @@ static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int w
         FT_UInt idx = font->pos_buf[i].index;
         int x       = font->pos_buf[i].x;
         int y       = font->pos_buf[i].y;
+        int offset  = font->pos_buf[i].offset;
         c_glyph *glyph;
 
         if (Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, &glyph, NULL)) {
@@ -1453,6 +1455,7 @@ static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int w
 
             op = &ops[op_index++];
             op->cmd = TTF_DRAW_COMMAND_COPY;
+            op->copy.text_offset = offset;
             op->copy.glyph_index = idx;
             op->copy.src.x = glyph_x;
             op->copy.src.y = glyph_y;
@@ -2856,6 +2859,24 @@ bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *ker
     return true;
 }
 
+#if TTF_USE_HARFBUZZ
+static int CalculateUTF8Offset(const char *text, uint32_t cluster, size_t length)
+{
+    const char *end = text;
+    while (cluster > 0) {
+        Uint32 c = SDL_StepUTF8(&end, &length);
+        if (c == 0) {
+            break;
+        }
+        if (c == SDL_INVALID_UNICODE_CODEPOINT) {
+            continue;
+        }
+        --cluster;
+    }
+    return (int)(uintptr_t)(end - text);
+}
+#endif // TTF_USE_HARFBUZZ
+
 static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, int *w, int *h, int *xstart, int *ystart, int measure_width, int *extent, int *count)
 {
     int x = 0;
@@ -2945,6 +2966,8 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
     hb_glyph_position = hb_buffer_get_glyph_positions(hb_buffer, &glyph_count);
 
     // Load and render each character
+    uint32_t last_cluster = 0;
+    int offset = 0;
     for (g = 0; g < glyph_count; g++)
     {
         FT_UInt idx   = hb_glyph_info[g].codepoint;
@@ -2952,11 +2975,23 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         int y_advance = hb_glyph_position[g].y_advance;
         int x_offset  = hb_glyph_position[g].x_offset;
         int y_offset  = hb_glyph_position[g].y_offset;
+
+        uint32_t cluster = hb_glyph_info[g].cluster;
+        if (cluster > last_cluster) {
+            offset += CalculateUTF8Offset(text + offset, cluster - last_cluster, length - offset);
+        } else if (cluster < last_cluster) {
+            offset = CalculateUTF8Offset(text, cluster, length);
+        }
+        last_cluster = cluster;
 #else
     // Load each character and sum it's bounding box
+    int offset = 0;
     while (length > 0) {
+        const char *last = text;
         Uint32 c = SDL_StepUTF8(&text, &length);
         FT_UInt idx = get_char_index(font, c);
+
+        offset += (text - last);
 
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
@@ -3022,9 +3057,10 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         pos_y = F26Dot6(font->ascent);
 #endif
         // Store things for Render_Line()
-        font->pos_buf[font->pos_len].x     = pos_x;
-        font->pos_buf[font->pos_len].y     = pos_y;
-        font->pos_buf[font->pos_len].index = idx;
+        font->pos_buf[font->pos_len].x      = pos_x;
+        font->pos_buf[font->pos_len].y      = pos_y;
+        font->pos_buf[font->pos_len].index  = idx;
+        font->pos_buf[font->pos_len].offset = offset;
         font->pos_len += 1;
 
         // Compute provisional global bounding box
@@ -3553,23 +3589,32 @@ typedef struct TTF_InternalText
     TTF_TextData internal;
 } TTF_InternalText;
 
-static TTF_Text *CreateText(TTF_TextEngine *engine, int width, int height)
+static TTF_Text *CreateText(TTF_TextEngine *engine, const char *text, size_t length, int width, int height, TTF_DrawOperation *ops, int num_ops)
 {
     TTF_InternalText *mem = (TTF_InternalText *)SDL_calloc(1, sizeof(*mem));
     if (!mem) {
         return NULL;
     }
 
-    TTF_Text *text = &mem->text;
-    text->internal = &mem->internal;
-    text->w = width;
-    text->h = height;
-    text->color.r = 1.0f;
-    text->color.g = 1.0f;
-    text->color.b = 1.0f;
-    text->color.a = 1.0f;
-    text->internal->engine = engine;
-    return text;
+    TTF_Text *result = &mem->text;
+    result->internal = &mem->internal;
+    result->text = (char *)SDL_malloc(length + 1);
+    if (!result->text) {
+        SDL_free(mem);
+        return NULL;
+    }
+    SDL_memcpy(result->text, text, length);
+    result->text[length] = '\0';
+    result->w = width;
+    result->h = height;
+    result->color.r = 1.0f;
+    result->color.g = 1.0f;
+    result->color.b = 1.0f;
+    result->color.a = 1.0f;
+    result->internal->engine = engine;
+    result->internal->num_ops = num_ops;
+    result->internal->ops = ops;
+    return result;
 }
 
 TTF_Text *TTF_CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length)
@@ -3580,11 +3625,10 @@ TTF_Text *TTF_CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *tex
     TTF_Text *result = NULL;
 
     TTF_CHECK_INITIALIZED(NULL);
-    TTF_CHECK_POINTER("engine", engine, NULL);
     TTF_CHECK_POINTER("font", font, NULL);
     TTF_CHECK_POINTER("text", text, NULL);
 
-    if (engine->version < sizeof(*engine)) {
+    if (engine && engine->version < sizeof(*engine)) {
         // Update this to handle older versions of this interface
         SDL_SetError("Invalid engine, should be initialized with SDL_INIT_INTERFACE()");
         return 0;
@@ -3628,16 +3672,17 @@ TTF_Text *TTF_CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *tex
         Draw_Line_TextEngine(font, width, height, 0, ystart + font->strikethrough_top_row, width, font->line_thickness, ops, &num_ops);
     }
 
-    result = CreateText(engine, width, height);
+    result = CreateText(engine, text, length, width, height, ops, num_ops);
     if (!result) {
         goto failure;
     }
 
-    if (!engine->CreateText(engine->userdata, font, font->generation, result, ops, num_ops)) {
-        goto failure;
+    if (engine) {
+        if (!engine->CreateText(engine->userdata, font, font->generation, result)) {
+            goto failure;
+        }
     }
 
-    SDL_free(ops);
     return result;
 
 failure:
@@ -3655,12 +3700,14 @@ TTF_Text *TTF_CreateText_Wrapped(TTF_TextEngine *engine, TTF_Font *font, const c
     int num_ops = 0, max_ops = 0, extra_ops = 0, additional_ops;
     TTF_Text *result = NULL;
 
-    TTF_CHECK_POINTER("engine", engine, NULL);
-
-    if (engine->version < sizeof(*engine)) {
+    if (engine && engine->version < sizeof(*engine)) {
         // Update this to handle older versions of this interface
         SDL_SetError("Invalid engine, should be initialized with SDL_INIT_INTERFACE()");
         return 0;
+    }
+
+    if (!length) {
+        length = SDL_strlen(text);
     }
 
     if (!GetWrappedLines(font, text, length, wrapLength, &strLines, &numLines, &width, &height)) {
@@ -3721,17 +3768,18 @@ TTF_Text *TTF_CreateText_Wrapped(TTF_TextEngine *engine, TTF_Font *font, const c
         }
     }
 
-    result = CreateText(engine, width, height);
+    result = CreateText(engine, text, length, width, height, ops, num_ops);
     if (!result) {
         goto failure;
     }
 
-    if (!engine->CreateText(engine->userdata, font, font->generation, result, ops, num_ops)) {
-        goto failure;
+    if (engine) {
+        if (!engine->CreateText(engine->userdata, font, font->generation, result)) {
+            goto failure;
+        }
     }
 
     SDL_free(strLines);
-    SDL_free(ops);
     return result;
 
 failure:
@@ -3744,7 +3792,6 @@ failure:
 SDL_PropertiesID TTF_GetTextProperties(TTF_Text *text)
 {
     TTF_CHECK_POINTER("text", text, 0);
-    TTF_CHECK_POINTER("text", text->internal, 0);
 
     if (!text->internal->props) {
         text->internal->props = SDL_CreateProperties();
@@ -3754,15 +3801,17 @@ SDL_PropertiesID TTF_GetTextProperties(TTF_Text *text)
 
 void TTF_DestroyText(TTF_Text *text)
 {
-    if (!text || !text->internal) {
+    if (!text) {
         return;
     }
 
     TTF_TextEngine *engine = text->internal->engine;
-    engine->DestroyText(engine->userdata, text);
+    if (engine) {
+        engine->DestroyText(engine->userdata, text);
+    }
     SDL_DestroyProperties(text->internal->props);
-    text->internal = NULL;
-    SDL_free(text->label);
+    SDL_free(text->internal->ops);
+    SDL_free(text->text);
     SDL_free(text);
 }
 
