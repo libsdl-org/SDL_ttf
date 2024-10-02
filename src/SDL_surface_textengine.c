@@ -232,7 +232,7 @@ static TTF_SurfaceTextEngineData *CreateEngineData(void)
 
 static bool SDLCALL CreateText(void *userdata, TTF_Text *text)
 {
-    TTF_Font *font = text->font;
+    TTF_Font *font = text->internal->font;
     Uint32 font_generation = TTF_GetFontGeneration(font);
     int num_ops = text->internal->num_ops;
     const TTF_DrawOperation *ops = text->internal->ops;
@@ -333,6 +333,11 @@ bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
     }
     if (!surface) {
         return SDL_InvalidParamError("surface");
+    }
+
+    // Make sure the text is up to date
+    if (!TTF_UpdateText(text)) {
+        return false;
     }
 
     data = (TTF_SurfaceTextEngineTextData *)text->internal->engine_text;

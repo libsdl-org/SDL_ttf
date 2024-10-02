@@ -105,12 +105,20 @@ typedef struct TTF_TextLayout TTF_TextLayout;
 /* Private data in TTF_Text, available to implementations */
 struct TTF_TextData
 {
-    SDL_PropertiesID props; /**< Custom properties associated with this text, read-only. This field is created as-needed using TTF_GetTextProperties() and the properties may be then set and read normally */
-    int num_ops;            /**< The number of drawing operations to render this text, read-only. */
-    TTF_DrawOperation *ops; /**< The drawing operations used to render this text, read-only. */
-    TTF_TextLayout *layout; /**< Cached layout information, read-only */
-    TTF_TextEngine *engine; /**< The engine used to create this text, read-only. */
-    void *engine_text;      /**< The implementation-specific representation of this text */
+    TTF_Font *font;             /**< The font used by this text, read-only. */
+
+    bool needs_layout_update;   /**< True if the layout needs to be updated */
+    TTF_TextLayout *layout;     /**< Cached layout information, read-only. */
+    int w;                      /**< The width of this text, in pixels, read-only. */
+    int h;                      /**< The height of this text, in pixels, read-only. */
+    int num_ops;                /**< The number of drawing operations to render this text, read-only. */
+    TTF_DrawOperation *ops;     /**< The drawing operations used to render this text, read-only. */
+
+    SDL_PropertiesID props;     /**< Custom properties associated with this text, read-only. This field is created as-needed using TTF_GetTextProperties() and the properties may be then set and read normally */
+
+    bool needs_engine_update;   /**< True if the engine text needs to be updated */
+    TTF_TextEngine *engine;     /**< The engine used to render this text, read-only. */
+    void *engine_text;          /**< The implementation-specific representation of this text */
 };
 
 /**
@@ -131,6 +139,8 @@ struct TTF_TextEngine
     /* Create a text representation from draw instructions.
      *
      * All fields of `text` except `internal->engine_text` will already be filled out.
+     *
+     * This function should set the `internal->engine_text` field to a non-NULL value.
      *
      * \param userdata the userdata pointer in this interface.
      * \param text the text object being created.

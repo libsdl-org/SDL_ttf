@@ -10,13 +10,18 @@
   (...)
 @@
 @@
+- TTF_SizeText
++ TTF_GetStringSize
+  (...)
+@@
+@@
 - TTF_SizeUTF8
-+ TTF_SizeText
++ TTF_GetStringSize
   (...)
 @@
 @@
 - TTF_MeasureUTF8
-+ TTF_MeasureText
++ TTF_MeasureString
   (...)
 @@
 @@
@@ -159,9 +164,4 @@
 @@
 - TTF_SetFontScriptName
 + TTF_SetFontScript
-  (...)
-@@
-@@
-- TTF_SizeText
-+ TTF_GetTextSize
   (...)
