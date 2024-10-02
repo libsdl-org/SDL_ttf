@@ -253,7 +253,8 @@ extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetFontProperties(TTF_Font *fon
 /**
  * Get the font generation.
  *
- * The generation is incremented each time font properties change that require rebuilding glyphs, such as style, size, etc.
+ * The generation is incremented each time font properties change that require
+ * rebuilding glyphs, such as style, size, etc.
  *
  * \param font the font to query.
  * \returns the font generation or 0 on failure; call SDL_GetError() for more
@@ -269,7 +270,8 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetFontGeneration(TTF_Font *font);
 /**
  * Set a font's size dynamically.
  *
- * This updates any TTF_Text objects using this font, and clears already-generated glyphs, if any, from the cache.
+ * This updates any TTF_Text objects using this font, and clears
+ * already-generated glyphs, if any, from the cache.
  *
  * \param font the font to resize.
  * \param ptsize the new point size.
@@ -288,7 +290,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSize(TTF_Font *font, float ptsize);
 /**
  * Set font size dynamically with target resolutions, in dots per inch.
  *
- * This updates any TTF_Text objects using this font, and clears already-generated glyphs, if any, from the cache.
+ * This updates any TTF_Text objects using this font, and clears
+ * already-generated glyphs, if any, from the cache.
  *
  * \param font the font to resize.
  * \param ptsize the new point size.
@@ -311,8 +314,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, float ptsize
  * Get the size of a font.
  *
  * \param font the font to query.
- * \returns the size of the font, or 0.0f on failure; call SDL_GetError() for more
- *          information.
+ * \returns the size of the font, or 0.0f on failure; call SDL_GetError() for
+ *          more information.
  *
  * \threadsafety This function should be called on the thread that created the
  *               font.
@@ -354,7 +357,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *
 /**
  * Set a font's current style.
  *
- * This updates any TTF_Text objects using this font, and clears already-generated glyphs, if any, from the cache.
+ * This updates any TTF_Text objects using this font, and clears
+ * already-generated glyphs, if any, from the cache.
  *
  * The font styles are a set of bit flags, OR'd together:
  *
@@ -401,7 +405,8 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
 /**
  * Set a font's current outline.
  *
- * This updates any TTF_Text objects using this font, and clears already-generated glyphs, if any, from the cache.
+ * This updates any TTF_Text objects using this font, and clears
+ * already-generated glyphs, if any, from the cache.
  *
  * \param font the font to set a new outline on.
  * \param outline positive outline value, 0 to default.
@@ -443,7 +448,8 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
 /**
  * Set a font's current hinter setting.
  *
- * This updates any TTF_Text objects using this font, and clears already-generated glyphs, if any, from the cache.
+ * This updates any TTF_Text objects using this font, and clears
+ * already-generated glyphs, if any, from the cache.
  *
  * The hinter setting is a single value:
  *
@@ -1460,7 +1466,8 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *e
  *
  * This will not wrap on newline characters.
  *
- * \param engine the text engine to use when creating the text object, may be NULL.
+ * \param engine the text engine to use when creating the text object, may be
+ *               NULL.
  * \param font the font to render with.
  * \param text the text to use, in UTF-8 encoding.
  * \param length the length of the text, in bytes, or 0 for null terminated
@@ -1486,7 +1493,8 @@ extern SDL_DECLSPEC TTF_Text * SDLCALL TTF_CreateText(TTF_TextEngine *engine, TT
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
  *
- * \param engine the text engine to use when creating the text object, may be NULL.
+ * \param engine the text engine to use when creating the text object, may be
+ *               NULL.
  * \param font the font to render with.
  * \param text the text to use, in UTF-8 encoding.
  * \param length the length of the text, in bytes, or 0 for null terminated
@@ -1522,8 +1530,8 @@ extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetTextProperties(TTF_Text *tex
  *
  * \param text the TTF_Text to modify.
  * \param engine the text engine to use for drawing.
- * \returns true on success or false on failure; call
- *          SDL_GetError() for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextEngine(TTF_Text *text, TTF_TextEngine *engine);
 
@@ -1531,15 +1539,17 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextEngine(TTF_Text *text, TTF_TextEngin
  * Get the text engine used by a text object.
  *
  * \param text the TTF_Text to query.
- * \returns the TTF_TextEngine used by the text on success or NULL on failure; call
- *          SDL_GetError() for more information.
+ * \returns the TTF_TextEngine used by the text on success or NULL on failure;
+ *          call SDL_GetError() for more information.
  */
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_GetTextEngine(TTF_Text *text);
 
 /**
  * Set the font used by a text object.
  *
- * When a text object has a font, any changes to the font will automatically regenerate the text. If you set the font to NULL, the text will continue to render but changes to the font will no longer affect the text.
+ * When a text object has a font, any changes to the font will automatically
+ * regenerate the text. If you set the font to NULL, the text will continue to
+ * render but changes to the font will no longer affect the text.
  *
  * \param text the TTF_Text to modify.
  * \param font the font to use, may be NULL.
@@ -1562,8 +1572,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_GetTextFont(TTF_Text *text);
  * \param string the UTF-8 text to use, may be NULL.
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
- * \returns true on success or false on failure; call
- *          SDL_GetError() for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextString(TTF_Text *text, const char *string, size_t length);
 
@@ -1571,12 +1581,15 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextString(TTF_Text *text, const char *s
  * Insert UTF-8 text into a text object.
  *
  * \param text the TTF_Text to modify.
- * \param offset the offset, in bytes, from the beginning of the string if >= 0, the offset from the end of the string if < 0. Note that this does not do UTF-8 validation, so you should only insert at UTF-8 sequence boundaries.
+ * \param offset the offset, in bytes, from the beginning of the string if >=
+ *               0, the offset from the end of the string if < 0. Note that
+ *               this does not do UTF-8 validation, so you should only insert
+ *               at UTF-8 sequence boundaries.
  * \param string the UTF-8 text to insert.
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
- * \returns true on success or false on failure; call
- *          SDL_GetError() for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_InsertTextString(TTF_Text *text, int offset, const char *string, size_t length);
 
@@ -1587,8 +1600,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_InsertTextString(TTF_Text *text, int offset
  * \param string the UTF-8 text to insert.
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
- * \returns true on success or false on failure; call
- *          SDL_GetError() for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_AppendTextString(TTF_Text *text, const char *string, size_t length);
 
@@ -1596,10 +1609,14 @@ extern SDL_DECLSPEC bool SDLCALL TTF_AppendTextString(TTF_Text *text, const char
  * Delete UTF-8 text from a text object.
  *
  * \param text the TTF_Text to modify.
- * \param offset the offset, in bytes, from the beginning of the string if >= 0, the offset from the end of the string if < 0. Note that this does not do UTF-8 validation, so you should only delete at UTF-8 sequence boundaries.
- * \param length the length of text to delete, in bytes, or -1 for the remainder of the string.
- * \returns true on success or false on failure; call
- *          SDL_GetError() for more information.
+ * \param offset the offset, in bytes, from the beginning of the string if >=
+ *               0, the offset from the end of the string if < 0. Note that
+ *               this does not do UTF-8 validation, so you should only delete
+ *               at UTF-8 sequence boundaries.
+ * \param length the length of text to delete, in bytes, or -1 for the
+ *               remainder of the string.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_DeleteTextString(TTF_Text *text, int offset, int length);
 
@@ -1607,10 +1624,12 @@ extern SDL_DECLSPEC bool SDLCALL TTF_DeleteTextString(TTF_Text *text, int offset
  * Set whether wrapping is enabled on a text object.
  *
  * \param text the TTF_Text to modify.
- * \param wrap true if wrapping should be enabled, false if it should be disabled.
- * \param wrapLength the maximum width in pixels, 0 to wrap on newline characters, or -1 to leave wrapLength unchanged.
- * \returns true on success or false on failure; call
- *          SDL_GetError() for more information.
+ * \param wrap true if wrapping should be enabled, false if it should be
+ *             disabled.
+ * \param wrapLength the maximum width in pixels, 0 to wrap on newline
+ *                   characters, or -1 to leave wrapLength unchanged.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapping(TTF_Text *text, bool wrap, int wrapLength);
 
@@ -1618,34 +1637,42 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapping(TTF_Text *text, bool wrap, 
  * Get whether wrapping is enabled on a text object.
  *
  * \param text the TTF_Text to query.
- * \param wrap a pointer filled in with true if wrapping is enabled, false if it is disabled, may be NULL.
- * \param wrapLength a pointer filled in with the maximum width in pixels or 0 if the text is being wrapped on newline characters, may be NULL.
- * \returns true on success or false on failure; call
- *          SDL_GetError() for more information.
+ * \param wrap a pointer filled in with true if wrapping is enabled, false if
+ *             it is disabled, may be NULL.
+ * \param wrapLength a pointer filled in with the maximum width in pixels or 0
+ *                   if the text is being wrapped on newline characters, may
+ *                   be NULL.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapping(TTF_Text *text, bool *wrap, int *wrapLength);
 
 /**
  * Get the size of a text object.
  *
- * The size of the text may change when the font or font style and size change.
+ * The size of the text may change when the font or font style and size
+ * change.
  *
  * \param text the TTF_Text to query.
- * \param w a pointer filled in with the width of the text, in pixels, may be NULL.
- * \param h a pointer filled in with the height of the text, in pixels, may be NULL.
- * \returns true on success or false on failure; call
- *          SDL_GetError() for more information.
+ * \param w a pointer filled in with the width of the text, in pixels, may be
+ *          NULL.
+ * \param h a pointer filled in with the height of the text, in pixels, may be
+ *          NULL.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSize(TTF_Text *text, int *w, int *h);
 
 /**
  * Update the layout of a text object.
  *
- * This is automatically done when the layout is requested or the text is rendered, but you can call this if you need more control over the timing of when the layout and text engine representation are updated.
+ * This is automatically done when the layout is requested or the text is
+ * rendered, but you can call this if you need more control over the timing of
+ * when the layout and text engine representation are updated.
  *
  * \param text the TTF_Text to update.
- * \returns true on success or false on failure; call
- *          SDL_GetError() for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_UpdateText(TTF_Text *text);
 
