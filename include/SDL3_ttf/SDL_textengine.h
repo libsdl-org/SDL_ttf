@@ -133,11 +133,9 @@ struct TTF_TextEngine
      * All fields of `text` except `internal->engine_text` will already be filled out.
      *
      * \param userdata the userdata pointer in this interface.
-     * \param font the font being used.
-     * \param font_generation the unique ID of the font generation being used. This changes whenever the font changes size or style and needs new glyphs, and is unique across all fonts.
      * \param text the text object being created.
      */
-    bool (SDLCALL *CreateText)(void *userdata, TTF_Font *font, Uint32 font_generation, TTF_Text *text);
+    bool (SDLCALL *CreateText)(void *userdata, TTF_Text *text);
 
     /**
      * Destroy a text representation.

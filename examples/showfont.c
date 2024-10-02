@@ -60,6 +60,7 @@ typedef struct {
     SDL_FRect messageRect;
     TextEngine textEngine;
     TTF_Text *text;
+    SDL_FRect textRect;
 } Scene;
 
 static void draw_scene(Scene *scene)
@@ -70,29 +71,25 @@ static void draw_scene(Scene *scene)
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
 
-    /* Flush the renderer so we can draw to the window surface in TextEngineSurface mode */
-    SDL_FlushRenderer(renderer);
-
     if (scene->text) {
-        int i;
-        int w, h;
+        float x = scene->textRect.x + 4.0f;
+        float y = scene->textRect.y + 4.0f;
 
-        SDL_GetRenderOutputSize(renderer, &w, &h);
+        /* Clear the text rect to light gray */
+        SDL_SetRenderDrawColor(renderer, 0xCC, 0xCC, 0xCC, 0xFF);
+        SDL_RenderFillRect(renderer, &scene->textRect);
 
-        for (i = 0; i < 100; ++i) {
-            int x = SDL_rand(w) - scene->text->w / 2;
-            int y = SDL_rand(h) - scene->text->h / 2;
-
-            switch (scene->textEngine) {
-            case TextEngineSurface:
-                TTF_DrawSurfaceText(scene->text, x, y, scene->window_surface);
-                break;
-            case TextEngineRenderer:
-                TTF_DrawRendererText(scene->text, (float)x, (float)y);
-                break;
-            default:
-                break;
-            }
+        switch (scene->textEngine) {
+        case TextEngineSurface:
+            /* Flush the renderer so we can draw directly to the window surface */
+            SDL_FlushRenderer(renderer);
+            TTF_DrawSurfaceText(scene->text, (int)x, (int)y, scene->window_surface);
+            break;
+        case TextEngineRenderer:
+            TTF_DrawRendererText(scene->text, x, y);
+            break;
+        default:
+            break;
         }
     }
 
@@ -394,11 +391,12 @@ int main(int argc, char *argv[])
         break;
     }
     if (engine) {
-        if (wrap) {
-            scene.text = TTF_CreateText_Wrapped(engine, font, message, 0, 0);
-        } else {
-            scene.text = TTF_CreateText(engine, font, message, 0);
-        }
+        scene.textRect.x = 8.0f;
+        scene.textRect.y = scene.captionRect.y + scene.captionRect.h + 4.0f;
+        scene.textRect.w = WIDTH / 2 - scene.textRect.x * 2;
+        scene.textRect.h = scene.messageRect.y - scene.textRect.y - 16.0f;
+
+        scene.text = TTF_CreateText_Wrapped(engine, font, message, 0, (int)scene.textRect.w);
         if (scene.text) {
             scene.text->color.r = forecol->r / 255.0f;
             scene.text->color.g = forecol->g / 255.0f;
@@ -420,6 +418,105 @@ int main(int argc, char *argv[])
                     break;
 
                 case SDL_EVENT_KEY_DOWN:
+                    switch (event.key.key) {
+                    case SDLK_B:
+                        /* Toggle bold style */
+                        {
+                            int style = TTF_GetFontStyle(font);
+                            if (style & TTF_STYLE_BOLD) {
+                                style &= ~TTF_STYLE_BOLD;
+                            } else {
+                                style |= TTF_STYLE_BOLD;
+                            }
+                            TTF_SetFontStyle(font, style);
+                        }
+                        break;
+                    case SDLK_C:
+                        /* Copy to clipboard */
+                        if (event.key.mod & SDL_KMOD_CTRL) {
+                            if (scene.text) {
+                                SDL_SetClipboardText(scene.text->text);
+                            }
+                        }
+                        break;
+                    case SDLK_I:
+                        /* Toggle italic style */
+                        {
+                            int style = TTF_GetFontStyle(font);
+                            if (style & TTF_STYLE_ITALIC) {
+                                style &= ~TTF_STYLE_ITALIC;
+                            } else {
+                                style |= TTF_STYLE_ITALIC;
+                            }
+                            TTF_SetFontStyle(font, style);
+                        }
+                        break;
+                    case SDLK_O:
+                        /* Toggle font outline */
+                        {
+                            int outline = TTF_GetFontOutline(font);
+                            if (outline) {
+                                outline = 0;
+                            } else {
+                                outline = 1;
+                            }
+                            TTF_SetFontOutline(font, outline);
+                        }
+                        break;
+                    case SDLK_S:
+                        /* Toggle strike-through style */
+                        {
+                            int style = TTF_GetFontStyle(font);
+                            if (style & TTF_STYLE_STRIKETHROUGH) {
+                                style &= ~TTF_STYLE_STRIKETHROUGH;
+                            } else {
+                                style |= TTF_STYLE_STRIKETHROUGH;
+                            }
+                            TTF_SetFontStyle(font, style);
+                        }
+                        break;
+                    case SDLK_U:
+                        /* Toggle underline style */
+                        {
+                            int style = TTF_GetFontStyle(font);
+                            if (style & TTF_STYLE_UNDERLINE) {
+                                style &= ~TTF_STYLE_UNDERLINE;
+                            } else {
+                                style |= TTF_STYLE_UNDERLINE;
+                            }
+                            TTF_SetFontStyle(font, style);
+                        }
+                        break;
+                    case SDLK_V:
+                        /* Paste from clipboard */
+                        if (event.key.mod & SDL_KMOD_CTRL) {
+                            if (scene.text) {
+                                TTF_SetTextString(scene.text, SDL_GetClipboardText(), 0);
+                            }
+                        }
+                        break;
+                    case SDLK_UP:
+                        /* Increase font size */
+                        {
+                            float ptsize = TTF_GetFontSize(font);
+                            TTF_SetFontSize(font, ptsize + 2.0f);
+                        }
+                        break;
+                    case SDLK_DOWN:
+                        /* Decrease font size */
+                        {
+                            float ptsize = TTF_GetFontSize(font);
+                            TTF_SetFontSize(font, ptsize - 2.0f);
+                        }
+                        break;
+                    case SDLK_ESCAPE:
+                        done = 1;
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+
                 case SDL_EVENT_QUIT:
                     done = 1;
                     break;

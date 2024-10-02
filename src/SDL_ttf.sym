@@ -1,10 +1,12 @@
 SDL3_ttf_0.0.0 {
   global:
+    TTF_AppendTextString;
     TTF_CloseFont;
     TTF_CreateRendererTextEngine;
     TTF_CreateSurfaceTextEngine;
     TTF_CreateText;
     TTF_CreateText_Wrapped;
+    TTF_DeleteTextString;
     TTF_DestroyRendererTextEngine;
     TTF_DestroySurfaceTextEngine;
     TTF_DestroyText;
@@ -14,8 +16,10 @@ SDL3_ttf_0.0.0 {
     TTF_FontIsFixedWidth;
     TTF_FontIsScalable;
     TTF_GetFontAscent;
+    TTF_GetFontDPI;
     TTF_GetFontDescent;
     TTF_GetFontFamilyName;
+    TTF_GetFontGeneration;
     TTF_GetFontHeight;
     TTF_GetFontHinting;
     TTF_GetFontKerning;
@@ -23,6 +27,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetFontOutline;
     TTF_GetFontProperties;
     TTF_GetFontSDF;
+    TTF_GetFontSize;
     TTF_GetFontStyle;
     TTF_GetFontStyleName;
     TTF_GetFontWrapAlignment;
@@ -35,7 +40,9 @@ SDL3_ttf_0.0.0 {
     TTF_GetHarfBuzzVersion;
     TTF_GetTextSize;
     TTF_GetTextSizeWrapped;
+    TTF_GetTextWrapping;
     TTF_Init;
+    TTF_InsertTextString;
     TTF_MeasureText;
     TTF_OpenFont;
     TTF_OpenFontIO;
@@ -62,6 +69,10 @@ SDL3_ttf_0.0.0 {
     TTF_SetFontSizeDPI;
     TTF_SetFontStyle;
     TTF_SetFontWrapAlignment;
+    TTF_SetTextEngine;
+    TTF_SetTextFont;
+    TTF_SetTextString;
+    TTF_SetTextWrapping;
     TTF_Version;
     TTF_WasInit;
   local: *;

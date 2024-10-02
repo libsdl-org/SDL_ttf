@@ -781,8 +781,10 @@ static TTF_RendererTextEngineData *CreateEngineData(SDL_Renderer *renderer)
     return data;
 }
 
-static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_generation, TTF_Text *text)
+static bool SDLCALL CreateText(void *userdata, TTF_Text *text)
 {
+    TTF_Font *font = text->font;
+    Uint32 font_generation = TTF_GetFontGeneration(font);
     int num_ops = text->internal->num_ops;
     TTF_DrawOperation *ops;
     TTF_RendererTextEngineData *enginedata = (TTF_RendererTextEngineData *)userdata;

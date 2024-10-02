@@ -230,8 +230,10 @@ static TTF_SurfaceTextEngineData *CreateEngineData(void)
     return data;
 }
 
-static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_generation, TTF_Text *text)
+static bool SDLCALL CreateText(void *userdata, TTF_Text *text)
 {
+    TTF_Font *font = text->font;
+    Uint32 font_generation = TTF_GetFontGeneration(font);
     int num_ops = text->internal->num_ops;
     const TTF_DrawOperation *ops = text->internal->ops;
     TTF_SurfaceTextEngineData *enginedata = (TTF_SurfaceTextEngineData *)userdata;
