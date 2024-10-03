@@ -1205,6 +1205,8 @@ static void random_input(void)
              curr_size = rand_n(200);
           }
        }
+
+       curr_size += 1; /* don't test size '0' */
     }
 
     /* Current Font: change less often */
