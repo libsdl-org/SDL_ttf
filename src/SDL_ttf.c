@@ -4388,6 +4388,8 @@ void TTF_SetFontHinting(TTF_Font *font, int hinting)
         return;
     }
 
+    font->ft_load_target = ft_load_target;
+
 #if TTF_USE_HARFBUZZ
     // update flag for HB
     hb_ft_font_set_load_flags(font->hb_font, FT_LOAD_DEFAULT | font->ft_load_target);
