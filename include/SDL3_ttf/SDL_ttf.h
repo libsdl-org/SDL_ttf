@@ -1704,11 +1704,15 @@ typedef struct TTF_SubString
 /**
  * Get the portion of a text string that surrounds a text offset.
  *
- * If the offset is less than 0, this will return a zero width substring at the beginning of the text. If the offset is greater than or equal to the length of the text string, this will return a zero width substring at the end of the text.
+ * If the offset is less than 0, this will return a zero width substring at
+ * the beginning of the text. If the offset is greater than or equal to the
+ * length of the text string, this will return a zero width substring at the
+ * end of the text.
  *
  * \param text the TTF_Text to query.
  * \param offset a byte offset into the text string.
- * \param substring a pointer filled in with the substring containing the offset.
+ * \param substring a pointer filled in with the substring containing the
+ *                  offset.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  */
@@ -1720,9 +1724,12 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset
  * This will return the closest substring of text to the given point.
  *
  * \param text the TTF_Text to query.
- * \param x the x coordinate relative to the left side of the text, may be outside the bounds of the text area.
- * \param y the y coordinate relative to the top side of the text, may be outside the bounds of the text area.
- * \param substring a pointer filled in with the closest substring of text to the given point, may be NULL.
+ * \param x the x coordinate relative to the left side of the text, may be
+ *          outside the bounds of the text area.
+ * \param y the y coordinate relative to the top side of the text, may be
+ *          outside the bounds of the text area.
+ * \param substring a pointer filled in with the closest substring of text to
+ *                  the given point, may be NULL.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  */
