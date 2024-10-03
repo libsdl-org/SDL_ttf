@@ -1353,6 +1353,7 @@ typedef struct TTF_Text
 {
     char *text;             /**< A copy of the text used to create this text object, useful for layout and debugging. This will be freed automatically when the object is destroyed. */
     SDL_FColor color;       /**< The color of the text, read-write. You can change this anytime. */
+    int num_lines;          /**< The number of lines in the text, 0 if it's empty */
 
     int refcount;           /**< Application reference count, used when freeing surface */
 
@@ -1696,16 +1697,18 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSize(TTF_Text *text, int *w, int *h)
  */
 typedef struct TTF_SubString
 {
-    int offset;     /**< The byte offset from the beginning of the text */
-    int length;     /**< The byte length starting at the offset */
-    SDL_Rect rect;  /**< The rectangle, relative to the top left of the text, containing the substring */
+    int offset;         /**< The byte offset from the beginning of the text */
+    int length;         /**< The byte length starting at the offset */
+    int line_index;     /**< The index of the line that contains this substring */
+    int cluster_index;  /**< The internal cluster index, used for quickly iterating */
+    SDL_Rect rect;      /**< The rectangle, relative to the top left of the text, containing the substring */
 } TTF_SubString;
 
 /**
- * Get the portion of a text string that surrounds a text offset.
+ * Get the substring of a text object that surrounds a text offset.
  *
- * If the offset is less than 0, this will return a zero width substring at
- * the beginning of the text. If the offset is greater than or equal to the
+ * If `offset` is less than 0, this will return a zero width substring at
+ * the beginning of the text. If `offset` is greater than or equal to the
  * length of the text string, this will return a zero width substring at the
  * end of the text.
  *
@@ -1719,6 +1722,38 @@ typedef struct TTF_SubString
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *substring);
 
 /**
+ * Get the substring of a text object that contains the given line.
+ *
+ * If `line` is less than 0, this will return a zero width substring at the beginning of the text. If `line` is greater than or equal to `text->num_lines` this will return a zero width substring at the end of the text.
+ *
+ * \param text the TTF_Text to query.
+ * \param line a zero-based line index, in the range [0 .. text->num_lines-1].
+ * \param substring a pointer filled in with the substring containing the offset.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringForLine(TTF_Text *text, int line, TTF_SubString *substring);
+
+/**
+ * Get the substrings of a text object that contain a range of text.
+ *
+ * The smaller offset will be clamped to 0 and the larger offset will be clamped to the length of text minus 1. The substrings that are returned will include the first offset and the second offset inclusive, e.g. {0, 2} of "abcd" will return "abc". If the text is empty, this will return a single zero width substring.
+ *
+ * If an offset is negative, it will be considered as an offset from the end of the text, so {0, -1} would return substrings for the entire text.
+ *
+ * \param text the TTF_Text to query.
+ * \param offset1 the first byte offset into the text string.
+ * \param offset2 the second byte offset into the text string.
+ * \param count a pointer filled in with the number of substrings returned, may
+ *              be NULL.
+ * \returns a NULL terminated array of substring pointers or NULL on
+ *          failure; call SDL_GetError() for more information. This is a
+ *          single allocation that should be freed with SDL_free() when it is
+ *          no longer needed.
+ */
+extern SDL_DECLSPEC TTF_SubString ** SDLCALL TTF_GetTextSubStringsForRange(TTF_Text *text, int offset1, int offset2, int *count);
+
+/**
  * Get the portion of a text string that is closest to a point.
  *
  * This will return the closest substring of text to the given point.
@@ -1728,12 +1763,11 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset
  *          outside the bounds of the text area.
  * \param y the y coordinate relative to the top side of the text, may be
  *          outside the bounds of the text area.
- * \param substring a pointer filled in with the closest substring of text to
- *                  the given point, may be NULL.
+ * \param substring a pointer filled in with the closest substring of text to the given point.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringAtPoint(TTF_Text *text, int x, int y, TTF_SubString *substring);
+extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringForPoint(TTF_Text *text, int x, int y, TTF_SubString *substring);
 
 /**
  * Update the layout of a text object.
