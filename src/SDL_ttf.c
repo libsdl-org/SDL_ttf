@@ -1919,8 +1919,10 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     font->generation = 1;
     font->hdpi = TTF_DEFAULT_DPI;
     font->vdpi = TTF_DEFAULT_DPI;
+#if TTF_USE_HARFBUZZ
     font->hb_direction = HB_DIRECTION_LTR;
     font->hb_script = HB_SCRIPT_UNKNOWN;
+#endif
 
     font->text = SDL_CreateHashTable(NULL, 16, SDL_HashPointer, SDL_KeyMatchPointer, NULL, false);
     if (!font->text) {
