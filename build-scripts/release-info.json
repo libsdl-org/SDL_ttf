@@ -1,0 +1,123 @@
+{
+  "name": "SDL2_ttf",
+  "remote": "libsdl-org/SDL_ttf",
+  "dependencies": {
+    "SDL": {
+      "startswith": "2.",
+      "repo": "libsdl-org/SDL"
+    }
+  },
+  "version": {
+    "file": "SDL_ttf.h",
+    "re_major": "^#define SDL_TTF_MAJOR_VERSION\\s+([0-9]+)$",
+    "re_minor": "^#define SDL_TTF_MINOR_VERSION\\s+([0-9]+)$",
+    "re_micro": "^#define SDL_TTF_PATCHLEVEL\\s+([0-9]+)$"
+  },
+  "source": {
+    "extra-repos": [
+      "external/freetype",
+      "external/harfbuzz"
+    ],
+    "checks": [
+      "SDL_ttf.h",
+      "SDL_ttf.c",
+      "external/freetype/include/freetype/freetype.h",
+      "external/harfbuzz/src/hb.h"
+    ]
+  },
+  "dmg": {
+    "project": "Xcode/SDL_ttf.xcodeproj",
+    "path": "Xcode/build/SDL2_ttf.dmg",
+    "scheme": "Create DMG",
+    "dependencies": {
+      "SDL": {
+        "artifact": "SDL2-*.dmg"
+      }
+    }
+  },
+  "mingw": {
+    "autotools": {
+      "archs": ["x86", "x64"],
+      "args": [
+        "--with-sdl-prefix=@<@DEP_PREFIX@>@",
+        "CFLAGS=-O2",
+        "LDFLAGS=-Wl,-s"
+      ]
+    },
+    "files": {
+      "": [
+        "CHANGES.txt",
+        "LICENSE.txt",
+        "README.txt",
+        "mingw/pkg-support/Makefile"
+      ],
+      "cmake": [
+        "mingw/pkg-support/cmake/sdl2_ttf-config.cmake",
+        "mingw/pkg-support/cmake/sdl2_ttf-config-version.cmake"
+      ]
+    },
+    "dependencies": {
+      "SDL": {
+        "artifact": "SDL2-devel-*-mingw.tar.gz",
+        "install-command": "make install-package arch=@<@TRIPLET@>@ prefix=@<@PREFIX@>@"
+      }
+    }
+  },
+  "msvc": {
+    "msbuild": {
+      "archs": [
+        "x86",
+        "x64"
+      ],
+      "projects": [
+        "VisualC/SDL_ttf.vcxproj"
+      ],
+      "files-lib": {
+        "": [
+          "VisualC/@<@PLATFORM@>@/@<@CONFIGURATION@>@/SDL2_ttf.dll"
+        ]
+       },
+      "files-devel": {
+        "lib/@<@ARCH@>@": [
+          "VisualC/@<@PLATFORM@>@/@<@CONFIGURATION@>@/SDL2_ttf.dll",
+          "VisualC/@<@PLATFORM@>@/@<@CONFIGURATION@>@/SDL2_ttf.lib",
+          "VisualC/@<@PLATFORM@>@/@<@CONFIGURATION@>@/SDL2_ttf.pdb"
+        ]
+      }
+    },
+    "files-lib": {
+      "": [
+        "README.txt"
+      ]
+    },
+    "files-devel": {
+      "": [
+        "CHANGES.txt",
+        "LICENSE.txt",
+        "README.txt"
+      ],
+      "include": [
+        "SDL_ttf.h"
+      ],
+      "cmake": [
+        "VisualC/pkg-support/cmake/sdl2_ttf-config.cmake",
+        "VisualC/pkg-support/cmake/sdl2_ttf-config-version.cmake"
+      ]
+    },
+    "dependencies": {
+      "SDL": {
+        "artifact": "SDL2-devel-*-VC.zip",
+        "copy": [
+          {
+            "src": "lib/@<@ARCH@>@/SDL2.*",
+            "dst": "../SDL/VisualC/@<@PLATFORM@>@/@<@CONFIGURATION@>@"
+          },
+          {
+            "src": "include/*",
+            "dst": "../SDL/include"
+          }
+        ]
+      }
+    }
+  }
+}
