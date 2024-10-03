@@ -4206,11 +4206,17 @@ bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *sub
         return true;
     }
 
-    // Do a binary search to find the cluster
+    // Make a quick guess that works for ASCII text with no line breaks
     int num_clusters = text->internal->num_clusters;
     const TTF_SubString *clusters = text->internal->clusters;
-    const TTF_SubString *closest = NULL;
     const TTF_SubString *cluster = NULL;
+    if (offset < num_clusters && clusters[offset].offset == offset) {
+        SDL_copyp(substring, &clusters[offset]);
+        return true;
+    }
+
+    // Do a binary search to find the cluster
+    const TTF_SubString *closest = NULL;
     int low = 0;
     int high = num_clusters - 1;
     while (low <= high) {
