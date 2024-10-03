@@ -850,9 +850,6 @@ TTF_TextEngine *TTF_CreateRendererTextEngine(SDL_Renderer *renderer)
 
 bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
 {
-    TTF_RendererTextEngineTextData *data;
-    SDL_Renderer *renderer;
-
     if (!text || !text->internal || text->internal->engine->CreateText != CreateText) {
         return SDL_InvalidParamError("text");
     }
@@ -862,8 +859,13 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
         return false;
     }
 
-    renderer = ((TTF_RendererTextEngineData *)text->internal->engine->userdata)->renderer;
-    data = (TTF_RendererTextEngineTextData *)text->internal->engine_text;
+    TTF_RendererTextEngineTextData *data = (TTF_RendererTextEngineTextData *)text->internal->engine_text;
+    if (!data) {
+        // Empty string, nothing to do
+        return true;
+    }
+
+    SDL_Renderer *renderer = ((TTF_RendererTextEngineData *)text->internal->engine->userdata)->renderer;
     AtlasDrawSequence *sequence = data->draw_sequence;
     while (sequence) {
         float *position = sequence->positions;

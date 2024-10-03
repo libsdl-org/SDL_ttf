@@ -237,12 +237,27 @@ static void MoveCursorDown(Scene *scene)
     }
 }
 
+static void SetTextFocus(Scene *scene, bool focused)
+{
+    if (!scene->text) {
+        return;
+    }
+
+    scene->textFocus = focused;
+
+    if (focused) {
+        SDL_StartTextInput(scene->window);
+    } else {
+        SDL_StopTextInput(scene->window);
+    }
+}
+
 static void HandleTextClick(Scene *scene, float x, float y)
 {
     TTF_SubString substring;
 
     if (!scene->textFocus) {
-        scene->textFocus = true;
+        SetTextFocus(scene, true);
         return;
     }
 
@@ -574,7 +589,7 @@ int main(int argc, char *argv[])
                         if (SDL_PointInRectFloat(&pt, &scene.textRect)) {
                             HandleTextClick(&scene, pt.x, pt.y);
                         } else if (scene.textFocus) {
-                            scene.textFocus = false;
+                            SetTextFocus(&scene, false);
                         } else {
                             scene.messageRect.x = (event.button.x - text->w/2);
                             scene.messageRect.y = (event.button.y - text->h/2);
@@ -618,9 +633,9 @@ int main(int argc, char *argv[])
                         }
                         break;
                     case SDLK_C:
-                        /* Copy to clipboard */
-                        if (event.key.mod & SDL_KMOD_CTRL) {
-                            if (scene.text) {
+                        if (scene.textFocus) {
+                            /* Copy to clipboard */
+                            if (event.key.mod & SDL_KMOD_CTRL) {
                                 SDL_SetClipboardText(scene.text->text);
                             }
                         }
@@ -688,26 +703,54 @@ int main(int argc, char *argv[])
                         }
                         break;
                     case SDLK_V:
-                        /* Paste from clipboard */
-                        if (event.key.mod & SDL_KMOD_CTRL) {
-                            if (scene.text) {
-                                TTF_SetTextString(scene.text, SDL_GetClipboardText(), 0);
+                        if (scene.textFocus) {
+                            if (event.key.mod & SDL_KMOD_CTRL) {
+                                /* Paste from clipboard */
+                                const char *text = SDL_GetClipboardText();
+                                size_t length = SDL_strlen(text);
+                                TTF_InsertTextString(scene.text, scene.cursor, text, length);
+                                scene.cursor = (int)(scene.cursor + length);
+                            }
+                        }
+                        break;
+                    case SDLK_X:
+                        if (scene.textFocus) {
+                            if (event.key.mod & SDL_KMOD_CTRL) {
+                                /* Copy to clipboard and delete text */
+                                if (scene.text->text) {
+                                    SDL_SetClipboardText(scene.text->text);
+                                    TTF_DeleteTextString(scene.text, 0, -1);
+                                }
                             }
                         }
                         break;
                     case SDLK_LEFT:
                         if (scene.textFocus) {
-                            MoveCursorLeft(&scene);
+                            if (event.key.mod & SDL_KMOD_CTRL) {
+                                /* Move to the beginning of the line (FIXME) */
+                                scene.cursor = 0;
+                            } else {
+                                MoveCursorLeft(&scene);
+                            }
                         }
                         break;
                     case SDLK_RIGHT:
                         if (scene.textFocus) {
-                            MoveCursorRight(&scene);
+                            if (event.key.mod & SDL_KMOD_CTRL) {
+                                /* Move to the end of the line (FIXME) */
+                            } else {
+                                MoveCursorRight(&scene);
+                            }
                         }
                         break;
                     case SDLK_UP:
                         if (scene.textFocus) {
-                            MoveCursorUp(&scene);
+                            if (event.key.mod & SDL_KMOD_CTRL) {
+                                /* Move to the beginning of the text */
+                                scene.cursor = 0;
+                            } else {
+                                MoveCursorUp(&scene);
+                            }
                         } else {
                             /* Increase font size */
                             ptsize = TTF_GetFontSize(font);
@@ -716,16 +759,75 @@ int main(int argc, char *argv[])
                         break;
                     case SDLK_DOWN:
                         if (scene.textFocus) {
-                            MoveCursorDown(&scene);
+                            if (event.key.mod & SDL_KMOD_CTRL) {
+                                /* Move to the end of the text */
+                                if (scene.text->text) {
+                                    scene.cursor = (int)SDL_strlen(scene.text->text);
+                                }
+                            } else {
+                                MoveCursorDown(&scene);
+                            }
                         } else {
                             /* Decrease font size */
                             ptsize = TTF_GetFontSize(font);
                             TTF_SetFontSize(font, ptsize - 1.0f);
                         }
                         break;
+                    case SDLK_HOME:
+                        if (scene.textFocus) {
+                            /* Move to the beginning of the text */
+                            scene.cursor = 0;
+                        }
+                        break;
+                    case SDLK_END:
+                        if (scene.textFocus) {
+                            /* Move to the end of the text */
+                            if (scene.text->text) {
+                                scene.cursor = (int)SDL_strlen(scene.text->text);
+                            }
+                        }
+                        break;
+                    case SDLK_BACKSPACE:
+                        if (scene.textFocus) {
+                            if (event.key.mod & SDL_KMOD_CTRL) {
+                                /* Delete to the beginning of the string */
+                                TTF_DeleteTextString(scene.text, 0, scene.cursor);
+                                scene.cursor = 0;
+                            } else if (scene.text->text) {
+                                const char *start = &scene.text->text[scene.cursor];
+                                const char *current = start;
+                                /* Step back over the previous UTF-8 character */
+                                do {
+                                    if (current == scene.text->text) {
+                                        break;
+                                    }
+                                    --current;
+                                } while ((*current & 0xC0) == 0x80);
+
+                                int length = (int)(start - current);
+                                TTF_DeleteTextString(scene.text, scene.cursor - length, length);
+                                scene.cursor -= length;
+                            }
+                        }
+                        break;
+                    case SDLK_DELETE:
+                        if (scene.textFocus) {
+                            if (event.key.mod & SDL_KMOD_CTRL) {
+                                /* Delete to the end of the string */
+                                TTF_DeleteTextString(scene.text, scene.cursor, -1);
+                            } else if (scene.text->text) {
+                                const char *start = &scene.text->text[scene.cursor];
+                                const char *next = start;
+                                size_t length = SDL_strlen(next);
+                                SDL_StepUTF8(&next, &length);
+                                length = (next - start);
+                                TTF_DeleteTextString(scene.text, scene.cursor, (int)length);
+                            }
+                        }
+                        break;
                     case SDLK_ESCAPE:
                         if (scene.textFocus) {
-                            scene.textFocus = false;
+                            SetTextFocus(&scene, false);
                         } else {
                             done = true;
                         }
@@ -735,6 +837,13 @@ int main(int argc, char *argv[])
                     }
                     break;
 
+                case SDL_EVENT_TEXT_INPUT:
+                    if (scene.text) {
+                        size_t length = SDL_strlen(event.text.text);
+                        TTF_InsertTextString(scene.text, scene.cursor, event.text.text, length);
+                        scene.cursor = (int)(scene.cursor + length);
+                    }
+                    break;
                 case SDL_EVENT_QUIT:
                     done = true;
                     break;
