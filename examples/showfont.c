@@ -31,8 +31,14 @@
 
 #define DEFAULT_PTSIZE  18.0f
 #define DEFAULT_TEXT    "The quick brown fox jumped over the lazy dog"
+// Combining characters
+//#define DEFAULT_TEXT    "\xc5\xab\xcc\x80\x20\xe1\xba\x83\x20\x6e\xcc\x82\x20\x48\xcc\xa8\x20\x6f\xcd\x9c\x75"
+// Chinese text
+//#define DEFAULT_TEXT    "\xe5\xad\xa6\xe4\xb9\xa0\xe6\x9f\x90\xe8\xaf\xbe\xe7\xa8\x8b\xe5\xbf\x85\xe8\xaf\xbb\xe7\x9a\x84"
 #define WIDTH   640
 #define HEIGHT  480
+#define CURSOR_BLINK_INTERVAL_MS    500
+
 
 #define TTF_SHOWFONT_USAGE \
 "Usage: %s [-textengine surface|renderer] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
@@ -54,6 +60,7 @@ typedef struct {
     SDL_Window *window;
     SDL_Surface *window_surface;
     SDL_Renderer *renderer;
+    TTF_Font *font;
     SDL_Texture *caption;
     SDL_FRect captionRect;
     SDL_Texture *message;
@@ -61,9 +68,13 @@ typedef struct {
     TextEngine textEngine;
     TTF_Text *text;
     SDL_FRect textRect;
+    bool textFocus;
+    int cursor;
+    bool cursorVisible;
+    Uint64 lastCursorChange;
 } Scene;
 
-static void draw_scene(Scene *scene)
+static void DrawScene(Scene *scene)
 {
     SDL_Renderer *renderer = scene->renderer;
 
@@ -79,6 +90,16 @@ static void draw_scene(Scene *scene)
         SDL_SetRenderDrawColor(renderer, 0xCC, 0xCC, 0xCC, 0xFF);
         SDL_RenderFillRect(renderer, &scene->textRect);
 
+        if (scene->textFocus) {
+            SDL_FRect focusRect = scene->textRect;
+            focusRect.x -= 1;
+            focusRect.y -= 1;
+            focusRect.w += 2;
+            focusRect.h += 2;
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+            SDL_RenderRect(renderer, &focusRect);
+        }
+
         switch (scene->textEngine) {
         case TextEngineSurface:
             /* Flush the renderer so we can draw directly to the window surface */
@@ -91,6 +112,31 @@ static void draw_scene(Scene *scene)
         default:
             break;
         }
+
+        if (scene->textFocus) {
+            /* Draw the cursor */
+            Uint64 now = SDL_GetTicks();
+            if ((now - scene->lastCursorChange) >= CURSOR_BLINK_INTERVAL_MS) {
+                scene->cursorVisible = !scene->cursorVisible;
+                scene->lastCursorChange = now;
+            }
+
+            TTF_SubString cursor;
+            if (scene->cursorVisible && TTF_GetTextSubString(scene->text, scene->cursor, &cursor)) {
+                SDL_FRect cursorRect;
+                if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_RTL) {
+                    cursorRect.x = x + cursor.rect.x + cursor.rect.w;
+                } else {
+                    cursorRect.x = x + cursor.rect.x;
+                }
+                cursorRect.y = y + cursor.rect.y;
+                cursorRect.w = 1.0f;
+                cursorRect.h = (float)cursor.rect.h;
+
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+                SDL_RenderFillRect(renderer, &cursorRect);
+            }
+        }
     }
 
     SDL_RenderTexture(renderer, scene->caption, NULL, &scene->captionRect);
@@ -102,7 +148,116 @@ static void draw_scene(Scene *scene)
     }
 }
 
-static void cleanup(int exitcode)
+static int GetCursorTextIndex(TTF_Font *font, int x, const TTF_SubString *substring)
+{
+    bool round_down;
+    if (TTF_GetFontDirection(font) == TTF_DIRECTION_RTL) {
+        round_down = (x > (substring->rect.x + substring->rect.w / 2));
+    } else {
+        round_down = (x < (substring->rect.x + substring->rect.w / 2));
+    }
+    if (round_down) {
+        /* Start the cursor before the selected text */
+        return substring->offset;
+    } else {
+        /* Place the cursor after the selected text */
+        return substring->offset + substring->length;
+    }
+}
+
+static void MoveCursorIndex(Scene *scene, int direction)
+{
+    TTF_SubString substring;
+
+    if (direction < 0) {
+        if (TTF_GetTextSubString(scene->text, scene->cursor - 1, &substring)) {
+            scene->cursor = substring.offset;
+        }
+    } else {
+        if (TTF_GetTextSubString(scene->text, scene->cursor, &substring) &&
+            TTF_GetTextSubString(scene->text, substring.offset + substring.length, &substring)) {
+            scene->cursor = substring.offset;
+        }
+    }
+}
+
+static void MoveCursorLeft(Scene *scene)
+{
+    if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_RTL) {
+        MoveCursorIndex(scene, 1);
+    } else {
+        MoveCursorIndex(scene, -1);
+    }
+}
+
+static void MoveCursorRight(Scene *scene)
+{
+    if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_RTL) {
+        MoveCursorIndex(scene, -1);
+    } else {
+        MoveCursorIndex(scene, 1);
+    }
+}
+
+static void MoveCursorUp(Scene *scene)
+{
+    TTF_SubString substring;
+
+    if (TTF_GetTextSubString(scene->text, scene->cursor, &substring)) {
+        int fontHeight = TTF_GetFontHeight(scene->font);
+        int x, y;
+        if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_RTL) {
+            x = substring.rect.x + substring.rect.w;
+        } else {
+            x = substring.rect.x;
+        }
+        y = substring.rect.y - fontHeight;
+        if (TTF_GetTextSubStringAtPoint(scene->text, x, y, &substring)) {
+            scene->cursor = GetCursorTextIndex(scene->font, x, &substring);
+        }
+    }
+}
+
+static void MoveCursorDown(Scene *scene)
+{
+    TTF_SubString substring;
+
+    if (TTF_GetTextSubString(scene->text, scene->cursor, &substring)) {
+        int fontHeight = TTF_GetFontHeight(scene->font);
+        int x, y;
+        if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_RTL) {
+            x = substring.rect.x + substring.rect.w;
+        } else {
+            x = substring.rect.x;
+        }
+        y = substring.rect.y + substring.rect.h + fontHeight;
+        if (TTF_GetTextSubStringAtPoint(scene->text, x, y, &substring)) {
+            scene->cursor = GetCursorTextIndex(scene->font, x, &substring);
+        }
+    }
+}
+
+static void HandleTextClick(Scene *scene, float x, float y)
+{
+    TTF_SubString substring;
+
+    if (!scene->textFocus) {
+        scene->textFocus = true;
+        return;
+    }
+
+    /* Set the cursor position */
+    int textX = (int)SDL_roundf(x - (scene->textRect.x + 4.0f));
+    int textY = (int)SDL_roundf(y - (scene->textRect.y + 4.0f));
+    if (!TTF_GetTextSubStringAtPoint(scene->text, textX, textY, &substring)) {
+        SDL_Log("Couldn't get cursor location: %s\n", SDL_GetError());
+        return;
+    }
+
+    scene->cursor = GetCursorTextIndex(scene->font, textX, &substring);
+}
+
+static void Cleanup(int exitcode)
 {
     TTF_Quit();
     SDL_Quit();
@@ -116,7 +271,8 @@ int main(int argc, char *argv[])
     SDL_Surface *text = NULL;
     Scene scene;
     float ptsize;
-    int i, done;
+    int i;
+    bool done = false;
     SDL_Color white = { 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE };
     SDL_Color black = { 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
     SDL_Color *forecol;
@@ -270,7 +426,7 @@ int main(int argc, char *argv[])
     if (font == NULL) {
         SDL_Log("Couldn't load %g pt font from %s: %s\n",
                     ptsize, argv[0], SDL_GetError());
-        cleanup(2);
+        Cleanup(2);
     }
     TTF_SetFontStyle(font, renderstyle);
     TTF_SetFontOutline(font, outline);
@@ -291,20 +447,20 @@ int main(int argc, char *argv[])
             }
 
         }
-        cleanup(0);
+        Cleanup(0);
     }
 
     /* Create a window */
     scene.window = SDL_CreateWindow("showfont demo", WIDTH, HEIGHT, 0);
     if (!scene.window) {
         SDL_Log("SDL_CreateWindow() failed: %s\n", SDL_GetError());
-        cleanup(2);
+        Cleanup(2);
     }
     if (scene.textEngine == TextEngineSurface) {
         scene.window_surface = SDL_GetWindowSurface(scene.window);
         if (!scene.window_surface) {
             SDL_Log("SDL_CreateWindowSurface() failed: %s\n", SDL_GetError());
-            cleanup(2);
+            Cleanup(2);
         }
         SDL_SetWindowSurfaceVSync(scene.window, 1);
 
@@ -317,8 +473,9 @@ int main(int argc, char *argv[])
     }
     if (!scene.renderer) {
         SDL_Log("SDL_CreateRenderer() failed: %s\n", SDL_GetError());
-        cleanup(2);
+        Cleanup(2);
     }
+    scene.font = font;
 
     /* Show which font file we're looking at */
     SDL_snprintf(string, sizeof(string), "Font file: %s", argv[0]);  /* possible overflow */
@@ -364,7 +521,7 @@ int main(int argc, char *argv[])
     if (text == NULL) {
         SDL_Log("Couldn't render text: %s\n", SDL_GetError());
         TTF_CloseFont(font);
-        cleanup(2);
+        Cleanup(2);
     }
     scene.messageRect.x = (float)((WIDTH - text->w)/2);
     scene.messageRect.y = (float)((HEIGHT - text->h)/2);
@@ -396,7 +553,7 @@ int main(int argc, char *argv[])
         scene.textRect.w = WIDTH / 2 - scene.textRect.x * 2;
         scene.textRect.h = scene.messageRect.y - scene.textRect.y - 16.0f;
 
-        scene.text = TTF_CreateText_Wrapped(engine, font, message, 0, (int)scene.textRect.w);
+        scene.text = TTF_CreateText_Wrapped(engine, font, message, 0, (int)scene.textRect.w - 8);
         if (scene.text) {
             scene.text->color.r = forecol->r / 255.0f;
             scene.text->color.g = forecol->g / 255.0f;
@@ -406,22 +563,51 @@ int main(int argc, char *argv[])
     }
 
     /* Wait for a keystroke, and blit text on mouse press */
-    done = 0;
     while (!done) {
         while (SDL_PollEvent(&event)) {
+            SDL_ConvertEventToRenderCoordinates(scene.renderer, &event);
+
             switch (event.type) {
                 case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                    scene.messageRect.x = (float)(event.button.x - text->w/2);
-                    scene.messageRect.y = (float)(event.button.y - text->h/2);
-                    scene.messageRect.w = (float)text->w;
-                    scene.messageRect.h = (float)text->h;
+                    {
+                        SDL_FPoint pt = { event.button.x, event.button.y };
+                        if (SDL_PointInRectFloat(&pt, &scene.textRect)) {
+                            HandleTextClick(&scene, pt.x, pt.y);
+                        } else if (scene.textFocus) {
+                            scene.textFocus = false;
+                        } else {
+                            scene.messageRect.x = (event.button.x - text->w/2);
+                            scene.messageRect.y = (event.button.y - text->h/2);
+                            scene.messageRect.w = (float)text->w;
+                            scene.messageRect.h = (float)text->h;
+                        }
+                    }
                     break;
 
                 case SDL_EVENT_KEY_DOWN:
                     switch (event.key.key) {
+                    case SDLK_A:
+                        if (!scene.textFocus) {
+                            /* Cycle alignment */
+                            switch (TTF_GetFontWrapAlignment(font)) {
+                            case TTF_HORIZONTAL_ALIGN_LEFT:
+                                TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
+                                break;
+                            case TTF_HORIZONTAL_ALIGN_CENTER:
+                                TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_RIGHT);
+                                break;
+                            case TTF_HORIZONTAL_ALIGN_RIGHT:
+                                TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_LEFT);
+                                break;
+                            default:
+                                SDL_Log("Unknown wrap alignment: %d\n", TTF_GetFontWrapAlignment(font));
+                                break;
+                            }
+                        }
+                        break;
                     case SDLK_B:
-                        /* Toggle bold style */
-                        {
+                        if (!scene.textFocus) {
+                            /* Toggle bold style */
                             int style = TTF_GetFontStyle(font);
                             if (style & TTF_STYLE_BOLD) {
                                 style &= ~TTF_STYLE_BOLD;
@@ -440,8 +626,8 @@ int main(int argc, char *argv[])
                         }
                         break;
                     case SDLK_I:
-                        /* Toggle italic style */
-                        {
+                        if (!scene.textFocus) {
+                            /* Toggle italic style */
                             int style = TTF_GetFontStyle(font);
                             if (style & TTF_STYLE_ITALIC) {
                                 style &= ~TTF_STYLE_ITALIC;
@@ -452,9 +638,9 @@ int main(int argc, char *argv[])
                         }
                         break;
                     case SDLK_O:
-                        /* Toggle font outline */
-                        {
-                            int outline = TTF_GetFontOutline(font);
+                        if (!scene.textFocus) {
+                            /* Toggle font outline */
+                            outline = TTF_GetFontOutline(font);
                             if (outline) {
                                 outline = 0;
                             } else {
@@ -463,9 +649,23 @@ int main(int argc, char *argv[])
                             TTF_SetFontOutline(font, outline);
                         }
                         break;
+                    case SDLK_R:
+                        if (!scene.textFocus) {
+                            /* Toggle layout direction */
+                            if (TTF_GetFontDirection(font) == TTF_DIRECTION_LTR) {
+                                TTF_SetFontDirection(font, TTF_DIRECTION_RTL);
+                            } else if (TTF_GetFontDirection(font) == TTF_DIRECTION_RTL) {
+                                TTF_SetFontDirection(font, TTF_DIRECTION_LTR);
+                            } else if (TTF_GetFontDirection(font) == TTF_DIRECTION_TTB) {
+                                TTF_SetFontDirection(font, TTF_DIRECTION_BTT);
+                            } else if (TTF_GetFontDirection(font) == TTF_DIRECTION_BTT) {
+                                TTF_SetFontDirection(font, TTF_DIRECTION_TTB);
+                            }
+                        }
+                        break;
                     case SDLK_S:
-                        /* Toggle strike-through style */
-                        {
+                        if (!scene.textFocus) {
+                            /* Toggle strike-through style */
                             int style = TTF_GetFontStyle(font);
                             if (style & TTF_STYLE_STRIKETHROUGH) {
                                 style &= ~TTF_STYLE_STRIKETHROUGH;
@@ -477,7 +677,7 @@ int main(int argc, char *argv[])
                         break;
                     case SDLK_U:
                         /* Toggle underline style */
-                        {
+                        if (!scene.textFocus) {
                             int style = TTF_GetFontStyle(font);
                             if (style & TTF_STYLE_UNDERLINE) {
                                 style &= ~TTF_STYLE_UNDERLINE;
@@ -495,22 +695,40 @@ int main(int argc, char *argv[])
                             }
                         }
                         break;
+                    case SDLK_LEFT:
+                        if (scene.textFocus) {
+                            MoveCursorLeft(&scene);
+                        }
+                        break;
+                    case SDLK_RIGHT:
+                        if (scene.textFocus) {
+                            MoveCursorRight(&scene);
+                        }
+                        break;
                     case SDLK_UP:
-                        /* Increase font size */
-                        {
-                            float ptsize = TTF_GetFontSize(font);
-                            TTF_SetFontSize(font, ptsize + 2.0f);
+                        if (scene.textFocus) {
+                            MoveCursorUp(&scene);
+                        } else {
+                            /* Increase font size */
+                            ptsize = TTF_GetFontSize(font);
+                            TTF_SetFontSize(font, ptsize + 1.0f);
                         }
                         break;
                     case SDLK_DOWN:
-                        /* Decrease font size */
-                        {
-                            float ptsize = TTF_GetFontSize(font);
-                            TTF_SetFontSize(font, ptsize - 2.0f);
+                        if (scene.textFocus) {
+                            MoveCursorDown(&scene);
+                        } else {
+                            /* Decrease font size */
+                            ptsize = TTF_GetFontSize(font);
+                            TTF_SetFontSize(font, ptsize - 1.0f);
                         }
                         break;
                     case SDLK_ESCAPE:
-                        done = 1;
+                        if (scene.textFocus) {
+                            scene.textFocus = false;
+                        } else {
+                            done = true;
+                        }
                         break;
                     default:
                         break;
@@ -518,13 +736,13 @@ int main(int argc, char *argv[])
                     break;
 
                 case SDL_EVENT_QUIT:
-                    done = 1;
+                    done = true;
                     break;
                 default:
                     break;
             }
         }
-        draw_scene(&scene);
+        DrawScene(&scene);
     }
     SDL_DestroySurface(text);
     TTF_CloseFont(font);
@@ -541,7 +759,7 @@ int main(int argc, char *argv[])
     }
     SDL_DestroyTexture(scene.caption);
     SDL_DestroyTexture(scene.message);
-    cleanup(0);
+    Cleanup(0);
 
     /* Not reached, but fixes compiler warnings */
     return 0;
