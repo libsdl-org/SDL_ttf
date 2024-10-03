@@ -1404,7 +1404,7 @@ static bool Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font 
 #endif
 }
 
-static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int width, int height, TTF_DrawOperation *ops, int *current_op, TTF_SubString *clusters, int *current_cluster, int cluster_offset)
+static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int width, int height, TTF_DrawOperation *ops, int *current_op, TTF_SubString *clusters, int *current_cluster, int cluster_offset, int line_index)
 {
     int i;
     int op_index = *current_op;
@@ -1483,6 +1483,7 @@ static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int w
             if (offset != last_offset) {
                 cluster = &clusters[cluster_index++];
                 cluster->offset = cluster_offset + offset;
+                cluster->line_index = line_index;
                 SDL_copyp(&cluster->rect, &bounds);
 
                 last_offset = offset;
@@ -3636,6 +3637,7 @@ struct TTF_TextLayout
 {
     bool wrap;
     int wrap_length;
+    int *lines;
 };
 
 typedef struct TTF_InternalText
@@ -3708,15 +3710,28 @@ static int SDLCALL SortClusters(const void *a, const void *b)
     return (A->offset - B->offset);
 }
 
-static bool CalculateClusterLengths(TTF_SubString *clusters, int num_clusters, size_t length)
+static bool CalculateClusterLengths(TTF_SubString *clusters, int num_clusters, size_t length, int *lines)
 {
     SDL_qsort(clusters, num_clusters, sizeof(*clusters), SortClusters);
 
     int i;
-    for (i = 0; i < (num_clusters - 1); ++i) {
-        clusters[i].length = clusters[i + 1].offset - clusters[i].offset;
+    int last_line = 0;
+    for (i = 0; i < num_clusters; ++i) {
+        TTF_SubString *cluster = &clusters[i];
+        cluster->cluster_index = i;
+        if (i < (num_clusters - 1)) {
+            cluster->length = clusters[i + 1].offset - cluster->offset;
+        } else {
+            cluster->length = (int)(length - cluster->offset);
+        }
+
+        if (lines) {
+            if (cluster->line_index != last_line) {
+                lines[cluster->line_index - 1] = i;
+                last_line = cluster->line_index;
+            }
+        }
     }
-    clusters[i].length = (int)(length - clusters[i].offset);
     return true;
 }
 
@@ -3755,7 +3770,7 @@ static bool LayoutText(TTF_Text *text)
     }
 
     // Create the text drawing operations
-    if (!Render_Line_TextEngine(font, xstart, ystart, width, height, ops, &num_ops, clusters, &num_clusters, 0)) {
+    if (!Render_Line_TextEngine(font, xstart, ystart, width, height, ops, &num_ops, clusters, &num_clusters, 0, 0)) {
         goto done;
     }
 
@@ -3768,7 +3783,7 @@ static bool LayoutText(TTF_Text *text)
         Draw_Line_TextEngine(font, width, height, 0, ystart + font->strikethrough_top_row, width, font->line_thickness, ops, &num_ops);
     }
 
-    if (!CalculateClusterLengths(clusters, num_clusters, length)) {
+    if (!CalculateClusterLengths(clusters, num_clusters, length, NULL)) {
         goto done;
     }
 
@@ -3776,6 +3791,7 @@ static bool LayoutText(TTF_Text *text)
 
 done:
     if (result) {
+        text->num_lines = 1;
         text->internal->w = width;
         text->internal->h = height;
         text->internal->num_ops = num_ops;
@@ -3800,6 +3816,7 @@ static bool LayoutTextWrapped(TTF_Text *text)
     int num_ops = 0, max_ops = 0, extra_ops = 0, additional_ops;
     TTF_SubString *clusters = NULL, *new_clusters;
     int num_clusters = 0, max_clusters = 0, cluster_offset;
+    int *lines = NULL;
     bool result = false;
 
     if (!GetWrappedLines(font, text->text, length, wrapLength, &strLines, &numLines, &width, &height)) {
@@ -3811,6 +3828,16 @@ static bool LayoutTextWrapped(TTF_Text *text)
     }
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
         ++extra_ops;
+    }
+
+    if (numLines > 1) {
+        lines = (int *)SDL_malloc((numLines - 1) * sizeof(*lines));
+        if (!lines) {
+            goto done;
+        }
+        for (int i = 0; i < (numLines - 1); ++i) {
+            lines[i] = -1;
+        }
     }
 
     // Render each line
@@ -3856,7 +3883,7 @@ static bool LayoutTextWrapped(TTF_Text *text)
         cluster_offset = (int)(strLines[i].text - text->text);
 
         // Create the text drawing operations
-        if (!Render_Line_TextEngine(font, xstart + xoffset, ystart, width, height, ops, &num_ops, clusters, &num_clusters, cluster_offset)) {
+        if (!Render_Line_TextEngine(font, xstart + xoffset, ystart, width, height, ops, &num_ops, clusters, &num_clusters, cluster_offset, i)) {
             goto done;
         }
 
@@ -3870,7 +3897,7 @@ static bool LayoutTextWrapped(TTF_Text *text)
         }
     }
 
-    if (!CalculateClusterLengths(clusters, num_clusters, length)) {
+    if (!CalculateClusterLengths(clusters, num_clusters, length, lines)) {
         goto done;
     }
 
@@ -3878,15 +3905,18 @@ static bool LayoutTextWrapped(TTF_Text *text)
 
 done:
     if (result) {
+        text->num_lines = numLines;
         text->internal->w = width;
         text->internal->h = height;
         text->internal->num_ops = num_ops;
         text->internal->ops = ops;
         text->internal->num_clusters = num_clusters;
         text->internal->clusters = clusters;
+        text->internal->layout->lines = lines;
     } else {
         SDL_free(ops);
         SDL_free(clusters);
+        SDL_free(lines);
     }
     SDL_free(strLines);
     return result;
@@ -4166,17 +4196,14 @@ bool TTF_GetTextSize(TTF_Text *text, int *w, int *h)
     return true;
 }
 
-bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *substring)
+bool TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *substring)
 {
     if (substring) {
         SDL_zerop(substring);
     }
 
     TTF_CHECK_POINTER("text", text, false);
-
-    if (!substring) {
-        return true;
-    }
+    TTF_CHECK_POINTER("substring", substring, false);
 
     if (!TTF_UpdateText(text)) {
         return false;
@@ -4240,17 +4267,192 @@ bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *sub
     return true;
 }
 
-bool TTF_GetTextSubStringAtPoint(TTF_Text *text, int x, int y, TTF_SubString *substring)
+bool TTF_GetTextSubStringForLine(TTF_Text *text, int line, TTF_SubString *substring)
 {
     if (substring) {
         SDL_zerop(substring);
     }
 
     TTF_CHECK_POINTER("text", text, false);
+    TTF_CHECK_POINTER("substring", substring, false);
 
-    if (!substring) {
+    if (!TTF_UpdateText(text)) {
+        return false;
+    }
+
+    if (text->internal->num_clusters == 0) {
+        substring->rect.h = text->internal->font->height;
         return true;
     }
+
+    int num_clusters = text->internal->num_clusters;
+    TTF_SubString *clusters = text->internal->clusters;
+    if (line < 0) {
+        SDL_copyp(substring, &clusters[0]);
+        substring->length = 0;
+        substring->rect.w = 0;
+        return true;
+    }
+
+    if (line >= text->num_lines) {
+        SDL_copyp(substring, &clusters[num_clusters - 1]);
+        substring->offset = (int)SDL_strlen(text->text);
+        substring->length = 0;
+        if (TTF_GetFontDirection(text->internal->font) != TTF_DIRECTION_RTL) {
+            substring->rect.x += substring->rect.w;
+        }
+        substring->rect.w = 0;
+        return true;
+    }
+
+    int *lines = text->internal->layout->lines;
+    if (line == 0) {
+        SDL_copyp(substring, &clusters[0]);
+    } else {
+        SDL_copyp(substring, &clusters[lines[line - 1]]);
+    }
+    if (line == text->num_lines - 1) {
+        substring->length = (int)SDL_strlen(text->text) - substring->offset;
+    } else {
+        substring->length = clusters[lines[line]].offset - substring->offset;
+    }
+    for (int i = substring->cluster_index + 1; i < num_clusters; ++i) {
+        TTF_SubString *cluster = &clusters[i];
+        if (cluster->line_index != line) {
+            break;
+        }
+        SDL_GetRectUnion(&substring->rect, &cluster->rect, &substring->rect);
+    }
+    return true;
+}
+
+TTF_SubString **TTF_GetTextSubStringsForRange(TTF_Text *text, int offset1, int offset2, int *count)
+{
+    if (count) {
+        *count = 0;
+    }
+
+    TTF_CHECK_POINTER("text", text, NULL);
+
+    if (!TTF_UpdateText(text)) {
+        return NULL;
+    }
+
+    if (text->internal->num_clusters == 0) {
+        TTF_SubString **result = (TTF_SubString **)SDL_malloc(2 * sizeof(*result) + 1 * sizeof(**result));
+        if (!result) {
+            return NULL;
+        }
+
+        TTF_SubString *substring = (TTF_SubString *)(result + 2);
+        result[0] = substring;
+        result[1] = NULL;
+        SDL_zerop(substring);
+        substring->rect.h = text->internal->font->height;
+
+        if (count) {
+            *count = 1;
+        }
+        return result;
+    }
+
+    int length = (int)SDL_strlen(text->text);
+    if (offset1 < 0) {
+        offset1 = length + offset1;
+        if (offset1 < 0) {
+            offset1 = 0;
+        }
+    } else if (offset1 >= length) {
+        offset1 = (length - 1);
+    }
+    if (offset2 < 0) {
+        offset2 = length + offset2;
+        if (offset2 < 0) {
+            offset2 = 0;
+        }
+    } else if (offset2 >= length) {
+        offset2 = (length - 1);
+    }
+    if (offset1 > offset2) {
+        int tmp = offset1;
+        offset1 = offset2;
+        offset2 = tmp;
+    }
+
+    TTF_SubString substring1, substring2;
+    if (!TTF_GetTextSubString(text, offset1, &substring1) ||
+        !TTF_GetTextSubString(text, offset2, &substring2)) {
+        return NULL;
+    }
+
+    if (substring1.cluster_index == substring2.cluster_index) {
+        TTF_SubString **result = (TTF_SubString **)SDL_malloc(2 * sizeof(*result) + 1 * sizeof(**result));
+        if (!result) {
+            return NULL;
+        }
+
+        TTF_SubString *substring = (TTF_SubString *)(result + 2);
+        result[0] = substring;
+        result[1] = NULL;
+        SDL_copyp(substring, &substring1);
+
+        if (count) {
+            *count = 1;
+        }
+        return result;
+    }
+
+    // Build a list of contiguous substrings
+    TTF_SubString *clusters = text->internal->clusters;
+    int num_results = 1;
+    TTF_SubString *last = &clusters[substring1.cluster_index];
+    for (int i = substring1.cluster_index + 1; i <= substring2.cluster_index; ++i) {
+        TTF_SubString *cluster = &clusters[i];
+        if (cluster->line_index != last->line_index) {
+            ++num_results;
+            last = cluster;
+        }
+    }
+
+    TTF_SubString **result = (TTF_SubString **)SDL_malloc((num_results + 1) * sizeof(*result) + num_results * sizeof(**result));
+    if (!result) {
+        return NULL;
+    }
+
+    TTF_SubString *substrings = (TTF_SubString *)(result + num_results + 1);
+    for (int i = 0; i < num_results; ++i) {
+        result[i] = &substrings[i];
+    }
+    result[num_results] = NULL;
+
+    TTF_SubString *current = substrings;
+    SDL_copyp(current, &substring1);
+    for (int i = substring1.cluster_index + 1; i <= substring2.cluster_index; ++i) {
+        TTF_SubString *cluster = &clusters[i];
+        if (cluster->line_index == current->line_index) {
+            SDL_GetRectUnion(&current->rect, &cluster->rect, &current->rect);
+        } else {
+            current->length = (cluster->offset - current->offset);
+            ++current;
+            SDL_copyp(current, cluster);
+        }
+    }
+    current->length = (substring2.offset - current->offset) + substring2.length;
+
+    if (count) {
+        *count = num_results;
+    }
+    return result;
+}
+
+bool TTF_GetTextSubStringForPoint(TTF_Text *text, int x, int y, TTF_SubString *substring)
+{
+    if (substring) {
+        SDL_zerop(substring);
+    }
+
+    TTF_CHECK_POINTER("text", text, false);
+    TTF_CHECK_POINTER("substring", substring, false);
 
     if (!TTF_UpdateText(text)) {
         return false;
@@ -4308,6 +4510,11 @@ bool TTF_UpdateText(TTF_Text *text)
             text->internal->clusters = NULL;
             text->internal->num_clusters = 0;
         }
+        if (text->internal->layout->lines) {
+            SDL_free(text->internal->layout->lines);
+            text->internal->layout->lines = NULL;
+        }
+        text->num_lines = 0;
         text->internal->w = 0;
         text->internal->h = 0;
 

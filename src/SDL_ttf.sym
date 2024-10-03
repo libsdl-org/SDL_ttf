@@ -45,7 +45,9 @@ SDL3_ttf_0.0.0 {
     TTF_GetTextFont;
     TTF_GetTextSize;
     TTF_GetTextSubString;
-    TTF_GetTextSubStringAtPoint;
+    TTF_GetTextSubStringForLine;
+    TTF_GetTextSubStringForPoint;
+    TTF_GetTextSubStringsForRange;
     TTF_GetTextWrapping;
     TTF_Init;
     TTF_InsertTextString;
