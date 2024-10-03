@@ -326,8 +326,6 @@ static void DrawCopy(TTF_SurfaceTextEngineTextData *data, const TTF_CopyOperatio
 
 bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
 {
-    TTF_SurfaceTextEngineTextData *data;
-
     if (!text || !text->internal || text->internal->engine->CreateText != CreateText) {
         return SDL_InvalidParamError("text");
     }
@@ -340,7 +338,11 @@ bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
         return false;
     }
 
-    data = (TTF_SurfaceTextEngineTextData *)text->internal->engine_text;
+    TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal->engine_text;
+    if (!data) {
+        // Empty string, nothing to do
+        return true;
+    }
 
     if (text->color.r != data->fcolor.r ||
         text->color.g != data->fcolor.g ||

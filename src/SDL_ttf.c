@@ -4019,8 +4019,12 @@ bool TTF_InsertTextString(TTF_Text *text, int offset, const char *string, size_t
 {
     TTF_CHECK_POINTER("text", text, false);
 
-    if (!string || !*string || !length) {
+    if (!string || !*string) {
         return true;
+    }
+
+    if (!length) {
+        length = SDL_strlen(string);
     }
 
     if (!text->text) {
@@ -4028,8 +4032,8 @@ bool TTF_InsertTextString(TTF_Text *text, int offset, const char *string, size_t
     }
 
     int old_length = (int)SDL_strlen(text->text);
-    size_t new_length = old_length + length + 1;
-    char *new_string = (char *)SDL_realloc(text->text, new_length);
+    size_t new_length = old_length + length;
+    char *new_string = (char *)SDL_realloc(text->text, new_length + 1);
     if (!new_string) {
         return false;
     }
@@ -4047,7 +4051,7 @@ bool TTF_InsertTextString(TTF_Text *text, int offset, const char *string, size_t
 
     int shift = (old_length - offset);
     if (shift > 0) {
-        SDL_memcpy(new_string + offset + shift, new_string + offset, shift);
+        SDL_memmove(new_string + offset + length, new_string + offset, shift);
     }
     SDL_memcpy(new_string + offset, string, length);
     new_string[new_length] = '\0';
@@ -4177,6 +4181,7 @@ bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *sub
     }
 
     if (text->internal->num_clusters == 0) {
+        substring->rect.h = text->internal->font->height;
         return true;
     }
 
