@@ -18,6 +18,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetFontAscent;
     TTF_GetFontDPI;
     TTF_GetFontDescent;
+    TTF_GetFontDirection;
     TTF_GetFontFamilyName;
     TTF_GetFontGeneration;
     TTF_GetFontHeight;
@@ -43,6 +44,8 @@ SDL3_ttf_0.0.0 {
     TTF_GetTextEngine;
     TTF_GetTextFont;
     TTF_GetTextSize;
+    TTF_GetTextSubString;
+    TTF_GetTextSubStringAtPoint;
     TTF_GetTextWrapping;
     TTF_Init;
     TTF_InsertTextString;

@@ -796,6 +796,29 @@ typedef enum TTF_Direction
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction);
 
 /**
+ * Get direction to be used for text shaping by a font.
+ *
+ * Possible direction values are:
+ *
+ * - `TTF_DIRECTION_LTR` (Left to Right)
+ * - `TTF_DIRECTION_RTL` (Right to Left)
+ * - `TTF_DIRECTION_TTB` (Top to Bottom)
+ * - `TTF_DIRECTION_BTT` (Bottom to Top)
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns
+ * TTF_DIRECTION_LTR.
+ *
+ * \param font the font to query.
+ * \returns the direction to be used for text shaping.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetFontDirection(TTF_Font *font);
+
+/**
  * Set script to be used for text shaping by a font.
  *
  * The supplied script value must be a null-terminated string of exactly four
@@ -1662,6 +1685,48 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapping(TTF_Text *text, bool *wrap,
  *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSize(TTF_Text *text, int *w, int *h);
+
+/**
+ * The representation of a substring within text.
+ *
+ * \since This struct is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetTextSubString
+ * \sa TTF_GetTextSubStringAtPoint
+ */
+typedef struct TTF_SubString
+{
+    int offset;     /**< The byte offset from the beginning of the text */
+    int length;     /**< The byte length starting at the offset */
+    SDL_Rect rect;  /**< The rectangle, relative to the top left of the text, containing the substring */
+} TTF_SubString;
+
+/**
+ * Get the portion of a text string that surrounds a text offset.
+ *
+ * If the offset is less than 0, this will return a zero width substring at the beginning of the text. If the offset is greater than or equal to the length of the text string, this will return a zero width substring at the end of the text.
+ *
+ * \param text the TTF_Text to query.
+ * \param offset a byte offset into the text string.
+ * \param substring a pointer filled in with the substring containing the offset.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *substring);
+
+/**
+ * Get the portion of a text string that is closest to a point.
+ *
+ * This will return the closest substring of text to the given point.
+ *
+ * \param text the TTF_Text to query.
+ * \param x the x coordinate relative to the left side of the text, may be outside the bounds of the text area.
+ * \param y the y coordinate relative to the top side of the text, may be outside the bounds of the text area.
+ * \param substring a pointer filled in with the closest substring of text to the given point, may be NULL.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringAtPoint(TTF_Text *text, int x, int y, TTF_SubString *substring);
 
 /**
  * Update the layout of a text object.

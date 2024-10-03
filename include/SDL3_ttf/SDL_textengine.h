@@ -113,6 +113,8 @@ struct TTF_TextData
     int h;                      /**< The height of this text, in pixels, read-only. */
     int num_ops;                /**< The number of drawing operations to render this text, read-only. */
     TTF_DrawOperation *ops;     /**< The drawing operations used to render this text, read-only. */
+    int num_clusters;           /**< The number of substrings representing clusters of glyphs in the string, read-only */
+    TTF_SubString *clusters;    /**< Substrings representing clusters of glyphs in the string, read-only */
 
     SDL_PropertiesID props;     /**< Custom properties associated with this text, read-only. This field is created as-needed using TTF_GetTextProperties() and the properties may be then set and read normally */
 
