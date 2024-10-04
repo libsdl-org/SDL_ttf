@@ -124,6 +124,7 @@ static void SetTextFocus(Scene *scene, bool focused)
 static void HandleKeyDown(Scene *scene, SDL_Event *event)
 {
     int style, outline;
+    float ptsize;
 
     switch (event->key.key) {
     case SDLK_A:
@@ -211,6 +212,19 @@ static void HandleKeyDown(Scene *scene, SDL_Event *event)
         }
         TTF_SetFontStyle(scene->font, style);
         break;
+
+    case SDLK_UP:
+        /* Increase font size */
+        ptsize = TTF_GetFontSize(scene->font);
+        TTF_SetFontSize(scene->font, ptsize + 1.0f);
+        break;
+
+    case SDLK_DOWN:
+        /* Decrease font size */
+        ptsize = TTF_GetFontSize(scene->font);
+        TTF_SetFontSize(scene->font, ptsize - 1.0f);
+        break;
+
     default:
         break;
     }
@@ -392,6 +406,7 @@ int main(int argc, char *argv[])
     TTF_SetFontKerning(font, kerning);
     TTF_SetFontHinting(font, hinting);
     TTF_SetFontWrapAlignment(font, align);
+    scene.font = font;
 
     if(dump) {
         for(i = 48; i < 123; i++) {
@@ -566,7 +581,7 @@ int main(int argc, char *argv[])
                     } else if (scene.textFocus) {
                         EditBox_HandleEvent(scene.edit, &event);
                     } else {
-                        HandleKeyDown(&scene, &event);
+                        HandleKeyDown HandleKeyDown(&scene, &event);
                     }
                     break;
 

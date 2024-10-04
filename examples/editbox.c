@@ -44,7 +44,7 @@ static bool GetHighlightExtents(EditBox *edit, int *marker1, int *marker2)
     if (edit->highlight1 >= 0 && edit->highlight2 >= 0) {
         *marker1 = SDL_min(edit->highlight1, edit->highlight2);
         *marker2 = SDL_max(edit->highlight1, edit->highlight2) - 1;
-        if (*marker2 > *marker1) {
+        if (*marker2 >= *marker1) {
             return true;
         }
     }
@@ -96,14 +96,14 @@ void EditBox_Draw(EditBox *edit, SDL_Renderer *renderer)
     TTF_SubString cursor;
     if (edit->cursor_visible && TTF_GetTextSubString(edit->text, edit->cursor, &cursor)) {
         SDL_FRect cursorRect;
+
+        SDL_RectToFRect(&cursor.rect, &cursorRect);
         if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
-            cursorRect.x = x + cursor.rect.x + cursor.rect.w;
-        } else {
-            cursorRect.x = x + cursor.rect.x;
+            cursorRect.x += cursor.rect.w;
         }
-        cursorRect.y = y + cursor.rect.y;
+        cursorRect.x += x;
+        cursorRect.y += y;
         cursorRect.w = 1.0f;
-        cursorRect.h = (float)cursor.rect.h;
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
         SDL_RenderFillRect(renderer, &cursorRect);
@@ -357,8 +357,8 @@ static bool HandleMouseMotion(EditBox *edit, float x, float y)
 
     /* Set the highlight position */
     TTF_SubString substring;
-    int textX = (int)SDL_roundf(x - (edit->rect.x + 4.0f));
-    int textY = (int)SDL_roundf(y - (edit->rect.y + 4.0f));
+    int textX = (int)SDL_roundf(x - edit->rect.x);
+    int textY = (int)SDL_roundf(y - edit->rect.y);
     if (!TTF_GetTextSubStringForPoint(edit->text, textX, textY, &substring)) {
         SDL_Log("Couldn't get cursor location: %s\n", SDL_GetError());
         return false;
