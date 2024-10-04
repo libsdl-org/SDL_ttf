@@ -3845,8 +3845,8 @@ static bool LayoutTextWrapped(TTF_Text *text)
         if (!lines) {
             goto done;
         }
-        for (int i = 0; i < (numLines - 1); ++i) {
-            lines[i] = -1;
+        for (int j = 0; j < (numLines - 1); ++j) {
+            lines[j] = -1;
         }
     }
 
