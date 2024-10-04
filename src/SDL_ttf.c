@@ -3449,7 +3449,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
                     save_text = spot;
                     save_length = left;
                     // Break, if new line
-                    if (c == '\n' || c == '\r') {
+                    if (c == '\n' || (c == '\r' && *spot != '\n')) {
                         break;
                     }
                 }
@@ -3472,7 +3472,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
             TTF_Line *line = &strLines[i];
             while (line->length > 0 &&
                    CharacterIsDelimiter(line->text[line->length - 1]) &&
-                   line->text[line->length - 1] != '\n') {
+                   !CharacterIsNewLine(line->text[line->length - 1])) {
                 --line->length;
             }
         }
@@ -3853,6 +3853,10 @@ static bool LayoutTextWrapped(TTF_Text *text)
     // Render each line
     for (i = 0; i < numLines; i++) {
         int xstart, ystart, line_width, xoffset;
+
+        if (strLines[i].length == 0) {
+            continue;
+        }
 
         // Initialize xstart, ystart and compute positions
         if (!TTF_Size_Internal(font, strLines[i].text, strLines[i].length, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
