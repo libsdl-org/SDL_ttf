@@ -3001,7 +3001,13 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
     hb_buffer_guess_segment_properties(hb_buffer);
 
     // Layout the text
-    hb_buffer_add_utf8(hb_buffer, text, (int)length, 0, -1);
+    if (length > 0 && text[length - 1] == '\n') {
+        // Replace newline with ZERO WIDTH SPACE
+        hb_buffer_add_utf8(hb_buffer, text, (int)(length - 1), 0, -1);
+        hb_buffer_add_utf8(hb_buffer, "\xE2\x80\x8B", 3, 0, -1);
+    } else {
+        hb_buffer_add_utf8(hb_buffer, text, (int)length, 0, -1);
+    }
 
     hb_feature_t userfeatures[1];
     userfeatures[0].tag = HB_TAG('k','e','r','n');
@@ -3017,8 +3023,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
 
     // Load and render each character
     int offset = 0;
-    for (g = 0; g < glyph_count; g++)
-    {
+    for (g = 0; g < glyph_count; g++) {
         FT_UInt idx   = hb_glyph_info[g].codepoint;
         int x_advance = hb_glyph_position[g].x_advance;
         int y_advance = hb_glyph_position[g].y_advance;
@@ -3038,6 +3043,9 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
 
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
+        }
+        if (c == '\n') {
+            c = 0x200B; // ZERO WIDTH SPACE
         }
 #endif
         if (!Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, &glyph, NULL)) {
@@ -3462,7 +3470,9 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
         // Trim whitespace from the wrapped lines
         for (i = 0; i < (numLines - 1); ++i) {
             TTF_Line *line = &strLines[i];
-            while (line->length > 0 && CharacterIsDelimiter(line->text[line->length - 1])) {
+            while (line->length > 0 &&
+                   CharacterIsDelimiter(line->text[line->length - 1]) &&
+                   line->text[line->length - 1] != '\n') {
                 --line->length;
             }
         }
