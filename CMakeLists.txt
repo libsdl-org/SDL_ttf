@@ -356,7 +356,7 @@ endif()
 
 if(SDLTTF_SAMPLES)
     add_executable(glfont examples/glfont.c)
-    add_executable(showfont examples/showfont.c)
+    add_executable(showfont examples/showfont.c examples/editbox.c)
     add_executable(testapp examples/testapp.c)
 
     set(OpenGL_GL_PREFERENCE GLVND)
