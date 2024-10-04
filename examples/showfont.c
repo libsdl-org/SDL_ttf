@@ -118,8 +118,9 @@ static void DrawScene(Scene *scene)
         if (GetHighlightExtents(scene, &marker1, &marker2)) {
             TTF_SubString **highlights = TTF_GetTextSubStringsForRange(scene->text, marker1, marker2, NULL);
             if (highlights) {
+                int i;
                 SDL_SetRenderDrawColor(renderer, 0xCC, 0xCC, 0x00, 0xFF);
-                for (int i = 0; highlights[i]; ++i) {
+                for (i = 0; highlights[i]; ++i) {
                     SDL_FRect rect;
                     SDL_RectToFRect(&highlights[i]->rect, &rect);
                     rect.x += x;
