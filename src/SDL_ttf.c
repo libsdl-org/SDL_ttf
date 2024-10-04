@@ -3949,7 +3949,7 @@ static void DestroyEngineText(TTF_Text *text)
 static bool CreateEngineText(TTF_Text *text)
 {
     TTF_TextEngine *engine = text->internal->engine;
-    if (engine && engine->CreateText && text->internal->font && text->text) {
+    if (engine && engine->CreateText && text->internal->num_ops > 0) {
         if (!engine->CreateText(engine->userdata, text)) {
             return false;
         }
