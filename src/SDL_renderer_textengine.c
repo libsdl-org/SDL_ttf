@@ -537,8 +537,6 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
         return NULL;
     }
 
-    SDL_assert(num_ops > 0);
-
     SDL_Texture *texture = GetOperationTexture(&ops[0]);
     TTF_DrawOperation *end = NULL;
     for (int i = 1; i < num_ops; ++i) {
