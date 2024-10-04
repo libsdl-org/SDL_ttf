@@ -14,18 +14,6 @@
 #define CURSOR_BLINK_INTERVAL_MS    500
 
 
-static bool GetHighlightExtents(EditBox *edit, int *marker1, int *marker2)
-{
-    if (edit->highlight1 >= 0 && edit->highlight2 >= 0) {
-        *marker1 = SDL_min(edit->highlight1, edit->highlight2);
-        *marker2 = SDL_max(edit->highlight1, edit->highlight2) - 1;
-        if (*marker2 > *marker1) {
-            return true;
-        }
-    }
-    return false;
-}
-
 EditBox *EditBox_Create(TTF_Text *text, const SDL_FRect *rect)
 {
     EditBox *edit = (EditBox *)SDL_calloc(1, sizeof(*edit));
@@ -49,6 +37,18 @@ void EditBox_Destroy(EditBox *edit)
     }
 
     SDL_free(edit);
+}
+
+static bool GetHighlightExtents(EditBox *edit, int *marker1, int *marker2)
+{
+    if (edit->highlight1 >= 0 && edit->highlight2 >= 0) {
+        *marker1 = SDL_min(edit->highlight1, edit->highlight2);
+        *marker2 = SDL_max(edit->highlight1, edit->highlight2) - 1;
+        if (*marker2 > *marker1) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void EditBox_Draw(EditBox *edit, SDL_Renderer *renderer)
@@ -137,7 +137,7 @@ static void MoveCursorIndex(EditBox *edit, int direction)
         }
     } else {
         if (TTF_GetTextSubString(edit->text, edit->cursor, &substring) &&
-            TTF_GetTextSubString(edit->text, substring.offset + substring.length, &substring)) {
+            TTF_GetTextSubString(edit->text, substring.offset + SDL_max(substring.length, 1), &substring)) {
             edit->cursor = substring.offset;
         }
     }
