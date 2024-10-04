@@ -584,9 +584,9 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
 
         float *texcoords = sequence->texcoords;
         for (int i = 0; i < count; ++i) {
-            AtlasGlyph *glyph = (AtlasGlyph *)ops[i].copy.reserved;
-            SDL_memcpy(texcoords, glyph->texcoords, sizeof(glyph->texcoords));
-            texcoords += SDL_arraysize(glyph->texcoords);
+            AtlasGlyph *glyph2 = (AtlasGlyph *)ops[i].copy.reserved;
+            SDL_memcpy(texcoords, glyph2->texcoords, sizeof(glyph2->texcoords));
+            texcoords += SDL_arraysize(glyph2->texcoords);
         }
     }
 
