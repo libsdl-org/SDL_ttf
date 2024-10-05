@@ -581,7 +581,7 @@ int main(int argc, char *argv[])
                     } else if (scene.textFocus) {
                         EditBox_HandleEvent(scene.edit, &event);
                     } else {
-                        HandleKeyDown HandleKeyDown(&scene, &event);
+                        HandleKeyDown(&scene, &event);
                     }
                     break;
 
