@@ -1743,8 +1743,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringForLine(TTF_Text *text, int
  *
  * \param text the TTF_Text to query.
  * \param offset a byte offset into the text string.
- * \param length the length of the range being queried, in bytes, or -1 for the
- *               remainder of the string.
+ * \param length the length of the range being queried, in bytes, or -1 for
+ *               the remainder of the string.
  * \param count a pointer filled in with the number of substrings returned,
  *              may be NULL.
  * \returns a NULL terminated array of substring pointers or NULL on failure;
