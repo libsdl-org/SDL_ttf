@@ -14,18 +14,335 @@
 #define CURSOR_BLINK_INTERVAL_MS    500
 
 
-EditBox *EditBox_Create(TTF_Text *text, const SDL_FRect *rect)
+static void DrawText(EditBox *edit, TTF_Text *text, float x, float y)
+{
+#ifdef TEST_SURFACE_ENGINE
+    if (edit->window_surface) {
+        /* Flush the renderer so we can draw directly to the window surface */
+        SDL_FlushRenderer(edit->renderer);
+        TTF_DrawSurfaceText(text, (int)SDL_roundf(x), (int)SDL_roundf(y), edit->window_surface);
+        return;
+    }
+#endif /* TEST_SURFACE_ENGINE */
+
+    TTF_DrawRendererText(text, x, y);
+}
+
+static bool GetHighlightExtents(EditBox *edit, int *marker, int *length)
+{
+    if (edit->highlight1 >= 0 && edit->highlight2 >= 0) {
+        int marker1 = SDL_min(edit->highlight1, edit->highlight2);
+        int marker2 = SDL_max(edit->highlight1, edit->highlight2);
+        if (marker2 > marker1) {
+            *marker = marker1;
+            *length = marker2 - marker1;
+            return true;
+        }
+    }
+    return false;
+}
+
+static void ResetComposition(EditBox *edit)
+{
+    edit->composition_start = 0;
+    edit->composition_length = 0;
+    edit->composition_cursor = 0;
+    edit->composition_cursor_length = 0;
+}
+
+static int UTF8ByteLength(const char *text, int num_codepoints)
+{
+    const char *start = text;
+    while (num_codepoints > 0) {
+        Uint32 ch = SDL_StepUTF8(&text, NULL);
+        if (ch == 0) {
+            break;
+        }
+        --num_codepoints;
+    }
+    return (int)(uintptr_t)(text - start);
+}
+
+static void HandleComposition(EditBox *edit, const SDL_TextEditingEvent *event)
+{
+    EditBox_DeleteHighlight(edit);
+
+    if (edit->composition_length > 0) {
+        TTF_DeleteTextString(edit->text, edit->composition_start, edit->composition_length);
+        ResetComposition(edit);
+    }
+
+    int length = (int)SDL_strlen(event->text);
+    if (length > 0) {
+        edit->composition_start = edit->cursor;
+        edit->composition_length = length;
+        TTF_InsertTextString(edit->text, edit->composition_start, event->text, edit->composition_length);
+        if (event->start > 0 || event->length > 0) {
+            edit->composition_cursor = UTF8ByteLength(&edit->text->text[edit->composition_start], event->start);
+            edit->composition_cursor_length = UTF8ByteLength(&edit->text->text[edit->composition_start + edit->composition_cursor], event->length);
+        } else {
+            edit->composition_cursor = length;
+            edit->composition_cursor_length = 0;
+        }
+    }
+}
+
+static void CancelComposition(EditBox *edit)
+{
+    ResetComposition(edit);
+
+    SDL_ClearComposition(edit->window);
+}
+
+static void DrawComposition(EditBox *edit)
+{
+    /* Draw an underline under the composed text */
+    SDL_Renderer *renderer = edit->renderer;
+    int font_height = TTF_GetFontHeight(edit->font);
+    TTF_SubString **substrings = TTF_GetTextSubStringsForRange(edit->text, edit->composition_start, edit->composition_length, NULL);
+    if (substrings) {
+        for (int i = 0; substrings[i]; ++i) {
+            SDL_FRect rect;
+            SDL_RectToFRect(&substrings[i]->rect, &rect);
+            rect.x += edit->rect.x;
+            rect.y += (edit->rect.y + font_height);
+            rect.h = 1.0f;
+            SDL_RenderFillRect(renderer, &rect);
+        }
+        SDL_free(substrings);
+    }
+
+    /* Thicken the underline under the active clause in the composed text */
+    if (edit->composition_cursor_length > 0) {
+        substrings = TTF_GetTextSubStringsForRange(edit->text, edit->composition_start + edit->composition_cursor, edit->composition_cursor_length, NULL);
+        if (substrings) {
+            for (int i = 0; substrings[i]; ++i) {
+                SDL_FRect rect;
+                SDL_RectToFRect(&substrings[i]->rect, &rect);
+                rect.x += edit->rect.x;
+                rect.y += (edit->rect.y + font_height) - 1;
+                rect.h = 1.0f;
+                SDL_RenderFillRect(renderer, &rect);
+            }
+            SDL_free(substrings);
+        }
+    }
+}
+
+static void DrawCompositionCursor(EditBox *edit)
+{
+    SDL_Renderer *renderer = edit->renderer;
+    if (edit->composition_cursor_length == 0) {
+        TTF_SubString cursor;
+        if (TTF_GetTextSubString(edit->text, edit->composition_start + edit->composition_cursor, &cursor)) {
+            SDL_FRect rect;
+
+            SDL_RectToFRect(&cursor.rect, &rect);
+            if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
+                rect.x += cursor.rect.w;
+            }
+            rect.x += edit->rect.x;
+            rect.y += edit->rect.y;
+            rect.w = 1.0f;
+
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+            SDL_RenderFillRect(renderer, &rect);
+        }
+    }
+}
+
+static void ClearCandidates(EditBox *edit)
+{
+    if (edit->candidates) {
+        TTF_DestroyText(edit->candidates);
+        edit->candidates = NULL;
+    }
+    edit->selected_candidate_start = 0;
+    edit->selected_candidate_length = 0;
+}
+
+static void SaveCandidates(EditBox *edit, const SDL_Event *event)
+{
+    int i;
+
+    ClearCandidates(edit);
+
+    bool horizontal = event->edit_candidates.horizontal;
+    int num_candidates = event->edit_candidates.num_candidates;
+    int selected_candidate = event->edit_candidates.selected_candidate;
+
+    /* Calculate the length of the candidates text */
+    size_t length = 0;
+    for (i = 0; i < num_candidates; ++i) {
+        if (horizontal) {
+            if (i > 0) {
+                ++length;
+            }
+        }
+
+        length += SDL_strlen(event->edit_candidates.candidates[i]);
+
+        if (!horizontal) {
+            length += 1;
+        }
+    }
+    if (length == 0) {
+        return;
+    }
+    ++length; /* For null terminator */
+
+    char *candidate_text = (char *)SDL_malloc(length);
+    if (!candidate_text) {
+        return;
+    }
+
+    char *dst = candidate_text;
+    for (i = 0; i < num_candidates; ++i) {
+        if (horizontal) {
+            if (i > 0) {
+                *dst++ = ' ';
+            }
+        }
+
+        int length = (int)SDL_strlen(event->edit_candidates.candidates[i]);
+        if (i == selected_candidate) {
+            edit->selected_candidate_start = (int)(uintptr_t)(dst - candidate_text);
+            edit->selected_candidate_length = length;
+            SDL_Log("Selected candidate: %d/%d\n", edit->selected_candidate_start, edit->selected_candidate_length);
+        }
+        SDL_memcpy(dst, event->edit_candidates.candidates[i], length);
+        dst += length;
+
+        if (!horizontal) {
+            *dst++ = '\n';
+        }
+    }
+    *dst = '\0';
+
+    edit->candidates = TTF_CreateText_Wrapped(TTF_GetTextEngine(edit->text), edit->font, candidate_text, 0, 0);
+    SDL_free(candidate_text);
+    if (edit->candidates) {
+        SDL_copyp(&edit->candidates->color, &edit->text->color);
+    } else {
+        ClearCandidates(edit);
+    }
+}
+
+static void DrawCandidates(EditBox *edit)
+{
+    SDL_Renderer *renderer = edit->renderer;
+    SDL_Rect safe_rect;
+    SDL_FRect candidates_rect;
+    int candidates_w;
+    int candidates_h;
+    float x, y;
+
+    /* Position the candidate window */
+    SDL_GetRenderSafeArea(renderer, &safe_rect);
+    TTF_GetTextSize(edit->candidates, &candidates_w, &candidates_h);
+    candidates_rect.x = edit->cursor_rect.x;
+    candidates_rect.y = edit->cursor_rect.y + edit->cursor_rect.h + 2.0f;
+    candidates_rect.w = 1.0f + 2.0f + candidates_w + 2.0f + 1.0f;
+    candidates_rect.h = 1.0f + 2.0f + candidates_h + 2.0f + 1.0f;
+    if ((candidates_rect.x + candidates_rect.w) > safe_rect.w) {
+        candidates_rect.x = (safe_rect.w - candidates_rect.w);
+        if (candidates_rect.x < 0.0f) {
+            candidates_rect.x = 0.0f;
+        }
+    }
+
+    /* Draw the candidate background */
+    SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF);
+    SDL_RenderFillRect(renderer, &candidates_rect);
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+    SDL_RenderRect(renderer, &candidates_rect);
+
+    /* Draw the candidates */
+    x = candidates_rect.x + 3.0f;
+    y = candidates_rect.y + 3.0f;
+    DrawText(edit, edit->candidates, x, y);
+
+    /* Underline the selected candidate */
+    if (edit->selected_candidate_length > 0) {
+        int font_height = TTF_GetFontHeight(edit->font);
+        TTF_SubString **substrings = TTF_GetTextSubStringsForRange(edit->candidates, edit->selected_candidate_start, edit->selected_candidate_length, NULL);
+        if (substrings) {
+            for (int i = 0; substrings[i]; ++i) {
+                SDL_FRect rect;
+                SDL_RectToFRect(&substrings[i]->rect, &rect);
+                rect.x += x;
+                rect.y += (y + font_height);
+                rect.h = 1.0f;
+                SDL_RenderFillRect(renderer, &rect);
+            }
+            SDL_free(substrings);
+        }
+    }
+}
+
+static void UpdateTextInputArea(EditBox *edit)
+{
+    /* Convert the text input area and cursor into window coordinates */
+    SDL_Renderer *renderer = edit->renderer;
+    SDL_FPoint window_edit_rect_min;
+    SDL_FPoint window_edit_rect_max;
+    SDL_FPoint window_cursor;
+    if (!SDL_RenderCoordinatesToWindow(renderer, edit->rect.x, edit->rect.y, &window_edit_rect_min.x, &window_edit_rect_min.y) ||
+        !SDL_RenderCoordinatesToWindow(renderer, edit->rect.x + edit->rect.w, edit->rect.y + edit->rect.h, &window_edit_rect_max.x, &window_edit_rect_max.y) ||
+        !SDL_RenderCoordinatesToWindow(renderer, edit->cursor_rect.x, edit->cursor_rect.y, &window_cursor.x, &window_cursor.y)) {
+        return;
+    }
+
+    SDL_Rect rect;
+    rect.x = (int)SDL_floorf(window_edit_rect_min.x);
+    rect.y = (int)SDL_floorf(window_edit_rect_min.y);
+    rect.w = (int)SDL_floorf(window_edit_rect_max.x - window_edit_rect_min.x);
+    rect.h = (int)SDL_floorf(window_edit_rect_max.y - window_edit_rect_min.y);
+    int cursor_offset = (int)SDL_roundf(window_cursor.x - window_edit_rect_min.x);
+    SDL_SetTextInputArea(edit->window, &rect, cursor_offset);
+}
+
+static void DrawCursor(EditBox *edit)
+{
+    if (edit->composition_length > 0) {
+        DrawCompositionCursor(edit);
+        return;
+    }
+
+    SDL_Renderer *renderer = edit->renderer;
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+    SDL_RenderFillRect(renderer, &edit->cursor_rect);
+}
+
+EditBox *EditBox_Create(SDL_Window *window, SDL_Renderer *renderer, TTF_TextEngine *engine, TTF_Font *font, const SDL_FRect *rect)
 {
     EditBox *edit = (EditBox *)SDL_calloc(1, sizeof(*edit));
     if (!edit) {
         return NULL;
     }
 
-    edit->text = text;
-    edit->font = TTF_GetTextFont(text);
+    edit->window = window;
+    edit->renderer = renderer;
+    edit->font = font;
+    edit->text = TTF_CreateText_Wrapped(engine, font, NULL, 0, (int)SDL_floorf(rect->w));
+    if (!edit->text) {
+        EditBox_Destroy(edit);
+        return NULL;
+    }
     edit->rect = *rect;
     edit->highlight1 = -1;
     edit->highlight2 = -1;
+
+#ifdef TEST_SURFACE_ENGINE
+    /* Grab the window surface if we want to test the surface text engine.
+     * This isn't strictly necessary, we can still use the renderer if it's
+     * a software renderer targeting an SDL_Surface.
+     */
+    edit->window_surface = (SDL_Surface *)SDL_GetPointerProperty(SDL_GetRendererProperties(renderer), SDL_PROP_RENDERER_SURFACE_POINTER, NULL);
+#endif
+
+    /* We support rendering the composition and candidates */
+    SDL_SetHint(SDL_HINT_IME_IMPLEMENTED_UI, "composition,candidates");
 
     return edit;
 }
@@ -36,37 +353,47 @@ void EditBox_Destroy(EditBox *edit)
         return;
     }
 
+    ClearCandidates(edit);
+    TTF_DestroyText(edit->text);
     SDL_free(edit);
 }
 
-static bool GetHighlightExtents(EditBox *edit, int *marker1, int *marker2)
-{
-    if (edit->highlight1 >= 0 && edit->highlight2 >= 0) {
-        *marker1 = SDL_min(edit->highlight1, edit->highlight2);
-        *marker2 = SDL_max(edit->highlight1, edit->highlight2) - 1;
-        if (*marker2 >= *marker1) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void EditBox_Draw(EditBox *edit, SDL_Renderer *renderer)
+void EditBox_SetFocus(EditBox *edit, bool focus)
 {
     if (!edit) {
         return;
     }
 
+    if (edit->has_focus == focus) {
+        return;
+    }
+
+    edit->has_focus = focus;
+
+    if (edit->has_focus) {
+        SDL_StartTextInput(edit->window);
+    } else {
+        SDL_StopTextInput(edit->window);
+    }
+}
+
+void EditBox_Draw(EditBox *edit)
+{
+    if (!edit) {
+        return;
+    }
+
+    SDL_Renderer *renderer = edit->renderer;
     float x = edit->rect.x;
     float y = edit->rect.y;
 
     /* Draw any highlight */
-    int marker1, marker2;
-    if (GetHighlightExtents(edit, &marker1, &marker2)) {
-        TTF_SubString **highlights = TTF_GetTextSubStringsForRange(edit->text, marker1, marker2, NULL);
+    int marker, length;
+    if (GetHighlightExtents(edit, &marker, &length)) {
+        TTF_SubString **highlights = TTF_GetTextSubStringsForRange(edit->text, marker, length, NULL);
         if (highlights) {
             int i;
-            SDL_SetRenderDrawColor(renderer, 0xCC, 0xCC, 0x00, 0xFF);
+            SDL_SetRenderDrawColor(renderer, 0xEE, 0xEE, 0x00, 0xFF);
             for (i = 0; highlights[i]; ++i) {
                 SDL_FRect rect;
                 SDL_RectToFRect(&highlights[i]->rect, &rect);
@@ -78,35 +405,43 @@ void EditBox_Draw(EditBox *edit, SDL_Renderer *renderer)
         }
     }
 
-    if (edit->window_surface) {
-        /* Flush the renderer so we can draw directly to the window surface */
-        SDL_FlushRenderer(renderer);
-        TTF_DrawSurfaceText(edit->text, (int)x, (int)y, edit->window_surface);
-    } else {
-        TTF_DrawRendererText(edit->text, x, y);
-    }
+    DrawText(edit, edit->text, x, y);
 
-    /* Draw the cursor */
-    Uint64 now = SDL_GetTicks();
-    if ((now - edit->last_cursor_change) >= CURSOR_BLINK_INTERVAL_MS) {
-        edit->cursor_visible = !edit->cursor_visible;
-        edit->last_cursor_change = now;
-    }
-
-    TTF_SubString cursor;
-    if (edit->cursor_visible && TTF_GetTextSubString(edit->text, edit->cursor, &cursor)) {
-        SDL_FRect cursorRect;
-
-        SDL_RectToFRect(&cursor.rect, &cursorRect);
-        if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
-            cursorRect.x += cursor.rect.w;
+    if (edit->has_focus) {
+        /* Draw the cursor */
+        Uint64 now = SDL_GetTicks();
+        if ((now - edit->last_cursor_change) >= CURSOR_BLINK_INTERVAL_MS) {
+            edit->cursor_visible = !edit->cursor_visible;
+            edit->last_cursor_change = now;
         }
-        cursorRect.x += x;
-        cursorRect.y += y;
-        cursorRect.w = 1.0f;
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
-        SDL_RenderFillRect(renderer, &cursorRect);
+        /* Calculate the cursor rect, used for positioning candidates */
+        TTF_SubString cursor;
+        if (TTF_GetTextSubString(edit->text, edit->cursor, &cursor)) {
+            SDL_FRect cursor_rect;
+            SDL_RectToFRect(&cursor.rect, &cursor_rect);
+            if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
+                cursor_rect.x += cursor.rect.w;
+            }
+            cursor_rect.x += edit->rect.x;
+            cursor_rect.y += edit->rect.y;
+            cursor_rect.w = 1.0f;
+            SDL_copyp(&edit->cursor_rect, &cursor_rect);
+
+            UpdateTextInputArea(edit);
+        }
+
+        if (edit->composition_length > 0) {
+            DrawComposition(edit);
+        }
+
+        if (edit->candidates) {
+            DrawCandidates(edit);
+        }
+
+        if (edit->cursor_visible) {
+            DrawCursor(edit);
+        }
     }
 }
 
@@ -127,18 +462,32 @@ static int GetCursorTextIndex(TTF_Font *font, int x, const TTF_SubString *substr
     }
 }
 
+static void SetCursorPosition(EditBox *edit, int position)
+{
+    if (edit->composition_length > 0) {
+        /* Don't let the cursor be moved into the composition */
+        if (position >= edit->composition_start && position <= (edit->composition_start + edit->composition_length)) {
+            return;
+        }
+
+        CancelComposition(edit);
+    }
+
+    edit->cursor = position;
+}
+
 static void MoveCursorIndex(EditBox *edit, int direction)
 {
     TTF_SubString substring;
 
     if (direction < 0) {
         if (TTF_GetTextSubString(edit->text, edit->cursor - 1, &substring)) {
-            edit->cursor = substring.offset;
+            SetCursorPosition(edit, substring.offset);
         }
     } else {
         if (TTF_GetTextSubString(edit->text, edit->cursor, &substring) &&
             TTF_GetTextSubString(edit->text, substring.offset + SDL_max(substring.length, 1), &substring)) {
-            edit->cursor = substring.offset;
+            SetCursorPosition(edit, substring.offset);
         }
     }
 }
@@ -186,7 +535,7 @@ void EditBox_MoveCursorUp(EditBox *edit)
         }
         y = substring.rect.y - fontHeight;
         if (TTF_GetTextSubStringForPoint(edit->text, x, y, &substring)) {
-            edit->cursor = GetCursorTextIndex(edit->font, x, &substring);
+            SetCursorPosition(edit, GetCursorTextIndex(edit->font, x, &substring));
         }
     }
 }
@@ -208,7 +557,7 @@ void EditBox_MoveCursorDown(EditBox *edit)
         }
         y = substring.rect.y + substring.rect.h + fontHeight;
         if (TTF_GetTextSubStringForPoint(edit->text, x, y, &substring)) {
-            edit->cursor = GetCursorTextIndex(edit->font, x, &substring);
+            SetCursorPosition(edit, GetCursorTextIndex(edit->font, x, &substring));
         }
     }
 }
@@ -222,7 +571,7 @@ void EditBox_MoveCursorBeginningOfLine(EditBox *edit)
     TTF_SubString substring;
     if (TTF_GetTextSubString(edit->text, edit->cursor, &substring) &&
         TTF_GetTextSubStringForLine(edit->text, substring.line_index, &substring)) {
-        edit->cursor = substring.offset;
+        SetCursorPosition(edit, substring.offset);
     }
 }
 
@@ -235,7 +584,7 @@ void EditBox_MoveCursorEndOfLine(EditBox *edit)
     TTF_SubString substring;
     if (TTF_GetTextSubString(edit->text, edit->cursor, &substring) &&
         TTF_GetTextSubStringForLine(edit->text, substring.line_index, &substring)) {
-        edit->cursor = substring.offset + substring.length;
+        SetCursorPosition(edit, substring.offset + substring.length);
     }
 }
 
@@ -246,7 +595,7 @@ void EditBox_MoveCursorBeginning(EditBox *edit)
     }
 
     /* Move to the beginning of the text */
-    edit->cursor = 0;
+    SetCursorPosition(edit, 0);
 }
 
 void EditBox_MoveCursorEnd(EditBox *edit)
@@ -257,7 +606,7 @@ void EditBox_MoveCursorEnd(EditBox *edit)
 
     /* Move to the end of the text */
     if (edit->text->text) {
-        edit->cursor = (int)SDL_strlen(edit->text->text);
+        SetCursorPosition(edit, (int)SDL_strlen(edit->text->text));
     }
 }
 
@@ -294,7 +643,7 @@ void EditBox_BackspaceToBeginning(EditBox *edit)
 
     /* Delete to the beginning of the string */
     TTF_DeleteTextString(edit->text, 0, edit->cursor);
-    edit->cursor = 0;
+    SetCursorPosition(edit, 0);
 }
 
 void EditBox_DeleteToEnd(EditBox *edit)
@@ -329,7 +678,16 @@ static bool HandleMouseDown(EditBox *edit, float x, float y)
 {
     SDL_FPoint pt = { x, y };
     if (!SDL_PointInRectFloat(&pt, &edit->rect)) {
+        if (edit->has_focus) {
+            EditBox_SetFocus(edit, false);
+            return true;
+        }
         return false;
+    }
+
+    if (!edit->has_focus) {
+        EditBox_SetFocus(edit, true);
+        return true;
     }
 
     /* Set the cursor position */
@@ -341,7 +699,7 @@ static bool HandleMouseDown(EditBox *edit, float x, float y)
         return false;
     }
 
-    edit->cursor = GetCursorTextIndex(edit->font, textX, &substring);
+    SetCursorPosition(edit, GetCursorTextIndex(edit->font, textX, &substring));
     edit->highlighting = true;
     edit->highlight1 = edit->cursor;
     edit->highlight2 = -1;
@@ -364,7 +722,7 @@ static bool HandleMouseMotion(EditBox *edit, float x, float y)
         return false;
     }
 
-    edit->cursor = GetCursorTextIndex(edit->font, textX, &substring);
+    SetCursorPosition(edit, GetCursorTextIndex(edit->font, textX, &substring));
     edit->highlight2 = edit->cursor;
 
     return true;
@@ -398,11 +756,10 @@ bool EditBox_DeleteHighlight(EditBox *edit)
         return false;
     }
 
-    int marker1, marker2;
-    if (GetHighlightExtents(edit, &marker1, &marker2)) {
-        size_t length = marker2 - marker1 + 1;
-        TTF_DeleteTextString(edit->text, marker1, (int)length);
-        edit->cursor = marker1;
+    int marker, length;
+    if (GetHighlightExtents(edit, &marker, &length)) {
+        TTF_DeleteTextString(edit->text, marker, length);
+        SetCursorPosition(edit, marker);
         edit->highlight1 = -1;
         edit->highlight2 = -1;
         return true;
@@ -416,12 +773,11 @@ void EditBox_Copy(EditBox *edit)
         return;
     }
 
-    int marker1, marker2;
-    if (GetHighlightExtents(edit, &marker1, &marker2)) {
-        size_t length = marker2 - marker1 + 1;
+    int marker, length;
+    if (GetHighlightExtents(edit, &marker, &length)) {
         char *temp = (char *)SDL_malloc(length + 1);
         if (temp) {
-            SDL_memcpy(temp, &edit->text->text[marker1], length);
+            SDL_memcpy(temp, &edit->text->text[marker], length);
             temp[length] = '\0';
             SDL_SetClipboardText(temp);
             SDL_free(temp);
@@ -438,18 +794,17 @@ void EditBox_Cut(EditBox *edit)
     }
 
     /* Copy to clipboard and delete text */
-    int marker1, marker2;
-    if (GetHighlightExtents(edit, &marker1, &marker2)) {
-        size_t length = marker2 - marker1 + 1;
+    int marker, length;
+    if (GetHighlightExtents(edit, &marker, &length)) {
         char *temp = (char *)SDL_malloc(length + 1);
         if (temp) {
-            SDL_memcpy(temp, &edit->text->text[marker1], length);
+            SDL_memcpy(temp, &edit->text->text[marker], length);
             temp[length] = '\0';
-            SDL_SetClipboardText(edit->text->text);
+            SDL_SetClipboardText(temp);
             SDL_free(temp);
         }
-        TTF_DeleteTextString(edit->text, marker1, (int)length);
-        edit->cursor = marker1;
+        TTF_DeleteTextString(edit->text, marker, length);
+        SetCursorPosition(edit, marker);
         edit->highlight1 = -1;
         edit->highlight2 = -1;
     } else {
@@ -467,7 +822,7 @@ void EditBox_Paste(EditBox *edit)
     const char *text = SDL_GetClipboardText();
     size_t length = SDL_strlen(text);
     TTF_InsertTextString(edit->text, edit->cursor, text, length);
-    edit->cursor = (int)(edit->cursor + length);
+    SetCursorPosition(edit, (int)(edit->cursor + length));
 }
 
 void EditBox_Insert(EditBox *edit, const char *text)
@@ -476,9 +831,16 @@ void EditBox_Insert(EditBox *edit, const char *text)
         return;
     }
 
+    EditBox_DeleteHighlight(edit);
+
+    if (edit->composition_length > 0) {
+        TTF_DeleteTextString(edit->text, edit->composition_start, edit->composition_length);
+        edit->composition_length = 0;
+    }
+
     size_t length = SDL_strlen(text);
     TTF_InsertTextString(edit->text, edit->cursor, text, length);
-    edit->cursor = (int)(edit->cursor + length);
+    SetCursorPosition(edit, (int)(edit->cursor + length));
 }
 
 bool EditBox_HandleEvent(EditBox *edit, SDL_Event *event)
@@ -498,31 +860,31 @@ bool EditBox_HandleEvent(EditBox *edit, SDL_Event *event)
         return HandleMouseUp(edit, event->button.x, event->button.y);
 
     case SDL_EVENT_KEY_DOWN:
+        if (!edit->has_focus) {
+            break;
+        }
+
         switch (event->key.key) {
         case SDLK_A:
             if (event->key.mod & SDL_KMOD_CTRL) {
                 EditBox_SelectAll(edit);
-                return true;
             }
             break;
         case SDLK_C:
             if (event->key.mod & SDL_KMOD_CTRL) {
                 EditBox_Copy(edit);
-                return true;
             }
             break;
 
         case SDLK_V:
             if (event->key.mod & SDL_KMOD_CTRL) {
                 EditBox_Paste(edit);
-                return true;
             }
             break;
 
         case SDLK_X:
             if (event->key.mod & SDL_KMOD_CTRL) {
                 EditBox_Cut(edit);
-                return true;
             }
             break;
 
@@ -532,7 +894,7 @@ bool EditBox_HandleEvent(EditBox *edit, SDL_Event *event)
             } else {
                 EditBox_MoveCursorLeft(edit);
             }
-            return true;
+            break;
 
         case SDLK_RIGHT:
             if (event->key.mod & SDL_KMOD_CTRL) {
@@ -540,7 +902,7 @@ bool EditBox_HandleEvent(EditBox *edit, SDL_Event *event)
             } else {
                 EditBox_MoveCursorRight(edit);
             }
-            return true;
+            break;
 
         case SDLK_UP:
             if (event->key.mod & SDL_KMOD_CTRL) {
@@ -548,7 +910,7 @@ bool EditBox_HandleEvent(EditBox *edit, SDL_Event *event)
             } else {
                 EditBox_MoveCursorUp(edit);
             }
-            return true;
+            break;
 
         case SDLK_DOWN:
             if (event->key.mod & SDL_KMOD_CTRL) {
@@ -556,15 +918,15 @@ bool EditBox_HandleEvent(EditBox *edit, SDL_Event *event)
             } else {
                 EditBox_MoveCursorDown(edit);
             }
-            return true;
+            break;
 
         case SDLK_HOME:
             EditBox_MoveCursorBeginning(edit);
-            return true;
+            break;
 
         case SDLK_END:
             EditBox_MoveCursorEnd(edit);
-            return true;
+            break;
 
         case SDLK_BACKSPACE:
             if (event->key.mod & SDL_KMOD_CTRL) {
@@ -572,7 +934,7 @@ bool EditBox_HandleEvent(EditBox *edit, SDL_Event *event)
             } else {
                 EditBox_Backspace(edit);
             }
-            return true;
+            break;
 
         case SDLK_DELETE:
             if (event->key.mod & SDL_KMOD_CTRL) {
@@ -580,16 +942,29 @@ bool EditBox_HandleEvent(EditBox *edit, SDL_Event *event)
             } else {
                 EditBox_Delete(edit);
             }
-            return true;
+            break;
+
+        case SDLK_ESCAPE:
+            EditBox_SetFocus(edit, false);
+            break;
 
         default:
             break;
         }
-        break;
+        return true;
 
     case SDL_EVENT_TEXT_INPUT:
         EditBox_Insert(edit, event->text.text);
         return true;
+
+    case SDL_EVENT_TEXT_EDITING:
+        HandleComposition(edit, &event->edit);
+        break;
+
+    case SDL_EVENT_TEXT_EDITING_CANDIDATES:
+        ClearCandidates(edit);
+        SaveCandidates(edit, event);
+        break;
 
     default:
         break;

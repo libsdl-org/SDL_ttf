@@ -1741,18 +1741,10 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringForLine(TTF_Text *text, int
 /**
  * Get the substrings of a text object that contain a range of text.
  *
- * The smaller offset will be clamped to 0 and the larger offset will be
- * clamped to the length of text minus 1. The substrings that are returned
- * will include the first offset and the second offset inclusive, e.g. {0, 2}
- * of "abcd" will return "abc". If the text is empty, this will return a
- * single zero width substring.
- *
- * If an offset is negative, it will be considered as an offset from the end
- * of the text, so {0, -1} would return substrings for the entire text.
- *
  * \param text the TTF_Text to query.
- * \param offset1 the first byte offset into the text string.
- * \param offset2 the second byte offset into the text string.
+ * \param offset a byte offset into the text string.
+ * \param length the length of the range being queried, in bytes, or -1 for the
+ *               remainder of the string.
  * \param count a pointer filled in with the number of substrings returned,
  *              may be NULL.
  * \returns a NULL terminated array of substring pointers or NULL on failure;
@@ -1760,7 +1752,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringForLine(TTF_Text *text, int
  *          allocation that should be freed with SDL_free() when it is no
  *          longer needed.
  */
-extern SDL_DECLSPEC TTF_SubString ** SDLCALL TTF_GetTextSubStringsForRange(TTF_Text *text, int offset1, int offset2, int *count);
+extern SDL_DECLSPEC TTF_SubString ** SDLCALL TTF_GetTextSubStringsForRange(TTF_Text *text, int offset, int length, int *count);
 
 /**
  * Get the portion of a text string that is closest to a point.

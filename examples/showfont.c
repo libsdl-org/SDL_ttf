@@ -56,6 +56,7 @@ typedef enum
 } TextRenderMethod;
 
 typedef struct {
+    bool done;
     SDL_Window *window;
     SDL_Surface *window_surface;
     SDL_Renderer *renderer;
@@ -65,9 +66,7 @@ typedef struct {
     SDL_Texture *message;
     SDL_FRect messageRect;
     TextEngine textEngine;
-    TTF_Text *text;
     SDL_FRect textRect;
-    bool textFocus;
     EditBox *edit;
 } Scene;
 
@@ -79,12 +78,12 @@ static void DrawScene(Scene *scene)
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
 
-    if (scene->text) {
+    if (scene->edit) {
         /* Clear the text rect to light gray */
         SDL_SetRenderDrawColor(renderer, 0xCC, 0xCC, 0xCC, 0xFF);
         SDL_RenderFillRect(renderer, &scene->textRect);
 
-        if (scene->textFocus) {
+        if (scene->edit->has_focus) {
             SDL_FRect focusRect = scene->textRect;
             focusRect.x -= 1;
             focusRect.y -= 1;
@@ -94,7 +93,7 @@ static void DrawScene(Scene *scene)
             SDL_RenderRect(renderer, &focusRect);
         }
 
-        EditBox_Draw(scene->edit, renderer);
+        EditBox_Draw(scene->edit);
     }
 
     SDL_RenderTexture(renderer, scene->caption, NULL, &scene->captionRect);
@@ -103,21 +102,6 @@ static void DrawScene(Scene *scene)
 
     if (scene->window_surface) {
         SDL_UpdateWindowSurface(scene->window);
-    }
-}
-
-static void SetTextFocus(Scene *scene, bool focused)
-{
-    if (!scene->text) {
-        return;
-    }
-
-    scene->textFocus = focused;
-
-    if (focused) {
-        SDL_StartTextInput(scene->window);
-    } else {
-        SDL_StopTextInput(scene->window);
     }
 }
 
@@ -225,6 +209,10 @@ static void HandleKeyDown(Scene *scene, SDL_Event *event)
         TTF_SetFontSize(scene->font, ptsize - 1.0f);
         break;
 
+    case SDLK_ESCAPE:
+        scene->done = true;
+        break;
+
     default:
         break;
     }
@@ -245,7 +233,6 @@ int main(int argc, char *argv[])
     Scene scene;
     float ptsize;
     int i;
-    bool done = false;
     SDL_Color white = { 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE };
     SDL_Color black = { 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
     SDL_Color *forecol;
@@ -526,67 +513,45 @@ int main(int argc, char *argv[])
         scene.textRect.w = WIDTH / 2 - scene.textRect.x * 2;
         scene.textRect.h = scene.messageRect.y - scene.textRect.y - 16.0f;
 
-        scene.text = TTF_CreateText_Wrapped(engine, font, message, 0, (int)scene.textRect.w - 8);
-        if (scene.text) {
-            scene.text->color.r = forecol->r / 255.0f;
-            scene.text->color.g = forecol->g / 255.0f;
-            scene.text->color.b = forecol->b / 255.0f;
-            scene.text->color.a = forecol->a / 255.0f;
+        SDL_FRect editRect = scene.textRect;
+        editRect.x += 4.0f;
+        editRect.y += 4.0f;
+        editRect.w -= 8.0f;
+        editRect.w -= 8.0f;
+        scene.edit = EditBox_Create(scene.window, scene.renderer, engine, font, &editRect);
+        if (scene.edit) {
+            scene.edit->text->color.r = forecol->r / 255.0f;
+            scene.edit->text->color.g = forecol->g / 255.0f;
+            scene.edit->text->color.b = forecol->b / 255.0f;
+            scene.edit->text->color.a = forecol->a / 255.0f;
 
-            SDL_FRect editRect = scene.textRect;
-            editRect.x += 4.0f;
-            editRect.y += 4.0f;
-            editRect.w -= 8.0f;
-            editRect.w -= 8.0f;
-            scene.edit = EditBox_Create(scene.text, &editRect);
-            if (scene.edit) {
-                scene.edit->window_surface = scene.window_surface;
-            }
+            EditBox_Insert(scene.edit, message);
         }
     }
 
     /* Wait for a keystroke, and blit text on mouse press */
-    while (!done) {
+    while (!scene.done) {
         while (SDL_PollEvent(&event)) {
             SDL_ConvertEventToRenderCoordinates(scene.renderer, &event);
 
             switch (event.type) {
                 case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                    {
-                        SDL_FPoint pt = { event.button.x, event.button.y };
-                        if (SDL_PointInRectFloat(&pt, &scene.textRect)) {
-                            if (scene.textFocus) {
-                                EditBox_HandleEvent(scene.edit, &event);
-                            } else {
-                                SetTextFocus(&scene, true);
-                            }
-                        } else if (scene.textFocus) {
-                            SetTextFocus(&scene, false);
-                        } else {
-                            scene.messageRect.x = (event.button.x - text->w/2);
-                            scene.messageRect.y = (event.button.y - text->h/2);
-                            scene.messageRect.w = (float)text->w;
-                            scene.messageRect.h = (float)text->h;
-                        }
+                    if (!EditBox_HandleEvent(scene.edit, &event)) {
+                        scene.messageRect.x = (event.button.x - text->w/2);
+                        scene.messageRect.y = (event.button.y - text->h/2);
+                        scene.messageRect.w = (float)text->w;
+                        scene.messageRect.h = (float)text->h;
                     }
                     break;
 
                 case SDL_EVENT_KEY_DOWN:
-                    if (event.key.key == SDLK_ESCAPE) {
-                        if (scene.textFocus) {
-                            SetTextFocus(&scene, false);
-                        } else {
-                            done = true;
-                        }
-                    } else if (scene.textFocus) {
-                        EditBox_HandleEvent(scene.edit, &event);
-                    } else {
+                    if (!EditBox_HandleEvent(scene.edit, &event)) {
                         HandleKeyDown(&scene, &event);
                     }
                     break;
 
                 case SDL_EVENT_QUIT:
-                    done = true;
+                    scene.done = true;
                     break;
 
                 default:
@@ -598,7 +563,6 @@ int main(int argc, char *argv[])
     }
     SDL_DestroySurface(text);
     EditBox_Destroy(scene.edit);
-    TTF_DestroyText(scene.text);
     TTF_CloseFont(font);
     switch (scene.textEngine) {
     case TextEngineSurface:

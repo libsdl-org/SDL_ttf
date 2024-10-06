@@ -4210,6 +4210,31 @@ bool TTF_GetTextSize(TTF_Text *text, int *w, int *h)
     return true;
 }
 
+bool TTF_GetPreviousSubString(TTF_Text *text, TTF_SubString *substring, TTF_SubString *previous)
+{
+    if (previous && previous != substring) {
+        SDL_zerop(previous);
+    }
+
+    TTF_CHECK_POINTER("text", text, false);
+    TTF_CHECK_POINTER("substring", substring, false);
+    TTF_CHECK_POINTER("previous", previous, false);
+
+    int num_clusters = text->internal->num_clusters;
+    const TTF_SubString *clusters = text->internal->clusters;
+    if (substring->cluster_index < 0 || substring->cluster_index >= num_clusters) {
+        return SDL_SetError("Cluster index out of range");
+    }
+    if (substring->offset != clusters[substring->cluster_index].offset) {
+        return SDL_SetError("Stale substring");
+    }
+    if (substring->cluster_index == 0) {
+        return SDL_SetError("No previous substring");
+    }
+    SDL_copyp(previous, &clusters[substring->cluster_index - 1]);
+    return true;
+}
+
 bool TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *substring)
 {
     if (substring) {
@@ -4257,15 +4282,36 @@ bool TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *substring)
     }
 
     // Do a binary search to find the cluster
-    const TTF_SubString *closest = NULL;
     int low = 0;
     int high = num_clusters - 1;
     while (low <= high) {
         int mid = low + (high - low) / 2;
         cluster = &clusters[mid];
 
-        if (offset >= cluster->offset && offset < (cluster->offset + cluster->length)) {
-            closest = cluster;
+        if (offset >= cluster->offset && (cluster->length == 0 || offset < (cluster->offset + cluster->length))) {
+            // In the right ballpark, expand the substring to include related clusters
+            --mid;
+            while (mid >= 0) {
+                cluster = &clusters[mid];
+                if (offset < cluster->offset || (cluster->length != 0 && offset >= (cluster->offset + cluster->length))) {
+                    break;
+                }
+                --mid;
+            }
+            ++mid;
+
+            SDL_copyp(substring, &clusters[mid]);
+            ++mid;
+            while (mid < num_clusters) {
+                cluster = &clusters[mid];
+                if (offset < cluster->offset || (cluster->length != 0 && offset >= (cluster->offset + cluster->length))) {
+                    break;
+                }
+
+                SDL_GetRectUnion(&substring->rect, &cluster->rect, &substring->rect);
+                substring->length = (cluster->offset - substring->offset) + cluster->length;
+                ++mid;
+            }
             break;
         }
 
@@ -4274,9 +4320,6 @@ bool TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *substring)
         } else {
             high = mid - 1;
         }
-    }
-    if (closest) {
-        SDL_copyp(substring, closest);
     }
     return true;
 }
@@ -4340,7 +4383,7 @@ bool TTF_GetTextSubStringForLine(TTF_Text *text, int line, TTF_SubString *substr
     return true;
 }
 
-TTF_SubString **TTF_GetTextSubStringsForRange(TTF_Text *text, int offset1, int offset2, int *count)
+TTF_SubString **TTF_GetTextSubStringsForRange(TTF_Text *text, int offset, int length, int *count)
 {
     if (count) {
         *count = 0;
@@ -4370,32 +4413,16 @@ TTF_SubString **TTF_GetTextSubStringsForRange(TTF_Text *text, int offset1, int o
         return result;
     }
 
-    int length = (int)SDL_strlen(text->text);
-    if (offset1 < 0) {
-        offset1 = length + offset1;
-        if (offset1 < 0) {
-            offset1 = 0;
-        }
-    } else if (offset1 >= length) {
-        offset1 = (length - 1);
-    }
-    if (offset2 < 0) {
-        offset2 = length + offset2;
-        if (offset2 < 0) {
-            offset2 = 0;
-        }
-    } else if (offset2 >= length) {
-        offset2 = (length - 1);
-    }
-    if (offset1 > offset2) {
-        int tmp = offset1;
-        offset1 = offset2;
-        offset2 = tmp;
+    if (length < 0) {
+        length = (int)SDL_strlen(text->text);
     }
 
     TTF_SubString substring1, substring2;
+    int offset1 = offset;
+    int offset2 = offset + length;
     if (!TTF_GetTextSubString(text, offset1, &substring1) ||
-        !TTF_GetTextSubString(text, offset2, &substring2)) {
+        !TTF_GetTextSubString(text, offset2, &substring2) ||
+        !TTF_GetPreviousSubString(text, &substring2, &substring2)) {
         return NULL;
     }
 
@@ -4409,6 +4436,13 @@ TTF_SubString **TTF_GetTextSubStringsForRange(TTF_Text *text, int offset1, int o
         result[0] = substring;
         result[1] = NULL;
         SDL_copyp(substring, &substring1);
+        if (length == 0) {
+            substring->length = 0;
+            if (TTF_GetFontDirection(text->internal->font) != TTF_DIRECTION_RTL) {
+                substring->rect.x += substring->rect.w;
+            }
+            substring->rect.w = 0;
+        }
 
         if (count) {
             *count = 1;
