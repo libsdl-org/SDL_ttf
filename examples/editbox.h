@@ -9,28 +9,58 @@
   including commercial applications, and to alter it and redistribute it
   freely.
 */
+
+/* This is an example of using SDL_ttf to create a multi-line editbox
+ * with full IME support.
+ */
+
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
+/* Define this if you want to test the surface text engine */
+#define TEST_SURFACE_ENGINE
 
 typedef struct EditBox {
+    SDL_Window *window;
+    SDL_Renderer *renderer;
     TTF_Font *font;
     TTF_Text *text;
     SDL_FRect rect;
+    bool has_focus;
+
+    /* Cursor support */
     int cursor;
+    int cursor_length;
     bool cursor_visible;
     Uint64 last_cursor_change;
-    bool highlighting;
-    int highlight1, highlight2;
+    SDL_FRect cursor_rect;
 
-    // Used for testing the software rendering implementation
+    /* Highlight support */
+    bool highlighting;
+    int highlight1;
+    int highlight2;
+
+    /* IME composition */
+    int composition_start;
+    int composition_length;
+    int composition_cursor;
+    int composition_cursor_length;
+
+    /* IME candidates */
+    TTF_Text *candidates;
+    int selected_candidate_start;
+    int selected_candidate_length;
+
+#ifdef TEST_SURFACE_ENGINE
     SDL_Surface *window_surface;
+#endif
 } EditBox;
 
 
-extern EditBox *EditBox_Create(TTF_Text *text, const SDL_FRect *rect);
+extern EditBox *EditBox_Create(SDL_Window *window, SDL_Renderer *renderer, TTF_TextEngine *engine, TTF_Font *font, const SDL_FRect *rect);
 extern void EditBox_Destroy(EditBox *edit);
-extern void EditBox_Draw(EditBox *edit, SDL_Renderer *renderer);
+extern void EditBox_SetFocus(EditBox *edit, bool focus);
+extern void EditBox_Draw(EditBox *edit);
 extern void EditBox_MoveCursorLeft(EditBox *edit);
 extern void EditBox_MoveCursorRight(EditBox *edit);
 extern void EditBox_MoveCursorUp(EditBox *edit);
