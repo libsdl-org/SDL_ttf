@@ -208,7 +208,6 @@ static void SaveCandidates(EditBox *edit, const SDL_Event *event)
         if (i == selected_candidate) {
             edit->selected_candidate_start = (int)(uintptr_t)(dst - candidate_text);
             edit->selected_candidate_length = length;
-            SDL_Log("Selected candidate: %d/%d\n", edit->selected_candidate_start, edit->selected_candidate_length);
         }
         SDL_memcpy(dst, event->edit_candidates.candidates[i], length);
         dst += length;
@@ -238,10 +237,20 @@ static void DrawCandidates(EditBox *edit)
     float x, y;
 
     /* Position the candidate window */
+    TTF_SubString cursor;
+    int offset = edit->composition_start;
+    if (edit->composition_cursor_length > 0) {
+        // Place the candidates at the active clause
+        offset += edit->composition_cursor;
+    }
+    if (!TTF_GetTextSubString(edit->text, offset, &cursor)) {
+        return;
+    }
+
     SDL_GetRenderSafeArea(renderer, &safe_rect);
     TTF_GetTextSize(edit->candidates, &candidates_w, &candidates_h);
-    candidates_rect.x = edit->cursor_rect.x;
-    candidates_rect.y = edit->cursor_rect.y + edit->cursor_rect.h + 2.0f;
+    candidates_rect.x = edit->rect.x + cursor.rect.x;
+    candidates_rect.y = edit->rect.y + cursor.rect.y + cursor.rect.h + 2.0f;
     candidates_rect.w = 1.0f + 2.0f + candidates_w + 2.0f + 1.0f;
     candidates_rect.h = 1.0f + 2.0f + candidates_h + 2.0f + 1.0f;
     if ((candidates_rect.x + candidates_rect.w) > safe_rect.w) {
