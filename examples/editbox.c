@@ -294,10 +294,10 @@ static void UpdateTextInputArea(EditBox *edit)
     }
 
     SDL_Rect rect;
-    rect.x = (int)SDL_floorf(window_edit_rect_min.x);
-    rect.y = (int)SDL_floorf(window_edit_rect_min.y);
-    rect.w = (int)SDL_floorf(window_edit_rect_max.x - window_edit_rect_min.x);
-    rect.h = (int)SDL_floorf(window_edit_rect_max.y - window_edit_rect_min.y);
+    rect.x = (int)SDL_roundf(window_edit_rect_min.x);
+    rect.y = (int)SDL_roundf(window_edit_rect_min.y);
+    rect.w = (int)SDL_roundf(window_edit_rect_max.x - window_edit_rect_min.x);
+    rect.h = (int)SDL_roundf(window_edit_rect_max.y - window_edit_rect_min.y);
     int cursor_offset = (int)SDL_roundf(window_cursor.x - window_edit_rect_min.x);
     SDL_SetTextInputArea(edit->window, &rect, cursor_offset);
 }
@@ -447,6 +447,10 @@ void EditBox_Draw(EditBox *edit)
 
 static int GetCursorTextIndex(TTF_Font *font, int x, const TTF_SubString *substring)
 {
+    if (substring->flags & TTF_SUBSTRING_LINE_END) {
+        return substring->offset;
+    }
+
     bool round_down;
     if (TTF_GetFontDirection(font) == TTF_DIRECTION_RTL) {
         round_down = (x > (substring->rect.x + substring->rect.w / 2));
@@ -529,11 +533,11 @@ void EditBox_MoveCursorUp(EditBox *edit)
         int fontHeight = TTF_GetFontHeight(edit->font);
         int x, y;
         if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
-            x = substring.rect.x + substring.rect.w;
+            x = substring.rect.x + substring.rect.w - 1;
         } else {
             x = substring.rect.x;
         }
-        y = substring.rect.y - fontHeight;
+        y = substring.rect.y - fontHeight / 2;
         if (TTF_GetTextSubStringForPoint(edit->text, x, y, &substring)) {
             SetCursorPosition(edit, GetCursorTextIndex(edit->font, x, &substring));
         }
@@ -551,11 +555,11 @@ void EditBox_MoveCursorDown(EditBox *edit)
         int fontHeight = TTF_GetFontHeight(edit->font);
         int x, y;
         if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
-            x = substring.rect.x + substring.rect.w;
+            x = substring.rect.x + substring.rect.w - 1;
         } else {
             x = substring.rect.x;
         }
-        y = substring.rect.y + substring.rect.h + fontHeight;
+        y = substring.rect.y + substring.rect.h + fontHeight / 2;
         if (TTF_GetTextSubStringForPoint(edit->text, x, y, &substring)) {
             SetCursorPosition(edit, GetCursorTextIndex(edit->font, x, &substring));
         }
@@ -692,8 +696,8 @@ static bool HandleMouseDown(EditBox *edit, float x, float y)
 
     /* Set the cursor position */
     TTF_SubString substring;
-    int textX = (int)SDL_roundf(x - (edit->rect.x + 4.0f));
-    int textY = (int)SDL_roundf(y - (edit->rect.y + 4.0f));
+    int textX = (int)SDL_roundf(x - edit->rect.x);
+    int textY = (int)SDL_roundf(y - edit->rect.y);
     if (!TTF_GetTextSubStringForPoint(edit->text, textX, textY, &substring)) {
         SDL_Log("Couldn't get cursor location: %s\n", SDL_GetError());
         return false;
@@ -820,9 +824,7 @@ void EditBox_Paste(EditBox *edit)
     }
 
     const char *text = SDL_GetClipboardText();
-    size_t length = SDL_strlen(text);
-    TTF_InsertTextString(edit->text, edit->cursor, text, length);
-    SetCursorPosition(edit, (int)(edit->cursor + length));
+    EditBox_Insert(edit, text);
 }
 
 void EditBox_Insert(EditBox *edit, const char *text)

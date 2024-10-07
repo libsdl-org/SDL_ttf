@@ -39,6 +39,8 @@ SDL3_ttf_0.0.0 {
     TTF_GetGlyphMetrics;
     TTF_GetGlyphScript;
     TTF_GetHarfBuzzVersion;
+    TTF_GetNextTextSubString;
+    TTF_GetPreviousTextSubString;
     TTF_GetStringSize;
     TTF_GetStringSizeWrapped;
     TTF_GetTextEngine;
