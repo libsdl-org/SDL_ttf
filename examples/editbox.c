@@ -456,7 +456,7 @@ void EditBox_Draw(EditBox *edit)
 
 static int GetCursorTextIndex(TTF_Font *font, int x, const TTF_SubString *substring)
 {
-    if (substring->flags & TTF_SUBSTRING_LINE_END) {
+    if (substring->flags & (TTF_SUBSTRING_LINE_END | TTF_SUBSTRING_TEXT_END)) {
         return substring->offset;
     }
 
