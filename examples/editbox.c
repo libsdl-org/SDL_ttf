@@ -954,6 +954,10 @@ bool EditBox_HandleEvent(EditBox *edit, SDL_Event *event)
             }
             break;
 
+        case SDLK_RETURN:
+            EditBox_Insert(edit, "\n");
+            break;
+
         case SDLK_ESCAPE:
             EditBox_SetFocus(edit, false);
             break;
