@@ -691,7 +691,6 @@ static bool HandleMouseDown(EditBox *edit, float x, float y)
 
     if (!edit->has_focus) {
         EditBox_SetFocus(edit, true);
-        return true;
     }
 
     /* Set the cursor position */
