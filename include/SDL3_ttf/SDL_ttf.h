@@ -1727,9 +1727,10 @@ typedef struct TTF_SubString
  * Get the substring of a text object that surrounds a text offset.
  *
  * If `offset` is less than 0, this will return a zero length substring at the
- * beginning of the text with the TTF_SUBSTRING_TEXT_START flag set. If `offset` is greater than or equal to the length
- * of the text string, this will return a zero length substring at the end of
- * the text with the TTF_SUBSTRING_TEXT_END flag set.
+ * beginning of the text with the TTF_SUBSTRING_TEXT_START flag set. If
+ * `offset` is greater than or equal to the length of the text string, this
+ * will return a zero length substring at the end of the text with the
+ * TTF_SUBSTRING_TEXT_END flag set.
  *
  * \param text the TTF_Text to query.
  * \param offset a byte offset into the text string.
@@ -1744,9 +1745,10 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset
  * Get the substring of a text object that contains the given line.
  *
  * If `line` is less than 0, this will return a zero length substring at the
- * beginning of the text with the TTF_SUBSTRING_TEXT_START flag set. If `line` is greater than or equal to
- * `text->num_lines` this will return a zero length substring at the end of the
- * text with the TTF_SUBSTRING_TEXT_END flag set.
+ * beginning of the text with the TTF_SUBSTRING_TEXT_START flag set. If `line`
+ * is greater than or equal to `text->num_lines` this will return a zero
+ * length substring at the end of the text with the TTF_SUBSTRING_TEXT_END
+ * flag set.
  *
  * \param text the TTF_Text to query.
  * \param line a zero-based line index, in the range [0 .. text->num_lines-1].
@@ -1793,24 +1795,27 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringForPoint(TTF_Text *text, in
 /**
  * Get the previous substring in a text object
  *
- * If called at the start of the text, this will return a zero length substring with the TTF_SUBSTRING_TEXT_START flag set.
+ * If called at the start of the text, this will return a zero length
+ * substring with the TTF_SUBSTRING_TEXT_START flag set.
  *
  * \param text the TTF_Text to query.
  * \param substring the TTF_SubString to query.
- * \param next a pointer filled in with the previous substring.
- * \returns true on success or false on failure; call SDL_GetError() for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetPreviousTextSubString(TTF_Text *text, const TTF_SubString *substring, TTF_SubString *previous);
 
 /**
  * Get the next substring in a text object
  *
- * If called at the end of the text, this will return a zero length substring with the TTF_SUBSTRING_TEXT_END flag set.
+ * If called at the end of the text, this will return a zero length substring
+ * with the TTF_SUBSTRING_TEXT_END flag set.
  *
  * \param text the TTF_Text to query.
  * \param substring the TTF_SubString to query.
  * \param next a pointer filled in with the next substring.
- * \returns true on success or false on failure; call SDL_GetError() for more information.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetNextTextSubString(TTF_Text *text, const TTF_SubString *substring, TTF_SubString *next);
 
