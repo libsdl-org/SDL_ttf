@@ -234,10 +234,6 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_Properties
 /**
  * Get the properties associated with a font.
  *
- * The following read-only properties are provided by SDL:
- *
- * - `TTF_PROP_FONT_FACE_POINTER`: the FT_Face associated with the font.
- *
  * \param font the font to query.
  * \returns a valid property ID on success or 0 on failure; call
  *          SDL_GetError() for more information.
@@ -247,8 +243,6 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_Properties
  * \since This function is available since SDL_ttf 3.0.0.
  */
 extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetFontProperties(TTF_Font *font);
-
-#define TTF_PROP_FONT_FACE_POINTER                      "SDL_ttf.font.face"
 
 /**
  * Get the font generation.
