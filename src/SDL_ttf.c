@@ -1953,13 +1953,6 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     }
     face = font->face;
 
-    font->props = SDL_CreateProperties();
-    if (!font->props) {
-        TTF_CloseFont(font);
-        return NULL;
-    }
-    SDL_SetPointerProperty(font->props, TTF_PROP_FONT_FACE_POINTER, face);
-
     // Set charmap for loaded font
     found = 0;
 #if 0 // Font debug code
@@ -2090,6 +2083,9 @@ SDL_PropertiesID TTF_GetFontProperties(TTF_Font *font)
 {
     TTF_CHECK_FONT(font, 0);
 
+    if (!font->props) {
+        font->props = SDL_CreateProperties();
+    }
     return font->props;
 }
 
