@@ -633,19 +633,14 @@ void EditBox_Backspace(EditBox *edit)
         return;
     }
 
-    const char *start = &edit->text->text[edit->cursor];
-    const char *current = start;
-    /* Step back over the previous UTF-8 character */
-    do {
-        if (current == edit->text->text) {
-            break;
-        }
-        --current;
-    } while ((*current & 0xC0) == 0x80);
-
-    int length = (int)(start - current);
-    TTF_DeleteTextString(edit->text, edit->cursor - length, length);
-    edit->cursor -= length;
+    if (edit->cursor > 0) {
+        const char *start = &edit->text->text[edit->cursor];
+        const char *next = start;
+        SDL_StepBackUTF8(edit->text->text, &next);
+        int length = (int)(uintptr_t)(start - next);
+        TTF_DeleteTextString(edit->text, edit->cursor - length, length);
+        edit->cursor -= length;
+    }
 }
 
 void EditBox_BackspaceToBeginning(EditBox *edit)
