@@ -34,11 +34,12 @@
     "cmake": {
       "archs": ["x86", "x64"],
       "args": [
+        "-DBUILD_SHARED_LIBS=ON",
         "-DSDLTTF_HARFBUZZ=ON",
         "-DSDLTTF_SAMPLES=OFF",
         "-DSDLTTF_VENDORED=ON"
       ],
-      "shared-static": "both"
+      "shared-static": "args"
     },
     "files": {
       "": [

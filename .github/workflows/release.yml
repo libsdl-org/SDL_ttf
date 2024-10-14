@@ -578,7 +578,7 @@ jobs:
           cmake -S "${{ steps.src.outputs.path }}/cmake/test" \
               -DCMAKE_BUILD_TYPE="Release" \
               -DTEST_SHARED=TRUE \
-              -DTEST_STATIC=TRUE \
+              -DTEST_STATIC=FALSE \
               -DCMAKE_PREFIX_PATH="/tmp/deps-mingw" \
               -DCMAKE_TOOLCHAIN_FILE="${{ steps.src.outputs.path }}/build-scripts/cmake-toolchain-mingw64-i686.cmake" \
               -Werror=dev \
@@ -590,7 +590,7 @@ jobs:
           cmake -S "${{ steps.src.outputs.path }}/cmake/test" \
               -DCMAKE_BUILD_TYPE="Release" \
               -DTEST_SHARED=TRUE \
-              -DTEST_STATIC=TRUE \
+              -DTEST_STATIC=FALSE \
               -DCMAKE_PREFIX_PATH="/tmp/deps-mingw" \
               -DCMAKE_TOOLCHAIN_FILE="${{ steps.src.outputs.path }}/build-scripts/cmake-toolchain-mingw64-x86_64.cmake" \
               -Werror=dev \
