@@ -775,7 +775,7 @@ static SDL_INLINE void BG_Blended_Opaque_NEON(const TTF_Image *image, Uint32 *de
 
     uint32x4_t s, d0, d1, d2, d3, r0, r1, r2, r3;
     uint8x16x2_t sx, sx01, sx23;
-    uint32x4_t zero = vmovq_n_u32(0);
+    const uint8x16_t zero = vdupq_n_u8(0);
 
     while (height--) {
         /* *INDENT-OFF* */
@@ -783,25 +783,25 @@ static SDL_INLINE void BG_Blended_Opaque_NEON(const TTF_Image *image, Uint32 *de
             /* Read 4 Uint32 and put 16 Uint8 into uint32x4x2_t (uint8x16x2_t)
              * takes advantage of vzipq_u8 which produces two lanes */
 
-            s   = vld1q_u32(src);               // load
-            d0  = vld1q_u32(dst);               // load
-            d1  = vld1q_u32(dst + 4);           // load
-            d2  = vld1q_u32(dst + 8);           // load
-            d3  = vld1q_u32(dst + 12);          // load
+            s   = vld1q_u32(src);                           // load
+            d0  = vld1q_u32(dst);                           // load
+            d1  = vld1q_u32(dst + 4);                       // load
+            d2  = vld1q_u32(dst + 8);                       // load
+            d3  = vld1q_u32(dst + 12);                      // load
 
-            sx   = vzipq_u8(zero, s);           // interleave
-            sx01 = vzipq_u8(zero, sx.val[0]);   // interleave
-            sx23 = vzipq_u8(zero, sx.val[1]);   // interleave
-                                                // already shifted by 24
-            r0  = vorrq_u32(d0, sx01.val[0]);   // or
-            r1  = vorrq_u32(d1, sx01.val[1]);   // or
-            r2  = vorrq_u32(d2, sx23.val[0]);   // or
-            r3  = vorrq_u32(d3, sx23.val[1]);   // or
+            sx   = vzipq_u8(zero, (uint8x16_t)s);           // interleave
+            sx01 = vzipq_u8(zero, sx.val[0]);               // interleave
+            sx23 = vzipq_u8(zero, sx.val[1]);               // interleave
+                                                            // already shifted by 24
+            r0  = vorrq_u32(d0, (uint32x4_t)sx01.val[0]);   // or
+            r1  = vorrq_u32(d1, (uint32x4_t)sx01.val[1]);   // or
+            r2  = vorrq_u32(d2, (uint32x4_t)sx23.val[0]);   // or
+            r3  = vorrq_u32(d3, (uint32x4_t)sx23.val[1]);   // or
 
-            vst1q_u32(dst, r0);                 // store
-            vst1q_u32(dst + 4, r1);             // store
-            vst1q_u32(dst + 8, r2);             // store
-            vst1q_u32(dst + 12, r3);            // store
+            vst1q_u32(dst, r0);                             // store
+            vst1q_u32(dst + 4, r1);                         // store
+            vst1q_u32(dst + 8, r2);                         // store
+            vst1q_u32(dst + 12, r3);                        // store
 
             dst += 16;
             src += 4;
@@ -823,10 +823,11 @@ static SDL_INLINE void BG_Blended_NEON(const TTF_Image *image, Uint32 *destinati
     uint32x4_t s, d0, d1, d2, d3, r0, r1, r2, r3;
     uint16x8_t Ls8, Hs8;
     uint8x16x2_t sx, sx01, sx23;
+    uint16x8x2_t sxm;
 
     const uint16x8_t alpha = vmovq_n_u16(fg_alpha);
     const uint16x8_t one   = vmovq_n_u16(1);
-    const uint32x4_t zero  = vmovq_n_u32(0);
+    const uint8x16_t zero  = vdupq_n_u8(0);
 
     while (height--) {
         /* *INDENT-OFF* */
@@ -834,49 +835,49 @@ static SDL_INLINE void BG_Blended_NEON(const TTF_Image *image, Uint32 *destinati
             /* Read 4 Uint32 and put 16 Uint8 into uint32x4x2_t (uint8x16x2_t)
              * takes advantage of vzipq_u8 which produces two lanes */
 
-            s  = vld1q_u32(src);                        // load
-            d0 = vld1q_u32(dst);                        // load
-            d1 = vld1q_u32(dst + 4);                    // load
-            d2 = vld1q_u32(dst + 8);                    // load
-            d3 = vld1q_u32(dst + 12);                   // load
+            s  = vld1q_u32(src);                                    // load
+            d0 = vld1q_u32(dst);                                    // load
+            d1 = vld1q_u32(dst + 4);                                // load
+            d2 = vld1q_u32(dst + 8);                                // load
+            d3 = vld1q_u32(dst + 12);                               // load
 
-            sx = vzipq_u8(s, zero);                     // interleave, no shifting
-                                                        // enough room to multiply
+            sx = vzipq_u8((uint8x16_t)s, zero);                     // interleave, no shifting
+                                                                    // enough room to multiply
 
             /* Apply: alpha_table[i] = ((i * fg.a / 255) << 24; */
             /* Divide by 255 is done as:    (x + 1 + (x >> 8)) >> 8 */
 
-            sx.val[0] = vmulq_u16(sx.val[0], alpha);    // x := i * fg.a
-            sx.val[1] = vmulq_u16(sx.val[1], alpha);
+            sxm.val[0] = vmulq_u16((uint16x8_t)sx.val[0], alpha);   // x := i * fg.a
+            sxm.val[1] = vmulq_u16((uint16x8_t)sx.val[1], alpha);
 
-            Ls8 = vshrq_n_u16(sx.val[0], 8);            // x >> 8
-            Hs8 = vshrq_n_u16(sx.val[1], 8);
+            Ls8 = vshrq_n_u16(sxm.val[0], 8);                       // x >> 8
+            Hs8 = vshrq_n_u16(sxm.val[1], 8);
 
-            sx.val[0] = vaddq_u16(sx.val[0], one);      // x + 1
-            sx.val[1] = vaddq_u16(sx.val[1], one);
+            sxm.val[0] = vaddq_u16(sxm.val[0], one);                // x + 1
+            sxm.val[1] = vaddq_u16(sxm.val[1], one);
 
-            sx.val[0] = vaddq_u16(sx.val[0], Ls8);      // x + 1 + (x >> 8)
-            sx.val[1] = vaddq_u16(sx.val[1], Hs8);
+            sxm.val[0] = vaddq_u16(sxm.val[0], Ls8);                // x + 1 + (x >> 8)
+            sxm.val[1] = vaddq_u16(sxm.val[1], Hs8);
 
-            sx.val[0] = vshrq_n_u16(sx.val[0], 8);      // ((x + 1 + (x >> 8)) >> 8
-            sx.val[1] = vshrq_n_u16(sx.val[1], 8);
+            sxm.val[0] = vshrq_n_u16(sxm.val[0], 8);                // ((x + 1 + (x >> 8)) >> 8
+            sxm.val[1] = vshrq_n_u16(sxm.val[1], 8);
 
-            sx.val[0] = vshlq_n_u16(sx.val[0], 8);      // shift << 8, so we're prepared
-            sx.val[1] = vshlq_n_u16(sx.val[1], 8);      // to have final format << 24
+            sxm.val[0] = vshlq_n_u16(sxm.val[0], 8);                // shift << 8, so we're prepared
+            sxm.val[1] = vshlq_n_u16(sxm.val[1], 8);                // to have final format << 24
 
-            sx01 = vzipq_u8(zero, sx.val[0]);           // interleave
-            sx23 = vzipq_u8(zero, sx.val[1]);           // interleave
-                                                        // already shifted by 24
+            sx01 = vzipq_u8(zero, (uint8x16_t)sxm.val[0]);          // interleave
+            sx23 = vzipq_u8(zero, (uint8x16_t)sxm.val[1]);          // interleave
+                                                                    // already shifted by 24
 
-            r0  = vorrq_u32(d0, sx01.val[0]);           // or
-            r1  = vorrq_u32(d1, sx01.val[1]);           // or
-            r2  = vorrq_u32(d2, sx23.val[0]);           // or
-            r3  = vorrq_u32(d3, sx23.val[1]);           // or
+            r0  = vorrq_u32(d0, (uint32x4_t)sx01.val[0]);           // or
+            r1  = vorrq_u32(d1, (uint32x4_t)sx01.val[1]);           // or
+            r2  = vorrq_u32(d2, (uint32x4_t)sx23.val[0]);           // or
+            r3  = vorrq_u32(d3, (uint32x4_t)sx23.val[1]);           // or
 
-            vst1q_u32(dst, r0);                         // store
-            vst1q_u32(dst + 4, r1);                     // store
-            vst1q_u32(dst + 8, r2);                     // store
-            vst1q_u32(dst + 12, r3);                    // store
+            vst1q_u32(dst, r0);                                     // store
+            vst1q_u32(dst + 4, r1);                                 // store
+            vst1q_u32(dst + 8, r2);                                 // store
+            vst1q_u32(dst + 12, r3);                                // store
 
             dst += 16;
             src += 4;
