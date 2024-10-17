@@ -139,6 +139,11 @@
 		F384BE65261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F384BE61261ECD9F0028A248 /* FreeType-LICENSE.txt */; };
 		F3E1F8762A79462A00AC76D3 /* config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F3E1F8752A79462A00AC76D3 /* config.xcconfig */; };
 		F3E1F92E2A794F4A00AC76D3 /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E1F92D2A794F3300AC76D3 /* SDL3.framework */; };
+		F3F7BDF72CB6FD6700C984AF /* SDL_hashtable.h in Headers */ = {isa = PBXBuildFile; fileRef = F3F7BDF12CB6FD6700C984AF /* SDL_hashtable.h */; };
+		F3F7BDF82CB6FD6700C984AF /* stb_rect_pack.h in Headers */ = {isa = PBXBuildFile; fileRef = F3F7BDF62CB6FD6700C984AF /* stb_rect_pack.h */; };
+		F3F7BDF92CB6FD6700C984AF /* SDL_renderer_textengine.c in Sources */ = {isa = PBXBuildFile; fileRef = F3F7BDF32CB6FD6700C984AF /* SDL_renderer_textengine.c */; };
+		F3F7BDFA2CB6FD6700C984AF /* SDL_surface_textengine.c in Sources */ = {isa = PBXBuildFile; fileRef = F3F7BDF42CB6FD6700C984AF /* SDL_surface_textengine.c */; };
+		F3F7BDFB2CB6FD6700C984AF /* SDL_hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = F3F7BDF22CB6FD6700C984AF /* SDL_hashtable.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -269,6 +274,11 @@
 		F384BE61261ECD9F0028A248 /* FreeType-LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "FreeType-LICENSE.txt"; sourceTree = "<group>"; };
 		F3E1F8752A79462A00AC76D3 /* config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
 		F3E1F9262A794F3300AC76D3 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = ../external/SDL/Xcode/SDL/SDL.xcodeproj; sourceTree = "<group>"; };
+		F3F7BDF12CB6FD6700C984AF /* SDL_hashtable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_hashtable.h; sourceTree = "<group>"; };
+		F3F7BDF22CB6FD6700C984AF /* SDL_hashtable.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_hashtable.c; sourceTree = "<group>"; };
+		F3F7BDF32CB6FD6700C984AF /* SDL_renderer_textengine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_renderer_textengine.c; sourceTree = "<group>"; };
+		F3F7BDF42CB6FD6700C984AF /* SDL_surface_textengine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_surface_textengine.c; sourceTree = "<group>"; };
+		F3F7BDF62CB6FD6700C984AF /* stb_rect_pack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_rect_pack.h; sourceTree = "<group>"; };
 		F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SDL_ttf.c; path = ../src/SDL_ttf.c; sourceTree = SOURCE_ROOT; };
 		F59C710600D5CB5801000001 /* SDL_ttf.info */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SDL_ttf.info; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -329,9 +339,15 @@
 			children = (
 				F384BB6A261EC02C0028A248 /* FreeType */,
 				F384BD04261EC64F0028A248 /* HarfBuzz */,
+				F3F7BDF12CB6FD6700C984AF /* SDL_hashtable.h */,
+				F3F7BDF22CB6FD6700C984AF /* SDL_hashtable.c */,
+				F3F7BDF32CB6FD6700C984AF /* SDL_renderer_textengine.c */,
+				F3F7BDF42CB6FD6700C984AF /* SDL_surface_textengine.c */,
+				F3F7BDF62CB6FD6700C984AF /* stb_rect_pack.h */,
 				F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */,
 			);
 			name = "Library Source";
+			path = ../src;
 			sourceTree = "<group>";
 		};
 		A75FDAE023E3493000529352 /* macOS */ = {
@@ -523,6 +539,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3F7BDF72CB6FD6700C984AF /* SDL_hashtable.h in Headers */,
+				F3F7BDF82CB6FD6700C984AF /* stb_rect_pack.h in Headers */,
 				BE48FD5F07AFA17000BB41DA /* SDL_ttf.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -664,7 +682,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "PRODUCT_NAME=SDL3_ttf\n\nmkdir -p build/dmg-tmp\ncp -a build/$PRODUCT_NAME.xcframework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname $PRODUCT_NAME -srcfolder build/dmg-tmp build/$PRODUCT_NAME.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n";
+			shellScript = "set -ex\n\nPRODUCT_NAME=SDL3_ttf\n\nmkdir -p build/dmg-tmp/share/cmake/$PRODUCT_NAME\ncp -a build/$PRODUCT_NAME.xcframework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\ncp pkg-support/share/cmake/${PRODUCT_NAME}/${PRODUCT_NAME}Config.cmake build/dmg-tmp/share/cmake/${PRODUCT_NAME}\ncp pkg-support/share/cmake/${PRODUCT_NAME}/${PRODUCT_NAME}ConfigVersion.cmake build/dmg-tmp/share/cmake/${PRODUCT_NAME}\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname $PRODUCT_NAME -srcfolder build/dmg-tmp build/$PRODUCT_NAME.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -746,6 +764,9 @@
 				F384BB97261EC0DE0028A248 /* ftgxval.c in Sources */,
 				F384BDAD261EC7650028A248 /* hb-font.cc in Sources */,
 				F384BD4D261EC7650028A248 /* hb-ucd.cc in Sources */,
+				F3F7BDF92CB6FD6700C984AF /* SDL_renderer_textengine.c in Sources */,
+				F3F7BDFA2CB6FD6700C984AF /* SDL_surface_textengine.c in Sources */,
+				F3F7BDFB2CB6FD6700C984AF /* SDL_hashtable.c in Sources */,
 				F384BBB5261EC0DE0028A248 /* ftpatent.c in Sources */,
 				F3696FE4278F7107003A7F94 /* sdf.c in Sources */,
 				F384BE01261EC7650028A248 /* hb-ft.cc in Sources */,

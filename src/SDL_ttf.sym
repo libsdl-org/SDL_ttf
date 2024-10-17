@@ -1,11 +1,13 @@
 SDL3_ttf_0.0.0 {
   global:
+    TTF_AppendTextString;
     TTF_CloseFont;
     TTF_CreateGPUTextEngine;
     TTF_CreateRendererTextEngine;
     TTF_CreateSurfaceTextEngine;
     TTF_CreateText;
     TTF_CreateText_Wrapped;
+    TTF_DeleteTextString;
     TTF_DestroyGPUTextEngine;
     TTF_DestroyRendererTextEngine;
     TTF_DestroySurfaceTextEngine;
@@ -16,8 +18,11 @@ SDL3_ttf_0.0.0 {
     TTF_FontIsFixedWidth;
     TTF_FontIsScalable;
     TTF_GetFontAscent;
+    TTF_GetFontDPI;
     TTF_GetFontDescent;
+    TTF_GetFontDirection;
     TTF_GetFontFamilyName;
+    TTF_GetFontGeneration;
     TTF_GetFontHeight;
     TTF_GetFontHinting;
     TTF_GetFontKerning;
@@ -25,6 +30,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetFontOutline;
     TTF_GetFontProperties;
     TTF_GetFontSDF;
+    TTF_GetFontSize;
     TTF_GetFontStyle;
     TTF_GetFontStyleName;
     TTF_GetFontWrapAlignment;
@@ -36,10 +42,21 @@ SDL3_ttf_0.0.0 {
     TTF_GetGlyphScript;
     TTF_GetGPUTextDrawData;
     TTF_GetHarfBuzzVersion;
+    TTF_GetNextTextSubString;
+    TTF_GetPreviousTextSubString;
+    TTF_GetStringSize;
+    TTF_GetStringSizeWrapped;
+    TTF_GetTextEngine;
+    TTF_GetTextFont;
     TTF_GetTextSize;
-    TTF_GetTextSizeWrapped;
+    TTF_GetTextSubString;
+    TTF_GetTextSubStringForLine;
+    TTF_GetTextSubStringForPoint;
+    TTF_GetTextSubStringsForRange;
+    TTF_GetTextWrapping;
     TTF_Init;
-    TTF_MeasureText;
+    TTF_InsertTextString;
+    TTF_MeasureString;
     TTF_OpenFont;
     TTF_OpenFontIO;
     TTF_OpenFontWithProperties;
@@ -65,6 +82,11 @@ SDL3_ttf_0.0.0 {
     TTF_SetFontSizeDPI;
     TTF_SetFontStyle;
     TTF_SetFontWrapAlignment;
+    TTF_SetTextEngine;
+    TTF_SetTextFont;
+    TTF_SetTextString;
+    TTF_SetTextWrapping;
+    TTF_UpdateText;
     TTF_Version;
     TTF_WasInit;
   local: *;

@@ -230,8 +230,12 @@ static TTF_SurfaceTextEngineData *CreateEngineData(void)
     return data;
 }
 
-static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_generation, TTF_Text *text, TTF_DrawOperation *ops, int num_ops)
+static bool SDLCALL CreateText(void *userdata, TTF_Text *text)
 {
+    TTF_Font *font = text->internal->font;
+    Uint32 font_generation = TTF_GetFontGeneration(font);
+    int num_ops = text->internal->num_ops;
+    const TTF_DrawOperation *ops = text->internal->ops;
     TTF_SurfaceTextEngineData *enginedata = (TTF_SurfaceTextEngineData *)userdata;
     TTF_SurfaceTextEngineFontData *fontdata;
     TTF_SurfaceTextEngineTextData *data;
@@ -250,13 +254,13 @@ static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_gener
     if (!data) {
         return false;
     }
-    text->internal->textrep = data;
+    text->internal->engine_text = data;
     return true;
 }
 
 static void SDLCALL DestroyText(void *userdata, TTF_Text *text)
 {
-    TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal->textrep;
+    TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal->engine_text;
 
     (void)userdata;
     DestroyTextData(data);
@@ -322,8 +326,6 @@ static void DrawCopy(TTF_SurfaceTextEngineTextData *data, const TTF_CopyOperatio
 
 bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
 {
-    TTF_SurfaceTextEngineTextData *data;
-
     if (!text || !text->internal || text->internal->engine->CreateText != CreateText) {
         return SDL_InvalidParamError("text");
     }
@@ -331,7 +333,16 @@ bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
         return SDL_InvalidParamError("surface");
     }
 
-    data = (TTF_SurfaceTextEngineTextData *)text->internal->textrep;
+    // Make sure the text is up to date
+    if (!TTF_UpdateText(text)) {
+        return false;
+    }
+
+    TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal->engine_text;
+    if (!data) {
+        // Empty string, nothing to do
+        return true;
+    }
 
     if (text->color.r != data->fcolor.r ||
         text->color.g != data->fcolor.g ||

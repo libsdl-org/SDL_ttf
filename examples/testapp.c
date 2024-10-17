@@ -33,6 +33,19 @@
 
 static const int g_force_no_SDF = 0; /* make random fuzzer faster by disabling SDF rendering */
 
+//#define HAVE_LCD
+#define HAVE_SDF
+
+#define HAVE_SET_FONT_SIZE_FUNCTION
+// Need patch to set size dynamically
+// https://bugzilla.libsdl.org/show_bug.cgi?id=2487
+
+#define HAVE_WRAP_ALIGN
+
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -100,6 +113,7 @@ static void help(void)
     SDL_Log("d   : display normal texture, no screen update, stream texture ");
     SDL_Log("r   : start/stop random test");
     SDL_Log("m   : render mode Blended/Shaded");
+    SDL_Log("x   : text engine None/Surface/Renderer");
     SDL_Log("n   : change direction");
     SDL_Log("9/0 : -/+ alpha color fg");
     SDL_Log("7/8 : -/+ alpha color bg (Shaded only)");
@@ -111,20 +125,6 @@ static void help(void)
     SDL_Log("F1   : help");
     SDL_Log("F2   : save current rendering to .bmp");
 }
-
-#define HAVE_LCD
-#define HAVE_SDF
-
-#define HAVE_SET_FONT_SIZE_FUNCTION
-// Need patch to set size dynamically
-// https://bugzilla.libsdl.org/show_bug.cgi?id=2487
-
-#define HAVE_ALL_WRAPPED_FUNCTIONS
-// Need patch to have all wrapped functions
-// https://bugzilla.libsdl.org/show_bug.cgi?id=4361
-
-#define HAVE_WRAP_ALIGN
-
 
 
 static int rand_n(int n);
@@ -196,6 +196,10 @@ static int render_mode = -1;
 static int render_mode_overwrite;
 static const char *render_mode_desc[] = { "Blended", "Shaded", "LCD" };
 static const int render_mode_count = SDL_arraysize(render_mode_desc);
+
+static int textengine_mode = 0;
+static const char *textengine_desc[] = { "None", "Surface", "Renderer" };
+static const int textengine_count = SDL_arraysize(textengine_desc);
 
 static int direction = 0;
 static const struct {
@@ -515,6 +519,13 @@ static int wait_for_input(void)
                     render_mode_overwrite = render_mode;
                     SDL_Log("render mode: %s", render_mode_desc[render_mode]);
                 }
+                if (event.key.key == SDLK_X) {
+                    done = 1;
+                    textengine_mode += 1;
+                    textengine_mode %= textengine_count;
+                    SDL_Log("Text Engine: %s", textengine_desc[textengine_mode]);
+                }
+
                 if (event.key.key == SDLK_N) {
                     done = 1;
                     direction += 1;
@@ -597,10 +608,14 @@ static int wait_for_input(void)
 
 int main(void)
 {
-    SDL_Window   *window         = NULL;
-    SDL_Texture  *text_texture   = NULL;
-    SDL_Surface  *text_surface   = NULL;
-    SDL_Renderer *renderer       = NULL;
+    SDL_Window     *window          = NULL;
+    SDL_Texture    *text_texture    = NULL;
+    SDL_Surface    *text_surface    = NULL;
+    SDL_Renderer   *renderer        = NULL;
+    TTF_Text       *text_obj        = NULL;
+    TTF_TextEngine *engine_surface  = NULL;
+    TTF_TextEngine *engine_renderer = NULL;
+
     const int     windoww        = 640;
     const int     windowh        = 480;
     const char   *text;
@@ -894,13 +909,33 @@ int main(void)
              }
           }
 #endif
-          if (!TTF_GetTextSize(font, text, 0, &w, &h)) {
+          if (!TTF_GetStringSize(font, text, 0, &w, &h)) {
              SDL_Log("size failed");
           }
           if (w == 0) {
              SDL_Log("skip size == 0");
              goto next_loop;
           }
+       }
+
+
+
+       if (textengine_mode != 0) {
+
+           if (!engine_surface) {
+                engine_surface = TTF_CreateSurfaceTextEngine();
+                if (!engine_surface) {
+                    SDL_Log("Couldn't create surface text engine: %s\n", SDL_GetError());
+                }
+            }
+
+            if (!engine_renderer) {
+                engine_renderer = TTF_CreateRendererTextEngine(renderer);
+                if (!engine_renderer) {
+                    SDL_Log("Couldn't create renderer text engine: %s\n", SDL_GetError());
+                }
+
+            }
        }
 
        count_init = print_elapsed_ticks ? 500 : 1;
@@ -911,49 +946,79 @@ int main(void)
              while (count--) {
                 if (text_surface) {
                    SDL_DestroySurface(text_surface);
+                   text_surface = NULL;
                 }
 
-                switch (render_mode)
-                {
-                   case 0:
-                      text_surface = TTF_RenderText_Blended(font, text, 0, textcol);
-                      break;
-                   case 1:
-                      text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
-                      break;
-                   case 2:
+                if (text_obj) {
+                    TTF_DestroyText(text_obj);
+                    text_obj = NULL;
+                }
+
+
+                if (textengine_mode == 0) {
+
+                    switch (render_mode)
+                    {
+                       case 0:
+                          text_surface = TTF_RenderText_Blended(font, text, 0, textcol);
+                          break;
+                       case 1:
+                          text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
+                          break;
+                       case 2:
 #if defined(HAVE_LCD)
-                      text_surface = TTF_RenderText_LCD(font, text, 0, textcol, boardcol);
+                          text_surface = TTF_RenderText_LCD(font, text, 0, textcol, boardcol);
 #else
-                      text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
+                          text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
 #endif
-                      break;
+                          break;
+                    }
+                } else if (textengine_mode == 1) {
+                    text_obj = TTF_CreateText(engine_surface, font, text, 0);
+                } else {
+                    text_obj = TTF_CreateText(engine_renderer, font, text, 0);
                 }
 
                 if (text_surface) {
                    SDL_DestroySurface(text_surface);
+                   text_surface = NULL;
                 }
+
+                if (text_obj) {
+                    TTF_DestroyText(text_obj);
+                    text_obj = NULL;
+                }
+
+
 
                 if (print_elapsed_ticks) {
                    START_MEASURE
                 }
 
-                switch (render_mode)
-                {
-                   case 0:
-                      text_surface = TTF_RenderText_Blended(font, text, 0, textcol);
-                      break;
-                   case 1:
-                      text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
-                      break;
-                   case 2:
+                if (textengine_mode == 0) {
+                    switch (render_mode)
+                    {
+                       case 0:
+                          text_surface = TTF_RenderText_Blended(font, text, 0, textcol);
+                          break;
+                       case 1:
+                          text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
+                          break;
+                       case 2:
 #if defined(HAVE_LCD)
-                      text_surface = TTF_RenderText_LCD(font, text, 0, textcol, boardcol);
+                          text_surface = TTF_RenderText_LCD(font, text, 0, textcol, boardcol);
 #else
-                      text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
+                          text_surface = TTF_RenderText_Shaded(font, text, 0, textcol, boardcol);
 #endif
-                      break;
+                          break;
+                    }
+                } else if (textengine_mode == 1) {
+                    text_obj = TTF_CreateText(engine_surface, font, text, 0);
+                } else {
+                    text_obj = TTF_CreateText(engine_renderer, font, text, 0);
                 }
+
+
 
                 if (print_elapsed_ticks) {
                    END_MEASURE
@@ -969,31 +1034,41 @@ int main(void)
              while (count--) {
                 if (text_surface) {
                    SDL_DestroySurface(text_surface);
+                   text_surface = NULL;
+                }
+
+                if (text_obj) {
+                    TTF_DestroyText(text_obj);
+                    text_obj = NULL;
                 }
 
                 if (print_elapsed_ticks) {
                    START_MEASURE
                 }
-#if defined(HAVE_ALL_WRAPPED_FUNCTIONS)
-                switch (render_mode)
-                {
-                   case 0:
-                      text_surface = TTF_RenderText_Blended_Wrapped(font, text, 0, textcol, wrap_size);
-                      break;
-                   case 1:
-                      text_surface = TTF_RenderText_Shaded_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
-                      break;
-                   case 2:
+
+                if (textengine_mode == 0) {
+                    switch (render_mode)
+                    {
+                        case 0:
+                            text_surface = TTF_RenderText_Blended_Wrapped(font, text, 0, textcol, wrap_size);
+                            break;
+                        case 1:
+                            text_surface = TTF_RenderText_Shaded_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
+                            break;
+                        case 2:
 #if defined(HAVE_LCD)
-                      text_surface = TTF_RenderText_LCD_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
+                            text_surface = TTF_RenderText_LCD_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
 #else
-                      text_surface = TTF_RenderText_Shaded_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
+                            text_surface = TTF_RenderText_Shaded_Wrapped(font, text, 0, textcol, boardcol, wrap_size);
 #endif
-                      break;
+                            break;
+                    }
+                } else if (textengine_mode == 1) {
+                    text_obj = TTF_CreateText_Wrapped(engine_surface, font, text, 0, wrap_size);
+                } else {
+                    text_obj = TTF_CreateText_Wrapped(engine_renderer, font, text, 0, wrap_size);
                 }
-#else
-                text_surface = TTF_RenderText_Blended_Wrapped(font, text, 0, textcol, wrap_size);
-#endif
+
                 if (print_elapsed_ticks) {
                    END_MEASURE
                 }
@@ -1004,16 +1079,23 @@ int main(void)
           SDL_Log("Avg: %7lg ms  Avg Perf: %7" SDL_PRIu64 " (min=%7" SDL_PRIu64 ")", (double)t_sum / (double)count_init, T_sum / count_init, T_min);
        }
 
-       if (text_surface == NULL && render_mode == 1 && sdf == 1) {
-          // sometimes SDF has glyph not found ?? FT issue ?
-          SDL_Log("BLENDED/SDF not rendered--> %s", SDL_GetError());
-          goto next_loop;
-       } else if (text_surface == NULL && render_mode == 3) {
-          SDL_Log("LCD not rendered--> %s", SDL_GetError());
-          goto next_loop;
-       } else if (text_surface == NULL) {
-          goto finish;
+       if (textengine_mode == 0) {
+           if (text_surface == NULL && render_mode == 1 && sdf == 1) {
+               // sometimes SDF has glyph not found ?? FT issue ?
+               SDL_Log("BLENDED/SDF not rendered--> %s", SDL_GetError());
+               goto next_loop;
+           } else if (text_surface == NULL && render_mode == 3) {
+               SDL_Log("LCD not rendered--> %s", SDL_GetError());
+               goto next_loop;
+           } else if (text_surface == NULL) {
+               goto finish;
+           }
+       } else {
+            if (text_obj == NULL) {
+               goto finish;
+            }
        }
+
 
        /* update_screen */
        if (save_to_bmp) {
@@ -1036,30 +1118,68 @@ int main(void)
 
           SDL_RenderClear(renderer);
 
-          text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-          if (text_texture == NULL) {
-             SDL_Log("Cannot create texture from surface(w=%d h=%d): %s", text_surface->w, text_surface->h, SDL_GetError());
-          } else {
-             SDL_Rect dstrect;
-             dstrect.x = windoww/2 - text_surface->w/2;
-             dstrect.y = windowh/2 - text_surface->h/2;
-             dstrect.w = text_surface->w;
-             dstrect.h = text_surface->h;
-             {
-                SDL_FRect d;
-                d.x = (float)dstrect.x;
-                d.y = (float)dstrect.y;
-                d.w = (float)dstrect.w;
-                d.h = (float)dstrect.h;
-                SDL_RenderTexture(renderer, text_texture, NULL, &d);
-             }
-             SDL_RenderPresent(renderer);
+          if (textengine_mode == 0) {
+              text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+              if (text_texture == NULL) {
+                  SDL_Log("Cannot create texture from surface(w=%d h=%d): %s", text_surface->w, text_surface->h, SDL_GetError());
+              } else {
+                  SDL_Rect dstrect;
+                  dstrect.x = windoww/2 - text_surface->w/2;
+                  dstrect.y = windowh/2 - text_surface->h/2;
+                  dstrect.w = text_surface->w;
+                  dstrect.h = text_surface->h;
+                  {
+                      SDL_FRect d;
+                      d.x = (float)dstrect.x;
+                      d.y = (float)dstrect.y;
+                      d.w = (float)dstrect.w;
+                      d.h = (float)dstrect.h;
+                      SDL_RenderTexture(renderer, text_texture, NULL, &d);
+                  }
+                  SDL_RenderPresent(renderer);
 
-             SDL_DestroyTexture(text_texture);
+                  SDL_DestroyTexture(text_texture);
+              }
+          } else if (textengine_mode == 1) {
+              SDL_Surface *window_surface = SDL_GetWindowSurface(window);
+              int w, h;
+              int x, y;
+              TTF_GetTextSize(text_obj, &w, &h);
+
+              x = windoww/2 - w/2;
+              y = windowh/2 - h/2;
+
+              SDL_ClearSurface(window_surface, 0, 0, 0, 0);
+
+              TTF_DrawSurfaceText(text_obj, x, y, window_surface);
+
+              SDL_UpdateWindowSurface(window);
+
+          } else {
+              int w, h;
+              float x, y;
+              TTF_GetTextSize(text_obj, &w, &h);
+
+              x = windoww/2.0f - w/2.0f;
+              y = windowh/2.0f - h/2.0f;
+
+              TTF_DrawRendererText(text_obj, x, y);
+              SDL_RenderPresent(renderer);
           }
        }
-       SDL_DestroySurface(text_surface);
-       text_surface = NULL;
+
+       if (text_surface) {
+           SDL_DestroySurface(text_surface);
+           text_surface = NULL;
+       }
+
+       if (text_obj) {
+           TTF_DestroyText(text_obj);
+           text_obj = NULL;
+       }
+
+
+
 
 next_loop:
 
@@ -1078,6 +1198,14 @@ finish:
     SDL_Log("cleanup");
     if (font) {
        TTF_CloseFont(font);
+    }
+
+    if (engine_surface) {
+        TTF_DestroySurfaceTextEngine(engine_surface);
+    }
+
+    if (engine_renderer) {
+        TTF_DestroyRendererTextEngine(engine_renderer);
     }
 
     SDL_DestroyRenderer(renderer);
@@ -1205,6 +1333,8 @@ static void random_input(void)
              curr_size = rand_n(200);
           }
        }
+
+       curr_size += 1; /* don't test size '0' */
     }
 
     /* Current Font: change less often */

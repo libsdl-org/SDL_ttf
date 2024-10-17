@@ -537,8 +537,6 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
         return NULL;
     }
 
-    SDL_assert(num_ops > 0);
-
     SDL_Texture *texture = GetOperationTexture(&ops[0]);
     TTF_DrawOperation *end = NULL;
     for (int i = 1; i < num_ops; ++i) {
@@ -584,7 +582,7 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
 
         float *texcoords = sequence->texcoords;
         for (int i = 0; i < count; ++i) {
-            AtlasGlyph *glyph = (AtlasGlyph *)ops[i].copy.reserved;
+            glyph = (AtlasGlyph *)ops[i].copy.reserved;
             SDL_memcpy(texcoords, glyph->texcoords, sizeof(glyph->texcoords));
             texcoords += SDL_arraysize(glyph->texcoords);
         }
@@ -781,8 +779,12 @@ static TTF_RendererTextEngineData *CreateEngineData(SDL_Renderer *renderer)
     return data;
 }
 
-static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_generation, TTF_Text *text, TTF_DrawOperation *ops, int num_ops)
+static bool SDLCALL CreateText(void *userdata, TTF_Text *text)
 {
+    TTF_Font *font = text->internal->font;
+    Uint32 font_generation = TTF_GetFontGeneration(font);
+    int num_ops = text->internal->num_ops;
+    TTF_DrawOperation *ops;
     TTF_RendererTextEngineData *enginedata = (TTF_RendererTextEngineData *)userdata;
     TTF_RendererTextEngineFontData *fontdata;
     TTF_RendererTextEngineTextData *data;
@@ -797,17 +799,25 @@ static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_gener
         fontdata->generation = font_generation;
     }
 
+    // Make a sortable copy of the draw operations
+    ops = (TTF_DrawOperation *)SDL_malloc(num_ops * sizeof(*ops));
+    if (!ops) {
+        return false;
+    }
+    SDL_memcpy(ops, text->internal->ops, num_ops * sizeof(*ops));
+
     data = CreateTextData(enginedata, fontdata, ops, num_ops);
+    SDL_free(ops);
     if (!data) {
         return false;
     }
-    text->internal->textrep = data;
+    text->internal->engine_text = data;
     return true;
 }
 
 static void SDLCALL DestroyText(void *userdata, TTF_Text *text)
 {
-    TTF_RendererTextEngineTextData *data = (TTF_RendererTextEngineTextData *)text->internal->textrep;
+    TTF_RendererTextEngineTextData *data = (TTF_RendererTextEngineTextData *)text->internal->engine_text;
 
     (void)userdata;
     DestroyTextData(data);
@@ -838,15 +848,22 @@ TTF_TextEngine *TTF_CreateRendererTextEngine(SDL_Renderer *renderer)
 
 bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
 {
-    TTF_RendererTextEngineTextData *data;
-    SDL_Renderer *renderer;
-
     if (!text || !text->internal || text->internal->engine->CreateText != CreateText) {
         return SDL_InvalidParamError("text");
     }
 
-    renderer = ((TTF_RendererTextEngineData *)text->internal->engine->userdata)->renderer;
-    data = (TTF_RendererTextEngineTextData *)text->internal->textrep;
+    // Make sure the text is up to date
+    if (!TTF_UpdateText(text)) {
+        return false;
+    }
+
+    TTF_RendererTextEngineTextData *data = (TTF_RendererTextEngineTextData *)text->internal->engine_text;
+    if (!data) {
+        // Empty string, nothing to do
+        return true;
+    }
+
+    SDL_Renderer *renderer = ((TTF_RendererTextEngineData *)text->internal->engine->userdata)->renderer;
     AtlasDrawSequence *sequence = data->draw_sequence;
     while (sequence) {
         float *position = sequence->positions;

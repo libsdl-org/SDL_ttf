@@ -38,14 +38,6 @@
 extern "C" {
 #endif
 
-/* Private data in TTF_Text, available to implementations */
-struct TTF_TextData
-{
-    TTF_TextEngine *engine; /**< The engine used to create this text, read-only. */
-    SDL_PropertiesID props; /**< Custom properties associated with this text, read-write. */
-    void *textrep;          /**< The implementation-specific representation of this text */
-};
-
 /**
  * A font atlas draw command.
  *
@@ -81,6 +73,12 @@ typedef struct TTF_FillOperation
 typedef struct TTF_CopyOperation
 {
     TTF_DrawCommand cmd;    /**< TTF_DRAW_COMMAND_COPY */
+    int text_offset;        /**< The offset in the text corresponding to this glyph.
+                                 There may be multiple glyphs with the same text offset
+                                 and the next text offset might be several Unicode codepoints
+                                 later. In this case the glyphs and codepoints are grouped
+                                 together and the group bounding box is the union of the dst
+                                 rectangles for the corresponding glyphs. */
     Uint32 glyph_index;     /**< The glyph index of the glyph to be drawn, can be passed to TTF_GetGlyphForIndex() */
     SDL_Rect src;           /**< The area within the glyph to be drawn */
     SDL_Rect dst;           /**< The drawing coordinates of the glyph, in pixels. The x coordinate is relative to the left side of the text area, going right, and the y coordinate is relative to the top side of the text area, going down. */
@@ -99,6 +97,32 @@ typedef union TTF_DrawOperation
     TTF_CopyOperation copy;
 } TTF_DrawOperation;
 
+
+/* Private data in TTF_Text, to assist in text measurement and layout */
+typedef struct TTF_TextLayout TTF_TextLayout;
+
+
+/* Private data in TTF_Text, available to implementations */
+struct TTF_TextData
+{
+    TTF_Font *font;             /**< The font used by this text, read-only. */
+
+    bool needs_layout_update;   /**< True if the layout needs to be updated */
+    TTF_TextLayout *layout;     /**< Cached layout information, read-only. */
+    int w;                      /**< The width of this text, in pixels, read-only. */
+    int h;                      /**< The height of this text, in pixels, read-only. */
+    int num_ops;                /**< The number of drawing operations to render this text, read-only. */
+    TTF_DrawOperation *ops;     /**< The drawing operations used to render this text, read-only. */
+    int num_clusters;           /**< The number of substrings representing clusters of glyphs in the string, read-only */
+    TTF_SubString *clusters;    /**< Substrings representing clusters of glyphs in the string, read-only */
+
+    SDL_PropertiesID props;     /**< Custom properties associated with this text, read-only. This field is created as-needed using TTF_GetTextProperties() and the properties may be then set and read normally */
+
+    bool needs_engine_update;   /**< True if the engine text needs to be updated */
+    TTF_TextEngine *engine;     /**< The engine used to render this text, read-only. */
+    void *engine_text;          /**< The implementation-specific representation of this text */
+};
+
 /**
  * A text engine interface.
  *
@@ -116,15 +140,14 @@ struct TTF_TextEngine
 
     /* Create a text representation from draw instructions.
      *
-     * All fields of `text` except `internal` will already be filled out.
+     * All fields of `text` except `internal->engine_text` will already be filled out.
+     *
+     * This function should set the `internal->engine_text` field to a non-NULL value.
      *
      * \param userdata the userdata pointer in this interface.
-     * \param font the font being used.
-     * \param font_generation the unique ID of the font generation being used. This changes whenever the font changes size or style and needs new glyphs, and is unique across all fonts.
-     * \param ops the text drawing operations
-     * \param num_ops the number of text drawing operations
+     * \param text the text object being created.
      */
-    bool (SDLCALL *CreateText)(void *userdata, TTF_Font *font, Uint32 font_generation, TTF_Text *text, TTF_DrawOperation *ops, int num_ops);
+    bool (SDLCALL *CreateText)(void *userdata, TTF_Text *text);
 
     /**
      * Destroy a text representation.

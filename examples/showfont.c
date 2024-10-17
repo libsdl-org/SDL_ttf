@@ -26,13 +26,18 @@
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+
+#include "editbox.h"
 
 #define DEFAULT_PTSIZE  18.0f
 #define DEFAULT_TEXT    "The quick brown fox jumped over the lazy dog"
+// Combining characters
+//#define DEFAULT_TEXT    "\xc5\xab\xcc\x80\x20\xe1\xba\x83\x20\x6e\xcc\x82\x20\x48\xcc\xa8\x20\x6f\xcd\x9c\x75"
+// Chinese text
+//#define DEFAULT_TEXT    "\xe5\xad\xa6\xe4\xb9\xa0\xe6\x9f\x90\xe8\xaf\xbe\xe7\xa8\x8b\xe5\xbf\x85\xe8\xaf\xbb\xe7\x9a\x84"
 #define WIDTH   640
 #define HEIGHT  480
+
 
 #define TTF_SHOWFONT_USAGE \
 "Usage: %s [-textengine surface|renderer] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
@@ -51,18 +56,21 @@ typedef enum
 } TextRenderMethod;
 
 typedef struct {
+    bool done;
     SDL_Window *window;
     SDL_Surface *window_surface;
     SDL_Renderer *renderer;
+    TTF_Font *font;
     SDL_Texture *caption;
     SDL_FRect captionRect;
     SDL_Texture *message;
     SDL_FRect messageRect;
     TextEngine textEngine;
-    TTF_Text *text;
+    SDL_FRect textRect;
+    EditBox *edit;
 } Scene;
 
-static void draw_scene(Scene *scene)
+static void DrawScene(Scene *scene)
 {
     SDL_Renderer *renderer = scene->renderer;
 
@@ -70,30 +78,22 @@ static void draw_scene(Scene *scene)
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
 
-    /* Flush the renderer so we can draw to the window surface in TextEngineSurface mode */
-    SDL_FlushRenderer(renderer);
+    if (scene->edit) {
+        /* Clear the text rect to light gray */
+        SDL_SetRenderDrawColor(renderer, 0xCC, 0xCC, 0xCC, 0xFF);
+        SDL_RenderFillRect(renderer, &scene->textRect);
 
-    if (scene->text) {
-        int i;
-        int w, h;
-
-        SDL_GetRenderOutputSize(renderer, &w, &h);
-
-        for (i = 0; i < 100; ++i) {
-            int x = SDL_rand(w) - scene->text->w / 2;
-            int y = SDL_rand(h) - scene->text->h / 2;
-
-            switch (scene->textEngine) {
-            case TextEngineSurface:
-                TTF_DrawSurfaceText(scene->text, x, y, scene->window_surface);
-                break;
-            case TextEngineRenderer:
-                TTF_DrawRendererText(scene->text, (float)x, (float)y);
-                break;
-            default:
-                break;
-            }
+        if (scene->edit->has_focus) {
+            SDL_FRect focusRect = scene->textRect;
+            focusRect.x -= 1;
+            focusRect.y -= 1;
+            focusRect.w += 2;
+            focusRect.h += 2;
+            SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+            SDL_RenderRect(renderer, &focusRect);
         }
+
+        EditBox_Draw(scene->edit);
     }
 
     SDL_RenderTexture(renderer, scene->caption, NULL, &scene->captionRect);
@@ -105,7 +105,120 @@ static void draw_scene(Scene *scene)
     }
 }
 
-static void cleanup(int exitcode)
+static void HandleKeyDown(Scene *scene, SDL_Event *event)
+{
+    int style, outline;
+    float ptsize;
+
+    switch (event->key.key) {
+    case SDLK_A:
+        /* Cycle alignment */
+        switch (TTF_GetFontWrapAlignment(scene->font)) {
+        case TTF_HORIZONTAL_ALIGN_LEFT:
+            TTF_SetFontWrapAlignment(scene->font, TTF_HORIZONTAL_ALIGN_CENTER);
+            break;
+        case TTF_HORIZONTAL_ALIGN_CENTER:
+            TTF_SetFontWrapAlignment(scene->font, TTF_HORIZONTAL_ALIGN_RIGHT);
+            break;
+        case TTF_HORIZONTAL_ALIGN_RIGHT:
+            TTF_SetFontWrapAlignment(scene->font, TTF_HORIZONTAL_ALIGN_LEFT);
+            break;
+        default:
+            SDL_Log("Unknown wrap alignment: %d\n", TTF_GetFontWrapAlignment(scene->font));
+            break;
+        }
+        break;
+
+    case SDLK_B:
+        /* Toggle bold style */
+        style = TTF_GetFontStyle(scene->font);
+        if (style & TTF_STYLE_BOLD) {
+            style &= ~TTF_STYLE_BOLD;
+        } else {
+            style |= TTF_STYLE_BOLD;
+        }
+        TTF_SetFontStyle(scene->font, style);
+        break;
+
+    case SDLK_I:
+        /* Toggle italic style */
+        style = TTF_GetFontStyle(scene->font);
+        if (style & TTF_STYLE_ITALIC) {
+            style &= ~TTF_STYLE_ITALIC;
+        } else {
+            style |= TTF_STYLE_ITALIC;
+        }
+        TTF_SetFontStyle(scene->font, style);
+        break;
+
+    case SDLK_O:
+        /* Toggle scene->font outline */
+        outline = TTF_GetFontOutline(scene->font);
+        if (outline) {
+            outline = 0;
+        } else {
+            outline = 1;
+        }
+        TTF_SetFontOutline(scene->font, outline);
+        break;
+
+    case SDLK_R:
+        /* Toggle layout direction */
+        if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_LTR) {
+            TTF_SetFontDirection(scene->font, TTF_DIRECTION_RTL);
+        } else if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_RTL) {
+            TTF_SetFontDirection(scene->font, TTF_DIRECTION_LTR);
+        } else if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_TTB) {
+            TTF_SetFontDirection(scene->font, TTF_DIRECTION_BTT);
+        } else if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_BTT) {
+            TTF_SetFontDirection(scene->font, TTF_DIRECTION_TTB);
+        }
+        break;
+
+    case SDLK_S:
+        /* Toggle strike-through style */
+        style = TTF_GetFontStyle(scene->font);
+        if (style & TTF_STYLE_STRIKETHROUGH) {
+            style &= ~TTF_STYLE_STRIKETHROUGH;
+        } else {
+            style |= TTF_STYLE_STRIKETHROUGH;
+        }
+        TTF_SetFontStyle(scene->font, style);
+        break;
+
+    case SDLK_U:
+        /* Toggle underline style */
+        style = TTF_GetFontStyle(scene->font);
+        if (style & TTF_STYLE_UNDERLINE) {
+            style &= ~TTF_STYLE_UNDERLINE;
+        } else {
+            style |= TTF_STYLE_UNDERLINE;
+        }
+        TTF_SetFontStyle(scene->font, style);
+        break;
+
+    case SDLK_UP:
+        /* Increase font size */
+        ptsize = TTF_GetFontSize(scene->font);
+        TTF_SetFontSize(scene->font, ptsize + 1.0f);
+        break;
+
+    case SDLK_DOWN:
+        /* Decrease font size */
+        ptsize = TTF_GetFontSize(scene->font);
+        TTF_SetFontSize(scene->font, ptsize - 1.0f);
+        break;
+
+    case SDLK_ESCAPE:
+        scene->done = true;
+        break;
+
+    default:
+        break;
+    }
+}
+
+static void Cleanup(int exitcode)
 {
     TTF_Quit();
     SDL_Quit();
@@ -119,7 +232,7 @@ int main(int argc, char *argv[])
     SDL_Surface *text = NULL;
     Scene scene;
     float ptsize;
-    int i, done;
+    int i;
     SDL_Color white = { 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE };
     SDL_Color black = { 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
     SDL_Color *forecol;
@@ -273,13 +386,14 @@ int main(int argc, char *argv[])
     if (font == NULL) {
         SDL_Log("Couldn't load %g pt font from %s: %s\n",
                     ptsize, argv[0], SDL_GetError());
-        cleanup(2);
+        Cleanup(2);
     }
     TTF_SetFontStyle(font, renderstyle);
     TTF_SetFontOutline(font, outline);
     TTF_SetFontKerning(font, kerning);
     TTF_SetFontHinting(font, hinting);
     TTF_SetFontWrapAlignment(font, align);
+    scene.font = font;
 
     if(dump) {
         for(i = 48; i < 123; i++) {
@@ -294,20 +408,20 @@ int main(int argc, char *argv[])
             }
 
         }
-        cleanup(0);
+        Cleanup(0);
     }
 
     /* Create a window */
     scene.window = SDL_CreateWindow("showfont demo", WIDTH, HEIGHT, 0);
     if (!scene.window) {
         SDL_Log("SDL_CreateWindow() failed: %s\n", SDL_GetError());
-        cleanup(2);
+        Cleanup(2);
     }
     if (scene.textEngine == TextEngineSurface) {
         scene.window_surface = SDL_GetWindowSurface(scene.window);
         if (!scene.window_surface) {
             SDL_Log("SDL_CreateWindowSurface() failed: %s\n", SDL_GetError());
-            cleanup(2);
+            Cleanup(2);
         }
         SDL_SetWindowSurfaceVSync(scene.window, 1);
 
@@ -320,7 +434,7 @@ int main(int argc, char *argv[])
     }
     if (!scene.renderer) {
         SDL_Log("SDL_CreateRenderer() failed: %s\n", SDL_GetError());
-        cleanup(2);
+        Cleanup(2);
     }
 
     /* Show which font file we're looking at */
@@ -367,7 +481,7 @@ int main(int argc, char *argv[])
     if (text == NULL) {
         SDL_Log("Couldn't render text: %s\n", SDL_GetError());
         TTF_CloseFont(font);
-        cleanup(2);
+        Cleanup(2);
     }
     scene.messageRect.x = (float)((WIDTH - text->w)/2);
     scene.messageRect.y = (float)((HEIGHT - text->h)/2);
@@ -394,44 +508,62 @@ int main(int argc, char *argv[])
         break;
     }
     if (engine) {
-        if (wrap) {
-            scene.text = TTF_CreateText_Wrapped(engine, font, message, 0, 0);
-        } else {
-            scene.text = TTF_CreateText(engine, font, message, 0);
-        }
-        if (scene.text) {
-            scene.text->color.r = forecol->r / 255.0f;
-            scene.text->color.g = forecol->g / 255.0f;
-            scene.text->color.b = forecol->b / 255.0f;
-            scene.text->color.a = forecol->a / 255.0f;
+        scene.textRect.x = 8.0f;
+        scene.textRect.y = scene.captionRect.y + scene.captionRect.h + 4.0f;
+        scene.textRect.w = WIDTH / 2 - scene.textRect.x * 2;
+        scene.textRect.h = scene.messageRect.y - scene.textRect.y - 16.0f;
+
+        SDL_FRect editRect = scene.textRect;
+        editRect.x += 4.0f;
+        editRect.y += 4.0f;
+        editRect.w -= 8.0f;
+        editRect.w -= 8.0f;
+        scene.edit = EditBox_Create(scene.window, scene.renderer, engine, font, &editRect);
+        if (scene.edit) {
+            scene.edit->text->color.r = forecol->r / 255.0f;
+            scene.edit->text->color.g = forecol->g / 255.0f;
+            scene.edit->text->color.b = forecol->b / 255.0f;
+            scene.edit->text->color.a = forecol->a / 255.0f;
+
+            EditBox_Insert(scene.edit, message);
         }
     }
 
     /* Wait for a keystroke, and blit text on mouse press */
-    done = 0;
-    while (!done) {
+    while (!scene.done) {
         while (SDL_PollEvent(&event)) {
+            SDL_ConvertEventToRenderCoordinates(scene.renderer, &event);
+
             switch (event.type) {
                 case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                    scene.messageRect.x = (float)(event.button.x - text->w/2);
-                    scene.messageRect.y = (float)(event.button.y - text->h/2);
-                    scene.messageRect.w = (float)text->w;
-                    scene.messageRect.h = (float)text->h;
+                    if (!EditBox_HandleEvent(scene.edit, &event)) {
+                        scene.messageRect.x = (event.button.x - text->w/2);
+                        scene.messageRect.y = (event.button.y - text->h/2);
+                        scene.messageRect.w = (float)text->w;
+                        scene.messageRect.h = (float)text->h;
+                    }
                     break;
 
                 case SDL_EVENT_KEY_DOWN:
-                case SDL_EVENT_QUIT:
-                    done = 1;
+                    if (!EditBox_HandleEvent(scene.edit, &event)) {
+                        HandleKeyDown(&scene, &event);
+                    }
                     break;
+
+                case SDL_EVENT_QUIT:
+                    scene.done = true;
+                    break;
+
                 default:
+                    EditBox_HandleEvent(scene.edit, &event);
                     break;
             }
         }
-        draw_scene(&scene);
+        DrawScene(&scene);
     }
     SDL_DestroySurface(text);
+    EditBox_Destroy(scene.edit);
     TTF_CloseFont(font);
-    TTF_DestroyText(scene.text);
     switch (scene.textEngine) {
     case TextEngineSurface:
         TTF_DestroySurfaceTextEngine(engine);
@@ -444,7 +576,7 @@ int main(int argc, char *argv[])
     }
     SDL_DestroyTexture(scene.caption);
     SDL_DestroyTexture(scene.message);
-    cleanup(0);
+    Cleanup(0);
 
     /* Not reached, but fixes compiler warnings */
     return 0;
