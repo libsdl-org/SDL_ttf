@@ -101,6 +101,7 @@ endif()
 
 add_library(${sdl3_ttf_target_name}
     src/SDL_hashtable.c
+    src/SDL_gpu_textengine.c
     src/SDL_renderer_textengine.c
     src/SDL_surface_textengine.c
     src/SDL_ttf.c
@@ -358,6 +359,7 @@ if(SDLTTF_SAMPLES)
     add_executable(glfont examples/glfont.c)
     add_executable(showfont examples/showfont.c)
     add_executable(testapp examples/testapp.c)
+    add_executable(testgputext examples/testgputext.c)
 
     set(OpenGL_GL_PREFERENCE GLVND)
     find_package(OpenGL)
@@ -369,10 +371,10 @@ if(SDLTTF_SAMPLES)
         target_link_libraries(glfont PRIVATE OpenGL::GL)
     endif()
 
-    foreach(prog glfont showfont testapp)
+    foreach(prog glfont showfont testapp testgputext)
         sdl_add_warning_options(${prog} WARNING_AS_ERROR ${SDLTTF_WERROR})
-        target_link_libraries(${prog} PRIVATE SDL3_ttf::${sdl3_ttf_target_name})
-        target_link_libraries(${prog} PRIVATE ${sdl3_target_name})
+        target_link_libraries(${prog} PRIVATE SDL3_ttf::${sdl3_ttf_target_name} m)
+        target_link_libraries(${prog} PRIVATE ${sdl3_target_name} m)
 
         if(SDLTTF_SAMPLES_INSTALL)
             install(TARGETS ${prog}

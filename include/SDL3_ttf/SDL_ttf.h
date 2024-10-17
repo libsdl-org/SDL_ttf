@@ -1375,6 +1375,79 @@ extern SDL_DECLSPEC bool SDLCALL TTF_DrawRendererText(TTF_Text *text, float x, f
 extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *engine);
 
 /**
+ * Create a text engine for drawing text on an SDL renderer.
+ *
+ * \param renderer the renderer to use for creating textures and drawing text.
+ * \returns a TTF_TextEngine object or NULL on failure; call SDL_GetError()
+ *          for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               renderer.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_DestroyRendererTextEngine
+ */
+extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngine(SDL_GPUDevice *device);
+
+typedef struct TTF_GPUAtlasDrawSequence
+{
+    SDL_GPUTexture *texture;
+    float *xy;
+    int xy_stride;
+    float *uv;
+    int uv_stride;
+    int num_vertices;
+    int *indices;
+    int num_indices;
+    struct TTF_GPUAtlasDrawSequence *next;
+} TTF_GPUAtlasDrawSequence;
+
+/**
+ * Draw text to an SDL renderer.
+ *
+ * `text` must have been created using a TTF_TextEngine from
+ * TTF_CreateRendererTextEngine(), and will draw using the renderer passed to
+ * that function.
+ *
+ * \param text the text to draw.
+ * \param x the x coordinate in pixels, positive from the left edge towards
+ *          the right.
+ * \param y the y coordinate in pixels, positive from the top edge towards the
+ *          bottom.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateRendererTextEngine
+ * \sa TTF_CreateText
+ * \sa TTF_CreateText_Wrapped
+ */
+extern SDL_DECLSPEC TTF_GPUAtlasDrawSequence* SDLCALL TTF_GetGPUTextDrawData(TTF_Text *text, SDL_GPUTexture **atlas_texture);
+
+/**
+ * Destroy a text engine created for drawing text on an SDL renderer.
+ *
+ * All text created by this engine should be destroyed before calling this
+ * function.
+ *
+ * \param engine a TTF_TextEngine object created with
+ *               TTF_CreateRendererTextEngine().
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               engine.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateRendererTextEngine
+ */
+extern SDL_DECLSPEC void SDLCALL TTF_DestroyGPUTextEngine(TTF_TextEngine *engine);
+
+/**
  * Create a text object from UTF-8 text and a text engine.
  *
  * This will not word-wrap the string; you'll get a surface with a single line
