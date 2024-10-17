@@ -187,7 +187,6 @@ static AtlasTexture *CreateAtlas(SDL_GPUDevice *device)
     info.num_levels = 1;
 
     atlas->texture = SDL_CreateGPUTexture(device, &info);
-    // atlas->texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, ATLAS_TEXTURE_SIZE, ATLAS_TEXTURE_SIZE);
 
     if (!atlas->texture) {
         DestroyAtlas(device, atlas);
@@ -843,8 +842,12 @@ static TTF_GPUTextEngineData *CreateEngineData(SDL_GPUDevice *device)
     return data;
 }
 
-static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_generation, TTF_Text *text, TTF_DrawOperation *ops, int num_ops)
+static bool SDLCALL CreateText(void *userdata, TTF_Text *text)
 {
+    TTF_Font *font = text->internal->font;
+    Uint32 font_generation = TTF_GetFontGeneration(font);
+    int num_ops = text->internal->num_ops;
+    TTF_DrawOperation *ops;
     TTF_GPUTextEngineData *enginedata = (TTF_GPUTextEngineData *)userdata;
     TTF_GPUTextEngineFontData *fontdata;
     TTF_GPUTextEngineTextData *data;
@@ -859,17 +862,25 @@ static bool SDLCALL CreateText(void *userdata, TTF_Font *font, Uint32 font_gener
         fontdata->generation = font_generation;
     }
 
+    // Make a sortable copy of the draw operations
+    ops = (TTF_DrawOperation *)SDL_malloc(num_ops * sizeof(*ops));
+    if (!ops) {
+        return false;
+    }
+    SDL_memcpy(ops, text->internal->ops, num_ops * sizeof(*ops));
+
     data = CreateTextData(enginedata, fontdata, ops, num_ops);
+    SDL_free(ops);
     if (!data) {
         return false;
     }
-    text->internal->textrep = data;
+    text->internal->engine_text = data;
     return true;
 }
 
 static void SDLCALL DestroyText(void *userdata, TTF_Text *text)
 {
-    TTF_GPUTextEngineTextData *data = (TTF_GPUTextEngineTextData *)text->internal->textrep;
+    TTF_GPUTextEngineTextData *data = (TTF_GPUTextEngineTextData *)text->internal->engine_text;
 
     (void)userdata;
     DestroyTextData(data);
@@ -909,20 +920,21 @@ TTF_TextEngine *TTF_CreateGPUTextEngine(SDL_GPUDevice *device)
     return engine;
 }
 
-AtlasDrawSequence* TTF_GetGPUTextDrawData(TTF_Text *text, SDL_GPUTexture **atlas_texture)
+AtlasDrawSequence* TTF_GetGPUTextDrawData(TTF_Text *text)
 {
     if (!text || !text->internal || text->internal->engine->CreateText != CreateText) {
         SDL_InvalidParamError("text");
         return NULL;
     }
 
-    TTF_GPUTextEngineTextData *data;
-    data = (TTF_GPUTextEngineTextData *)text->internal->textrep;
+    // Make sure the text is up to date
+    if (!TTF_UpdateText(text)) {
+        return NULL;
+    }
 
-    if (atlas_texture) {
-        *atlas_texture = data->draw_sequence->texture;
-    } else {
-        SDL_InvalidParamError("atlas_texture");
+    TTF_GPUTextEngineTextData *data = (TTF_GPUTextEngineTextData *)text->internal->engine_text;
+    if (!data) {
+        // Empty string, nothing to do
         return NULL;
     }
 

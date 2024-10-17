@@ -114,7 +114,7 @@ SDL_GPUShader* load_shader(
 }
 
 
-void queue_text(GeometryData *geometry_data, TTF_GPUAtlasDrawSequence *sequence, SDL_FColor *colour) {
+void queue_text_sequence(GeometryData *geometry_data, TTF_GPUAtlasDrawSequence *sequence, SDL_FColor *colour) {
 	for (int i = 0; i < sequence->num_vertices; i++) {
 		Vertex vert;
 		const float *xy = (float *)((Uint8 *)sequence->xy + i*sequence->xy_stride);
@@ -130,10 +130,15 @@ void queue_text(GeometryData *geometry_data, TTF_GPUAtlasDrawSequence *sequence,
 
 	SDL_memcpy(geometry_data->indices + geometry_data->index_count, sequence->indices, sequence->num_indices*sizeof(int));
 
-	geometry_data->vertex_count = sequence->num_vertices;
-	geometry_data->index_count = sequence->num_indices;
+	geometry_data->vertex_count += sequence->num_vertices;
+	geometry_data->index_count += sequence->num_indices;
 }
 
+void queue_text(GeometryData *geometry_data, TTF_GPUAtlasDrawSequence *sequence, SDL_FColor *colour) {
+	do {
+		queue_text_sequence(geometry_data, sequence, colour);
+	} while ((sequence = sequence->next));
+}
 
 void set_geometry_data(Context *context, GeometryData *geometry_data) {
 	Vertex *transfer_data = SDL_MapGPUTransferBuffer(context->device, context->transfer_buffer, false);
@@ -177,7 +182,7 @@ void transfer_data(Context *context, GeometryData *geometry_data) {
 }
 
 
-void draw(Context *context, SDL_GPUTexture *texture, int index_count, mat4_t *matrices, int num_matrices) {
+void draw(Context *context, mat4_t *matrices, int num_matrices, TTF_GPUAtlasDrawSequence *draw_sequence) {
     SDL_GPUTexture* swapchain_texture;
     check_error_bool(SDL_AcquireGPUSwapchainTexture(context->cmd_buf, context->window, &swapchain_texture, NULL, NULL));
 
@@ -206,15 +211,22 @@ void draw(Context *context, SDL_GPUTexture *texture, int index_count, mat4_t *ma
 			},
 			SDL_GPU_INDEXELEMENTSIZE_32BIT
 		);
-		SDL_BindGPUFragmentSamplers(
-			render_pass, 0,
-			&(SDL_GPUTextureSamplerBinding) {
-				.texture = texture, .sampler = context->sampler
-			},
-			1
-		);
 		SDL_PushGPUVertexUniformData(context->cmd_buf, 0, matrices, sizeof(mat4_t)*num_matrices);
-		SDL_DrawGPUIndexedPrimitives(render_pass, index_count, 1, 0, 0, 0);
+
+		int index_offset = 0;
+		for (TTF_GPUAtlasDrawSequence *seq = draw_sequence; seq != NULL; seq = seq->next) {
+			SDL_BindGPUFragmentSamplers(
+				render_pass, 0,
+				&(SDL_GPUTextureSamplerBinding) {
+					.texture = seq->texture, .sampler = context->sampler
+				},
+				1
+			);
+
+			SDL_DrawGPUIndexedPrimitives(render_pass, seq->num_indices, 1, index_offset, 0, 0);
+
+			index_offset += seq->num_indices;
+		}
 		SDL_EndGPURenderPass(render_pass);
 	}
 }
@@ -357,17 +369,14 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
-		SDL_GPUTexture *texture;
-		TTF_GPUAtlasDrawSequence *sequence = TTF_GetGPUTextDrawData(text, &texture);
-		do {
-			queue_text(&geometry_data, sequence, &text->color);
-		} while ((sequence = sequence->next));
+		TTF_GPUAtlasDrawSequence *sequence = TTF_GetGPUTextDrawData(text);
+		queue_text(&geometry_data, sequence, &text->color);
 
 		set_geometry_data(&context, &geometry_data);
 
 		context.cmd_buf = check_error_ptr(SDL_AcquireGPUCommandBuffer(context.device));
 		transfer_data(&context, &geometry_data);
-		draw(&context, texture, geometry_data.index_count, matrices, 2);
+		draw(&context, matrices, 2, sequence);
 		SDL_SubmitGPUCommandBuffer(context.cmd_buf);
 
 		geometry_data.vertex_count = 0;

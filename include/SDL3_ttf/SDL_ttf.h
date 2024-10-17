@@ -1527,7 +1527,7 @@ typedef struct TTF_GPUAtlasDrawSequence
  * \sa TTF_CreateText
  * \sa TTF_CreateText_Wrapped
  */
-extern SDL_DECLSPEC TTF_GPUAtlasDrawSequence* SDLCALL TTF_GetGPUTextDrawData(TTF_Text *text, SDL_GPUTexture **atlas_texture);
+extern SDL_DECLSPEC TTF_GPUAtlasDrawSequence* SDLCALL TTF_GetGPUTextDrawData(TTF_Text *text);
 
 /**
  * Destroy a text engine created for drawing text on an SDL renderer.
