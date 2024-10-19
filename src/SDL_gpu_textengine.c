@@ -599,7 +599,7 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
     }
 
     int count = (end ? (int)(end - ops) : num_ops);
-    sequence->texture = texture;
+    sequence->atlas_texture = texture;
     sequence->num_vertices = count * 4;
     sequence->num_indices = count * 6;
     sequence->xy_stride = sizeof(float) * 2;
