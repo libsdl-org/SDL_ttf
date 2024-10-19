@@ -109,6 +109,8 @@ struct TTF_TextData
 
     bool needs_layout_update;   /**< True if the layout needs to be updated */
     TTF_TextLayout *layout;     /**< Cached layout information, read-only. */
+    int x;                      /**< The x offset of the upper left corner of this text, in pixels, read-only. */
+    int y;                      /**< The y offset of the upper left corner of this text, in pixels, read-only. */
     int w;                      /**< The width of this text, in pixels, read-only. */
     int h;                      /**< The height of this text, in pixels, read-only. */
     int num_ops;                /**< The number of drawing operations to render this text, read-only. */
