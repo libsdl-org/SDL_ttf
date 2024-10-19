@@ -284,6 +284,7 @@ if(SDLTTF_INSTALL)
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT library
     )
     install(FILES
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/SDL3_ttf/SDL_textengine.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/include/SDL3_ttf/SDL_ttf.h"
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/SDL3_ttf" COMPONENT devel
     )
