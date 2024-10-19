@@ -3475,7 +3475,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
                 if (line->text[line->length - 1] == '\r') {
                     --line->length;
                 }
-            } else {
+            } else if (i < (numLines - 1)) {
                 while (line->length > 0 &&
                        CharacterIsDelimiter(line->text[line->length - 1])) {
                     --line->length;
