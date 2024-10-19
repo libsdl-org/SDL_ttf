@@ -114,15 +114,10 @@ typedef struct TTF_Font TTF_Font;
  * Initialize SDL_ttf.
  *
  * You must successfully call this function before it is safe to call any
- * other function in this library, with one exception: a human-readable error
- * message can be retrieved from SDL_GetError() if this function fails.
+ * other function in this library.
  *
- * SDL must be initialized before calls to functions in this library, because
- * this library uses utility functions from the SDL library.
- *
- * It is safe to call this more than once; the library keeps a counter of init
- * calls, and decrements it on each call to TTF_Quit, so you must pair your
- * init and quit calls.
+ * It is safe to call this more than once, and each successful TTF_Init()
+ * call should be paired with a matching TTF_Quit() call.
  *
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
