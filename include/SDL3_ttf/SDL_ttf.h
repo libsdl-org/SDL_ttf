@@ -116,8 +116,8 @@ typedef struct TTF_Font TTF_Font;
  * You must successfully call this function before it is safe to call any
  * other function in this library.
  *
- * It is safe to call this more than once, and each successful TTF_Init()
- * call should be paired with a matching TTF_Quit() call.
+ * It is safe to call this more than once, and each successful TTF_Init() call
+ * should be paired with a matching TTF_Quit() call.
  *
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
@@ -1472,7 +1472,8 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *e
 /**
  * Create a text object from UTF-8 text and a text engine.
  *
- * This function is equivalent to `TTF_CreateText_Wrapped(engine, font, text, 0)` and will wrap on newline characters.
+ * This function is equivalent to `TTF_CreateText_Wrapped(engine, font, text,
+ * 0)` and will wrap on newline characters.
  *
  * \param engine the text engine to use when creating the text object, may be
  *               NULL.
@@ -1599,7 +1600,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_GetTextFont(TTF_Text *text);
 /**
  * Set the position of a text object.
  *
- * This can be used to position multiple text objects within a single wrapping text area.
+ * This can be used to position multiple text objects within a single wrapping
+ * text area.
  *
  * \param text the TTF_Text to modify.
  * \param x the x offset of the upper left corner of this text in pixels.
@@ -1616,8 +1618,10 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextPosition(TTF_Text *text, int x, int 
  * Get the position of a text object.
  *
  * \param text the TTF_Text to query.
- * \param x a pointer filled in with the x offset of the upper left corner of this text in pixels, may be NULL.
- * \param y a pointer filled in with the y offset of the upper left corner of this text in pixels, may be NULL.
+ * \param x a pointer filled in with the x offset of the upper left corner of
+ *          this text in pixels, may be NULL.
+ * \param y a pointer filled in with the y offset of the upper left corner of
+ *          this text in pixels, may be NULL.
  *
  * \threadsafety This function should be called on the thread that created the
  *               text.
