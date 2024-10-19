@@ -45,6 +45,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetStringSizeWrapped;
     TTF_GetTextEngine;
     TTF_GetTextFont;
+    TTF_GetTextPosition;
     TTF_GetTextSize;
     TTF_GetTextSubString;
     TTF_GetTextSubStringForLine;
@@ -81,6 +82,7 @@ SDL3_ttf_0.0.0 {
     TTF_SetFontWrapAlignment;
     TTF_SetTextEngine;
     TTF_SetTextFont;
+    TTF_SetTextPosition;
     TTF_SetTextString;
     TTF_SetTextWrapping;
     TTF_UpdateText;

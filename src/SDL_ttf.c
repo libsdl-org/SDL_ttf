@@ -3121,6 +3121,10 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
                 char_count += 1;
             }
             if (cw >= measure_width) {
+                if (cw > measure_width) {
+                    // The last character didn't fit
+                    font->pos_len -= 1;
+                }
                 break;
             }
         }
@@ -3342,7 +3346,7 @@ static bool CharacterIsNewLine(Uint32 c)
     return false;
 }
 
-static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int wrapLength, TTF_Line **lines, int *num_lines, int *w, int *h)
+static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int xoffset, int wrapLength, TTF_Line **lines, int *num_lines, int *w, int *h)
 {
     int width, height;
     int i, numLines = 0, rowHeight;
@@ -3403,51 +3407,61 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
             strLines[numLines].length = left;
             ++numLines;
 
-            if (!TTF_MeasureString(font, spot, left, wrapLength, &extent, &max_count)) {
+            int measure_width = wrapLength;
+            if (measure_width > 0) {
+                measure_width = SDL_max(measure_width - xoffset, 1);
+            }
+            if (!TTF_MeasureString(font, spot, left, measure_width, &extent, &max_count)) {
                 SDL_SetError("Error measure text");
                 goto done;
             }
 
             if (wrapLength != 0) {
-                if (max_count == 0) {
+                if (max_count == 0 && numLines > 1) {
                     max_count = 1;
                 }
             }
 
-            while (left > 0) {
-                int is_delim;
-                Uint32 c = SDL_StepUTF8((const char **)&spot, &left);
+            if (max_count > 0) {
+                while (left > 0) {
+                    int is_delim;
+                    Uint32 c = SDL_StepUTF8((const char **)&spot, &left);
 
-                if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
-                    continue;
-                }
+                    if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
+                        continue;
+                    }
 
-                char_count += 1;
+                    char_count += 1;
 
-                // With wrapLength == 0, normal text rendering but newline aware
-                is_delim = (wrapLength > 0) ?  CharacterIsDelimiter(c) : CharacterIsNewLine(c);
+                    // With wrapLength == 0, normal text rendering but newline aware
+                    is_delim = (wrapLength > 0) ? CharacterIsDelimiter(c) : CharacterIsNewLine(c);
 
-                // Record last delimiter position
-                if (is_delim) {
-                    save_text = spot;
-                    save_length = left;
-                    // Break, if new line
-                    if (c == '\n' || (c == '\r' && *spot != '\n')) {
+                    // Record last delimiter position
+                    if (is_delim) {
+                        save_text = spot;
+                        save_length = left;
+                        // Break, if new line
+                        if (c == '\n' || (c == '\r' && *spot != '\n')) {
+                            break;
+                        }
+                    }
+
+                    // Break, if reach the limit
+                    if (char_count == max_count) {
                         break;
                     }
                 }
 
-                // Break, if reach the limit
-                if (char_count == max_count) {
-                    break;
+                // Cut at last delimiter/new lines, otherwise in the middle of the word
+                if (save_text && left > 0) {
+                    spot = save_text;
+                    left = save_length;
                 }
             }
 
-            // Cut at last delimiter/new lines, otherwise in the middle of the word
-            if (save_text && left > 0) {
-                spot = save_text;
-                left = save_length;
-            }
+            // First line is complete, start the next at offset 0
+            xoffset = 0;
+
         } while (left > 0);
 
         // Trim whitespace from the wrapped lines and newlines from unwrapped lines
@@ -3522,7 +3536,7 @@ done:
 
 bool TTF_GetStringSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrapLength, int *w, int *h)
 {
-    return GetWrappedLines(font, text, length, wrapLength, NULL, NULL, w, h);
+    return GetWrappedLines(font, text, length, 0, wrapLength, NULL, NULL, w, h);
 }
 
 static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength, const render_mode_t render_mode)
@@ -3533,7 +3547,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     int i, numLines = 0;
     TTF_Line *strLines = NULL;
 
-    if (!GetWrappedLines(font, text, length, wrapLength, &strLines, &numLines, &width, &height)) {
+    if (!GetWrappedLines(font, text, length, 0, wrapLength, &strLines, &numLines, &width, &height)) {
         return NULL;
     }
 
@@ -3637,7 +3651,6 @@ SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t
 
 struct TTF_TextLayout
 {
-    bool wrap;
     int wrap_length;
     int *lines;
 };
@@ -3649,7 +3662,7 @@ typedef struct TTF_InternalText
     TTF_TextLayout layout;
 } TTF_InternalText;
 
-static TTF_Text *CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length, bool wrap, int wrapLength)
+static TTF_Text *CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length, int wrapLength)
 {
     if (engine && engine->version < sizeof(*engine)) {
         // Update this to handle older versions of this interface
@@ -3672,7 +3685,6 @@ static TTF_Text *CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *
     result->color.a = 1.0f;
     result->internal->needs_layout_update = true;
     result->internal->engine = engine;
-    result->internal->layout->wrap = wrap;
     result->internal->layout->wrap_length = wrapLength;
     if (text && *text) {
         if (length == 0) {
@@ -3696,12 +3708,12 @@ static TTF_Text *CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *
 
 TTF_Text *TTF_CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length)
 {
-    return CreateText(engine, font, text, length, false, -1);
+    return CreateText(engine, font, text, length, 0);
 }
 
 TTF_Text *TTF_CreateText_Wrapped(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length, int wrapLength)
 {
-    return CreateText(engine, font, text, length, true, wrapLength);
+    return CreateText(engine, font, text, length, wrapLength);
 }
 
 static int SDLCALL SortClusters(const void *a, const void *b)
@@ -3798,81 +3810,6 @@ static int CalculateClusterLengths(TTF_Text *text, TTF_SubString *clusters, int 
 static bool LayoutText(TTF_Text *text)
 {
     TTF_Font *font = text->internal->font;
-    size_t length = SDL_strlen(text->text);
-    TTF_DrawOperation *ops = NULL;
-    int num_ops = 0, max_ops;
-    TTF_SubString *clusters = NULL, *cluster;
-    int num_clusters = 0;
-    int xstart, ystart, width = 0, height = 0;
-    bool result = false;
-
-    if (!TTF_Size_Internal(font, text->text, length, &width, &height, &xstart, &ystart, NO_MEASUREMENT) || !width) {
-        return true;
-    }
-
-    max_ops = font->pos_len;
-    if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-        ++max_ops;
-    }
-    if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-        ++max_ops;
-    }
-
-    ops = (TTF_DrawOperation *)SDL_calloc(max_ops, sizeof(*ops));
-    if (!ops) {
-        goto done;
-    }
-
-    clusters = (TTF_SubString *)SDL_calloc(font->num_clusters + 2, sizeof(*clusters));
-    if (!clusters) {
-        goto done;
-    }
-
-    // Create the text drawing operations
-    if (!Render_Line_TextEngine(font, xstart, ystart, width, height, ops, &num_ops, clusters, &num_clusters, 0, 0)) {
-        goto done;
-    }
-
-    cluster = &clusters[num_clusters++];
-    cluster->flags = TTF_SUBSTRING_LINE_END;
-    cluster->offset = (int)SDL_strlen(text->text);
-
-    cluster = &clusters[num_clusters++];
-    cluster->flags = TTF_SUBSTRING_TEXT_END;
-    cluster->offset = (int)SDL_strlen(text->text);
-
-    // Apply underline or strikethrough style, if needed
-    if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-        Draw_Line_TextEngine(font, width, height, 0, ystart + font->underline_top_row, width, font->line_thickness, ops, &num_ops);
-    }
-
-    if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-        Draw_Line_TextEngine(font, width, height, 0, ystart + font->strikethrough_top_row, width, font->line_thickness, ops, &num_ops);
-    }
-
-    num_clusters = CalculateClusterLengths(text, clusters, num_clusters, length, NULL);
-
-    result = true;
-
-done:
-    if (result) {
-        text->num_lines = 1;
-        text->internal->w = width;
-        text->internal->h = height;
-        text->internal->num_ops = num_ops;
-        text->internal->ops = ops;
-        text->internal->num_clusters = num_clusters;
-        text->internal->clusters = clusters;
-    } else {
-        SDL_free(ops);
-        SDL_free(clusters);
-    }
-    return result;
-}
-
-static bool LayoutTextWrapped(TTF_Text *text)
-{
-    TTF_Font *font = text->internal->font;
     int wrapLength = text->internal->layout->wrap_length;
     size_t length = SDL_strlen(text->text);
     int i, width = 0, height = 0, numLines = 0;
@@ -3884,9 +3821,10 @@ static bool LayoutTextWrapped(TTF_Text *text)
     int *lines = NULL;
     bool result = false;
 
-    if (!GetWrappedLines(font, text->text, length, wrapLength, &strLines, &numLines, &width, &height)) {
+    if (!GetWrappedLines(font, text->text, length, text->internal->x, wrapLength, &strLines, &numLines, &width, &height)) {
         return true;
     }
+    height += text->internal->y;
 
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
         ++extra_ops;
@@ -3931,6 +3869,8 @@ static bool LayoutTextWrapped(TTF_Text *text)
         // Move to i-th line
         ystart += i * font->lineskip;
 
+        ystart += text->internal->y;
+
         // Control left/right/center align of each bit of text
         if (font->horizontal_align == TTF_HORIZONTAL_ALIGN_RIGHT) {
             xoffset = (width - line_width);
@@ -3940,6 +3880,10 @@ static bool LayoutTextWrapped(TTF_Text *text)
             xoffset = 0;
         }
         xoffset = SDL_max(0, xoffset);
+
+        if (i == 0) {
+            xoffset += text->internal->x;
+        }
 
         // Allocate space for the operations on this line
         additional_ops = (font->pos_len + extra_ops);
@@ -4096,6 +4040,38 @@ TTF_Font *TTF_GetTextFont(TTF_Text *text)
     return text->internal->font;
 }
 
+bool TTF_SetTextPosition(TTF_Text *text, int x, int y)
+{
+    TTF_CHECK_POINTER("text", text, false);
+
+    if (x != text->internal->x || y != text->internal->y) {
+        text->internal->x = x;
+        text->internal->y = y;
+        text->internal->needs_layout_update = true;
+    }
+    return true;
+}
+
+bool TTF_GetTextPosition(TTF_Text *text, int *x, int *y)
+{
+    if (x) {
+        *x = 0;
+    }
+    if (y) {
+        *y = 0;
+    }
+
+    TTF_CHECK_POINTER("text", text, false);
+
+    if (x) {
+        *x = text->internal->x;
+    }
+    if (y) {
+        *y = text->internal->y;
+    }
+    return true;
+}
+
 bool TTF_SetTextString(TTF_Text *text, const char *string, size_t length)
 {
     TTF_CHECK_POINTER("text", text, false);
@@ -4218,38 +4194,27 @@ bool TTF_DeleteTextString(TTF_Text *text, int offset, int length)
     return true;
 }
 
-bool TTF_SetTextWrapping(TTF_Text *text, bool wrap, int wrapLength)
+bool TTF_SetTextWrapping(TTF_Text *text, int wrapLength)
 {
     TTF_CHECK_POINTER("text", text, false);
 
-    if (wrap == text->internal->layout->wrap &&
-        (wrapLength < 0 || wrapLength == text->internal->layout->wrap_length)) {
+    if (wrapLength == text->internal->layout->wrap_length) {
         return true;
     }
 
-    text->internal->layout->wrap = wrap;
-    if (wrapLength >= 0) {
-        text->internal->layout->wrap_length = wrapLength;
-    }
-
+    text->internal->layout->wrap_length = SDL_max(wrapLength, 0);
     text->internal->needs_layout_update = true;
     return true;
 }
 
-bool TTF_GetTextWrapping(TTF_Text *text, bool *wrap, int *wrapLength)
+bool TTF_GetTextWrapping(TTF_Text *text, int *wrapLength)
 {
-    if (wrap) {
-        *wrap = false;
-    }
     if (wrapLength) {
-        *wrapLength = -1;
+        *wrapLength = 0;
     }
 
     TTF_CHECK_POINTER("text", text, false);
 
-    if (wrap) {
-        *wrap = text->internal->layout->wrap;
-    }
     if (wrapLength) {
         *wrapLength = text->internal->layout->wrap_length;
     }
@@ -4545,7 +4510,7 @@ bool TTF_GetTextSubStringForPoint(TTF_Text *text, int x, int y, TTF_SubString *s
 #endif
     const TTF_SubString *closest = NULL;
     int closest_dist = INT_MAX;
-    int wrap_cost = (text->internal->layout->wrap ? 100 : 1);
+    int wrap_cost = 100;
     SDL_Point point = { x, y };
     for (int i = 0; i < text->internal->num_clusters; ++i) {
         const TTF_SubString *cluster = &text->internal->clusters[i];
@@ -4673,14 +4638,8 @@ bool TTF_UpdateText(TTF_Text *text)
         text->internal->h = 0;
 
         if (text->internal->font && text->text) {
-            if (text->internal->layout->wrap) {
-                if (!LayoutTextWrapped(text)) {
-                    return false;
-                }
-            } else {
-                if (!LayoutText(text)) {
-                    return false;
-                }
+            if (!LayoutText(text)) {
+                return false;
             }
         }
 

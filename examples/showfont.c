@@ -105,6 +105,16 @@ static void DrawScene(Scene *scene)
     }
 }
 
+static void AdjustTextOffset(TTF_Text *text, int xoffset, int yoffset)
+{
+    int x, y;
+
+    TTF_GetTextPosition(text, &x, &y);
+    x += xoffset;
+    y += yoffset;
+    TTF_SetTextPosition(text, x, y);
+}
+
 static void HandleKeyDown(Scene *scene, SDL_Event *event)
 {
     int style, outline;
@@ -197,16 +207,36 @@ static void HandleKeyDown(Scene *scene, SDL_Event *event)
         TTF_SetFontStyle(scene->font, style);
         break;
 
+    case SDLK_LEFT:
+        if (event->key.mod & SDL_KMOD_CTRL) {
+            AdjustTextOffset(scene->edit->text, -1, 0);
+        }
+        break;
+
+    case SDLK_RIGHT:
+        if (event->key.mod & SDL_KMOD_CTRL) {
+            AdjustTextOffset(scene->edit->text, 1, 0);
+        }
+        break;
+
     case SDLK_UP:
-        /* Increase font size */
-        ptsize = TTF_GetFontSize(scene->font);
-        TTF_SetFontSize(scene->font, ptsize + 1.0f);
+        if (event->key.mod & SDL_KMOD_CTRL) {
+            AdjustTextOffset(scene->edit->text, 0, -1);
+        } else {
+            /* Increase font size */
+            ptsize = TTF_GetFontSize(scene->font);
+            TTF_SetFontSize(scene->font, ptsize + 1.0f);
+        }
         break;
 
     case SDLK_DOWN:
-        /* Decrease font size */
-        ptsize = TTF_GetFontSize(scene->font);
-        TTF_SetFontSize(scene->font, ptsize - 1.0f);
+        if (event->key.mod & SDL_KMOD_CTRL) {
+            AdjustTextOffset(scene->edit->text, 0, 1);
+        } else {
+            /* Decrease font size */
+            ptsize = TTF_GetFontSize(scene->font);
+            TTF_SetFontSize(scene->font, ptsize - 1.0f);
+        }
         break;
 
     case SDLK_ESCAPE:
