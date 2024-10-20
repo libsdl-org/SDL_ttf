@@ -218,7 +218,7 @@ static void SaveCandidates(EditBox *edit, const SDL_Event *event)
     }
     *dst = '\0';
 
-    edit->candidates = TTF_CreateText_Wrapped(TTF_GetTextEngine(edit->text), edit->font, candidate_text, 0, 0);
+    edit->candidates = TTF_CreateText(TTF_GetTextEngine(edit->text), edit->font, candidate_text, 0);
     SDL_free(candidate_text);
     if (edit->candidates) {
         SDL_copyp(&edit->candidates->color, &edit->text->color);
@@ -341,6 +341,9 @@ EditBox *EditBox_Create(SDL_Window *window, SDL_Renderer *renderer, TTF_TextEngi
     edit->rect = *rect;
     edit->highlight1 = -1;
     edit->highlight2 = -1;
+
+    /* Show the whitespace when wrapping, so it can be edited */
+    TTF_SetTextWrapWhitespaceVisible(edit->text, true);
 
 #ifdef TEST_SURFACE_ENGINE
     /* Grab the window surface if we want to test the surface text engine.

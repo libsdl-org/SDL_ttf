@@ -1738,6 +1738,36 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapping(TTF_Text *text, int wrapLen
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapping(TTF_Text *text, int *wrapLength);
 
 /**
+ * Set whether whitespace should be visible when wrapping a text object.
+ *
+ * If the whitespace is visible, it will take up space for purposes of alignment and wrapping. This is good for editing, but looks better when centered or aligned if whitespace around line wrapping is hidden. This defaults false.
+ *
+ * \param text the TTF_Text to modify.
+ * \param visible true to show whitespace when wrapping text, false to hide it.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapWhitespaceVisible(TTF_Text *text, bool visible);
+
+/**
+ * Return whether whitespace is shown when wrapping a text object.
+ *
+ * \param text the TTF_Text to query.
+ * \returns true if whitespace is shown when wrapping text, or false otherwise.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_TextWrapWhitespaceVisible(TTF_Text *text);
+
+/**
  * Get the size of a text object.
  *
  * The size of the text may change when the font or font style and size
