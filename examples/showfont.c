@@ -550,10 +550,7 @@ int main(int argc, char *argv[])
         editRect.w -= 8.0f;
         scene.edit = EditBox_Create(scene.window, scene.renderer, engine, font, &editRect);
         if (scene.edit) {
-            scene.edit->text->color.r = forecol->r / 255.0f;
-            scene.edit->text->color.g = forecol->g / 255.0f;
-            scene.edit->text->color.b = forecol->b / 255.0f;
-            scene.edit->text->color.a = forecol->a / 255.0f;
+            TTF_SetTextColor(scene.edit->text, forecol->r, forecol->g, forecol->b, forecol->a);
 
             EditBox_Insert(scene.edit, message);
         }

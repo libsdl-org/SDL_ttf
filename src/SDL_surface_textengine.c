@@ -344,11 +344,11 @@ bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
         return true;
     }
 
-    if (text->color.r != data->fcolor.r ||
-        text->color.g != data->fcolor.g ||
-        text->color.b != data->fcolor.b ||
-        text->color.a != data->fcolor.a) {
-        UpdateColor(data, &text->color);
+    if (text->internal->color.r != data->fcolor.r ||
+        text->internal->color.g != data->fcolor.g ||
+        text->internal->color.b != data->fcolor.b ||
+        text->internal->color.a != data->fcolor.a) {
+        UpdateColor(data, &text->internal->color);
     }
 
     for (int i = 0; i < data->num_ops; ++i) {

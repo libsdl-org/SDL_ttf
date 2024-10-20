@@ -221,7 +221,9 @@ static void SaveCandidates(EditBox *edit, const SDL_Event *event)
     edit->candidates = TTF_CreateText(TTF_GetTextEngine(edit->text), edit->font, candidate_text, 0);
     SDL_free(candidate_text);
     if (edit->candidates) {
-        SDL_copyp(&edit->candidates->color, &edit->text->color);
+        float r, g, b, a;
+        TTF_GetTextColorFloat(edit->text, &r, &g, &b, &a);
+        TTF_SetTextColorFloat(edit->candidates, r, g, b, a);
     } else {
         ClearCandidates(edit);
     }

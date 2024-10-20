@@ -1341,7 +1341,6 @@ typedef struct TTF_TextData TTF_TextData;
 typedef struct TTF_Text
 {
     char *text;             /**< A copy of the text used to create this text object, useful for layout and debugging. This will be freed automatically when the object is destroyed. */
-    SDL_FColor color;       /**< The color of the text, read-write. You can change this anytime. */
     int num_lines;          /**< The number of lines in the text, 0 if it's empty */
 
     int refcount;           /**< Application reference count, used when freeing surface */
@@ -1549,6 +1548,8 @@ extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetTextProperties(TTF_Text *tex
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetTextEngine
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextEngine(TTF_Text *text, TTF_TextEngine *engine);
 
@@ -1563,6 +1564,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextEngine(TTF_Text *text, TTF_TextEngin
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetTextEngine
  */
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_GetTextEngine(TTF_Text *text);
 
@@ -1580,6 +1583,8 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_GetTextEngine(TTF_Text *text);
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetTextFont
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextFont(TTF_Text *text, TTF_Font *font);
 
@@ -1594,8 +1599,98 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextFont(TTF_Text *text, TTF_Font *font)
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetTextFont
  */
 extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_GetTextFont(TTF_Text *text);
+
+/**
+ * Set the color of a text object.
+ *
+ * The default text color is white (255, 255, 255, 255).
+ *
+ * \param text the TTF_Text to modify.
+ * \param r the red color value in the range of 0-255.
+ * \param g the green color value in the range of 0-255.
+ * \param b the blue color value in the range of 0-255.
+ * \param a the alpha value in the range of 0-255.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetTextColor
+ * \sa TTF_SetTextColorFloat
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetTextColor(TTF_Text *text, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+
+/**
+ * Set the color of a text object.
+ *
+ * The default text color is white (1.0f, 1.0f, 1.0f, 1.0f).
+ *
+ * \param text the TTF_Text to modify.
+ * \param r the red color value, normally in the range of 0-1.
+ * \param g the green color value, normally in the range of 0-1.
+ * \param b the blue color value, normally in the range of 0-1.
+ * \param a the alpha value in the range of 0-1.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetTextColorFloat
+ * \sa TTF_SetTextColor
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetTextColorFloat(TTF_Text *text, float r, float g, float b, float a);
+
+/**
+ * Get the color of a text object.
+ *
+ * \param text the TTF_Text to query.
+ * \param r a pointer filled in with the red color value in the range of 0-255, may be NULL.
+ * \param g a pointer filled in with the green color value in the range of 0-255, may be NULL.
+ * \param b a pointer filled in with the blue color value in the range of 0-255, may be NULL.
+ * \param a a pointer filled in with the alpha value in the range of 0-255, may be NULL.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetTextColorFloat
+ * \sa TTF_SetTextColor
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetTextColor(TTF_Text *text, Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a);
+
+/**
+ * Get the color of a text object.
+ *
+ * \param text the TTF_Text to query.
+ * \param r a pointer filled in with the red color value, normally in the range of 0-1, may be NULL.
+ * \param g a pointer filled in with the green color value, normally in the range of 0-1, may be NULL.
+ * \param b a pointer filled in with the blue color value, normally in the range of 0-1, may be NULL.
+ * \param a a pointer filled in with the alpha value in the range of 0-1, may be NULL.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetTextColor
+ * \sa TTF_SetTextColorFloat
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetTextColorFloat(TTF_Text *text, float *r, float *g, float *b, float *a);
 
 /**
  * Set the position of a text object.
@@ -1611,6 +1706,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_GetTextFont(TTF_Text *text);
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetTextPosition
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextPosition(TTF_Text *text, int x, int y);
 
@@ -1627,6 +1724,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextPosition(TTF_Text *text, int x, int 
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetTextPosition
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextPosition(TTF_Text *text, int *x, int *y);
 
@@ -1644,6 +1743,10 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextPosition(TTF_Text *text, int *x, int
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_AppendTextString
+ * \sa TTF_DeleteTextString
+ * \sa TTF_InsertTextString
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextString(TTF_Text *text, const char *string, size_t length);
 
@@ -1665,6 +1768,10 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextString(TTF_Text *text, const char *s
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_AppendTextString
+ * \sa TTF_DeleteTextString
+ * \sa TTF_SetTextString
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_InsertTextString(TTF_Text *text, int offset, const char *string, size_t length);
 
@@ -1682,6 +1789,10 @@ extern SDL_DECLSPEC bool SDLCALL TTF_InsertTextString(TTF_Text *text, int offset
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_DeleteTextString
+ * \sa TTF_InsertTextString
+ * \sa TTF_SetTextString
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_AppendTextString(TTF_Text *text, const char *string, size_t length);
 
@@ -1702,6 +1813,10 @@ extern SDL_DECLSPEC bool SDLCALL TTF_AppendTextString(TTF_Text *text, const char
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_AppendTextString
+ * \sa TTF_InsertTextString
+ * \sa TTF_SetTextString
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_DeleteTextString(TTF_Text *text, int offset, int length);
 
@@ -1718,6 +1833,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_DeleteTextString(TTF_Text *text, int offset
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetTextWrapping
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapping(TTF_Text *text, int wrapLength);
 
@@ -1734,6 +1851,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapping(TTF_Text *text, int wrapLen
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetTextWrapping
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapping(TTF_Text *text, int *wrapLength);
 
@@ -1751,6 +1870,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapping(TTF_Text *text, int *wrapLe
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_TextWrapWhitespaceVisible
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapWhitespaceVisible(TTF_Text *text, bool visible);
 
@@ -1764,6 +1885,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapWhitespaceVisible(TTF_Text *text
  *               text.
  *
  * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetTextWrapWhitespaceVisible
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_TextWrapWhitespaceVisible(TTF_Text *text);
 

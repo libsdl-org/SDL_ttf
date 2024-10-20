@@ -887,7 +887,7 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
         SDL_RenderGeometryRaw(renderer,
                               sequence->texture,
                               sequence->positions, 2 * sizeof(float),
-                              &text->color, 0,
+                              &text->internal->color, 0,
                               sequence->texcoords, 2 * sizeof(float),
                               sequence->num_rects * 4,
                               sequence->indices, sequence->num_rects * 6, sizeof(*sequence->indices));
