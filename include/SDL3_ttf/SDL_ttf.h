@@ -1654,10 +1654,14 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextColorFloat(TTF_Text *text, float r, 
  * Get the color of a text object.
  *
  * \param text the TTF_Text to query.
- * \param r a pointer filled in with the red color value in the range of 0-255, may be NULL.
- * \param g a pointer filled in with the green color value in the range of 0-255, may be NULL.
- * \param b a pointer filled in with the blue color value in the range of 0-255, may be NULL.
- * \param a a pointer filled in with the alpha value in the range of 0-255, may be NULL.
+ * \param r a pointer filled in with the red color value in the range of
+ *          0-255, may be NULL.
+ * \param g a pointer filled in with the green color value in the range of
+ *          0-255, may be NULL.
+ * \param b a pointer filled in with the blue color value in the range of
+ *          0-255, may be NULL.
+ * \param a a pointer filled in with the alpha value in the range of 0-255,
+ *          may be NULL.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
@@ -1675,10 +1679,14 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextColor(TTF_Text *text, Uint8 *r, Uint
  * Get the color of a text object.
  *
  * \param text the TTF_Text to query.
- * \param r a pointer filled in with the red color value, normally in the range of 0-1, may be NULL.
- * \param g a pointer filled in with the green color value, normally in the range of 0-1, may be NULL.
- * \param b a pointer filled in with the blue color value, normally in the range of 0-1, may be NULL.
- * \param a a pointer filled in with the alpha value in the range of 0-1, may be NULL.
+ * \param r a pointer filled in with the red color value, normally in the
+ *          range of 0-1, may be NULL.
+ * \param g a pointer filled in with the green color value, normally in the
+ *          range of 0-1, may be NULL.
+ * \param b a pointer filled in with the blue color value, normally in the
+ *          range of 0-1, may be NULL.
+ * \param a a pointer filled in with the alpha value in the range of 0-1, may
+ *          be NULL.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
@@ -1859,10 +1867,14 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapping(TTF_Text *text, int *wrapLe
 /**
  * Set whether whitespace should be visible when wrapping a text object.
  *
- * If the whitespace is visible, it will take up space for purposes of alignment and wrapping. This is good for editing, but looks better when centered or aligned if whitespace around line wrapping is hidden. This defaults false.
+ * If the whitespace is visible, it will take up space for purposes of
+ * alignment and wrapping. This is good for editing, but looks better when
+ * centered or aligned if whitespace around line wrapping is hidden. This
+ * defaults false.
  *
  * \param text the TTF_Text to modify.
- * \param visible true to show whitespace when wrapping text, false to hide it.
+ * \param visible true to show whitespace when wrapping text, false to hide
+ *                it.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
@@ -1879,7 +1891,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapWhitespaceVisible(TTF_Text *text
  * Return whether whitespace is shown when wrapping a text object.
  *
  * \param text the TTF_Text to query.
- * \returns true if whitespace is shown when wrapping text, or false otherwise.
+ * \returns true if whitespace is shown when wrapping text, or false
+ *          otherwise.
  *
  * \threadsafety This function should be called on the thread that created the
  *               text.
