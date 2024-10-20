@@ -2,8 +2,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#define MATH_3D_IMPLEMENTATION
-#include "math_3d.h"
+#define SDL_MATH_3D_IMPLEMENTATION
+#include "SDL_math3d.h"
 
 
 #define MAX_VERTEX_COUNT 4000
@@ -182,7 +182,7 @@ void transfer_data(Context *context, GeometryData *geometry_data) {
 }
 
 
-void draw(Context *context, mat4_t *matrices, int num_matrices, TTF_GPUAtlasDrawSequence *draw_sequence) {
+void draw(Context *context, SDL_Mat4X4 *matrices, int num_matrices, TTF_GPUAtlasDrawSequence *draw_sequence) {
     SDL_GPUTexture* swapchain_texture;
     check_error_bool(SDL_AcquireGPUSwapchainTexture(context->cmd_buf, context->window, &swapchain_texture, NULL, NULL));
 
@@ -211,14 +211,14 @@ void draw(Context *context, mat4_t *matrices, int num_matrices, TTF_GPUAtlasDraw
 			},
 			SDL_GPU_INDEXELEMENTSIZE_32BIT
 		);
-		SDL_PushGPUVertexUniformData(context->cmd_buf, 0, matrices, sizeof(mat4_t)*num_matrices);
+		SDL_PushGPUVertexUniformData(context->cmd_buf, 0, matrices, sizeof(SDL_Mat4X4)*num_matrices);
 
 		int index_offset = 0;
 		for (TTF_GPUAtlasDrawSequence *seq = draw_sequence; seq != NULL; seq = seq->next) {
 			SDL_BindGPUFragmentSamplers(
 				render_pass, 0,
 				&(SDL_GPUTextureSamplerBinding) {
-					.texture = seq->texture, .sampler = context->sampler
+					.texture = seq->atlas_texture, .sampler = context->sampler
 				},
 				1
 			);
@@ -349,13 +349,13 @@ int main(int argc, char *argv[]) {
 	geometry_data.vertices = SDL_calloc(MAX_VERTEX_COUNT, sizeof(Vertex));
 	geometry_data.indices = SDL_calloc(MAX_INDEX_COUNT, sizeof(int));
 
-	mat4_t model = m4_identity();
-	model = m4_mul(model, m4_translation((vec3_t) {300.0f, 150.0f, 0.0f}));
-	model = m4_mul(model, m4_rotation_z(M_PI/4.0f));
-	model = m4_mul(model, m4_scaling((vec3_t) {1.2f, 1.2f, 1.0f}));
+	SDL_Mat4X4 model = SDL_MatrixIdentity();
+	model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3) {300.0f, 150.0f, 0.0f}));
+	model = SDL_MatrixMultiply(model, SDL_MatrixRotationZ(M_PI/4.0f));
+	model = SDL_MatrixMultiply(model, SDL_MatrixScaling((SDL_Vec3) {1.2f, 1.2f, 1.0f}));
 
-	mat4_t *matrices = (mat4_t[]) {
-		m4_ortho(0.0f, 800.0f, 600.0f, 0.0f, 0.1f, 100.0f),
+	SDL_Mat4X4 *matrices = (SDL_Mat4X4[]) {
+		SDL_MatrixOrtho(0.0f, 800.0f, 600.0f, 0.0f, 0.1f, 100.0f),
 		model
 	};
 
