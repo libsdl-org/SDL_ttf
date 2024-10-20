@@ -193,6 +193,7 @@ static AtlasTexture *CreateAtlas(SDL_Renderer *renderer)
         DestroyAtlas(atlas);
         return NULL;
     }
+    SDL_SetTextureScaleMode(atlas->texture, SDL_SCALEMODE_NEAREST);
 
     int num_nodes = ATLAS_TEXTURE_SIZE / 4;
     atlas->packing_nodes = (stbrp_node *)SDL_calloc(num_nodes, sizeof(*atlas->packing_nodes));
