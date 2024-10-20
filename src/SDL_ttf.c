@@ -3346,7 +3346,7 @@ static bool CharacterIsNewLine(Uint32 c)
     return false;
 }
 
-static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int xoffset, int wrapLength, TTF_Line **lines, int *num_lines, int *w, int *h)
+static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int xoffset, int wrapLength, bool trim_whitespace, TTF_Line **lines, int *num_lines, int *w, int *h)
 {
     int width, height;
     int i, numLines = 0, rowHeight;
@@ -3400,6 +3400,19 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
                 strLines = new_lines;
             }
 
+            if (trim_whitespace && spot > text && spot[-1] != '\n') {
+                const char *next_spot = spot;
+                size_t next_left = left;
+                for (;;) {
+                    Uint32 c = SDL_StepUTF8(&next_spot, &next_left);
+                    if (c == 0 || (c != ' ' && c != '\t')) {
+                        break;
+                    }
+                    spot = next_spot;
+                    left = next_left;
+                }
+            }
+
             if (numLines > 0) {
                 strLines[numLines - 1].length = spot - strLines[numLines - 1].text;
             }
@@ -3417,6 +3430,9 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
             }
 
             if (wrapLength != 0) {
+                // The first line can be empty if we have a text position that's
+                // at the edge of the wrap length, but subsequent lines should have
+                // at least one character per line.
                 if (max_count == 0 && numLines > 1) {
                     max_count = 1;
                 }
@@ -3425,7 +3441,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
             if (max_count > 0) {
                 while (left > 0) {
                     int is_delim;
-                    Uint32 c = SDL_StepUTF8((const char **)&spot, &left);
+                    Uint32 c = SDL_StepUTF8(&spot, &left);
 
                     if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
                         continue;
@@ -3464,18 +3480,24 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
 
         } while (left > 0);
 
-        // Trim whitespace from the wrapped lines and newlines from unwrapped lines
         for (i = 0; i < numLines; ++i) {
             TTF_Line *line = &strLines[i];
             if (line->length == 0) {
                 continue;
             }
+
+            // The line doesn't include any delimiter that caused it to be wrapped.
             if (CharacterIsNewLine(line->text[line->length - 1])) {
                 --line->length;
                 if (line->text[line->length - 1] == '\r') {
                     --line->length;
                 }
-            } else if (i < (numLines - 1)) {
+            } else if (i < (numLines - 1) &&
+                       CharacterIsDelimiter(line->text[line->length - 1])) {
+                --line->length;
+            }
+
+            if (trim_whitespace) {
                 while (line->length > 0 &&
                        CharacterIsDelimiter(line->text[line->length - 1])) {
                     --line->length;
@@ -3536,7 +3558,7 @@ done:
 
 bool TTF_GetStringSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrapLength, int *w, int *h)
 {
-    return GetWrappedLines(font, text, length, 0, wrapLength, NULL, NULL, w, h);
+    return GetWrappedLines(font, text, length, 0, wrapLength, true, NULL, NULL, w, h);
 }
 
 static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength, const render_mode_t render_mode)
@@ -3547,7 +3569,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     int i, numLines = 0;
     TTF_Line *strLines = NULL;
 
-    if (!GetWrappedLines(font, text, length, 0, wrapLength, &strLines, &numLines, &width, &height)) {
+    if (!GetWrappedLines(font, text, length, 0, wrapLength, true, &strLines, &numLines, &width, &height)) {
         return NULL;
     }
 
@@ -3652,6 +3674,7 @@ SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t
 struct TTF_TextLayout
 {
     int wrap_length;
+    bool wrap_whitespace_visible;
     int *lines;
 };
 
@@ -3811,6 +3834,7 @@ static bool LayoutText(TTF_Text *text)
 {
     TTF_Font *font = text->internal->font;
     int wrapLength = text->internal->layout->wrap_length;
+    bool trim_whitespace = !text->internal->layout->wrap_whitespace_visible;
     size_t length = SDL_strlen(text->text);
     int i, width = 0, height = 0, numLines = 0;
     TTF_Line *strLines = NULL;
@@ -3821,7 +3845,7 @@ static bool LayoutText(TTF_Text *text)
     int *lines = NULL;
     bool result = false;
 
-    if (!GetWrappedLines(font, text->text, length, text->internal->x, wrapLength, &strLines, &numLines, &width, &height)) {
+    if (!GetWrappedLines(font, text->text, length, text->internal->x, wrapLength, trim_whitespace, &strLines, &numLines, &width, &height)) {
         return true;
     }
     height += text->internal->y;
@@ -4219,6 +4243,26 @@ bool TTF_GetTextWrapping(TTF_Text *text, int *wrapLength)
         *wrapLength = text->internal->layout->wrap_length;
     }
     return true;
+}
+
+bool TTF_SetTextWrapWhitespaceVisible(TTF_Text *text, bool visible)
+{
+    TTF_CHECK_POINTER("text", text, false);
+
+    if (visible == text->internal->layout->wrap_whitespace_visible) {
+        return true;
+    }
+
+    text->internal->layout->wrap_whitespace_visible = visible;
+    text->internal->needs_layout_update = true;
+    return true;
+}
+
+bool TTF_GetTextWrapSpaceTrimming(TTF_Text *text)
+{
+    TTF_CHECK_POINTER("text", text, false);
+
+    return text->internal->layout->wrap_whitespace_visible;
 }
 
 bool TTF_GetTextSize(TTF_Text *text, int *w, int *h)

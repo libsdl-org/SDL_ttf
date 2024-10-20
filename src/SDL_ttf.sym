@@ -84,7 +84,9 @@ SDL3_ttf_0.0.0 {
     TTF_SetTextFont;
     TTF_SetTextPosition;
     TTF_SetTextString;
+    TTF_SetTextWrapWhitespaceVisible;
     TTF_SetTextWrapping;
+    TTF_TextWrapWhitespaceVisible;
     TTF_UpdateText;
     TTF_Version;
     TTF_WasInit;
