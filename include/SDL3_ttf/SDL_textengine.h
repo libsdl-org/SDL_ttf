@@ -106,6 +106,7 @@ typedef struct TTF_TextLayout TTF_TextLayout;
 struct TTF_TextData
 {
     TTF_Font *font;             /**< The font used by this text, read-only. */
+    SDL_FColor color;           /**< The color of the text, read-only. */
 
     bool needs_layout_update;   /**< True if the layout needs to be updated */
     TTF_TextLayout *layout;     /**< Cached layout information, read-only. */

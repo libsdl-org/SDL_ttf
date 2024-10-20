@@ -3702,10 +3702,10 @@ static TTF_Text *CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *
     result->internal = &mem->internal;
     result->internal->layout = &mem->layout;
     result->internal->font = font;
-    result->color.r = 1.0f;
-    result->color.g = 1.0f;
-    result->color.b = 1.0f;
-    result->color.a = 1.0f;
+    result->internal->color.r = 1.0f;
+    result->internal->color.g = 1.0f;
+    result->internal->color.b = 1.0f;
+    result->internal->color.a = 1.0f;
     result->internal->needs_layout_update = true;
     result->internal->engine = engine;
     result->internal->layout->wrap_length = wrapLength;
@@ -4062,6 +4062,98 @@ TTF_Font *TTF_GetTextFont(TTF_Text *text)
     TTF_CHECK_POINTER("text", text, NULL);
 
     return text->internal->font;
+}
+
+bool TTF_SetTextColor(TTF_Text *text, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+    const float fR = (float)r / 255.0f;
+    const float fG = (float)g / 255.0f;
+    const float fB = (float)b / 255.0f;
+    const float fA = (float)a / 255.0f;
+
+    return TTF_SetTextColorFloat(text, fR, fG, fB, fA);
+}
+
+bool TTF_SetTextColorFloat(TTF_Text *text, float r, float g, float b, float a)
+{
+    TTF_CHECK_POINTER("text", text, false);
+
+    text->internal->color.r = r;
+    text->internal->color.g = g;
+    text->internal->color.b = b;
+    text->internal->color.a = a;
+    return true;
+}
+
+bool TTF_GetTextColor(TTF_Text *text, Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a)
+{
+    float fR = 1.0f, fG = 1.0f, fB = 1.0f, fA = 1.0f;
+
+    if (!TTF_GetTextColorFloat(text, &fR, &fG, &fB, &fA)) {
+        if (r) {
+            *r = 255;
+        }
+        if (g) {
+            *g = 255;
+        }
+        if (b) {
+            *b = 255;
+        }
+        if (b) {
+            *b = 255;
+        }
+        return false;
+    }
+
+    if (r) {
+        *r = (Uint8)SDL_roundf(SDL_clamp(fR, 0.0f, 1.0f) * 255.0f);
+    }
+    if (g) {
+        *g = (Uint8)SDL_roundf(SDL_clamp(fG, 0.0f, 1.0f) * 255.0f);
+    }
+    if (b) {
+        *b = (Uint8)SDL_roundf(SDL_clamp(fB, 0.0f, 1.0f) * 255.0f);
+    }
+    if (a) {
+        *a = (Uint8)SDL_roundf(SDL_clamp(fA, 0.0f, 1.0f) * 255.0f);
+    }
+    return true;
+}
+
+bool TTF_GetTextColorFloat(TTF_Text *text, float *r, float *g, float *b, float *a)
+{
+    SDL_FColor color;
+
+    if (r) {
+        *r = 1.0f;
+    }
+    if (g) {
+        *g = 1.0f;
+    }
+    if (b) {
+        *b = 1.0f;
+    }
+    if (a) {
+        *a = 1.0f;
+    }
+
+    TTF_CHECK_POINTER("text", text, false);
+
+    color = text->internal->color;
+
+    if (r) {
+        *r = color.r;
+    }
+    if (g) {
+        *g = color.g;
+    }
+    if (b) {
+        *b = color.b;
+    }
+    if (a) {
+        *a = color.a;
+    }
+    return true;
 }
 
 bool TTF_SetTextPosition(TTF_Text *text, int x, int y)
