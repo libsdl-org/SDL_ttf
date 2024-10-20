@@ -380,6 +380,9 @@ if(SDLTTF_SAMPLES)
         sdl_add_warning_options(${prog} WARNING_AS_ERROR ${SDLTTF_WERROR})
         target_link_libraries(${prog} PRIVATE SDL3_ttf::${sdl3_ttf_target_name})
         target_link_libraries(${prog} PRIVATE ${sdl3_target_name})
+        if("c_std_99" IN_LIST CMAKE_C_COMPILE_FEATURES)
+          target_compile_features(${prog} PRIVATE c_std_99)
+        endif()
 
         if(SDLTTF_SAMPLES_INSTALL)
             install(TARGETS ${prog}
