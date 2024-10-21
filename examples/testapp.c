@@ -1064,9 +1064,11 @@ int main(void)
                             break;
                     }
                 } else if (textengine_mode == 1) {
-                    text_obj = TTF_CreateText_Wrapped(engine_surface, font, text, 0, wrap_size);
+                    text_obj = TTF_CreateText(engine_surface, font, text, 0);
+                    TTF_SetTextWrapWidth(text_obj, wrap_size);
                 } else {
-                    text_obj = TTF_CreateText_Wrapped(engine_renderer, font, text, 0, wrap_size);
+                    text_obj = TTF_CreateText(engine_renderer, font, text, 0);
+                    TTF_SetTextWrapWidth(text_obj, wrap_size);
                 }
 
                 if (print_elapsed_ticks) {
