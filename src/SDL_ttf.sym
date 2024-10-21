@@ -5,7 +5,6 @@ SDL3_ttf_0.0.0 {
     TTF_CreateRendererTextEngine;
     TTF_CreateSurfaceTextEngine;
     TTF_CreateText;
-    TTF_CreateText_Wrapped;
     TTF_DeleteTextString;
     TTF_DestroyRendererTextEngine;
     TTF_DestroySurfaceTextEngine;
@@ -53,7 +52,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetTextSubStringForLine;
     TTF_GetTextSubStringForPoint;
     TTF_GetTextSubStringsForRange;
-    TTF_GetTextWrapping;
+    TTF_GetTextWrapWidth;
     TTF_Init;
     TTF_InsertTextString;
     TTF_MeasureString;
@@ -89,7 +88,7 @@ SDL3_ttf_0.0.0 {
     TTF_SetTextPosition;
     TTF_SetTextString;
     TTF_SetTextWrapWhitespaceVisible;
-    TTF_SetTextWrapping;
+    TTF_SetTextWrapWidth;
     TTF_TextWrapWhitespaceVisible;
     TTF_UpdateText;
     TTF_Version;

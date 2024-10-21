@@ -335,7 +335,7 @@ EditBox *EditBox_Create(SDL_Window *window, SDL_Renderer *renderer, TTF_TextEngi
     edit->window = window;
     edit->renderer = renderer;
     edit->font = font;
-    edit->text = TTF_CreateText_Wrapped(engine, font, NULL, 0, (int)SDL_floorf(rect->w));
+    edit->text = TTF_CreateText(engine, font, NULL, 0);
     if (!edit->text) {
         EditBox_Destroy(edit);
         return NULL;
@@ -343,6 +343,9 @@ EditBox *EditBox_Create(SDL_Window *window, SDL_Renderer *renderer, TTF_TextEngi
     edit->rect = *rect;
     edit->highlight1 = -1;
     edit->highlight2 = -1;
+
+    /* Wrap the editbox text within the editbox area */
+    TTF_SetTextWrapWidth(edit->text, (int)SDL_floorf(rect->w));
 
     /* Show the whitespace when wrapping, so it can be edited */
     TTF_SetTextWrapWhitespaceVisible(edit->text, true);

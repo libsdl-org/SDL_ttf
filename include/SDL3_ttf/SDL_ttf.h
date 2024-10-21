@@ -993,15 +993,15 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSize(TTF_Font *font, const char *t
  * specified string will take to fully render.
  *
  * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
+ * it extends beyond `wrap_width` in pixels.
  *
- * If wrapLength is 0, this function will only wrap on newline characters.
+ * If wrap_width is 0, this function will only wrap on newline characters.
  *
  * \param font the font to query.
  * \param text text to calculate, in UTF-8 encoding.
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
- * \param wrapLength the maximum width or 0 to wrap on newline characters.
+ * \param wrap_width the maximum width or 0 to wrap on newline characters.
  * \param w will be filled with width, in pixels, on return.
  * \param h will be filled with height, in pixels, on return.
  * \returns true on success or false on failure; call SDL_GetError() for more
@@ -1012,13 +1012,13 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSize(TTF_Font *font, const char *t
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrapLength, int *w, int *h);
+extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrap_width, int *w, int *h);
 
 /**
  * Calculate how much of a UTF-8 string will fit in a given width.
  *
  * This reports the number of characters that can be rendered before reaching
- * `measure_width`.
+ * `max_width`.
  *
  * This does not need to render the string to do this calculation.
  *
@@ -1026,10 +1026,9 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSizeWrapped(TTF_Font *font, const 
  * \param text text to calculate, in UTF-8 encoding.
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
- * \param measure_width maximum width, in pixels, available for the string.
- * \param extent on return, filled with latest calculated width.
- * \param count on return, filled with number of characters that can be
- *              rendered.
+ * \param max_width maximum width, in pixels, available for the string, or 0 for unbounded width.
+ * \param measured_width a pointer filled in with the width, in pixels, of the string that will fit, may be NULL.
+ * \param measured_length a pointer filled in with the length, in bytes, of the string that will fit, may be NULL.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
@@ -1038,7 +1037,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSizeWrapped(TTF_Font *font, const 
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int measure_width, int *extent, int *count);
+extern SDL_DECLSPEC bool SDLCALL TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int max_width, int *measured_width, size_t *measured_length);
 
 /**
  * Render UTF-8 text at high quality to a new 8-bit surface.
@@ -1083,9 +1082,9 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font, 
  * surface, or NULL if there was an error.
  *
  * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
+ * it extends beyond `wrap_width` in pixels.
  *
- * If wrapLength is 0, this function will only wrap on newline characters.
+ * If wrap_width is 0, this function will only wrap on newline characters.
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
@@ -1093,7 +1092,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font, 
  *               text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
- * \param wrapLength the maximum width of the text surface or 0 to wrap on
+ * \param wrap_width the maximum width of the text surface or 0 to wrap on
  *                   newline characters.
  * \returns a new 8-bit, palettized surface, or NULL if there was an error.
  *
@@ -1106,7 +1105,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font, 
  * \sa TTF_RenderText_LCD_Wrapped
  * \sa TTF_RenderText_Shaded
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrap_width);
 
 /**
  * Render a single UNICODE codepoint at high quality to a new 8-bit surface.
@@ -1175,16 +1174,16 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
  * new surface, or NULL if there was an error.
  *
  * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
+ * it extends beyond `wrap_width` in pixels.
  *
- * If wrapLength is 0, this function will only wrap on newline characters.
+ * If wrap_width is 0, this function will only wrap on newline characters.
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
  * \param fg the foreground color for the text.
- * \param wrapLength the maximum width of the text surface or 0 to wrap on
+ * \param wrap_width the maximum width of the text surface or 0 to wrap on
  *                   newline characters.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
@@ -1197,7 +1196,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
  * \sa TTF_RenderText_LCD_Wrapped
  * \sa TTF_RenderText_Shaded_Wrapped
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, int wrapLength);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, int wrap_width);
 
 /**
  * Render a single UNICODE codepoint at high quality to a new ARGB surface.
@@ -1266,9 +1265,9 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, con
  * returns the new surface, or NULL if there was an error.
  *
  * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
+ * it extends beyond `wrap_width` in pixels.
  *
- * If wrapLength is 0, this function will only wrap on newline characters.
+ * If wrap_width is 0, this function will only wrap on newline characters.
  *
  * \param font the font to render with.
  * \param text text to render, in UTF-8 encoding.
@@ -1276,7 +1275,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, con
  *               text.
  * \param fg the foreground color for the text.
  * \param bg the background color for the text.
- * \param wrapLength the maximum width of the text surface or 0 to wrap on
+ * \param wrap_width the maximum width of the text surface or 0 to wrap on
  *                   newline characters.
  * \returns a new 32-bit, ARGB surface, or NULL if there was an error.
  *
@@ -1289,7 +1288,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, con
  * \sa TTF_RenderText_LCD
  * \sa TTF_RenderText_Shaded_Wrapped
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrapLength);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrap_width);
 
 /**
  * Render a single UNICODE codepoint at LCD subpixel quality to a new ARGB
@@ -1334,7 +1333,6 @@ typedef struct TTF_TextData TTF_TextData;
  * \since This struct is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_CreateText
- * \sa TTF_CreateText_Wrapped
  * \sa TTF_GetTextProperties
  * \sa TTF_DestroyText
  */
@@ -1386,7 +1384,6 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateSurfaceTextEngine(void);
  *
  * \sa TTF_CreateSurfaceTextEngine
  * \sa TTF_CreateText
- * \sa TTF_CreateText_Wrapped
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface);
 
@@ -1446,7 +1443,6 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngine(SDL_Re
  *
  * \sa TTF_CreateRendererTextEngine
  * \sa TTF_CreateText
- * \sa TTF_CreateText_Wrapped
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_DrawRendererText(TTF_Text *text, float x, float y);
 
@@ -1471,9 +1467,6 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *e
 /**
  * Create a text object from UTF-8 text and a text engine.
  *
- * This function is equivalent to `TTF_CreateText_Wrapped(engine, font, text,
- * 0)` and will wrap on newline characters.
- *
  * \param engine the text engine to use when creating the text object, may be
  *               NULL.
  * \param font the font to render with.
@@ -1488,39 +1481,9 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *e
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
- * \sa TTF_CreateText_Wrapped
  * \sa TTF_DestroyText
  */
 extern SDL_DECLSPEC TTF_Text * SDLCALL TTF_CreateText(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length);
-
-/**
- * Create a text object from word-wrapped UTF-8 text and a text engine.
- *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
- *
- * If wrapLength is 0, this function will only wrap on newline characters.
- *
- * \param engine the text engine to use when creating the text object, may be
- *               NULL.
- * \param font the font to render with.
- * \param text the text to use, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated
- *               text.
- * \param wrapLength the maximum width of the text surface or 0 to wrap on
- *                   newline characters.
- * \returns a TTF_Text object or NULL on failure; call SDL_GetError() for more
- *          information.
- *
- * \threadsafety This function should be called on the thread that created the
- *               font.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_CreateText
- * \sa TTF_DestroyText
- */
-extern SDL_DECLSPEC TTF_Text * SDLCALL TTF_CreateText_Wrapped(TTF_TextEngine *engine, TTF_Font *font, const char *text, size_t length, int wrapLength);
 
 /**
  * Get the properties associated with a text object.
@@ -1738,6 +1701,81 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextPosition(TTF_Text *text, int x, int 
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextPosition(TTF_Text *text, int *x, int *y);
 
 /**
+ * Set whether wrapping is enabled on a text object.
+ *
+ * \param text the TTF_Text to modify.
+ * \param wrap_width the maximum width in pixels, 0 to wrap on newline
+ *                   characters.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetTextWrapWidth
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapWidth(TTF_Text *text, int wrap_width);
+
+/**
+ * Get whether wrapping is enabled on a text object.
+ *
+ * \param text the TTF_Text to query.
+ * \param wrap_width a pointer filled in with the maximum width in pixels or 0
+ *                   if the text is being wrapped on newline characters.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetTextWrapWidth
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapWidth(TTF_Text *text, int *wrap_width);
+
+/**
+ * Set whether whitespace should be visible when wrapping a text object.
+ *
+ * If the whitespace is visible, it will take up space for purposes of
+ * alignment and wrapping. This is good for editing, but looks better when
+ * centered or aligned if whitespace around line wrapping is hidden. This
+ * defaults false.
+ *
+ * \param text the TTF_Text to modify.
+ * \param visible true to show whitespace when wrapping text, false to hide
+ *                it.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_TextWrapWhitespaceVisible
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapWhitespaceVisible(TTF_Text *text, bool visible);
+
+/**
+ * Return whether whitespace is shown when wrapping a text object.
+ *
+ * \param text the TTF_Text to query.
+ * \returns true if whitespace is shown when wrapping text, or false
+ *          otherwise.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetTextWrapWhitespaceVisible
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_TextWrapWhitespaceVisible(TTF_Text *text);
+
+/**
  * Set the UTF-8 text used by a text object.
  *
  * \param text the TTF_Text to modify.
@@ -1827,81 +1865,6 @@ extern SDL_DECLSPEC bool SDLCALL TTF_AppendTextString(TTF_Text *text, const char
  * \sa TTF_SetTextString
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_DeleteTextString(TTF_Text *text, int offset, int length);
-
-/**
- * Set whether wrapping is enabled on a text object.
- *
- * \param text the TTF_Text to modify.
- * \param wrapLength the maximum width in pixels, 0 to wrap on newline
- *                   characters.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \threadsafety This function should be called on the thread that created the
- *               text.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_GetTextWrapping
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapping(TTF_Text *text, int wrapLength);
-
-/**
- * Get whether wrapping is enabled on a text object.
- *
- * \param text the TTF_Text to query.
- * \param wrapLength a pointer filled in with the maximum width in pixels or 0
- *                   if the text is being wrapped on newline characters.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \threadsafety This function should be called on the thread that created the
- *               text.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SetTextWrapping
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapping(TTF_Text *text, int *wrapLength);
-
-/**
- * Set whether whitespace should be visible when wrapping a text object.
- *
- * If the whitespace is visible, it will take up space for purposes of
- * alignment and wrapping. This is good for editing, but looks better when
- * centered or aligned if whitespace around line wrapping is hidden. This
- * defaults false.
- *
- * \param text the TTF_Text to modify.
- * \param visible true to show whitespace when wrapping text, false to hide
- *                it.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
- *
- * \threadsafety This function should be called on the thread that created the
- *               text.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_TextWrapWhitespaceVisible
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapWhitespaceVisible(TTF_Text *text, bool visible);
-
-/**
- * Return whether whitespace is shown when wrapping a text object.
- *
- * \param text the TTF_Text to query.
- * \returns true if whitespace is shown when wrapping text, or false
- *          otherwise.
- *
- * \threadsafety This function should be called on the thread that created the
- *               text.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_SetTextWrapWhitespaceVisible
- */
-extern SDL_DECLSPEC bool SDLCALL TTF_TextWrapWhitespaceVisible(TTF_Text *text);
 
 /**
  * Get the size of a text object.
