@@ -1026,9 +1026,12 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSizeWrapped(TTF_Font *font, const 
  * \param text text to calculate, in UTF-8 encoding.
  * \param length the length of the text, in bytes, or 0 for null terminated
  *               text.
- * \param max_width maximum width, in pixels, available for the string, or 0 for unbounded width.
- * \param measured_width a pointer filled in with the width, in pixels, of the string that will fit, may be NULL.
- * \param measured_length a pointer filled in with the length, in bytes, of the string that will fit, may be NULL.
+ * \param max_width maximum width, in pixels, available for the string, or 0
+ *                  for unbounded width.
+ * \param measured_width a pointer filled in with the width, in pixels, of the
+ *                       string that will fit, may be NULL.
+ * \param measured_length a pointer filled in with the length, in bytes, of
+ *                        the string that will fit, may be NULL.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
