@@ -379,8 +379,8 @@ if(SDLTTF_SAMPLES)
 
     foreach(prog glfont showfont testapp testgputext)
         sdl_add_warning_options(${prog} WARNING_AS_ERROR ${SDLTTF_WERROR})
-        target_link_libraries(${prog} PRIVATE SDL3_ttf::${sdl3_ttf_target_name} m)
-        target_link_libraries(${prog} PRIVATE ${sdl3_target_name} m)
+        target_link_libraries(${prog} PRIVATE SDL3_ttf::${sdl3_ttf_target_name})
+        target_link_libraries(${prog} PRIVATE ${sdl3_target_name})
 
         if(SDLTTF_SAMPLES_INSTALL)
             install(TARGETS ${prog}
