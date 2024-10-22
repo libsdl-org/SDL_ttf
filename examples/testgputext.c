@@ -2,6 +2,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
+#include "testgputext/spir-v.h"
 #define SDL_MATH_3D_IMPLEMENTATION
 #include "SDL_math3d.h"
 
@@ -62,42 +63,20 @@ void* check_error_ptr(void *ptr) {
 
 SDL_GPUShader* load_shader(
 	SDL_GPUDevice* device,
-	const char *shader_filename,
+	const unsigned char code[],
+	const unsigned int code_size,
+	bool is_vertex,
 	Uint32 sampler_count,
 	Uint32 uniform_buffer_count,
 	Uint32 storage_buffer_count,
 	Uint32 storage_texture_count
 ) {
-	// Auto-detect the shader stage from the file name for convenience
-	SDL_GPUShaderStage stage;
-	if (SDL_strstr(shader_filename, ".vert"))
-	{
-		stage = SDL_GPU_SHADERSTAGE_VERTEX;
-	}
-	else if (SDL_strstr(shader_filename, ".frag"))
-	{
-		stage = SDL_GPU_SHADERSTAGE_FRAGMENT;
-	}
-	else
-	{
-		SDL_Log("Invalid shader stage!");
-		return NULL;
-	}
-
-	size_t code_size;
-	void* code = SDL_LoadFile(shader_filename, &code_size);
-	if (code == NULL)
-	{
-		SDL_Log("Failed to load shader from disk! %s", shader_filename);
-		return NULL;
-	}
-
 	SDL_GPUShaderCreateInfo shader_info = {
 		.code = code,
 		.code_size = code_size,
 		.entrypoint = "main",
 		.format = SDL_GPU_SHADERFORMAT_SPIRV,
-		.stage = stage,
+		.stage = (is_vertex)? SDL_GPU_SHADERSTAGE_VERTEX : SDL_GPU_SHADERSTAGE_FRAGMENT,
 		.num_samplers = sampler_count,
 		.num_uniform_buffers = uniform_buffer_count,
 		.num_storage_buffers = storage_buffer_count,
@@ -256,8 +235,8 @@ int main(int argc, char *argv[]) {
 	context.device = check_error_ptr(SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV, true, NULL));
 	check_error_bool(SDL_ClaimWindowForGPUDevice(context.device, context.window));
 
-	SDL_GPUShader *vertex_shader = load_shader(context.device, "../examples/testgputext/bin/shader_spv.vert", 0, 1, 0, 0);
-	SDL_GPUShader *fragment_shader = load_shader(context.device, "../examples/testgputext/bin/shader_spv.frag", 1, 0, 0, 0);
+	SDL_GPUShader *vertex_shader = load_shader(context.device, shader_vert_spv, shader_vert_spv_len, true, 0, 1, 0, 0);
+	SDL_GPUShader *fragment_shader = load_shader(context.device, shader_frag_spv, shader_frag_spv_len, false, 1, 0, 0, 0);
 
 	SDL_GPUGraphicsPipelineCreateInfo pipeline_create_info = {
 		.target_info = {
