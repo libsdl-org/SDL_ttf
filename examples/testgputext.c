@@ -330,7 +330,7 @@ int main(int argc, char *argv[]) {
 
 	SDL_Mat4X4 model = SDL_MatrixIdentity();
 	model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3) {300.0f, 150.0f, 0.0f}));
-	model = SDL_MatrixMultiply(model, SDL_MatrixRotationZ(M_PI/4.0f));
+	model = SDL_MatrixMultiply(model, SDL_MatrixRotationZ(SDL_PI_F/4.0f));
 	model = SDL_MatrixMultiply(model, SDL_MatrixScaling((SDL_Vec3) {1.2f, 1.2f, 1.0f}));
 
 	SDL_Mat4X4 *matrices = (SDL_Mat4X4[]) {
