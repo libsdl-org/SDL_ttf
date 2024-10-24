@@ -2,9 +2,9 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include "testgputext/spir-v.h"
+#include "testgputext/shaders/spir-v.h"
 #define SDL_MATH_3D_IMPLEMENTATION
-#include "SDL_math3d.h"
+#include "testgputext/SDL_math3d.h"
 
 
 #define MAX_VERTEX_COUNT 4000
@@ -292,8 +292,11 @@ int main(int argc, char *argv[]) {
 
 	check_error_bool(TTF_Init());
 	TTF_Font *font = check_error_ptr(TTF_OpenFont("/usr/share/fonts/truetype/noto/NotoSansMono-Regular.ttf", 20));
+	TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
 	TTF_TextEngine *engine = check_error_ptr(TTF_CreateGPUTextEngine(context.device));
 	TTF_Text *text = check_error_ptr(TTF_CreateText_Wrapped(engine, font, "hello 1234\nSDL is cool!", 0, 0));
+	int w, h;
+	TTF_GetTextSize(text, &w, &h);
 	text->color = (SDL_FColor) {1.0f, 1.0f, 0.0f, 1.0f};
 
 	SDL_GPUBufferCreateInfo vbf_info = {
@@ -328,14 +331,12 @@ int main(int argc, char *argv[]) {
 	geometry_data.vertices = SDL_calloc(MAX_VERTEX_COUNT, sizeof(Vertex));
 	geometry_data.indices = SDL_calloc(MAX_INDEX_COUNT, sizeof(int));
 
-	SDL_Mat4X4 model = SDL_MatrixIdentity();
-	model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3) {0.0f, 30.0f, -60.0f}));
-	model = SDL_MatrixMultiply(model, SDL_MatrixRotationY(SDL_PI_F/4.0f));
-
 	SDL_Mat4X4 *matrices = (SDL_Mat4X4[]) {
 		SDL_MatrixPerspective(SDL_PI_F/2.0f, 800.0f/600.0f, 0.1f, 100.0f),
-		model
+		SDL_MatrixIdentity()
 	};
+
+	float rot_angle = 0;
 
 	while (running) {
 		SDL_Event event;
@@ -350,6 +351,16 @@ int main(int argc, char *argv[]) {
 		TTF_GPUAtlasDrawSequence *sequence = TTF_GetGPUTextDrawData(text);
 		queue_text(&geometry_data, sequence, &text->color);
 
+		rot_angle = SDL_fmodf(rot_angle + 0.01, 2 * SDL_PI_F);
+
+		SDL_Mat4X4 model;
+		model = SDL_MatrixIdentity();
+		model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3) {0.0f, 0.0f, -80.0f}));
+		model = SDL_MatrixMultiply(model, SDL_MatrixScaling((SDL_Vec3) {0.5, 0.5, 0.5}));
+		model = SDL_MatrixMultiply(model, SDL_MatrixRotationY(rot_angle));
+		model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3) {-w/2.0f, h/2.0f, 0.0f}));
+		matrices[1] = model;
+
 		set_geometry_data(&context, &geometry_data);
 
 		context.cmd_buf = check_error_ptr(SDL_AcquireGPUCommandBuffer(context.device));
@@ -359,6 +370,8 @@ int main(int argc, char *argv[]) {
 
 		geometry_data.vertex_count = 0;
 		geometry_data.index_count = 0;
+
+		SDL_Delay(10);
 	}
 
 	SDL_free(geometry_data.vertices);
