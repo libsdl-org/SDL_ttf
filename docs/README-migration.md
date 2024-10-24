@@ -36,8 +36,6 @@ Several functions have been renamed. We have provided a handy semantic patch to 
 
 In general we have switched to using UTF8 in the API. Functions which had 3 variants, for Latin-1, UTF-8, and UCS2, now accept UTF-8 text. In addition, those functions now have an optional length parameter which allows you to render substrings.
 
-The solid color rendering functions have been removed in favor of the higher quality shaded and blended functions.
-
 The alpha in background colors is now transparent if it's equal to 0.
 
 The following functions have been renamed:
@@ -58,12 +56,15 @@ The following functions have been renamed:
 * TTF_RenderGlyph32_Blended() => TTF_RenderGlyph_Blended()
 * TTF_RenderGlyph32_LCD() => TTF_RenderGlyph_LCD()
 * TTF_RenderGlyph32_Shaded() => TTF_RenderGlyph_Shaded()
+* TTF_RenderGlyph32_Solid() => TTF_RenderGlyph_Solid()
 * TTF_RenderUTF8_Blended() => TTF_RenderText_Blended()
 * TTF_RenderUTF8_Blended_Wrapped() => TTF_RenderText_Blended_Wrapped()
 * TTF_RenderUTF8_LCD() => TTF_RenderText_LCD()
 * TTF_RenderUTF8_LCD_Wrapped() => TTF_RenderText_LCD_Wrapped()
 * TTF_RenderUTF8_Shaded() => TTF_RenderText_Shaded()
 * TTF_RenderUTF8_Shaded_Wrapped() => TTF_RenderText_Shaded_Wrapped()
+* TTF_RenderUTF8_Solid() => TTF_RenderText_Solid()
+* TTF_RenderUTF8_Solid_Wrapped() => TTF_RenderText_Solid_Wrapped()
 * TTF_SetFontScriptName() => TTF_SetFontScript()
 * TTF_SetFontWrappedAlign() => TTF_SetFontWrapAlignment()
 * TTF_SizeText() => TTF_GetTextSize()
@@ -81,7 +82,6 @@ The following functions have been removed:
 * TTF_OpenFontIndexDPI() - replaced with TTF_OpenFontWithProperties()
 * TTF_OpenFontIndexDPIIO() - replaced with TTF_OpenFontWithProperties()
 * TTF_OpenFontIndexIO() - replaced with TTF_OpenFontWithProperties()
-* TTF_RenderGlyph32_Solid()
 * TTF_RenderGlyph_Solid()
 * TTF_RenderText_Solid()
 * TTF_RenderText_Solid_Wrapped()
@@ -93,8 +93,6 @@ The following functions have been removed:
 * TTF_RenderUNICODE_Shaded_Wrapped()
 * TTF_RenderUNICODE_Solid()
 * TTF_RenderUNICODE_Solid_Wrapped()
-* TTF_RenderUTF8_Solid()
-* TTF_RenderUTF8_Solid_Wrapped()
 * TTF_SizeUNICODE()
 
 The following symbols have been renamed:

@@ -63,12 +63,15 @@ SDL3_ttf_0.0.0 {
     TTF_RenderGlyph_Blended;
     TTF_RenderGlyph_LCD;
     TTF_RenderGlyph_Shaded;
+    TTF_RenderGlyph_Solid;
     TTF_RenderText_Blended;
     TTF_RenderText_Blended_Wrapped;
     TTF_RenderText_LCD;
     TTF_RenderText_LCD_Wrapped;
     TTF_RenderText_Shaded;
     TTF_RenderText_Shaded_Wrapped;
+    TTF_RenderText_Solid;
+    TTF_RenderText_Solid_Wrapped;
     TTF_SetFontDirection;
     TTF_SetFontHinting;
     TTF_SetFontKerning;
