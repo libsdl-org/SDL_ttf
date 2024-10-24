@@ -101,7 +101,7 @@ static void DrawScene(Scene *scene)
     case TextEngineSurface:
         /* Flush the renderer so we can draw directly to the window surface */
         SDL_FlushRenderer(renderer);
-        TTF_DrawSurfaceText(scene->caption, scene->captionRect.w, scene->captionRect.h, scene->window_surface);
+        TTF_DrawSurfaceText(scene->caption, scene->captionRect.x, scene->captionRect.y, scene->window_surface);
         break;
     case TextEngineRenderer:
         TTF_DrawRendererText(scene->caption, (float)scene->captionRect.x, (float)scene->captionRect.y);
