@@ -2,10 +2,12 @@ SDL3_ttf_0.0.0 {
   global:
     TTF_AppendTextString;
     TTF_CloseFont;
+    TTF_CreateGPUTextEngine;
     TTF_CreateRendererTextEngine;
     TTF_CreateSurfaceTextEngine;
     TTF_CreateText;
     TTF_DeleteTextString;
+    TTF_DestroyGPUTextEngine;
     TTF_DestroyRendererTextEngine;
     TTF_DestroySurfaceTextEngine;
     TTF_DestroyText;
@@ -37,6 +39,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetGlyphKerning;
     TTF_GetGlyphMetrics;
     TTF_GetGlyphScript;
+    TTF_GetGPUTextDrawData;
     TTF_GetHarfBuzzVersion;
     TTF_GetNextTextSubString;
     TTF_GetPreviousTextSubString;

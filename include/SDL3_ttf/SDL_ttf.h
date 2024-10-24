@@ -1606,6 +1606,85 @@ extern SDL_DECLSPEC bool SDLCALL TTF_DrawRendererText(TTF_Text *text, float x, f
 extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *engine);
 
 /**
+ * Create a text engine for drawing text with the SDL GPU API.
+ *
+ * \param device the SDL_GPUDevice to use for creating textures and drawing text.
+ * \returns a TTF_TextEngine object or NULL on failure; call SDL_GetError()
+ *          for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               device.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_DestroyGPUTextEngine
+ */
+extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngine(SDL_GPUDevice *device);
+
+/**
+ * Draw sequence returned by TTF_GetGPUTextDrawData
+ *
+ * \since This struct is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetGPUTextDrawData
+ */
+typedef struct TTF_GPUAtlasDrawSequence
+{
+    SDL_GPUTexture *atlas_texture;          /**< Texture atlas that stores the glyphs */
+    float *xy;                              /**< Vertex positions */
+    int xy_stride;                          /**< Byte size to move from one element to the next element */
+    float *uv;                              /**< Vertex normalized texture coordinates */
+    int uv_stride;                          /**< Byte size to move from one element to the next element */
+    int num_vertices;                       /**< Number of vertices */
+    int *indices;                           /**< An array of indices into the 'vertices' arrays */
+    int num_indices;                        /**< Number of indices */
+
+    struct TTF_GPUAtlasDrawSequence *next;  /**< The next sequence (will be NULL in case of the last sequence) */
+} TTF_GPUAtlasDrawSequence;
+
+/**
+ * Get the geometry data needed for drawing the text.
+ *
+ * `text` must have been created using a TTF_TextEngine from
+ * TTF_CreateGPUTextEngine().
+ * 
+ * If the text looks blocky use linear filtering.
+ *
+ * \param text the text to draw.
+ * \returns a NULL terminated linked list of TTF_GPUAtlasDrawSequence objects or
+ *          NULL if the passed text is empty or in case of failure;
+ *          call SDL_GetError() for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateGPUTextEngine
+ * \sa TTF_CreateText
+ * \sa TTF_CreateText_Wrapped
+ */
+extern SDL_DECLSPEC TTF_GPUAtlasDrawSequence* SDLCALL TTF_GetGPUTextDrawData(TTF_Text *text);
+
+/**
+ * Destroy a text engine created for drawing text with the SDL GPU API.
+ *
+ * All text created by this engine should be destroyed before calling this
+ * function.
+ *
+ * \param engine a TTF_TextEngine object created with
+ *               TTF_CreateGPUTextEngine().
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               engine.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CreateGPUTextEngine
+ */
+extern SDL_DECLSPEC void SDLCALL TTF_DestroyGPUTextEngine(TTF_TextEngine *engine);
+
+/**
  * Create a text object from UTF-8 text and a text engine.
  *
  * \param engine the text engine to use when creating the text object, may be
