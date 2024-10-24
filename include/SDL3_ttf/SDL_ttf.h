@@ -1516,6 +1516,8 @@ typedef struct TTF_GPUAtlasDrawSequence
  *
  * `text` must have been created using a TTF_TextEngine from
  * TTF_CreateGPUTextEngine().
+ * 
+ * If the text looks blocky use linear filtering.
  *
  * \param text the text to draw.
  * \returns a NULL terminated linked list of TTF_GPUAtlasDrawSequence objects or
