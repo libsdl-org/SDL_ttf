@@ -71,7 +71,8 @@ static inline SDL_Mat4X4 SDL_Matrix4X4(
     float m03, float m13, float m23, float m33
 );
 static inline SDL_Mat4X4 SDL_MatrixIdentity(void);
-static inline SDL_Mat4X4 SDL_MatrixMultiply(SDL_Mat4X4 M1, SDL_Mat4X4 M2);
+static inline SDL_Mat4X4 SDL_MatrixTranspose(SDL_Mat4X4 mat);
+static inline SDL_Mat4X4 SDL_MatrixMultiply(SDL_Mat4X4 mat1, SDL_Mat4X4 mat2);
 static inline SDL_Mat4X4 SDL_MatrixScaling(SDL_Vec3 scale);
 static inline SDL_Mat4X4 SDL_MatrixTranslation(SDL_Vec3 offset);
 static inline SDL_Mat4X4 SDL_MatrixRotationX(float angle);
@@ -168,7 +169,20 @@ static inline SDL_Mat4X4 SDL_MatrixIdentity(void)
     );
 }
 
-static inline SDL_Mat4X4 SDL_MatrixMultiply(SDL_Mat4X4 M1, SDL_Mat4X4 M2)
+static inline SDL_Mat4X4 SDL_MatrixTranspose(SDL_Mat4X4 mat)
+{
+    SDL_Mat4X4 res;
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            res.m[i][j] = mat.m[i][j];
+        }
+    }
+
+    return res;
+}
+
+static inline SDL_Mat4X4 SDL_MatrixMultiply(SDL_Mat4X4 mat1, SDL_Mat4X4 mat2)
 {
     SDL_Mat4X4 res;
 
@@ -176,7 +190,7 @@ static inline SDL_Mat4X4 SDL_MatrixMultiply(SDL_Mat4X4 M1, SDL_Mat4X4 M2)
         for (int j = 0; j < 4; j++) {
             float sum = 0;
             for (int x = 0; x < 4; x++) {
-                sum += M1.m[x][j] * M2.m[i][x];
+                sum += mat1.m[x][j] * mat2.m[i][x];
             }
             res.m[i][j] = sum;
         }
@@ -245,7 +259,8 @@ static inline SDL_Mat4X4 SDL_MatrixRotationZ(float angle)
     );
 }
 
-static inline SDL_Mat4X4 SDL_MatrixOrtho(float left, float right, float bottom, float top, float near, float far) {
+static inline SDL_Mat4X4 SDL_MatrixOrtho(float left, float right, float bottom, float top, float near, float far)
+{
     float l = left, r = right, b = bottom, t = top, n = near, f = far;
 
     float dx = -(r + l) / (r - l);
@@ -260,7 +275,8 @@ static inline SDL_Mat4X4 SDL_MatrixOrtho(float left, float right, float bottom, 
     );
 }
 
-static inline SDL_Mat4X4 SDL_MatrixPerspective(float fovy, float aspect_ratio, float near, float far) {
+static inline SDL_Mat4X4 SDL_MatrixPerspective(float fovy, float aspect_ratio, float near, float far)
+{
     float n = near; float f = far;
     float t = SDL_tanf(fovy/2.0f) * n;
     float b = -t;
@@ -275,7 +291,8 @@ static inline SDL_Mat4X4 SDL_MatrixPerspective(float fovy, float aspect_ratio, f
     );
 }
 
-static inline SDL_Mat4X4 SDL_MatrixLookAt(SDL_Vec3 pos, SDL_Vec3 target, SDL_Vec3 up) {
+static inline SDL_Mat4X4 SDL_MatrixLookAt(SDL_Vec3 pos, SDL_Vec3 target, SDL_Vec3 up)
+{
     SDL_Vec3 d = SDL_Vec3Normalize(SDL_Vec3Sub(target, pos));
     SDL_Vec3 u = SDL_Vec3Normalize(up);
     SDL_Vec3 r = SDL_Vec3Normalize(SDL_Vec3Cross(u, d));

@@ -647,14 +647,15 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
         float miny = dst->y;
         float maxy = dst->y + dst->h;
 
-        *xy++ = minx;
-        *xy++ = miny;
-        *xy++ = maxx;
-        *xy++ = miny;
-        *xy++ = maxx;
-        *xy++ = maxy;
-        *xy++ = minx;
-        *xy++ = maxy;
+        // In the GPU API postive y-axis is upwards so the signs of the y-coords is reversed
+        *xy++ =  minx;
+        *xy++ = -miny;
+        *xy++ =  maxx;
+        *xy++ = -miny;
+        *xy++ =  maxx;
+        *xy++ = -maxy;
+        *xy++ =  minx;
+        *xy++ = -maxy;
     }
 
     sequence->indices = (int *)SDL_malloc(count * 12 * sizeof(*sequence->indices));

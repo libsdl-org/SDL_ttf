@@ -315,9 +315,9 @@ int main(int argc, char *argv[]) {
 	context.transfer_buffer = check_error_ptr(SDL_CreateGPUTransferBuffer(context.device, &tbf_info));
 
 	SDL_GPUSamplerCreateInfo sampler_info = {
-		.min_filter = SDL_GPU_FILTER_NEAREST,
-		.mag_filter = SDL_GPU_FILTER_NEAREST,
-		.mipmap_mode = SDL_GPU_SAMPLERMIPMAPMODE_NEAREST,
+		.min_filter = SDL_GPU_FILTER_LINEAR,
+		.mag_filter = SDL_GPU_FILTER_LINEAR,
+		.mipmap_mode = SDL_GPU_SAMPLERMIPMAPMODE_LINEAR,
 		.address_mode_u = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE,
 		.address_mode_v = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE,
 		.address_mode_w = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE
@@ -329,12 +329,11 @@ int main(int argc, char *argv[]) {
 	geometry_data.indices = SDL_calloc(MAX_INDEX_COUNT, sizeof(int));
 
 	SDL_Mat4X4 model = SDL_MatrixIdentity();
-	model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3) {300.0f, 150.0f, 0.0f}));
-	model = SDL_MatrixMultiply(model, SDL_MatrixRotationZ(SDL_PI_F/4.0f));
-	model = SDL_MatrixMultiply(model, SDL_MatrixScaling((SDL_Vec3) {1.2f, 1.2f, 1.0f}));
+	model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3) {0.0f, 30.0f, -60.0f}));
+	model = SDL_MatrixMultiply(model, SDL_MatrixRotationY(SDL_PI_F/4.0f));
 
 	SDL_Mat4X4 *matrices = (SDL_Mat4X4[]) {
-		SDL_MatrixOrtho(0.0f, 800.0f, 600.0f, 0.0f, 0.1f, 100.0f),
+		SDL_MatrixPerspective(SDL_PI_F/2.0f, 800.0f/600.0f, 0.1f, 100.0f),
 		model
 	};
 
