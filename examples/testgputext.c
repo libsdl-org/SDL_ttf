@@ -290,15 +290,6 @@ int main(int argc, char *argv[]) {
 	SDL_ReleaseGPUShader(context.device, vertex_shader);
 	SDL_ReleaseGPUShader(context.device, fragment_shader);
 
-	check_error_bool(TTF_Init());
-	TTF_Font *font = check_error_ptr(TTF_OpenFont("/usr/share/fonts/truetype/noto/NotoSansMono-Regular.ttf", 20));
-	TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
-	TTF_TextEngine *engine = check_error_ptr(TTF_CreateGPUTextEngine(context.device));
-	TTF_Text *text = check_error_ptr(TTF_CreateText_Wrapped(engine, font, "hello 1234\nSDL is cool!", 0, 0));
-	int w, h;
-	TTF_GetTextSize(text, &w, &h);
-	text->color = (SDL_FColor) {1.0f, 1.0f, 0.0f, 1.0f};
-
 	SDL_GPUBufferCreateInfo vbf_info = {
 		.usage = SDL_GPU_BUFFERUSAGE_VERTEX,
 		.size = sizeof(Vertex) * MAX_VERTEX_COUNT
@@ -331,12 +322,18 @@ int main(int argc, char *argv[]) {
 	geometry_data.vertices = SDL_calloc(MAX_VERTEX_COUNT, sizeof(Vertex));
 	geometry_data.indices = SDL_calloc(MAX_INDEX_COUNT, sizeof(int));
 
+	check_error_bool(TTF_Init());
+	TTF_Font *font = check_error_ptr(TTF_OpenFont("NotoSansMono-Regular.ttf", 50));
+	TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
+	TTF_TextEngine *engine = check_error_ptr(TTF_CreateGPUTextEngine(context.device));
+
 	SDL_Mat4X4 *matrices = (SDL_Mat4X4[]) {
 		SDL_MatrixPerspective(SDL_PI_F/2.0f, 800.0f/600.0f, 0.1f, 100.0f),
 		SDL_MatrixIdentity()
 	};
 
 	float rot_angle = 0;
+	char str[] = "     \nSDL is cool";
 
 	while (running) {
 		SDL_Event event;
@@ -348,18 +345,29 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
-		TTF_GPUAtlasDrawSequence *sequence = TTF_GetGPUTextDrawData(text);
-		queue_text(&geometry_data, sequence, &text->color);
+		for (int i = 0; i < 5; i++) {
+			str[i] = 65 + SDL_rand(26);
+		}
 
 		rot_angle = SDL_fmodf(rot_angle + 0.01, 2 * SDL_PI_F);
 
+		int tw, th;
+		TTF_Text *text = check_error_ptr(TTF_CreateText_Wrapped(engine, font, str, 0, 0));
+		check_error_bool(TTF_GetTextSize(text, &tw, &th));
+		text->color = (SDL_FColor) {1.0f, 1.0f, 0.0f, 1.0f};
+
+		// Create a model matrix to make the text rotate
 		SDL_Mat4X4 model;
 		model = SDL_MatrixIdentity();
 		model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3) {0.0f, 0.0f, -80.0f}));
-		model = SDL_MatrixMultiply(model, SDL_MatrixScaling((SDL_Vec3) {0.5, 0.5, 0.5}));
+		model = SDL_MatrixMultiply(model, SDL_MatrixScaling((SDL_Vec3) {0.3, 0.3, 0.3}));
 		model = SDL_MatrixMultiply(model, SDL_MatrixRotationY(rot_angle));
-		model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3) {-w/2.0f, h/2.0f, 0.0f}));
+		model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3) {-tw/2.0f, th/2.0f, 0.0f}));
 		matrices[1] = model;
+
+		// Get the text data and queue the text in a buffer for drawing later
+		TTF_GPUAtlasDrawSequence *sequence = TTF_GetGPUTextDrawData(text);
+		queue_text(&geometry_data, sequence, &text->color);
 
 		set_geometry_data(&context, &geometry_data);
 
@@ -370,8 +378,6 @@ int main(int argc, char *argv[]) {
 
 		geometry_data.vertex_count = 0;
 		geometry_data.index_count = 0;
-
-		SDL_Delay(10);
 	}
 
 	SDL_free(geometry_data.vertices);
