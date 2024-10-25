@@ -340,9 +340,9 @@ int main(int argc, char *argv[])
         rot_angle = SDL_fmodf(rot_angle + 0.01, 2 * SDL_PI_F);
 
         int tw, th;
-        TTF_Text *text = check_error_ptr(TTF_CreateText_Wrapped(engine, font, str, 0, 0));
+        TTF_Text *text = check_error_ptr(TTF_CreateText(engine, font, str, 0));
         check_error_bool(TTF_GetTextSize(text, &tw, &th));
-        text->color = (SDL_FColor){ 1.0f, 1.0f, 0.0f, 1.0f };
+        TTF_SetTextWrapWidth(text, 0);
 
         // Create a model matrix to make the text rotate
         SDL_Mat4X4 model;
@@ -355,7 +355,7 @@ int main(int argc, char *argv[])
 
         // Get the text data and queue the text in a buffer for drawing later
         TTF_GPUAtlasDrawSequence *sequence = TTF_GetGPUTextDrawData(text);
-        queue_text(&geometry_data, sequence, &text->color);
+        queue_text(&geometry_data, sequence, &((SDL_FColor) {1.0f, 1.0f, 0.0f, 1.0f}));
 
         set_geometry_data(&context, &geometry_data);
 
