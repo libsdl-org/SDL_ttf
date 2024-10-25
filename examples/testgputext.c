@@ -48,14 +48,16 @@ typedef struct GeometryData
 
 void check_error_bool(const bool res)
 {
-    if (!res)
+    if (!res) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", SDL_GetError());
+    }
 }
 
 void *check_error_ptr(void *ptr)
 {
-    if (!ptr)
+    if (!ptr) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", SDL_GetError());
+    }
 
     return ptr;
 }
