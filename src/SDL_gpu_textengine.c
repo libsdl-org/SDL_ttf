@@ -642,10 +642,10 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
             break;
         }
 
-        float minx = dst->x;
-        float maxx = dst->x + dst->w;
-        float miny = dst->y;
-        float maxy = dst->y + dst->h;
+        float minx = (float)dst->x;
+        float maxx = (float)(dst->x + dst->w);
+        float miny = (float)dst->y;
+        float maxy = (float)(dst->y + dst->h);
 
         // In the GPU API postive y-axis is upwards so the signs of the y-coords is reversed
         *xy++ =  minx;

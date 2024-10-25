@@ -242,6 +242,8 @@ int main(int argc, char *argv[])
                     .dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA
                 }
             }},
+            .has_depth_stencil_target = false,
+            .depth_stencil_format = SDL_GPU_TEXTUREFORMAT_INVALID /* Neex to set this to avoid missing initializer for field error */
         },
         .vertex_input_state = (SDL_GPUVertexInputState){
             .num_vertex_buffers = 1,
