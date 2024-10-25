@@ -40,7 +40,7 @@
 
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-textengine surface|renderer] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [-textengine surface|renderer] [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-editbox] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
@@ -51,6 +51,7 @@ typedef enum
 
 typedef enum
 {
+    TextRenderSolid,
     TextRenderShaded,
     TextRenderBlended
 } TextRenderMethod;
@@ -61,8 +62,8 @@ typedef struct {
     SDL_Surface *window_surface;
     SDL_Renderer *renderer;
     TTF_Font *font;
-    SDL_Texture *caption;
-    SDL_FRect captionRect;
+    TTF_Text *caption;
+    SDL_Rect captionRect;
     SDL_Texture *message;
     SDL_FRect messageRect;
     TextEngine textEngine;
@@ -96,13 +97,36 @@ static void DrawScene(Scene *scene)
         EditBox_Draw(scene->edit);
     }
 
-    SDL_RenderTexture(renderer, scene->caption, NULL, &scene->captionRect);
+    switch (scene->textEngine) {
+    case TextEngineSurface:
+        /* Flush the renderer so we can draw directly to the window surface */
+        SDL_FlushRenderer(renderer);
+        TTF_DrawSurfaceText(scene->caption, scene->captionRect.x, scene->captionRect.y, scene->window_surface);
+        break;
+    case TextEngineRenderer:
+        TTF_DrawRendererText(scene->caption, (float)scene->captionRect.x, (float)scene->captionRect.y);
+        break;
+    default:
+        SDL_assert(!"Unknown text engine");
+        break;
+    }
+
     SDL_RenderTexture(renderer, scene->message, NULL, &scene->messageRect);
     SDL_RenderPresent(renderer);
 
     if (scene->window_surface) {
         SDL_UpdateWindowSurface(scene->window);
     }
+}
+
+static void AdjustTextOffset(TTF_Text *text, int xoffset, int yoffset)
+{
+    int x, y;
+
+    TTF_GetTextPosition(text, &x, &y);
+    x += xoffset;
+    y += yoffset;
+    TTF_SetTextPosition(text, x, y);
 }
 
 static void HandleKeyDown(Scene *scene, SDL_Event *event)
@@ -197,16 +221,36 @@ static void HandleKeyDown(Scene *scene, SDL_Event *event)
         TTF_SetFontStyle(scene->font, style);
         break;
 
+    case SDLK_LEFT:
+        if (event->key.mod & SDL_KMOD_CTRL) {
+            AdjustTextOffset(scene->edit->text, -1, 0);
+        }
+        break;
+
+    case SDLK_RIGHT:
+        if (event->key.mod & SDL_KMOD_CTRL) {
+            AdjustTextOffset(scene->edit->text, 1, 0);
+        }
+        break;
+
     case SDLK_UP:
-        /* Increase font size */
-        ptsize = TTF_GetFontSize(scene->font);
-        TTF_SetFontSize(scene->font, ptsize + 1.0f);
+        if (event->key.mod & SDL_KMOD_CTRL) {
+            AdjustTextOffset(scene->edit->text, 0, -1);
+        } else {
+            /* Increase font size */
+            ptsize = TTF_GetFontSize(scene->font);
+            TTF_SetFontSize(scene->font, ptsize + 1.0f);
+        }
         break;
 
     case SDLK_DOWN:
-        /* Decrease font size */
-        ptsize = TTF_GetFontSize(scene->font);
-        TTF_SetFontSize(scene->font, ptsize - 1.0f);
+        if (event->key.mod & SDL_KMOD_CTRL) {
+            AdjustTextOffset(scene->edit->text, 0, 1);
+        } else {
+            /* Decrease font size */
+            ptsize = TTF_GetFontSize(scene->font);
+            TTF_SetFontSize(scene->font, ptsize - 1.0f);
+        }
         break;
 
     case SDLK_ESCAPE:
@@ -239,26 +283,20 @@ int main(int argc, char *argv[])
     SDL_Color *backcol;
     SDL_Event event;
     TTF_TextEngine *engine = NULL;
-    TextRenderMethod rendermethod;
-    int renderstyle;
-    int outline;
-    int hinting;
-    int kerning;
-    int wrap;
+    TextRenderMethod rendermethod = TextRenderShaded;
+    int renderstyle = TTF_STYLE_NORMAL;
+    int outline = 0;
+    int hinting = TTF_HINTING_NORMAL;
+    int kerning = 1;
+    bool wrap = false;
     TTF_HorizontalAlignment align = TTF_HORIZONTAL_ALIGN_LEFT;
-    int dump;
+    bool editbox = false;
+    bool dump = false;
     char *message, string[128];
 
-    /* Look for special execution mode */
-    dump = 0;
-    /* Look for special rendering types */
     SDL_zero(scene);
-    rendermethod = TextRenderShaded;
-    renderstyle = TTF_STYLE_NORMAL;
-    outline = 0;
-    hinting = TTF_HINTING_NORMAL;
-    kerning = 1;
-    wrap = 0;
+    scene.textEngine = TextEngineRenderer;
+
     /* Default is black and white */
     forecol = &black;
     backcol = &white;
@@ -273,6 +311,9 @@ int main(int argc, char *argv[])
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
                 return(1);
             }
+        } else
+        if (SDL_strcmp(argv[i], "-solid") == 0) {
+            rendermethod = TextRenderSolid;
         } else
         if (SDL_strcmp(argv[i], "-shaded") == 0) {
             rendermethod = TextRenderShaded;
@@ -311,7 +352,7 @@ int main(int argc, char *argv[])
             kerning = 0;
         } else
         if (SDL_strcmp(argv[i], "-wrap") == 0) {
-            wrap = 1;
+            wrap = true;
         } else
         if (SDL_strcmp(argv[i], "-align") == 0 && argv[i+1]) {
             ++i;
@@ -325,9 +366,6 @@ int main(int argc, char *argv[])
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
                 return (1);
             }
-        } else
-        if (SDL_strcmp(argv[i], "-dump") == 0) {
-            dump = 1;
         } else
         if (SDL_strcmp(argv[i], "-fgcol") == 0 && argv[i+1]) {
             int r, g, b, a = SDL_ALPHA_OPAQUE;
@@ -350,6 +388,12 @@ int main(int argc, char *argv[])
             backcol->g = (Uint8)g;
             backcol->b = (Uint8)b;
             backcol->a = (Uint8)a;
+        } else
+        if (SDL_strcmp(argv[i], "-editbox") == 0) {
+            editbox = true;
+        } else
+        if (SDL_strcmp(argv[i], "-dump") == 0) {
+            dump = true;
         } else {
             SDL_Log(TTF_SHOWFONT_USAGE, argv0);
             return(1);
@@ -437,24 +481,32 @@ int main(int argc, char *argv[])
         Cleanup(2);
     }
 
+    switch (scene.textEngine) {
+    case TextEngineSurface:
+        engine = TTF_CreateSurfaceTextEngine();
+        if (!engine) {
+            SDL_Log("Couldn't create surface text engine: %s\n", SDL_GetError());
+            Cleanup(2);
+        }
+        break;
+    case TextEngineRenderer:
+        engine = TTF_CreateRendererTextEngine(scene.renderer);
+        if (!engine) {
+            SDL_Log("Couldn't create renderer text engine: %s\n", SDL_GetError());
+            Cleanup(2);
+        }
+        break;
+    default:
+        break;
+    }
+
     /* Show which font file we're looking at */
     SDL_snprintf(string, sizeof(string), "Font file: %s", argv[0]);  /* possible overflow */
-    switch (rendermethod) {
-    case TextRenderShaded:
-        text = TTF_RenderText_Shaded(font, string, 0, *forecol, *backcol);
-        break;
-    case TextRenderBlended:
-        text = TTF_RenderText_Blended(font, string, 0, *forecol);
-        break;
-    }
-    if (text != NULL) {
-        scene.captionRect.x = 4.0f;
-        scene.captionRect.y = 4.0f;
-        scene.captionRect.w = (float)text->w;
-        scene.captionRect.h = (float)text->h;
-        scene.caption = SDL_CreateTextureFromSurface(scene.renderer, text);
-        SDL_DestroySurface(text);
-    }
+    scene.caption = TTF_CreateText(engine, font, string, 0);
+    TTF_SetTextColor(scene.caption, forecol->r, forecol->g, forecol->b, forecol->a);
+    scene.captionRect.x = 4;
+    scene.captionRect.y = 4;
+    TTF_GetTextSize(scene.caption, &scene.captionRect.w, &scene.captionRect.h);
 
     /* Render and center the message */
     if (argc > 2) {
@@ -463,6 +515,13 @@ int main(int argc, char *argv[])
         message = DEFAULT_TEXT;
     }
     switch (rendermethod) {
+    case TextRenderSolid:
+        if (wrap) {
+            text = TTF_RenderText_Solid_Wrapped(font, message, 0, *forecol, 0);
+        } else {
+            text = TTF_RenderText_Solid(font, message, 0, *forecol);
+        }
+        break;
     case TextRenderShaded:
         if (wrap) {
             text = TTF_RenderText_Shaded_Wrapped(font, message, 0, *forecol, *backcol, 0);
@@ -491,23 +550,7 @@ int main(int argc, char *argv[])
     SDL_Log("Font is generally %d big, and string is %d big\n",
                         TTF_GetFontHeight(font), text->h);
 
-    switch (scene.textEngine) {
-    case TextEngineSurface:
-        engine = TTF_CreateSurfaceTextEngine();
-        if (!engine) {
-            SDL_Log("Couldn't create surface text engine: %s\n", SDL_GetError());
-        }
-        break;
-    case TextEngineRenderer:
-        engine = TTF_CreateRendererTextEngine(scene.renderer);
-        if (!engine) {
-            SDL_Log("Couldn't create renderer text engine: %s\n", SDL_GetError());
-        }
-        break;
-    default:
-        break;
-    }
-    if (engine) {
+    if (editbox) {
         scene.textRect.x = 8.0f;
         scene.textRect.y = scene.captionRect.y + scene.captionRect.h + 4.0f;
         scene.textRect.w = WIDTH / 2 - scene.textRect.x * 2;
@@ -520,10 +563,7 @@ int main(int argc, char *argv[])
         editRect.w -= 8.0f;
         scene.edit = EditBox_Create(scene.window, scene.renderer, engine, font, &editRect);
         if (scene.edit) {
-            scene.edit->text->color.r = forecol->r / 255.0f;
-            scene.edit->text->color.g = forecol->g / 255.0f;
-            scene.edit->text->color.b = forecol->b / 255.0f;
-            scene.edit->text->color.a = forecol->a / 255.0f;
+            TTF_SetTextColor(scene.edit->text, forecol->r, forecol->g, forecol->b, forecol->a);
 
             EditBox_Insert(scene.edit, message);
         }
@@ -574,7 +614,7 @@ int main(int argc, char *argv[])
     default:
         break;
     }
-    SDL_DestroyTexture(scene.caption);
+    TTF_DestroyText(scene.caption);
     SDL_DestroyTexture(scene.message);
     Cleanup(0);
 
