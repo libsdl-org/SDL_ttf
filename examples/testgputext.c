@@ -324,6 +324,7 @@ int main(int argc, char *argv[])
 
     float rot_angle = 0;
     char str[] = "     \nSDL is cool";
+    SDL_FColor colour = {1.0f, 1.0f, 0.0f, 1.0f};
 
     while (running) {
         SDL_Event event;
@@ -350,14 +351,14 @@ int main(int argc, char *argv[])
         SDL_Mat4X4 model;
         model = SDL_MatrixIdentity();
         model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3){ 0.0f, 0.0f, -80.0f }));
-        model = SDL_MatrixMultiply(model, SDL_MatrixScaling((SDL_Vec3){ 0.3, 0.3, 0.3 }));
+        model = SDL_MatrixMultiply(model, SDL_MatrixScaling((SDL_Vec3){ 0.3f, 0.3f, 0.3f}));
         model = SDL_MatrixMultiply(model, SDL_MatrixRotationY(rot_angle));
         model = SDL_MatrixMultiply(model, SDL_MatrixTranslation((SDL_Vec3){ -tw / 2.0f, th / 2.0f, 0.0f }));
         matrices[1] = model;
 
         // Get the text data and queue the text in a buffer for drawing later
         TTF_GPUAtlasDrawSequence *sequence = TTF_GetGPUTextDrawData(text);
-        queue_text(&geometry_data, sequence, &((SDL_FColor) {1.0f, 1.0f, 0.0f, 1.0f}));
+        queue_text(&geometry_data, sequence, &colour);
 
         set_geometry_data(&context, &geometry_data);
 
