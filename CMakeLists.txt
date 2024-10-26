@@ -6,7 +6,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 set(MAJOR_VERSION 3)
 set(MINOR_VERSION 0)
 set(MICRO_VERSION 0)
-set(SDL_REQUIRED_VERSION 3.0.0)
+set(SDL_REQUIRED_VERSION 3.1.5)
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
     message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the SDL_ttf source code and call cmake from there")
