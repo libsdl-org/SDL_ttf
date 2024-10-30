@@ -241,8 +241,8 @@ int main(int argc, char *argv[])
     context.device = check_error_ptr(SDL_CreateGPUDevice(SUPPORTED_SHADER_FORMATS, true, NULL));
     check_error_bool(SDL_ClaimWindowForGPUDevice(context.device, context.window));
 
-    SDL_GPUShader *vertex_shader = load_shader(context.device, true, 0, 1, 0, 0);
-    SDL_GPUShader *fragment_shader = load_shader(context.device, false, 1, 0, 0, 0);
+    SDL_GPUShader *vertex_shader = check_error_ptr(load_shader(context.device, true, 0, 1, 0, 0));
+    SDL_GPUShader *fragment_shader = check_error_ptr(load_shader(context.device, false, 1, 0, 0, 0));
 
     SDL_GPUGraphicsPipelineCreateInfo pipeline_create_info = {
         .target_info = {
