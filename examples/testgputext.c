@@ -387,6 +387,8 @@ int main(int argc, char *argv[])
 
         geometry_data.vertex_count = 0;
         geometry_data.index_count = 0;
+
+        TTF_DestroyText(text);
     }
 
     SDL_free(geometry_data.vertices);
