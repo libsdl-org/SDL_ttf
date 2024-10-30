@@ -3,11 +3,15 @@
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include "testgputext/shaders/spir-v.h"
+#include "testgputext/shaders/dxbc50.h"
+#include "testgputext/shaders/dxil60.h"
+#include "testgputext/shaders/metal.h"
 #define SDL_MATH_3D_IMPLEMENTATION
 #include "testgputext/SDL_math3d.h"
 
 #define MAX_VERTEX_COUNT 4000
 #define MAX_INDEX_COUNT  6000
+#define SUPPORTED_SHADER_FORMATS (SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXBC | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_METALLIB)
 
 typedef struct Vec2
 {
@@ -64,32 +68,44 @@ void *check_error_ptr(void *ptr)
 
 SDL_GPUShader *load_shader(
     SDL_GPUDevice *device,
-    const unsigned char code[],
-    const unsigned int code_size,
     bool is_vertex,
     Uint32 sampler_count,
     Uint32 uniform_buffer_count,
     Uint32 storage_buffer_count,
     Uint32 storage_texture_count)
 {
-    SDL_GPUShaderCreateInfo shader_info = {
-        .code = code,
-        .code_size = code_size,
-        .entrypoint = "main",
-        .format = SDL_GPU_SHADERFORMAT_SPIRV,
-        .stage = (is_vertex) ? SDL_GPU_SHADERSTAGE_VERTEX : SDL_GPU_SHADERSTAGE_FRAGMENT,
-        .num_samplers = sampler_count,
-        .num_uniform_buffers = uniform_buffer_count,
-        .num_storage_buffers = storage_buffer_count,
-        .num_storage_textures = storage_texture_count
-    };
-    SDL_GPUShader *shader = SDL_CreateGPUShader(device, &shader_info);
-    if (shader == NULL) {
-        SDL_Log("Failed to create shader!");
-        return NULL;
+    SDL_GPUShaderCreateInfo createinfo;
+    createinfo.num_samplers = sampler_count;
+    createinfo.num_storage_buffers = storage_buffer_count;
+    createinfo.num_storage_textures = storage_texture_count;
+    createinfo.num_uniform_buffers = uniform_buffer_count;
+    createinfo.props = 0;
+
+    SDL_GPUShaderFormat format = SDL_GetGPUShaderFormats(device);
+    if (format & SDL_GPU_SHADERFORMAT_DXBC) {
+        createinfo.format = SDL_GPU_SHADERFORMAT_DXBC;
+        createinfo.code = (Uint8*)(is_vertex ? shader_vert_sm50_dxbc : shader_frag_sm50_dxbc);
+        createinfo.code_size = is_vertex ? SDL_arraysize(shader_vert_sm50_dxbc) : SDL_arraysize(shader_frag_sm50_dxbc);
+        createinfo.entrypoint = is_vertex ? "VSMain" : "PSMain";
+    } else if (format & SDL_GPU_SHADERFORMAT_DXIL) {
+        createinfo.format = SDL_GPU_SHADERFORMAT_DXIL;
+        createinfo.code = is_vertex ? shader_vert_sm60_dxil : shader_frag_sm60_dxil;
+        createinfo.code_size = is_vertex ? SDL_arraysize(shader_vert_sm60_dxil) : SDL_arraysize(shader_frag_sm60_dxil);
+        createinfo.entrypoint = is_vertex ? "VSMain" : "PSMain";
+    } else if (format & SDL_GPU_SHADERFORMAT_METALLIB) {
+        createinfo.format = SDL_GPU_SHADERFORMAT_METALLIB;
+        createinfo.code = is_vertex ? shader_vert_metal : shader_frag_metal;
+        createinfo.code_size = is_vertex ? shader_frag_metal_len : shader_frag_metal_len;
+        createinfo.entrypoint = is_vertex ? "vs_main" : "fs_main";
+    } else {
+        createinfo.format = SDL_GPU_SHADERFORMAT_SPIRV;
+        createinfo.code = is_vertex ? shader_vert_spv : shader_frag_spv;
+        createinfo.code_size = is_vertex ? shader_vert_spv_len : shader_frag_spv_len;
+        createinfo.entrypoint = "main";
     }
 
-    return shader;
+    createinfo.stage = is_vertex ? SDL_GPU_SHADERSTAGE_VERTEX : SDL_GPU_SHADERSTAGE_FRAGMENT;
+    return SDL_CreateGPUShader(device, &createinfo);
 }
 
 void queue_text_sequence(GeometryData *geometry_data, TTF_GPUAtlasDrawSequence *sequence, SDL_FColor *colour)
@@ -222,11 +238,11 @@ int main(int argc, char *argv[])
 
     context.window = check_error_ptr(SDL_CreateWindow("GPU text test", 800, 600, 0));
 
-    context.device = check_error_ptr(SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV, true, NULL));
+    context.device = check_error_ptr(SDL_CreateGPUDevice(SUPPORTED_SHADER_FORMATS, true, NULL));
     check_error_bool(SDL_ClaimWindowForGPUDevice(context.device, context.window));
 
-    SDL_GPUShader *vertex_shader = load_shader(context.device, shader_vert_spv, shader_vert_spv_len, true, 0, 1, 0, 0);
-    SDL_GPUShader *fragment_shader = load_shader(context.device, shader_frag_spv, shader_frag_spv_len, false, 1, 0, 0, 0);
+    SDL_GPUShader *vertex_shader = load_shader(context.device, true, 0, 1, 0, 0);
+    SDL_GPUShader *fragment_shader = load_shader(context.device, false, 1, 0, 0, 0);
 
     SDL_GPUGraphicsPipelineCreateInfo pipeline_create_info = {
         .target_info = {
