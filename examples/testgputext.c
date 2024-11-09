@@ -95,7 +95,7 @@ SDL_GPUShader *load_shader(
     } else if (format & SDL_GPU_SHADERFORMAT_METALLIB) {
         createinfo.format = SDL_GPU_SHADERFORMAT_METALLIB;
         createinfo.code = is_vertex ? shader_vert_metal : shader_frag_metal;
-        createinfo.code_size = is_vertex ? shader_frag_metal_len : shader_frag_metal_len;
+        createinfo.code_size = is_vertex ? shader_vert_metal_len : shader_frag_metal_len;
         createinfo.entrypoint = is_vertex ? "vs_main" : "fs_main";
     } else {
         createinfo.format = SDL_GPU_SHADERFORMAT_SPIRV;
@@ -222,6 +222,7 @@ void free_context(Context *context)
     SDL_ReleaseGPUBuffer(context->device, context->vertex_buffer);
     SDL_ReleaseGPUBuffer(context->device, context->index_buffer);
     SDL_ReleaseGPUGraphicsPipeline(context->device, context->pipeline);
+    SDL_ReleaseWindowFromGPUDevice(context->device, context->window);
     SDL_DestroyGPUDevice(context->device);
     SDL_DestroyWindow(context->window);
 }
@@ -261,7 +262,7 @@ int main(int argc, char *argv[])
                 }
             }},
             .has_depth_stencil_target = false,
-            .depth_stencil_format = SDL_GPU_TEXTUREFORMAT_INVALID /* Neex to set this to avoid missing initializer for field error */
+            .depth_stencil_format = SDL_GPU_TEXTUREFORMAT_INVALID /* Need to set this to avoid missing initializer for field error */
         },
         .vertex_input_state = (SDL_GPUVertexInputState){
             .num_vertex_buffers = 1,
