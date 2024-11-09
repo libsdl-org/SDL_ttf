@@ -226,10 +226,10 @@ static inline SDL_Mat4X4 SDL_MatrixRotationX(float angle)
     float sin = SDL_sin(angle);
 
     return SDL_Matrix4X4(
-         cos,  0,  sin,  0,
-           0,  1,    0,  0,
-        -sin,  0,  cos,  0,
-           0,  0,    0,  1
+         1,    0,    0,  0,
+         0,  cos, -sin,  0,
+         0,  sin,  cos,  0,
+         0,    0,    0,  1
     );
 }
 
