@@ -4863,6 +4863,18 @@ void TTF_DestroyText(TTF_Text *text)
         return;
     }
 
+    DestroyEngineText(text);
+
+    if (text->internal->ops) {
+        SDL_free(text->internal->ops);
+    }
+    if (text->internal->clusters) {
+        SDL_free(text->internal->clusters);
+    }
+    if (text->internal->layout->lines) {
+        SDL_free(text->internal->layout->lines);
+    }
+
     TTF_SetTextFont(text, NULL);
     SDL_DestroyProperties(text->internal->props);
     SDL_free(text->text);
