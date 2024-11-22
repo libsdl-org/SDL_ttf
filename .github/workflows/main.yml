@@ -58,7 +58,6 @@ jobs:
           brew install \
             freetype \
             harfbuzz \
-            pkg-config \
             ${NULL+}
     - name: Set up Linux dependencies
       if: ${{ runner.os == 'Linux' }}
