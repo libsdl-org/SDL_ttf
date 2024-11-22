@@ -50,7 +50,6 @@ jobs:
             freetype \
             harfbuzz \
             libtool \
-            pkg-config \
             sdl2 \
             ${NULL+}
     - name: Setup Linux dependencies
