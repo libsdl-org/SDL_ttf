@@ -3104,13 +3104,12 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         offset = (int)hb_glyph_info[g].cluster;
 #else
     // Load each character and sum it's bounding box
+    const char *start = text;
     int offset = 0;
     while (length > 0) {
-        const char *last = text;
+        offset = (int)(text - start);
         Uint32 c = SDL_StepUTF8(&text, &length);
         FT_UInt idx = get_char_index(font, c);
-
-        offset += (text - last);
 
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
