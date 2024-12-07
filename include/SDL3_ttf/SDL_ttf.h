@@ -1608,7 +1608,8 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *e
 /**
  * Create a text engine for drawing text with the SDL GPU API.
  *
- * \param device the SDL_GPUDevice to use for creating textures and drawing text.
+ * \param device the SDL_GPUDevice to use for creating textures and drawing
+ *               text.
  * \returns a TTF_TextEngine object or NULL on failure; call SDL_GetError()
  *          for more information.
  *
@@ -1647,13 +1648,13 @@ typedef struct TTF_GPUAtlasDrawSequence
  *
  * `text` must have been created using a TTF_TextEngine from
  * TTF_CreateGPUTextEngine().
- * 
+ *
  * If the text looks blocky use linear filtering.
  *
  * \param text the text to draw.
- * \returns a NULL terminated linked list of TTF_GPUAtlasDrawSequence objects or
- *          NULL if the passed text is empty or in case of failure;
- *          call SDL_GetError() for more information.
+ * \returns a NULL terminated linked list of TTF_GPUAtlasDrawSequence objects
+ *          or NULL if the passed text is empty or in case of failure; call
+ *          SDL_GetError() for more information.
  *
  * \threadsafety This function should be called on the thread that created the
  *               text.
