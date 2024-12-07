@@ -5057,7 +5057,11 @@ bool TTF_SetFontOutline(TTF_Font *font, int outline)
             }
         }
 
-        FT_Stroker_Set(font->stroker, outline * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+        SDL_PropertiesID props = TTF_GetFontProperties(font);
+        FT_Stroker_LineCap line_cap = (FT_Stroker_LineCap)SDL_GetNumberProperty(props, TTF_PROP_FONT_OUTLINE_LINE_CAP_NUMBER, FT_STROKER_LINECAP_ROUND);
+        FT_Stroker_LineJoin line_join = (FT_Stroker_LineJoin)SDL_GetNumberProperty(props, TTF_PROP_FONT_OUTLINE_LINE_JOIN_NUMBER, FT_STROKER_LINEJOIN_ROUND);
+        FT_Fixed miter_limit = (FT_Fixed)SDL_GetNumberProperty(props, TTF_PROP_FONT_OUTLINE_MITER_LIMIT_NUMBER, 0);
+        FT_Stroker_Set(font->stroker, outline * 64, line_cap, line_join, miter_limit);
     } else {
         if (font->stroker) {
             FT_Stroker_Done(font->stroker);
