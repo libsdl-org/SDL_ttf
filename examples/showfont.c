@@ -31,6 +31,8 @@
 
 #define DEFAULT_PTSIZE  18.0f
 #define DEFAULT_TEXT    "The quick brown fox jumped over the lazy dog"
+// Newlines
+//#define DEFAULT_TEXT    "The quick brown fox\njumped over the lazy dog"
 // Combining characters
 //#define DEFAULT_TEXT    "\xc5\xab\xcc\x80\x20\xe1\xba\x83\x20\x6e\xcc\x82\x20\x48\xcc\xa8\x20\x6f\xcd\x9c\x75"
 // Chinese text
