@@ -3887,7 +3887,7 @@ static int CalculateClusterLengths(TTF_Text *text, TTF_SubString *clusters, int 
             cluster->length = clusters[i + 1].offset - cluster->offset;
         } else {
             SDL_assert(cluster->flags & TTF_SUBSTRING_TEXT_END);
-            SDL_assert(cluster->offset == length);
+            SDL_assert(cluster->offset == (int)length);
         }
         last = cluster;
     }
