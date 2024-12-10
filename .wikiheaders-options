@@ -16,3 +16,7 @@ warn_about_missing = 0
 wikipreamble = (This function is part of SDL_ttf, a separate library from SDL.)
 wikiheaderfiletext = Defined in [<SDL3_ttf/%fname%>](https://github.com/libsdl-org/SDL_ttf/blob/main/include/SDL3_ttf/%fname%)
 manpageheaderfiletext = Defined in SDL3_ttf/%fname%
+quickrefenabled = 1
+quickreftitle = SDL3_ttf API Quick Reference
+quickrefurl = https://libsdl.org/
+quickrefdesc = The latest version of this document can be found at https://wiki.libsdl.org/SDL3_ttf/QuickReference

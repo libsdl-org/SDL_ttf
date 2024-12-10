@@ -19,15 +19,17 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+/* WIKI CATEGORY: SDLTTF */
 
 /**
- *  \file SDL_ttf.h
+ * # CategorySDLTTF
  *
- *  Header file for SDL_ttf library
+ * Header file for SDL_ttf library
  *
- *  This library is a wrapper around the excellent FreeType 2.0 library,
- *  available at: https://www.freetype.org/
+ * This library is a wrapper around the excellent FreeType 2.0 library,
+ * available at: https://www.freetype.org/
  */
+
 #ifndef SDL_TTF_H_
 #define SDL_TTF_H_
 
