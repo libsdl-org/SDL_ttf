@@ -4314,7 +4314,7 @@ bool TTF_SetTextString(TTF_Text *text, const char *string, size_t length)
             length = SDL_strlen(string);
         }
 
-        if (text->text && length == SDL_strlen(text->text) && SDL_memcmp(text, text->text, length) == 0) {
+        if (text->text && length == SDL_strlen(text->text) && SDL_memcmp(string, text->text, length) == 0) {
             return true;
         }
 
