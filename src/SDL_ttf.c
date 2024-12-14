@@ -2868,7 +2868,7 @@ SDL_Surface *TTF_GetGlyphImage(TTF_Font *font, Uint32 ch)
 {
     FT_UInt idx;
 
-    TTF_CHECK_FONT(font, false);
+    TTF_CHECK_FONT(font, NULL);
 
     idx = get_char_index(font, ch);
     if (idx == 0) {
