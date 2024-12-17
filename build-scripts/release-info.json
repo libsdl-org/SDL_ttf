@@ -40,8 +40,8 @@
       "archs": ["x86", "x64"],
       "args": [
         "--with-sdl-prefix=@<@DEP_PREFIX@>@",
-        "CFLAGS=-O2",
-        "LDFLAGS=-Wl,-s"
+        "CFLAGS=-O2 -I@<@DEP_PREFIX@>@/include -I@<@DEP_PREFIX@>@/include/SDL2",
+        "LDFLAGS=-Wl,-s -L@<@DEP_PREFIX@>@/lib -lSDL2"
       ]
     },
     "files": {
