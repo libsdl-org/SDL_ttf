@@ -3038,9 +3038,6 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
     TTF_CHECK_POINTER("font", font, false);
     TTF_CHECK_POINTER("text", text, false);
 
-    if (!length) {
-        length = SDL_strlen(text);
-    }
     if (measured_length) {
         *measured_length = length;
     }
@@ -3265,11 +3262,17 @@ failure:
 
 bool TTF_GetStringSize(TTF_Font *font, const char *text, size_t length, int *w, int *h)
 {
+    if (!length && text) {
+        length = SDL_strlen(text);
+    }
     return TTF_Size_Internal(font, text, length, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
 bool TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int max_width, int *measured_width, size_t *measured_length)
 {
+    if (!length && text) {
+        length = SDL_strlen(text);
+    }
     return TTF_Size_Internal(font, text, length, NULL, NULL, NULL, NULL, true, max_width, measured_width, measured_length);
 }
 
