@@ -588,6 +588,7 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
     }
 
     SDL_assert(num_ops > 0);
+    SDL_assert(sizeof(SDL_FPoint) == 2 * sizeof(float));
 
     SDL_GPUTexture *texture = GetOperationTexture(&ops[0]);
     TTF_DrawOperation *end = NULL;
@@ -602,19 +603,17 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
     sequence->atlas_texture = texture;
     sequence->num_vertices = count * 4;
     sequence->num_indices = count * 6;
-    sequence->xy_stride = sizeof(float) * 2;
-    sequence->uv_stride = sizeof(float) * 2;
 
     if (texture) {
         AtlasGlyph *glyph;
 
-        sequence->uv = (float *)SDL_malloc(count * sizeof(glyph->texcoords));
+        sequence->uv = (SDL_FPoint *)SDL_malloc(count * sizeof(glyph->texcoords));
         if (!sequence->uv) {
             DestroyDrawSequence(sequence);
             return NULL;
         }
 
-        float *uv = sequence->uv;
+        float *uv = (float *)sequence->uv;
         for (int i = 0; i < count; ++i) {
             AtlasGlyph *glyph = (AtlasGlyph *)ops[i].copy.reserved;
             SDL_memcpy(uv, glyph->texcoords, sizeof(glyph->texcoords));
@@ -622,12 +621,12 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
         }
     }
 
-    sequence->xy = (float *)SDL_malloc(count * 8 * sizeof(*sequence->xy));
+    sequence->xy = (SDL_FPoint *)SDL_malloc(count * 4 * sizeof(*sequence->xy));
     if (!sequence->xy) {
         DestroyDrawSequence(sequence);
         return NULL;
     }
-    float *xy = sequence->xy;
+    float *xy = (float *)sequence->xy;
     for (int i = 0; i < count; ++i) {
         TTF_DrawOperation *op = &ops[i];
         SDL_Rect *dst = NULL;
