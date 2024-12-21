@@ -199,7 +199,7 @@ void draw(Context *context, SDL_Mat4X4 *matrices, int num_matrices, TTF_GPUAtlas
             SDL_GPU_INDEXELEMENTSIZE_32BIT);
         SDL_PushGPUVertexUniformData(context->cmd_buf, 0, matrices, sizeof(SDL_Mat4X4) * num_matrices);
 
-        int index_offset = 0;
+        int index_offset = 0, vertex_offset = 0;
         for (TTF_GPUAtlasDrawSequence *seq = draw_sequence; seq != NULL; seq = seq->next) {
             SDL_BindGPUFragmentSamplers(
                 render_pass, 0,
@@ -207,9 +207,10 @@ void draw(Context *context, SDL_Mat4X4 *matrices, int num_matrices, TTF_GPUAtlas
                     .texture = seq->atlas_texture, .sampler = context->sampler },
                 1);
 
-            SDL_DrawGPUIndexedPrimitives(render_pass, seq->num_indices, 1, index_offset, 0, 0);
+            SDL_DrawGPUIndexedPrimitives(render_pass, seq->num_indices, 1, index_offset, vertex_offset, 0);
 
             index_offset += seq->num_indices;
+            vertex_offset += seq->num_vertices;
         }
         SDL_EndGPURenderPass(render_pass);
     }
