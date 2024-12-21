@@ -3111,6 +3111,10 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
         }
+
+        if (c == 0 && length > 0) {
+            --length;
+        }
 #endif
         if (!Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
             goto failure;
