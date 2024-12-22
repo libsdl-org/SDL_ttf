@@ -13,10 +13,7 @@
 #define MAX_INDEX_COUNT  6000
 #define SUPPORTED_SHADER_FORMATS (SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXBC | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_METALLIB)
 
-typedef struct Vec2
-{
-    float x, y;
-} Vec2;
+typedef SDL_FPoint Vec2;
 
 typedef struct Vec3
 {
@@ -112,13 +109,10 @@ void queue_text_sequence(GeometryData *geometry_data, TTF_GPUAtlasDrawSequence *
 {
     for (int i = 0; i < sequence->num_vertices; i++) {
         Vertex vert;
-        const float *xy = (float *)((Uint8 *)sequence->xy + i * sequence->xy_stride);
-        vert.pos = (Vec3){ xy[0], xy[1], 0.0f };
-
+        const SDL_FPoint pos = sequence->xy[i];
+        vert.pos = (Vec3){ pos.x, pos.y, 0.0f };
         vert.colour = *colour;
-
-        const float *uv = (float *)((Uint8 *)sequence->uv + i * sequence->uv_stride);
-        SDL_memcpy(&vert.uv, uv, 2 * sizeof(float));
+        vert.uv = sequence->uv[i];
 
         geometry_data->vertices[geometry_data->vertex_count + i] = vert;
     }
@@ -199,7 +193,7 @@ void draw(Context *context, SDL_Mat4X4 *matrices, int num_matrices, TTF_GPUAtlas
             SDL_GPU_INDEXELEMENTSIZE_32BIT);
         SDL_PushGPUVertexUniformData(context->cmd_buf, 0, matrices, sizeof(SDL_Mat4X4) * num_matrices);
 
-        int index_offset = 0;
+        int index_offset = 0, vertex_offset = 0;
         for (TTF_GPUAtlasDrawSequence *seq = draw_sequence; seq != NULL; seq = seq->next) {
             SDL_BindGPUFragmentSamplers(
                 render_pass, 0,
@@ -207,9 +201,10 @@ void draw(Context *context, SDL_Mat4X4 *matrices, int num_matrices, TTF_GPUAtlas
                     .texture = seq->atlas_texture, .sampler = context->sampler },
                 1);
 
-            SDL_DrawGPUIndexedPrimitives(render_pass, seq->num_indices, 1, index_offset, 0, 0);
+            SDL_DrawGPUIndexedPrimitives(render_pass, seq->num_indices, 1, index_offset, vertex_offset, 0);
 
             index_offset += seq->num_indices;
+            vertex_offset += seq->num_vertices;
         }
         SDL_EndGPURenderPass(render_pass);
     }
