@@ -18,6 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
+#include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_textengine.h>
 
 #include "SDL_hashtable.h"
@@ -588,7 +589,7 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
     }
 
     SDL_assert(num_ops > 0);
-    SDL_assert(sizeof(SDL_FPoint) == 2 * sizeof(float));
+    SDL_COMPILE_TIME_ASSERT(sizeof_SDL_FPoint, sizeof(SDL_FPoint) == 2 * sizeof(float));
 
     SDL_GPUTexture *texture = GetOperationTexture(&ops[0]);
     TTF_DrawOperation *end = NULL;
