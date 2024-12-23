@@ -24,11 +24,11 @@
 
 #include "SDL_hashtable.h"
 
-#define ATLAS_TEXTURE_SIZE  256
+#define ATLAS_TEXTURE_SIZE 256
 
 #define STB_RECT_PACK_IMPLEMENTATION
 #define STBRP_STATIC
-#define STBRP_SORT SDL_qsort
+#define STBRP_SORT   SDL_qsort
 #define STBRP_ASSERT SDL_assert
 #define STBRP__CDECL SDLCALL
 #include "stb_rect_pack.h"
@@ -76,7 +76,6 @@ typedef struct TTF_GPUTextEngineData
     AtlasTexture *atlas;
     TTF_GPUTextEngineWinding winding;
 } TTF_GPUTextEngineData;
-
 
 static int SDLCALL SortMissing(void *userdata, const void *a, const void *b)
 {
@@ -147,7 +146,7 @@ static int SDLCALL SortOperations(const void *a, const void *b)
     return 0;
 }
 
-static void DestroyGlyph(AtlasGlyph* glyph)
+static void DestroyGlyph(AtlasGlyph *glyph)
 {
     if (!glyph) {
         return;
@@ -180,7 +179,7 @@ static AtlasTexture *CreateAtlas(SDL_GPUDevice *device)
         return NULL;
     }
 
-    SDL_GPUTextureCreateInfo info = {0};
+    SDL_GPUTextureCreateInfo info = { 0 };
     info.type = SDL_GPU_TEXTURETYPE_2D;
     info.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
     info.usage = SDL_GPU_TEXTUREUSAGE_SAMPLER;
@@ -301,7 +300,7 @@ static AtlasGlyph *FindUnusedGlyph(AtlasTexture *atlas, int width, int height)
 }
 
 static bool UpdateGPUTexture(SDL_GPUDevice *device, SDL_GPUTexture *texture,
-                              const SDL_Rect *rect, const void *pixels, int pitch)
+                             const SDL_Rect *rect, const void *pixels, int pitch)
 {
     const Uint32 texturebpp = 4;
 
@@ -387,7 +386,7 @@ static bool ResolveMissingGlyphs(TTF_GPUTextEngineData *enginedata, AtlasTexture
     // See if we can reuse any existing entries
     if (atlas->free_glyphs) {
         // Search from the smallest to the largest to minimize time spent searching the free list and shortening the missing entries
-        for (int i = num_missing; i--; ) {
+        for (int i = num_missing; i--;) {
             AtlasGlyph *glyph = FindUnusedGlyph(atlas, missing[i].w, missing[i].h);
             if (!glyph) {
                 continue;
@@ -408,7 +407,7 @@ static bool ResolveMissingGlyphs(TTF_GPUTextEngineData *enginedata, AtlasTexture
             // Remove this from the missing entries
             --num_missing;
             if (i < num_missing) {
-                SDL_memcpy(&missing[i], &missing[i+1], (num_missing - i) * sizeof(missing[i]));
+                SDL_memcpy(&missing[i], &missing[i + 1], (num_missing - i) * sizeof(missing[i]));
             }
         }
         if (num_missing == 0) {
@@ -754,7 +753,7 @@ static TTF_GPUTextEngineTextData *CreateTextData(TTF_GPUTextEngineData *engineda
             continue;
         }
 
-        AtlasGlyph *glyph = (AtlasGlyph*)op->copy.reserved;
+        AtlasGlyph *glyph = (AtlasGlyph *)op->copy.reserved;
         ++glyph->refcount;
         data->glyphs[data->num_glyphs++] = glyph;
     }
@@ -933,7 +932,7 @@ TTF_TextEngine *TTF_CreateGPUTextEngine(SDL_GPUDevice *device)
     return engine;
 }
 
-AtlasDrawSequence* TTF_GetGPUTextDrawData(TTF_Text *text)
+AtlasDrawSequence *TTF_GetGPUTextDrawData(TTF_Text *text)
 {
     if (!text || !text->internal || text->internal->engine->CreateText != CreateText) {
         SDL_InvalidParamError("text");
@@ -954,7 +953,8 @@ AtlasDrawSequence* TTF_GetGPUTextDrawData(TTF_Text *text)
     return data->draw_sequence;
 }
 
-void TTF_SetGPUTextEngineWinding(TTF_TextEngine *engine, TTF_GPUTextEngineWinding winding) {
+void TTF_SetGPUTextEngineWinding(TTF_TextEngine *engine, TTF_GPUTextEngineWinding winding)
+{
     if (!engine || engine->CreateText != CreateText) {
         SDL_InvalidParamError("engine");
         return;
@@ -968,7 +968,8 @@ void TTF_SetGPUTextEngineWinding(TTF_TextEngine *engine, TTF_GPUTextEngineWindin
     ((TTF_GPUTextEngineData *)engine->userdata)->winding = winding;
 }
 
-TTF_GPUTextEngineWinding TTF_GetGPUTextEngineWinding(const TTF_TextEngine *engine) {
+TTF_GPUTextEngineWinding TTF_GetGPUTextEngineWinding(const TTF_TextEngine *engine)
+{
     if (!engine || engine->CreateText != CreateText) {
         SDL_InvalidParamError("engine");
         return TTF_GPU_TEXTENGINE_WINDING_INVALID;
