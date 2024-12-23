@@ -20,6 +20,7 @@
 */
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_textengine.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "SDL_hashtable.h"
 
@@ -73,6 +74,7 @@ typedef struct TTF_GPUTextEngineData
     SDL_GPUDevice *device;
     SDL_HashTable *fonts;
     AtlasTexture *atlas;
+    TTF_GPUTextEngineWinding winding;
 } TTF_GPUTextEngineData;
 
 
@@ -581,7 +583,7 @@ static SDL_GPUTexture *GetOperationTexture(TTF_DrawOperation *op)
     return NULL;
 }
 
-static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops)
+static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops, TTF_GPUTextEngineWinding winding)
 {
     AtlasDrawSequence *sequence = (AtlasDrawSequence *)SDL_calloc(1, sizeof(*sequence));
     if (!sequence) {
@@ -664,7 +666,16 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
         return NULL;
     }
 
-    static const Uint8 rect_index_order[] = { 0, 1, 2, 0, 2, 3 };
+    static const Uint8 rect_index_order_cw[] = { 0, 1, 2, 0, 2, 3 };
+    static const Uint8 rect_index_order_ccw[] = { 0, 2, 1, 0, 3, 2 };
+
+    const Uint8 *rect_index_order;
+    if (winding == TTF_GPU_TEXTENGINE_WINDING_CLOCKWISE) {
+        rect_index_order = rect_index_order_cw;
+    } else {
+        rect_index_order = rect_index_order_ccw;
+    }
+
     int vertex_index = 0;
     int *indices = sequence->indices;
     for (int i = 0; i < count; ++i) {
@@ -678,7 +689,7 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
     }
 
     if (count < num_ops) {
-        sequence->next = CreateDrawSequence(ops + count, num_ops - count);
+        sequence->next = CreateDrawSequence(ops + count, num_ops - count, winding);
         if (!sequence->next) {
             DestroyDrawSequence(sequence);
             return NULL;
@@ -752,7 +763,7 @@ static TTF_GPUTextEngineTextData *CreateTextData(TTF_GPUTextEngineData *engineda
     SDL_qsort(ops, num_ops, sizeof(*ops), SortOperations);
 
     // Create batched draw sequences
-    data->draw_sequence = CreateDrawSequence(ops, num_ops);
+    data->draw_sequence = CreateDrawSequence(ops, num_ops, enginedata->winding);
     if (!data->draw_sequence) {
         DestroyTextData(data);
         return NULL;
@@ -834,6 +845,7 @@ static TTF_GPUTextEngineData *CreateEngineData(SDL_GPUDevice *device)
         return NULL;
     }
     data->device = device;
+    data->winding = TTF_GPU_TEXTENGINE_WINDING_CLOCKWISE;
 
     data->fonts = SDL_CreateHashTable(NULL, 4, SDL_HashPointer, SDL_KeyMatchPointer, NukeFontData, false);
     if (!data->fonts) {
@@ -940,4 +952,27 @@ AtlasDrawSequence* TTF_GetGPUTextDrawData(TTF_Text *text)
     }
 
     return data->draw_sequence;
+}
+
+void TTF_SetGPUTextEngineWinding(TTF_TextEngine *engine, TTF_GPUTextEngineWinding winding) {
+    if (!engine || engine->CreateText != CreateText) {
+        SDL_InvalidParamError("engine");
+        return;
+    }
+
+    if (winding == TTF_GPU_TEXTENGINE_WINDING_INVALID) {
+        SDL_InvalidParamError("winding");
+        return;
+    }
+
+    ((TTF_GPUTextEngineData *)engine->userdata)->winding = winding;
+}
+
+TTF_GPUTextEngineWinding TTF_GetGPUTextEngineWinding(const TTF_TextEngine *engine) {
+    if (!engine || engine->CreateText != CreateText) {
+        SDL_InvalidParamError("engine");
+        return TTF_GPU_TEXTENGINE_WINDING_INVALID;
+    }
+
+    return ((TTF_GPUTextEngineData *)engine->userdata)->winding;
 }

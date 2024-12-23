@@ -1705,6 +1705,53 @@ extern SDL_DECLSPEC TTF_GPUAtlasDrawSequence* SDLCALL TTF_GetGPUTextDrawData(TTF
 extern SDL_DECLSPEC void SDLCALL TTF_DestroyGPUTextEngine(TTF_TextEngine *engine);
 
 /**
+ * The winding order of the vertices returned by TTF_GetGPUTextDrawData
+ *
+ * \since This enum is available since SDL_ttf 3.0.0.
+ */
+typedef enum TTF_GPUTextEngineWinding
+{
+    TTF_GPU_TEXTENGINE_WINDING_INVALID = -1,
+    TTF_GPU_TEXTENGINE_WINDING_CLOCKWISE,
+    TTF_GPU_TEXTENGINE_WINDING_COUNTER_CLOCKWISE
+} TTF_GPUTextEngineWinding;
+
+/**
+ * Sets the winding order of the vertices returned by TTF_GetGPUTextDrawData
+ * for a particular GPU text engine.
+ *
+ * \param engine a TTF_TextEngine object created with
+ *               TTF_CreateGPUTextEngine().
+ * \param winding the new winding order option
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               engine.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_GetGPUTextEngineWinding
+ */
+extern SDL_DECLSPEC void SDLCALL TTF_SetGPUTextEngineWinding(TTF_TextEngine *engine, TTF_GPUTextEngineWinding winding);
+
+/**
+ * Get the winding order of the vertices returned by TTF_GetGPUTextDrawData
+ * for a particular GPU text engine
+ *
+ * \param engine a TTF_TextEngine object created with
+ *               TTF_CreateGPUTextEngine().
+ * \returns the winding order used by the GPU text engine or
+ *          TTF_GPU_TEXTENGINE_WINDING_INVALID in case of error
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               engine.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetGPUTextEngineWinding
+ */
+extern SDL_DECLSPEC TTF_GPUTextEngineWinding SDLCALL TTF_GetGPUTextEngineWinding(const TTF_TextEngine *engine);
+
+/**
  * Create a text object from UTF-8 text and a text engine.
  *
  * \param engine the text engine to use when creating the text object, may be
