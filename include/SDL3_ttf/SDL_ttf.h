@@ -1722,7 +1722,7 @@ typedef enum TTF_GPUTextEngineWinding
  *
  * \param engine a TTF_TextEngine object created with
  *               TTF_CreateGPUTextEngine().
- * \param winding the new winding order option
+ * \param winding the new winding order option.
  *
  * \threadsafety This function should be called on the thread that created the
  *               engine.
@@ -1740,7 +1740,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetGPUTextEngineWinding(TTF_TextEngine *eng
  * \param engine a TTF_TextEngine object created with
  *               TTF_CreateGPUTextEngine().
  * \returns the winding order used by the GPU text engine or
- *          TTF_GPU_TEXTENGINE_WINDING_INVALID in case of error
+ *          TTF_GPU_TEXTENGINE_WINDING_INVALID in case of error.
  *
  * \threadsafety This function should be called on the thread that created the
  *               engine.
