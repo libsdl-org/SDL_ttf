@@ -354,6 +354,9 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *
 /**
  * Font style flags
  */
+
+typedef Sint32 TTF_FontStyleFlags;
+
 #define TTF_STYLE_NORMAL        0x00
 #define TTF_STYLE_BOLD          0x01
 #define TTF_STYLE_ITALIC        0x02
@@ -384,7 +387,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *
  *
  * \sa TTF_GetFontStyle
  */
-extern SDL_DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
+extern SDL_DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, TTF_FontStyleFlags style);
 
 /**
  * Query a font's current style.
@@ -406,7 +409,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
  *
  * \sa TTF_SetFontStyle
  */
-extern SDL_DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
+extern SDL_DECLSPEC TTF_FontStyleFlags SDLCALL TTF_GetFontStyle(const TTF_Font *font);
 
 /**
  * Set a font's current outline.
