@@ -3754,6 +3754,8 @@ SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t
 
 struct TTF_TextLayout
 {
+    int font_height;
+    TTF_Direction direction;
     int wrap_length;
     bool wrap_whitespace_visible;
     int *lines;
@@ -4122,6 +4124,8 @@ bool TTF_SetTextFont(TTF_Text *text, TTF_Font *font)
 
         // Only update the text if we have a font available
         text->internal->needs_layout_update = true;
+        text->internal->layout->font_height = font->height;
+        text->internal->layout->direction = TTF_GetFontDirection(font);
     }
 
     return true;
@@ -4465,7 +4469,7 @@ bool TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *substring)
     }
 
     if (text->internal->num_clusters == 0) {
-        substring->rect.h = text->internal->font->height;
+        substring->rect.h = text->internal->layout->font_height;
         return true;
     }
 
@@ -4536,7 +4540,7 @@ bool TTF_GetTextSubStringForLine(TTF_Text *text, int line, TTF_SubString *substr
     }
 
     if (text->internal->num_clusters == 0) {
-        substring->rect.h = text->internal->font->height;
+        substring->rect.h = text->internal->layout->font_height;
         return true;
     }
 
@@ -4599,7 +4603,7 @@ TTF_SubString **TTF_GetTextSubStringsForRange(TTF_Text *text, int offset, int le
         result[0] = substring;
         result[1] = NULL;
         SDL_zerop(substring);
-        substring->rect.h = text->internal->font->height;
+        substring->rect.h = text->internal->layout->font_height;
 
         if (count) {
             *count = 1;
@@ -4632,7 +4636,7 @@ TTF_SubString **TTF_GetTextSubStringsForRange(TTF_Text *text, int offset, int le
         SDL_copyp(substring, &substring1);
         if (length == 0) {
             substring->length = 0;
-            if (TTF_GetFontDirection(text->internal->font) != TTF_DIRECTION_RTL) {
+            if (text->internal->layout->direction != TTF_DIRECTION_RTL) {
                 substring->rect.x += substring->rect.w;
             }
             substring->rect.w = 0;
@@ -4702,18 +4706,13 @@ bool TTF_GetTextSubStringForPoint(TTF_Text *text, int x, int y, TTF_SubString *s
     }
 
     if (text->internal->num_clusters == 0) {
-        substring->rect.h = text->internal->font->height;
+        substring->rect.h = text->internal->layout->font_height;
         return true;
     }
 
-#if TTF_USE_HARFBUZZ
-    hb_direction_t hb_direction = text->internal->font->hb_direction;
-    bool prefer_row = (hb_direction == HB_DIRECTION_LTR || hb_direction == HB_DIRECTION_RTL);
-    bool line_ends_right = (hb_direction == HB_DIRECTION_LTR);
-#else
-    bool prefer_row = true;
-    bool line_ends_right = true;
-#endif
+    TTF_Direction direction = text->internal->layout->direction;
+    bool prefer_row = (direction == TTF_DIRECTION_LTR || direction == TTF_DIRECTION_RTL);
+    bool line_ends_right = (direction == TTF_DIRECTION_LTR);
     const TTF_SubString *closest = NULL;
     int closest_dist = INT_MAX;
     int wrap_cost = 100;
