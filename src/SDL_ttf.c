@@ -247,7 +247,7 @@ struct TTF_Font {
     int lineskip;
 
     // The font style
-    Uint32 style;
+    TTF_FontStyleFlags style;
     int outline;
     FT_Stroker stroker;
 
@@ -4988,8 +4988,8 @@ bool TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *vdpi)
 
 void TTF_SetFontStyle(TTF_Font *font, TTF_FontStyleFlags style)
 {
-    Uint32 prev_style;
-    long face_style;
+    TTF_FontStyleFlags prev_style;
+    TTF_FontStyleFlags face_style;
 
     TTF_CHECK_FONT(font,);
 
