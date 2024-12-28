@@ -77,7 +77,7 @@ cmake_dependent_option(BUILD_SHARED_LIBS "Build the library as a shared library"
 
 cmake_dependent_option(SDLTTF_INSTALL "Enable SDL3_ttf install target" ${SDLTTF_ROOTPROJECT} "${sdl3ttf_install_enableable}" OFF)
 cmake_dependent_option(SDLTTF_INSTALL_MAN "Install man pages for SDL3_ttf" OFF "SDLTTF_INSTALL" OFF)
-cmake_dependent_option(SDLTTF_RELOCATABLE "Create relocatable SDL_ttf package" "${MSVC}" SDLMIXER_INSTALL OFF)
+cmake_dependent_option(SDLTTF_RELOCATABLE "Create relocatable SDL_ttf package" "${MSVC}" SDLTTF_INSTALL OFF)
 option(SDLTTF_VENDORED "Use vendored third-party libraries" ${vendored_default})
 option(SDLTTF_WERROR "Treat warnings as errors" OFF)
 
