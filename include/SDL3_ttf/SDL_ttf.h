@@ -460,7 +460,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
 /**
  * Hinting flags for TTF (TrueType Fonts)
  *
- * These flags specify the level of hinting to be applied to the font rendering.
+ * This enum specifies the level of hinting to be applied to the font rendering.
  * The hinting level determines how much the font's outlines are adjusted for better alignment on the pixel grid.
  *
  * \since This enum is available since SDL_ttf 3.0.0.
