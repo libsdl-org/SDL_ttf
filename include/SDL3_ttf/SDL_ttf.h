@@ -354,9 +354,9 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *
 /**
  * Font style flags for TTF_Font
  *
- * These are the flags which can be used to set the style of a font in SDL_ttf.
- * A combination of these flags can be used with functions that set or query
- * font style, such as TTF_SetFontStyle or TTF_GetFontStyle.
+ * These are the flags which can be used to set the style of a font in
+ * SDL_ttf. A combination of these flags can be used with functions that set
+ * or query font style, such as TTF_SetFontStyle or TTF_GetFontStyle.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -460,8 +460,9 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
 /**
  * Hinting flags for TTF (TrueType Fonts)
  *
- * This enum specifies the level of hinting to be applied to the font rendering.
- * The hinting level determines how much the font's outlines are adjusted for better alignment on the pixel grid.
+ * This enum specifies the level of hinting to be applied to the font
+ * rendering. The hinting level determines how much the font's outlines are
+ * adjusted for better alignment on the pixel grid.
  *
  * \since This enum is available since SDL_ttf 3.0.0.
  *
