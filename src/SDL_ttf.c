@@ -247,7 +247,7 @@ struct TTF_Font {
     int lineskip;
 
     // The font style
-    int style;
+    Uint32 style;
     int outline;
     FT_Stroker stroker;
 
