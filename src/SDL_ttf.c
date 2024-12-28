@@ -3755,7 +3755,6 @@ SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t
 struct TTF_TextLayout
 {
     int font_height;
-    TTF_Direction direction;
     int wrap_length;
     bool wrap_whitespace_visible;
     int *lines;
@@ -4122,11 +4121,11 @@ bool TTF_SetTextFont(TTF_Text *text, TTF_Font *font)
     if (text->internal->font) {
         AddFontTextReference(text->internal->font, text);
 
-        // Only update the text if we have a font available
-        text->internal->needs_layout_update = true;
         text->internal->layout->font_height = font->height;
-        text->internal->layout->direction = TTF_GetFontDirection(font);
+    } else {
+        text->internal->layout->font_height = 0;
     }
+    text->internal->needs_layout_update = true;
 
     return true;
 }
@@ -4636,7 +4635,7 @@ TTF_SubString **TTF_GetTextSubStringsForRange(TTF_Text *text, int offset, int le
         SDL_copyp(substring, &substring1);
         if (length == 0) {
             substring->length = 0;
-            if (text->internal->layout->direction != TTF_DIRECTION_RTL) {
+            if (TTF_GetFontDirection(text->internal->font) != TTF_DIRECTION_RTL) {
                 substring->rect.x += substring->rect.w;
             }
             substring->rect.w = 0;
@@ -4710,7 +4709,7 @@ bool TTF_GetTextSubStringForPoint(TTF_Text *text, int x, int y, TTF_SubString *s
         return true;
     }
 
-    TTF_Direction direction = text->internal->layout->direction;
+    TTF_Direction direction = TTF_GetFontDirection(text->internal->font);
     bool prefer_row = (direction == TTF_DIRECTION_LTR || direction == TTF_DIRECTION_RTL);
     bool line_ends_right = (direction == TTF_DIRECTION_LTR);
     const TTF_SubString *closest = NULL;
