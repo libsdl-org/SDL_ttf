@@ -463,18 +463,19 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
  * These flags specify the level of hinting to be applied to the font rendering.
  * The hinting level determines how much the font's outlines are adjusted for better alignment on the pixel grid.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This enum is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontHinting
  * \sa TTF_GetFontHinting
  */
-typedef Uint32 TTF_HintingFlags;
-
-#define TTF_HINTING_NORMAL          0 /**< Normal hinting applies standard grid-fitting. */
-#define TTF_HINTING_LIGHT           1 /**< Light hinting applies subtle adjustments to improve rendering. */
-#define TTF_HINTING_MONO            2 /**< Monochrome hinting adjusts the font for better rendering at lower resolutions. */
-#define TTF_HINTING_NONE            3 /**< No hinting, the font is rendered without any grid-fitting. */
-#define TTF_HINTING_LIGHT_SUBPIXEL  4 /**< Light hinting with subpixel rendering for more precise font edges. */
+typedef enum TTF_HintingFlags
+{
+    TTF_HINTING_NORMAL = 0,     /**< Normal hinting applies standard grid-fitting. */
+    TTF_HINTING_LIGHT,          /**< Light hinting applies subtle adjustments to improve rendering. */
+    TTF_HINTING_MONO,           /**< Monochrome hinting adjusts the font for better rendering at lower resolutions. */
+    TTF_HINTING_NONE,           /**< No hinting, the font is rendered without any grid-fitting. */
+    TTF_HINTING_LIGHT_SUBPIXEL  /**< Light hinting with subpixel rendering for more precise font edges. */
+} TTF_HintingFlags;
 
 /**
  * Set a font's current hinter setting.
