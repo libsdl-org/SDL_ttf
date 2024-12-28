@@ -458,13 +458,23 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontOutline(TTF_Font *font, int outline)
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
 
 /**
- * Hinting flags
+ * Hinting flags for TTF (TrueType Fonts)
+ *
+ * These flags specify the level of hinting to be applied to the font rendering.
+ * The hinting level determines how much the font's outlines are adjusted for better alignment on the pixel grid.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetFontHinting
+ * \sa TTF_GetFontHinting
  */
-#define TTF_HINTING_NORMAL          0
-#define TTF_HINTING_LIGHT           1
-#define TTF_HINTING_MONO            2
-#define TTF_HINTING_NONE            3
-#define TTF_HINTING_LIGHT_SUBPIXEL  4
+typedef Uint32 TTF_HintingFlags;
+
+#define TTF_HINTING_NORMAL          0 /**< Normal hinting applies standard grid-fitting. */
+#define TTF_HINTING_LIGHT           1 /**< Light hinting applies subtle adjustments to improve rendering. */
+#define TTF_HINTING_MONO            2 /**< Monochrome hinting adjusts the font for better rendering at lower resolutions. */
+#define TTF_HINTING_NONE            3 /**< No hinting, the font is rendered without any grid-fitting. */
+#define TTF_HINTING_LIGHT_SUBPIXEL  4 /**< Light hinting with subpixel rendering for more precise font edges. */
 
 /**
  * Set a font's current hinter setting.
@@ -490,7 +500,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
  *
  * \sa TTF_GetFontHinting
  */
-extern SDL_DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting);
+extern SDL_DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, TTF_HintingFlags hinting);
 
 /**
  * Query a font's current FreeType hinter setting.
@@ -512,7 +522,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, int hinting)
  *
  * \sa TTF_SetFontHinting
  */
-extern SDL_DECLSPEC int SDLCALL TTF_GetFontHinting(const TTF_Font *font);
+extern SDL_DECLSPEC TTF_HintingFlags SDLCALL TTF_GetFontHinting(const TTF_Font *font);
 
 /**
  * Enable Signed Distance Field rendering for a font.

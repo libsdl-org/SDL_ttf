@@ -5090,7 +5090,7 @@ int TTF_GetFontOutline(const TTF_Font *font)
     return font->outline;
 }
 
-void TTF_SetFontHinting(TTF_Font *font, int hinting)
+void TTF_SetFontHinting(TTF_Font *font, TTF_HintingFlags hinting)
 {
     TTF_CHECK_FONT(font,);
 
@@ -5122,7 +5122,7 @@ void TTF_SetFontHinting(TTF_Font *font, int hinting)
     UpdateFontText(font);
 }
 
-int TTF_GetFontHinting(const TTF_Font *font)
+TTF_HintingFlags TTF_GetFontHinting(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, -1);
 
