@@ -4986,7 +4986,7 @@ bool TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *vdpi)
     return true;
 }
 
-void TTF_SetFontStyle(TTF_Font *font, int style)
+void TTF_SetFontStyle(TTF_Font *font, TTF_FontStyleFlags style)
 {
     int prev_style;
     long face_style;
@@ -5019,7 +5019,7 @@ void TTF_SetFontStyle(TTF_Font *font, int style)
     UpdateFontText(font);
 }
 
-int TTF_GetFontStyle(const TTF_Font *font)
+TTF_FontStyleFlags TTF_GetFontStyle(const TTF_Font *font)
 {
     int style;
     long face_style;
