@@ -77,6 +77,7 @@ cmake_dependent_option(BUILD_SHARED_LIBS "Build the library as a shared library"
 
 cmake_dependent_option(SDLTTF_INSTALL "Enable SDL3_ttf install target" ${SDLTTF_ROOTPROJECT} "${sdl3ttf_install_enableable}" OFF)
 cmake_dependent_option(SDLTTF_INSTALL_MAN "Install man pages for SDL3_ttf" OFF "SDLTTF_INSTALL" OFF)
+cmake_dependent_option(SDLTTF_RELOCATABLE "Create relocatable SDL_ttf package" "${MSVC}" SDLMIXER_INSTALL OFF)
 option(SDLTTF_VENDORED "Use vendored third-party libraries" ${vendored_default})
 option(SDLTTF_WERROR "Treat warnings as errors" OFF)
 
@@ -351,9 +352,13 @@ if(SDLTTF_INSTALL)
         COMPONENT devel
     )
 
-    file(RELATIVE_PATH SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG "${CMAKE_INSTALL_PREFIX}/${SDLTTF_PKGCONFIG_INSTALLDIR}" "${CMAKE_INSTALL_PREFIX}")
-    string(REGEX REPLACE "[/]+$" "" SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG "${SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG}")
-    set(SDL_PKGCONFIG_PREFIX "\${pcfiledir}/${SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG}")
+    if(SDLTTF_RELOCATABLE)
+      file(RELATIVE_PATH SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG "${CMAKE_INSTALL_PREFIX}/${SDLTTF_PKGCONFIG_INSTALLDIR}" "${CMAKE_INSTALL_PREFIX}")
+      string(REGEX REPLACE "[/]+$" "" SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG "${SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG}")
+      set(SDL_PKGCONFIG_PREFIX "\${pcfiledir}/${SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG}")
+    else()
+      set(SDL_PKGCONFIG_PREFIX "${CMAKE_INSTALL_PREFIX}")
+    endif()
 
     string(JOIN " " PC_REQUIRES ${PC_REQUIRES})
     string(JOIN " " PC_LIBS ${PC_LIBS})
