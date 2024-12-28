@@ -352,13 +352,24 @@ extern SDL_DECLSPEC float SDLCALL TTF_GetFontSize(TTF_Font *font);
 extern SDL_DECLSPEC bool SDLCALL TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *vdpi);
 
 /**
- * Font style flags
+ * Font style flags for TTF_Font
+ *
+ * These are the flags which can be used to set the style of a font in SDL_ttf.
+ * A combination of these flags can be used with functions that set or query
+ * font style, such as TTF_SetFontStyle or TTF_GetFontStyle.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_SetFontStyle
+ * \sa TTF_GetFontStyle
  */
-#define TTF_STYLE_NORMAL        0x00
-#define TTF_STYLE_BOLD          0x01
-#define TTF_STYLE_ITALIC        0x02
-#define TTF_STYLE_UNDERLINE     0x04
-#define TTF_STYLE_STRIKETHROUGH 0x08
+typedef Uint32 TTF_FontStyleFlags;
+
+#define TTF_STYLE_NORMAL        0x00 /**< No special style */
+#define TTF_STYLE_BOLD          0x01 /**< Bold style */
+#define TTF_STYLE_ITALIC        0x02 /**< Italic style */
+#define TTF_STYLE_UNDERLINE     0x04 /**< Underlined text */
+#define TTF_STYLE_STRIKETHROUGH 0x08 /**< Strikethrough text */
 
 /**
  * Set a font's current style.
@@ -384,7 +395,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *
  *
  * \sa TTF_GetFontStyle
  */
-extern SDL_DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
+extern SDL_DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, TTF_FontStyleFlags style);
 
 /**
  * Query a font's current style.
@@ -406,7 +417,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, int style);
  *
  * \sa TTF_SetFontStyle
  */
-extern SDL_DECLSPEC int SDLCALL TTF_GetFontStyle(const TTF_Font *font);
+extern SDL_DECLSPEC TTF_FontStyleFlags SDLCALL TTF_GetFontStyle(const TTF_Font *font);
 
 /**
  * Set a font's current outline.
