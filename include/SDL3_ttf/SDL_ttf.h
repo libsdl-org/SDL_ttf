@@ -312,7 +312,6 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSize(TTF_Font *font, float ptsize);
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GetFontSize
- * \sa TTF_GetFontSizeDPI
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, float ptsize, int hdpi, int vdpi);
 
@@ -1705,7 +1704,6 @@ typedef struct TTF_GPUAtlasDrawSequence
  *
  * \sa TTF_CreateGPUTextEngine
  * \sa TTF_CreateText
- * \sa TTF_CreateText_Wrapped
  */
 extern SDL_DECLSPEC TTF_GPUAtlasDrawSequence* SDLCALL TTF_GetGPUTextDrawData(TTF_Text *text);
 
@@ -2414,14 +2412,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyText(TTF_Text *text);
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_OpenFont
- * \sa TTF_OpenFontIndexDPIIO
  * \sa TTF_OpenFontIO
- * \sa TTF_OpenFontDPI
- * \sa TTF_OpenFontDPIIO
- * \sa TTF_OpenFontIndex
- * \sa TTF_OpenFontIndexDPI
- * \sa TTF_OpenFontIndexDPIIO
- * \sa TTF_OpenFontIndexIO
  */
 extern SDL_DECLSPEC void SDLCALL TTF_CloseFont(TTF_Font *font);
 
