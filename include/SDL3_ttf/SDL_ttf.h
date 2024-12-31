@@ -1850,8 +1850,8 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_GetTextEngine(TTF_Text *text);
  *
  * \param text the TTF_Text to modify.
  * \param font the font to use, may be NULL.
- * \returns false if the text pointer is null; otherwise, true.
- *          call SDL_GetError() for more information.
+ * \returns false if the text pointer is null; otherwise, true. call
+ *          SDL_GetError() for more information.
  *
  * \threadsafety This function should be called on the thread that created the
  *               text.
