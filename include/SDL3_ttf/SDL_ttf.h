@@ -1705,7 +1705,6 @@ typedef struct TTF_GPUAtlasDrawSequence
  *
  * \sa TTF_CreateGPUTextEngine
  * \sa TTF_CreateText
- * \sa TTF_CreateText_Wrapped
  */
 extern SDL_DECLSPEC TTF_GPUAtlasDrawSequence* SDLCALL TTF_GetGPUTextDrawData(TTF_Text *text);
 
@@ -1851,6 +1850,8 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_GetTextEngine(TTF_Text *text);
  *
  * \param text the TTF_Text to modify.
  * \param font the font to use, may be NULL.
+ * \returns false if the text pointer is null; otherwise, true.
+ *          call SDL_GetError() for more information.
  *
  * \threadsafety This function should be called on the thread that created the
  *               text.
@@ -2411,14 +2412,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyText(TTF_Text *text);
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_OpenFont
- * \sa TTF_OpenFontIndexDPIIO
  * \sa TTF_OpenFontIO
- * \sa TTF_OpenFontDPI
- * \sa TTF_OpenFontDPIIO
- * \sa TTF_OpenFontIndex
- * \sa TTF_OpenFontIndexDPI
- * \sa TTF_OpenFontIndexDPIIO
- * \sa TTF_OpenFontIndexIO
  */
 extern SDL_DECLSPEC void SDLCALL TTF_CloseFont(TTF_Font *font);
 
