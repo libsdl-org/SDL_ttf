@@ -266,8 +266,8 @@ static AtlasGlyph *CreateGlyph(AtlasTexture *atlas, const stbrp_rect *area)
 
     const float minu = (float)area->x / ATLAS_TEXTURE_SIZE;
     const float minv = (float)area->y / ATLAS_TEXTURE_SIZE;
-    const float maxu = (float)(area->x + area->w) / ATLAS_TEXTURE_SIZE;
-    const float maxv = (float)(area->y + area->h) / ATLAS_TEXTURE_SIZE;
+    const float maxu = (float)(area->x + area->w - 1) / ATLAS_TEXTURE_SIZE;
+    const float maxv = (float)(area->y + area->h - 1) / ATLAS_TEXTURE_SIZE;
     glyph->texcoords[0] = minu;
     glyph->texcoords[1] = minv;
     glyph->texcoords[2] = maxu;
