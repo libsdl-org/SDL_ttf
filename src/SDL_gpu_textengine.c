@@ -261,13 +261,14 @@ static AtlasGlyph *CreateGlyph(AtlasTexture *atlas, const stbrp_rect *area)
     glyph->atlas = atlas;
     glyph->rect.x = area->x;
     glyph->rect.y = area->y;
+    // Remove the one pixel extra padding between glyphs
     glyph->rect.w = area->w - 1;
     glyph->rect.h = area->h - 1;
 
-    const float minu = (float)area->x / ATLAS_TEXTURE_SIZE;
-    const float minv = (float)area->y / ATLAS_TEXTURE_SIZE;
-    const float maxu = (float)(area->x + area->w - 1) / ATLAS_TEXTURE_SIZE;
-    const float maxv = (float)(area->y + area->h - 1) / ATLAS_TEXTURE_SIZE;
+    const float minu = (float)glyph->rect.x / ATLAS_TEXTURE_SIZE;
+    const float minv = (float)glyph->rect.y / ATLAS_TEXTURE_SIZE;
+    const float maxu = (float)(glyph->rect.x + glyph->rect.w) / ATLAS_TEXTURE_SIZE;
+    const float maxv = (float)(glyph->rect.y + glyph->rect.h) / ATLAS_TEXTURE_SIZE;
     glyph->texcoords[0] = minu;
     glyph->texcoords[1] = minv;
     glyph->texcoords[2] = maxu;
@@ -522,6 +523,7 @@ static bool CreateMissingGlyphs(TTF_GPUTextEngineData *enginedata, TTF_GPUTextEn
             }
 
             missing[missing_index].id = i;
+            // Add one pixel extra padding between glyphs
             missing[missing_index].w = surfaces[i]->w + 1;
             missing[missing_index].h = surfaces[i]->h + 1;
             ++missing_index;
