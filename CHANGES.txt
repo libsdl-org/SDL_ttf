@@ -1,3 +1,6 @@
+2.24.0:
+ * Added TTF_SetFontLineSkip()
+
 2.22.0:
  * Updated to FreeType version 2.13.2 and HarfBuzz version 8.1.1
 
