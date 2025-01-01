@@ -4,7 +4,7 @@
 
 set -eu
 
-cd `dirname $0`/..
+cd "$(dirname $0)/.."
 
 # Needed so sed doesn't report illegal byte sequences on macOS
 export LC_CTYPE=C
