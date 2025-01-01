@@ -48,7 +48,7 @@ BEGIN
             VALUE "FileDescription", "SDL2_ttf\0"
             VALUE "FileVersion", "2, 23, 0, 0\0"
             VALUE "InternalName", "SDL2_ttf\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 Sam Lantinga\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 Sam Lantinga\0"
             VALUE "OriginalFilename", "SDL2_ttf.dll\0"
             VALUE "ProductName", "Simple DirectMedia Layer\0"
             VALUE "ProductVersion", "2, 23, 0, 0\0"
