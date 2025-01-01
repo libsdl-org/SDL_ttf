@@ -177,9 +177,6 @@
     <ClCompile Include="..\external\harfbuzz\src\hb-number.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ms-feature-ranges.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
     <ClCompile Include="..\external\harfbuzz\src\hb-ot-cff1-table.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
@@ -205,42 +202,6 @@
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
     <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-arabic.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-default.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-hangul.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-hebrew.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-indic.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-indic-table.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-khmer.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-myanmar.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-syllabic.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-thai.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-use.cc">
-      <Filter>Sources\HarfBuzz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-complex-vowel-constraints.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
     <ClCompile Include="..\external\harfbuzz\src\hb-ot-shape-fallback.cc">
@@ -278,6 +239,138 @@
     </ClCompile>
     <ClCompile Include="..\external\freetype\src\gzip\ftgzip.c">
       <Filter>Sources\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\graph\gsubgpos-context.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-buffer-verify.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-cairo.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-cairo-utils.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-coretext.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-directwrite.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-draw.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-face-builder.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-gdi.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-glib.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-gobject-structs.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-graphite2.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-icu.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-map.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-color.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-meta.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-name.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-arabic.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-default.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-hangul.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-hebrew.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-indic.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-indic-table.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-khmer.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-myanmar.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-syllabic.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-thai.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-use.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-ot-shaper-vowel-constraints.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-outline.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-paint.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-paint-extents.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-style.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-cff1.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-cff2.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-cff-common.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-input.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-instancer-solver.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-plan.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-subset-repacker.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-uniscribe.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-wasm-api.cc">
+      <Filter>Sources\HarfBuzz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\harfbuzz\src\hb-wasm-shape.cc">
+      <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
