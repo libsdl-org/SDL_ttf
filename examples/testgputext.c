@@ -11,7 +11,7 @@
 
 #define MAX_VERTEX_COUNT 4000
 #define MAX_INDEX_COUNT  6000
-#define SUPPORTED_SHADER_FORMATS (SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXBC | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_METALLIB)
+#define SUPPORTED_SHADER_FORMATS (SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXBC | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL)
 
 typedef SDL_FPoint Vec2;
 
@@ -89,11 +89,11 @@ SDL_GPUShader *load_shader(
         createinfo.code = is_vertex ? shader_vert_sm60_dxil : shader_frag_sm60_dxil;
         createinfo.code_size = is_vertex ? SDL_arraysize(shader_vert_sm60_dxil) : SDL_arraysize(shader_frag_sm60_dxil);
         createinfo.entrypoint = is_vertex ? "VSMain" : "PSMain";
-    } else if (format & SDL_GPU_SHADERFORMAT_METALLIB) {
-        createinfo.format = SDL_GPU_SHADERFORMAT_METALLIB;
+    } else if (format & SDL_GPU_SHADERFORMAT_MSL) {
+        createinfo.format = SDL_GPU_SHADERFORMAT_MSL;
         createinfo.code = is_vertex ? shader_vert_metal : shader_frag_metal;
         createinfo.code_size = is_vertex ? shader_vert_metal_len : shader_frag_metal_len;
-        createinfo.entrypoint = is_vertex ? "vs_main" : "fs_main";
+        createinfo.entrypoint = "main0";
     } else {
         createinfo.format = SDL_GPU_SHADERFORMAT_SPIRV;
         createinfo.code = is_vertex ? shader_vert_spv : shader_frag_spv;

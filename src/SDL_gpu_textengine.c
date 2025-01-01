@@ -182,7 +182,7 @@ static AtlasTexture *CreateAtlas(SDL_GPUDevice *device)
     SDL_GPUTextureCreateInfo info = { 0 };
     info.type = SDL_GPU_TEXTURETYPE_2D;
     info.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
-    info.usage = SDL_GPU_TEXTUREUSAGE_SAMPLER;
+    info.usage = SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
     info.width = ATLAS_TEXTURE_SIZE;
     info.height = ATLAS_TEXTURE_SIZE;
     info.layer_count_or_depth = 1;
@@ -194,6 +194,17 @@ static AtlasTexture *CreateAtlas(SDL_GPUDevice *device)
         DestroyAtlas(device, atlas);
         return NULL;
     }
+
+    SDL_GPUColorTargetInfo target_info;
+    SDL_zero(target_info);
+    target_info.texture = atlas->texture;
+    target_info.clear_color = (SDL_FColor) { 0, 0, 0, 0 };
+    target_info.load_op = SDL_GPU_LOADOP_CLEAR;
+
+    SDL_GPUCommandBuffer *cbuf = SDL_AcquireGPUCommandBuffer(device);
+    SDL_GPURenderPass *rpass = SDL_BeginGPURenderPass(cbuf, &target_info, 1, NULL);
+    SDL_EndGPURenderPass(rpass);
+    SDL_SubmitGPUCommandBuffer(cbuf);
 
     int num_nodes = ATLAS_TEXTURE_SIZE / 4;
     atlas->packing_nodes = (stbrp_node *)SDL_calloc(num_nodes, sizeof(*atlas->packing_nodes));
