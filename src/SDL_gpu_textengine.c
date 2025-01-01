@@ -494,7 +494,7 @@ static bool CreateMissingGlyphs(TTF_GPUTextEngineData *enginedata, TTF_GPUTextEn
         goto done;
     }
 
-    checked = SDL_CreateHashTable(NULL, 4, SDL_HashID, SDL_KeyMatchID, NULL, false);
+    checked = SDL_CreateHashTable(NULL, 4, SDL_HashID, SDL_KeyMatchID, NULL, false, false);
     if (!checked) {
         goto done;
     }
@@ -810,7 +810,7 @@ static TTF_GPUTextEngineFontData *CreateFontData(TTF_GPUTextEngineData *engineda
     }
     data->font = font;
     data->generation = font_generation;
-    data->glyphs = SDL_CreateHashTable(NULL, 4, SDL_HashID, SDL_KeyMatchID, NukeGlyph, false);
+    data->glyphs = SDL_CreateHashTable(NULL, 4, SDL_HashID, SDL_KeyMatchID, NukeGlyph, false, false);
     if (!data->glyphs) {
         DestroyFontData(data);
         return NULL;
@@ -859,7 +859,7 @@ static TTF_GPUTextEngineData *CreateEngineData(SDL_GPUDevice *device)
     data->device = device;
     data->winding = TTF_GPU_TEXTENGINE_WINDING_CLOCKWISE;
 
-    data->fonts = SDL_CreateHashTable(NULL, 4, SDL_HashPointer, SDL_KeyMatchPointer, NukeFontData, false);
+    data->fonts = SDL_CreateHashTable(NULL, 4, SDL_HashPointer, SDL_KeyMatchPointer, NukeFontData, false, false);
     if (!data->fonts) {
         DestroyEngineData(data);
         return NULL;

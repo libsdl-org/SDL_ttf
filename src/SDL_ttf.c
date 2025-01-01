@@ -1963,7 +1963,7 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     font->hdpi = TTF_DEFAULT_DPI;
     font->vdpi = TTF_DEFAULT_DPI;
 
-    font->text = SDL_CreateHashTable(NULL, 16, SDL_HashPointer, SDL_KeyMatchPointer, NULL, false);
+    font->text = SDL_CreateHashTable(NULL, 16, SDL_HashPointer, SDL_KeyMatchPointer, NULL, false, false);
     if (!font->text) {
         TTF_CloseFont(font);
         return NULL;

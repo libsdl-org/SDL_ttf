@@ -181,7 +181,7 @@ static TTF_SurfaceTextEngineFontData *CreateFontData(TTF_SurfaceTextEngineData *
 
     data->font = font;
     data->generation = font_generation;
-    data->glyphs = SDL_CreateHashTable(NULL, 4, SDL_HashID, SDL_KeyMatchID, NukeGlyphData, false);
+    data->glyphs = SDL_CreateHashTable(NULL, 4, SDL_HashID, SDL_KeyMatchID, NukeGlyphData, false, false);
     if (!data->glyphs) {
         DestroyFontData(data);
         return NULL;
@@ -222,7 +222,7 @@ static TTF_SurfaceTextEngineData *CreateEngineData(void)
         return NULL;
     }
 
-    data->fonts = SDL_CreateHashTable(NULL, 4, SDL_HashPointer, SDL_KeyMatchPointer, NukeFontData, false);
+    data->fonts = SDL_CreateHashTable(NULL, 4, SDL_HashPointer, SDL_KeyMatchPointer, NukeFontData, false, false);
     if (!data->fonts) {
         DestroyEngineData(data);
         return NULL;
