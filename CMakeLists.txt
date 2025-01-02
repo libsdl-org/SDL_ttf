@@ -250,39 +250,46 @@ endif()
 
 if(SDLTTF_FREETYPE)
     if(SDLTTF_FREETYPE_VENDORED)
-        message(STATUS "${PROJECT_NAME}: Using vendored freetype library")
-        # FT_DISABLE_ZLIB variable is used by freetype
-        set(FT_DISABLE_ZLIB ON CACHE BOOL "freetype zlib option")
-        # FT_DISABLE_BZIP2 variable is used by freetype
-        set(FT_DISABLE_BZIP2 ON CACHE BOOL "freetype bzip2 option")
-        # FT_DISABLE_PNG variable is used by freetype
-        set(FT_DISABLE_PNG ON CACHE BOOL "freetype png option")
-        # FT_DISABLE_BROTLI variable is used by freetype
-        set(FT_DISABLE_BROTLI ON CACHE BOOL "freetype option")
-        if(SDLTTF_HARFBUZZ)
-            # FT_DISABLE_HARFBUZZ variable is used by freetype
-            set(FT_DISABLE_HARFBUZZ OFF CACHE BOOL "freetype harfbuzz option" FORCE)
-            # FT_REQUIRE_HARFBUZZ variable is used by freetype
-            set(FT_REQUIRE_HARFBUZZ ON CACHE BOOL "freetype harfbuzz option" FORCE)
-        else()
-            # FT_DISABLE_HARFBUZZ variable is used by freetype
-            set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "freetype harfbuzz option" FORCE)
-            # FT_REQUIRE_HARFBUZZ variable is used by freetype
-            set(FT_REQUIRE_HARFBUZZ OFF CACHE BOOL "freetype harfbuzz option" FORCE)
-        endif()
-        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/freetype/CMakeLists.txt")
-            message(FATAL_ERROR "No freetype sources found. Install a freetype development package or run the download script in the external folder.")
-        endif()
-        add_subdirectory(external/freetype EXCLUDE_FROM_ALL)
+      if (TARGET freetype)
         if(NOT TARGET Freetype::Freetype)
-            add_library(Freetype::Freetype ALIAS freetype)
+          add_library(Freetype::Freetype ALIAS freetype)
         endif()
-        if(SDLTTF_BUILD_SHARED_LIBS)
-            target_link_libraries(${sdl3_ttf_target_name} PRIVATE Freetype::Freetype)
-        else()
-            target_sources(${sdl3_ttf_target_name} PRIVATE $<TARGET_OBJECTS:Freetype::Freetype>)
-            target_include_directories(${sdl3_ttf_target_name} PRIVATE $<TARGET_PROPERTY:Freetype::Freetype,INTERFACE_INCLUDE_DIRECTORIES>)
-        endif()
+        target_link_libraries(${sdl3_ttf_target_name} PRIVATE Freetype::Freetype)
+      else()
+          message(STATUS "${PROJECT_NAME}: Using vendored freetype library")
+          # FT_DISABLE_ZLIB variable is used by freetype
+          set(FT_DISABLE_ZLIB ON CACHE BOOL "freetype zlib option")
+          # FT_DISABLE_BZIP2 variable is used by freetype
+          set(FT_DISABLE_BZIP2 ON CACHE BOOL "freetype bzip2 option")
+          # FT_DISABLE_PNG variable is used by freetype
+          set(FT_DISABLE_PNG ON CACHE BOOL "freetype png option")
+          # FT_DISABLE_BROTLI variable is used by freetype
+          set(FT_DISABLE_BROTLI ON CACHE BOOL "freetype option")
+          if(SDLTTF_HARFBUZZ)
+              # FT_DISABLE_HARFBUZZ variable is used by freetype
+              set(FT_DISABLE_HARFBUZZ OFF CACHE BOOL "freetype harfbuzz option" FORCE)
+              # FT_REQUIRE_HARFBUZZ variable is used by freetype
+              set(FT_REQUIRE_HARFBUZZ ON CACHE BOOL "freetype harfbuzz option" FORCE)
+          else()
+              # FT_DISABLE_HARFBUZZ variable is used by freetype
+              set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "freetype harfbuzz option" FORCE)
+              # FT_REQUIRE_HARFBUZZ variable is used by freetype
+              set(FT_REQUIRE_HARFBUZZ OFF CACHE BOOL "freetype harfbuzz option" FORCE)
+          endif()
+          if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/freetype/CMakeLists.txt")
+              message(FATAL_ERROR "No freetype sources found. Install a freetype development package or run the download script in the external folder.")
+          endif()
+          add_subdirectory(external/freetype EXCLUDE_FROM_ALL)
+          if(NOT TARGET Freetype::Freetype)
+              add_library(Freetype::Freetype ALIAS freetype)
+          endif()
+          if(SDLTTF_BUILD_SHARED_LIBS)
+              target_link_libraries(${sdl3_ttf_target_name} PRIVATE Freetype::Freetype)
+          else()
+              target_sources(${sdl3_ttf_target_name} PRIVATE $<TARGET_OBJECTS:Freetype::Freetype>)
+              target_include_directories(${sdl3_ttf_target_name} PRIVATE $<TARGET_PROPERTY:Freetype::Freetype,INTERFACE_INCLUDE_DIRECTORIES>)
+          endif()
+      endif()
     else()
         message(STATUS "${PROJECT_NAME}: Using system freetype library")
         find_package(Freetype REQUIRED)
