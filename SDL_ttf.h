@@ -48,7 +48,7 @@ extern "C" {
  * Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
  */
 #define SDL_TTF_MAJOR_VERSION   2
-#define SDL_TTF_MINOR_VERSION   24
+#define SDL_TTF_MINOR_VERSION   25
 #define SDL_TTF_PATCHLEVEL      0
 
 /**
