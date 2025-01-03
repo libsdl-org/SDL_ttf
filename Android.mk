@@ -5,6 +5,9 @@ SDL_TTF_LOCAL_PATH := $(call my-dir)
 SUPPORT_HARFBUZZ ?= true
 HARFBUZZ_LIBRARY_PATH := external/harfbuzz
 
+# Enable this if you want to use SDL_TextEngine
+SUPPORT_SDL_TEXTENGINE ?= true
+
 FREETYPE_LIBRARY_PATH := external/freetype
 
 # Build freetype library
@@ -29,6 +32,12 @@ LOCAL_SRC_FILES := \
 	src/SDL_gpu_textengine.c \
 	src/SDL_renderer_textengine.c \
 	src/SDL_surface_textengine.c
+
+ifeq ($(SUPPORT_SDL_TEXTENGINE),true)
+    LOCAL_SRC_FILES += src/SDL_hashtable.c  src/SDL_renderer_textengine.c  src/SDL_surface_textengine.c
+else
+    LOCAL_CFLAGS += -DSDL_DISABLE_TEXTENGINE
+endif
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/include
 
