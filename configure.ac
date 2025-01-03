@@ -85,6 +85,8 @@ case "$host" in
         fi
         use_version_rc=true
         LT_EXTRA="-Wl,version.o"
+        # Eliminate libgcc*.dll dependency
+        CFLAGS="$CFLAGS -static-libgcc"
         ;;
     *-*-os2*)
         # disable static builds on os/2
@@ -241,7 +243,6 @@ if test x$enable_harfbuzz = xyes; then
 		case "$host" in
 		  *-*-mingw*) hb_os_win32=yes
 			CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
-			CFLAGS="$CFLAGS -static-libgcc"
 			# for uniscribe support:
 			TTF_LIBS="$TTF_LIBS -lusp10 -lgdi32 -lrpcrt4"
 			PC_LIBS="$PC_LIBS -lusp10 -lgdi32 -lrpcrt4"
