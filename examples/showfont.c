@@ -605,6 +605,7 @@ int main(int argc, char *argv[])
     }
     SDL_DestroySurface(text);
     EditBox_Destroy(scene.edit);
+    TTF_DestroyText(scene.caption);
     TTF_CloseFont(font);
     switch (scene.textEngine) {
     case TextEngineSurface:
@@ -616,7 +617,6 @@ int main(int argc, char *argv[])
     default:
         break;
     }
-    TTF_DestroyText(scene.caption);
     SDL_DestroyTexture(scene.message);
     Cleanup(0);
 
