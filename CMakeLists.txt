@@ -393,8 +393,6 @@ if(SDLTTF_SAMPLES)
     add_executable(testapp examples/testapp.c)
     add_executable(testgputext examples/testgputext.c)
 
-    file(COPY examples/testgputext/fonts/NotoSansMono-Regular.ttf DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
     set(OpenGL_GL_PREFERENCE GLVND)
     find_package(OpenGL)
     if(TARGET OpenGL::OpenGL)
