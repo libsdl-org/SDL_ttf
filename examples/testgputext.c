@@ -224,8 +224,10 @@ void free_context(Context *context)
 
 int main(int argc, char *argv[])
 {
-    (void)argc;
-    (void)argv;
+    const char *font_filename = "NotoSansMono-Regular.ttf";
+
+    if (argc > 1)
+        font_filename = argv[1];
 
     check_error_bool(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
@@ -327,7 +329,7 @@ int main(int argc, char *argv[])
     geometry_data.indices = SDL_calloc(MAX_INDEX_COUNT, sizeof(int));
 
     check_error_bool(TTF_Init());
-    TTF_Font *font = check_error_ptr(TTF_OpenFont("NotoSansMono-Regular.ttf", 50));
+    TTF_Font *font = check_error_ptr(TTF_OpenFont(font_filename, 50));
     if (!font)
         running = false;
     TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
