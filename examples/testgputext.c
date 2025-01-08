@@ -328,6 +328,8 @@ int main(int argc, char *argv[])
 
     check_error_bool(TTF_Init());
     TTF_Font *font = check_error_ptr(TTF_OpenFont("NotoSansMono-Regular.ttf", 50));
+    if (!font)
+        running = false;
     TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
     TTF_TextEngine *engine = check_error_ptr(TTF_CreateGPUTextEngine(context.device));
 
