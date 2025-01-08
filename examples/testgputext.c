@@ -224,10 +224,14 @@ void free_context(Context *context)
 
 int main(int argc, char *argv[])
 {
-    const char *font_filename = "NotoSansMono-Regular.ttf";
+    const char *font_filename;
 
-    if (argc > 1)
+    if (argc > 1) {
         font_filename = argv[1];
+    } else {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Usage: testgputext FONT_FILENAME");
+        return 2;
+    }
 
     check_error_bool(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
