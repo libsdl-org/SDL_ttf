@@ -22,7 +22,7 @@
 
 #include "SDL_hashtable.h"
 
-#define ATLAS_TEXTURE_SIZE  256
+#define ATLAS_TEXTURE_SIZE  1024
 
 #define STB_RECT_PACK_IMPLEMENTATION
 #define STBRP_STATIC
