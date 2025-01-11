@@ -55,5 +55,5 @@ and older versions of the Linux kernel:
 ## Before 2.19.0
 
 Older versions of `SDL_ttf` used the patchlevel (micro version,
-mixerthird part) for feature releases, and did not distinguish between feature
+third part) for feature releases, and did not distinguish between feature
 and bugfix releases.

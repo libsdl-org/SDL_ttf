@@ -44,7 +44,7 @@ endif()
 
 set(sdl2ttf_install_enableable ON)
 if ((TARGET SDL2 OR TARGET SDL2-static) AND SDL2_DISABLE_INSTALL)
-    # Cannot install SDL2_mixer when SDL2 is built in same built, and is not installed.
+    # Cannot install SDL2_ttf when SDL2 is built in same built, and is not installed.
     set(sdl2ttf_install_enableable OFF)
 endif()
 
