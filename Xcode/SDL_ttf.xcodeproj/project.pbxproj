@@ -62,6 +62,7 @@
 		BE48FD6207AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		F307EE29282738F8003915D7 /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = F307EE28282738F8003915D7 /* svg.c */; };
 		F33F083D2CC41C810062C26D /* SDL_textengine.h in Headers */ = {isa = PBXBuildFile; fileRef = F33F083C2CC41C810062C26D /* SDL_textengine.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F344FFBF2D3EB53C003F26D7 /* SDL_gpu_textengine.c in Sources */ = {isa = PBXBuildFile; fileRef = F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */; };
 		F364A5B82620E1A200325ECE /* FTL.TXT in Resources */ = {isa = PBXBuildFile; fileRef = F364A5B72620E1A200325ECE /* FTL.TXT */; };
 		F364A5C42620E22400325ECE /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = F364A5C32620E22400325ECE /* ReadMe.txt */; };
 		F3696FE4278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
@@ -198,6 +199,7 @@
 		BE48FD8307AFA29000BB41DA /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL3.framework; sourceTree = "<group>"; };
 		F307EE28282738F8003915D7 /* svg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = svg.c; path = ../external/freetype/src/svg/svg.c; sourceTree = "<group>"; };
 		F33F083C2CC41C810062C26D /* SDL_textengine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_textengine.h; sourceTree = "<group>"; };
+		F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_gpu_textengine.c; sourceTree = "<group>"; };
 		F364A5B72620E1A200325ECE /* FTL.TXT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FTL.TXT; path = ../../../external/freetype/docs/FTL.TXT; sourceTree = "<group>"; };
 		F364A5C32620E22400325ECE /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		F3696FE3278F7107003A7F94 /* sdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdf.c; path = ../external/freetype/src/sdf/sdf.c; sourceTree = "<group>"; };
@@ -343,12 +345,13 @@
 			children = (
 				F384BB6A261EC02C0028A248 /* FreeType */,
 				F384BD04261EC64F0028A248 /* HarfBuzz */,
+				F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */,
 				F3F7BDF12CB6FD6700C984AF /* SDL_hashtable.h */,
 				F3F7BDF22CB6FD6700C984AF /* SDL_hashtable.c */,
 				F3F7BDF32CB6FD6700C984AF /* SDL_renderer_textengine.c */,
 				F3F7BDF42CB6FD6700C984AF /* SDL_surface_textengine.c */,
-				F3F7BDF62CB6FD6700C984AF /* stb_rect_pack.h */,
 				F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */,
+				F3F7BDF62CB6FD6700C984AF /* stb_rect_pack.h */,
 			);
 			name = "Library Source";
 			path = ../src;
@@ -783,6 +786,7 @@
 				F384BBE5261EC0DE0028A248 /* ftotval.c in Sources */,
 				61047EB12B48AD0F00868128 /* hb-ot-shaper-vowel-constraints.cc in Sources */,
 				F384BBEB261EC0DE0028A248 /* ftfstype.c in Sources */,
+				F344FFBF2D3EB53C003F26D7 /* SDL_gpu_textengine.c in Sources */,
 				61047EAC2B48AD0F00868128 /* hb-ot-shaper-indic.cc in Sources */,
 				F384BC7C261EC2180028A248 /* pshinter.c in Sources */,
 				F384BD65261EC7650028A248 /* hb-ot-font.cc in Sources */,
