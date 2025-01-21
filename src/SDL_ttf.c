@@ -5253,13 +5253,6 @@ bool TTF_GetFontKerning(const TTF_Font *font)
     return font->enable_kerning;
 }
 
-int TTF_GetNumFontFaces(const TTF_Font *font)
-{
-    TTF_CHECK_FONT(font, 0);
-
-    return (int)font->face->num_faces;
-}
-
 bool TTF_FontIsFixedWidth(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, false);
