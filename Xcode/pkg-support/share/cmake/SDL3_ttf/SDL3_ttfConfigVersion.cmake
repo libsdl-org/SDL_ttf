@@ -3,7 +3,7 @@
 # SDL CMake version configuration file:
 # This file is meant to be placed in share/cmake/SDL3_ttf, next to SDL3_ttf.xcframework
 
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.12...3.28)
 
 get_filename_component(_sdl3_ttf_xcframework_parent_path "${CMAKE_CURRENT_LIST_DIR}" REALPATH)                  # /share/cmake/SDL3_ttf/
 get_filename_component(_sdl3_ttf_xcframework_parent_path "${_sdl3_ttf_xcframework_parent_path}" REALPATH)       # /share/cmake/SDL3_ttf/
