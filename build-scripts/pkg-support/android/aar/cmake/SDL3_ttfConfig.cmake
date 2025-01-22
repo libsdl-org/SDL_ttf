@@ -82,10 +82,10 @@ endif()
 unset(_sdl3ttf_lib)
 unset(_sdl3ttf_include_dirs)
 
-set(SDL3_ttf_sdl3ttf_ttf-static_FOUND FALSE)
+set(SDL3_ttf_SDL3_ttf-static_FOUND FALSE)
 
-if(SDL3_ttf_sdl3ttf_ttf-shared_FOUND OR SDL3_ttf_sdl3ttf_ttf-static_FOUND)
-    set(SDL3_ttf_sdl3ttf_ttf_FOUND TRUE)
+if(SDL3_ttf_SDL3_ttf-shared_FOUND OR SDL3_ttf_SDL3_ttf-static_FOUND)
+    set(SDL3_ttf_SDL3_ttf_FOUND TRUE)
 endif()
 
 function(_sdl_create_target_alias_compat NEW_TARGET TARGET)
