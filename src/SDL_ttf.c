@@ -51,6 +51,7 @@
 #if TTF_USE_SDF
 #include FT_MODULE_H
 #endif
+#define DEFAULT_SDF_SPREAD 8
 
 /* Enable HarfBuzz for Complex text rendering
  * Freetype may need to be compiled with FT_CONFIG_OPTION_USE_HARFBUZZ */
@@ -1824,7 +1825,7 @@ bool TTF_Init(void)
 #if TTF_USE_SDF
 #if 0
         // Set various properties of the renderers.
-        int spread = 4;
+        int spread = DEFAULT_SDF_SPREAD;
         int overlaps = 0;
         FT_Property_Set(TTF_state.library, "bsdf", "spread", &spread);
         FT_Property_Set(TTF_state.library, "sdf", "spread", &spread);
@@ -2331,8 +2332,8 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
         // Adjust for SDF
         if (font->render_sdf) {
             // Default 'spread' property
-            cached->sz_width += 2 * 8;
-            cached->sz_rows  += 2 * 8;
+            cached->sz_width += 2 * DEFAULT_SDF_SPREAD;
+            cached->sz_rows  += 2 * DEFAULT_SDF_SPREAD;
         }
 
         cached->stored |= CACHED_METRICS;
@@ -3223,7 +3224,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         *xstart = (minx < 0)? -minx : 0;
         *xstart += font->outline;
         if (font->render_sdf) {
-            *xstart += 8; // Default 'spread' property
+            *xstart += DEFAULT_SDF_SPREAD; // Default 'spread' property
         }
     }
 
@@ -3232,7 +3233,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         *ystart = (miny < 0)? -miny : 0;
         *ystart += font->outline;
         if (font->render_sdf) {
-            *ystart += 8; // Default 'spread' property
+            *ystart += DEFAULT_SDF_SPREAD; // Default 'spread' property
         }
     }
 
