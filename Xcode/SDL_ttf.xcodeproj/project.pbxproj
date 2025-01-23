@@ -62,10 +62,12 @@
 		BE48FD6207AFA17000BB41DA /* SDL_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */; };
 		F307EE29282738F8003915D7 /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = F307EE28282738F8003915D7 /* svg.c */; };
 		F33F083D2CC41C810062C26D /* SDL_textengine.h in Headers */ = {isa = PBXBuildFile; fileRef = F33F083C2CC41C810062C26D /* SDL_textengine.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F341242A2D42C44700D6C2B7 /* INSTALL.md in Resources */ = {isa = PBXBuildFile; fileRef = F34124292D42C44700D6C2B7 /* INSTALL.md */; };
+		F341242D2D42C47A00D6C2B7 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F341242B2D42C47A00D6C2B7 /* LICENSE.txt */; };
+		F341242E2D42C47A00D6C2B7 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F341242C2D42C47A00D6C2B7 /* README.md */; };
 		F34400402D4033CE003F26D7 /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F344003F2D4033CE003F26D7 /* SDL3.framework */; };
 		F344FFBF2D3EB53C003F26D7 /* SDL_gpu_textengine.c in Sources */ = {isa = PBXBuildFile; fileRef = F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */; };
 		F364A5B82620E1A200325ECE /* FTL.TXT in Resources */ = {isa = PBXBuildFile; fileRef = F364A5B72620E1A200325ECE /* FTL.TXT */; };
-		F364A5C42620E22400325ECE /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = F364A5C32620E22400325ECE /* ReadMe.txt */; };
 		F3696FE4278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
 		F384BB6C261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
 		F384BB8B261EC0DE0028A248 /* ftbdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB76261EC0DD0028A248 /* ftbdf.c */; };
@@ -189,10 +191,13 @@
 		BE48FD6707AFA17000BB41DA /* SDL3_ttf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL3_ttf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F307EE28282738F8003915D7 /* svg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = svg.c; path = ../external/freetype/src/svg/svg.c; sourceTree = "<group>"; };
 		F33F083C2CC41C810062C26D /* SDL_textengine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_textengine.h; sourceTree = "<group>"; };
+		F34124292D42C44700D6C2B7 /* INSTALL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = INSTALL.md; sourceTree = "<group>"; };
+		F341242B2D42C47A00D6C2B7 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE.txt; path = ../LICENSE.txt; sourceTree = SOURCE_ROOT; };
+		F341242C2D42C47A00D6C2B7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = SOURCE_ROOT; };
+		F341242F2D42C49B00D6C2B7 /* INSTALL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = INSTALL.md; sourceTree = "<group>"; };
 		F344003F2D4033CE003F26D7 /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL3.framework; sourceTree = "<group>"; };
 		F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_gpu_textengine.c; sourceTree = "<group>"; };
 		F364A5B72620E1A200325ECE /* FTL.TXT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FTL.TXT; path = ../../../external/freetype/docs/FTL.TXT; sourceTree = "<group>"; };
-		F364A5C32620E22400325ECE /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		F3696FE3278F7107003A7F94 /* sdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdf.c; path = ../external/freetype/src/sdf/sdf.c; sourceTree = "<group>"; };
 		F384BB6B261EC0760028A248 /* autofit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = autofit.c; path = ../external/freetype/src/autofit/autofit.c; sourceTree = "<group>"; };
 		F384BB76261EC0DD0028A248 /* ftbdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftbdf.c; path = ../external/freetype/src/base/ftbdf.c; sourceTree = "<group>"; };
@@ -354,6 +359,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		F341241E2D42C41200D6C2B7 /* framework */ = {
+			isa = PBXGroup;
+			children = (
+				F34124292D42C44700D6C2B7 /* INSTALL.md */,
+			);
+			path = framework;
+			sourceTree = "<group>";
+		};
 		F384BB6A261EC02C0028A248 /* FreeType */ = {
 			isa = PBXGroup;
 			children = (
@@ -477,11 +490,14 @@
 		F59C710100D5CB5801000001 /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				F341241E2D42C41200D6C2B7 /* framework */,
 				7FC2F5DB285AC0D600836845 /* CMake */,
-				F364A5C32620E22400325ECE /* ReadMe.txt */,
 				F384BE61261ECD9F0028A248 /* FreeType-LICENSE.txt */,
 				F364A5B72620E1A200325ECE /* FTL.TXT */,
 				F384BE60261ECD9F0028A248 /* HarfBuzz-LICENSE.txt */,
+				F341242B2D42C47A00D6C2B7 /* LICENSE.txt */,
+				F341242C2D42C47A00D6C2B7 /* README.md */,
+				F341242F2D42C49B00D6C2B7 /* INSTALL.md */,
 			);
 			path = resources;
 			sourceTree = "<group>";
@@ -565,11 +581,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F364A5C42620E22400325ECE /* ReadMe.txt in Resources */,
 				F384BE65261ECD9F0028A248 /* FreeType-LICENSE.txt in Resources */,
 				F3E1F8762A79462A00AC76D3 /* config.xcconfig in Resources */,
+				F341242D2D42C47A00D6C2B7 /* LICENSE.txt in Resources */,
+				F341242E2D42C47A00D6C2B7 /* README.md in Resources */,
 				F364A5B82620E1A200325ECE /* FTL.TXT in Resources */,
 				7FC2F5DC285AC0D600836845 /* CMake in Resources */,
+				F341242A2D42C44700D6C2B7 /* INSTALL.md in Resources */,
 				F384BE62261ECD9F0028A248 /* HarfBuzz-LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -621,7 +639,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -ex\n\nPRODUCT_NAME=SDL3_ttf\n\nmkdir -p build/dmg-tmp/share/cmake/$PRODUCT_NAME\ncp -a build/$PRODUCT_NAME.xcframework build/dmg-tmp/\ncp pkg-support/resources/ReadMe.txt build/dmg-tmp\ncp pkg-support/share/cmake/${PRODUCT_NAME}/${PRODUCT_NAME}Config.cmake build/dmg-tmp/share/cmake/${PRODUCT_NAME}\ncp pkg-support/share/cmake/${PRODUCT_NAME}/${PRODUCT_NAME}ConfigVersion.cmake build/dmg-tmp/share/cmake/${PRODUCT_NAME}\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname $PRODUCT_NAME -srcfolder build/dmg-tmp build/$PRODUCT_NAME.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n";
+			shellScript = "set -ex\n\nPRODUCT_NAME=SDL3_ttf\n\nmkdir -p build/dmg-tmp/share/cmake/$PRODUCT_NAME\ncp -a build/$PRODUCT_NAME.xcframework build/dmg-tmp/\n\ncp ../LICENSE.txt build/dmg-tmp\ncp ../README.md build/dmg-tmp\ncp pkg-support/resources/INSTALL.md build/dmg-tmp\ncp pkg-support/share/cmake/${PRODUCT_NAME}/${PRODUCT_NAME}Config.cmake build/dmg-tmp/share/cmake/${PRODUCT_NAME}\ncp pkg-support/share/cmake/${PRODUCT_NAME}/${PRODUCT_NAME}ConfigVersion.cmake build/dmg-tmp/share/cmake/${PRODUCT_NAME}\n\n# remove the .DS_Store files if any (we may want to provide one in the future for fancy .dmgs)\nrm -rf build/dmg-tmp/.DS_Store\n\n# for fancy .dmg\nmkdir -p build/dmg-tmp/.logo\ncp pkg-support/resources/SDL_DS_Store build/dmg-tmp/.DS_Store\ncp pkg-support/sdl_logo.pdf build/dmg-tmp/.logo\n\n# create the dmg\nhdiutil create -ov -fs HFS+ -volname $PRODUCT_NAME -srcfolder build/dmg-tmp build/$PRODUCT_NAME.dmg\n\n# clean up\nrm -rf build/dmg-tmp\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
