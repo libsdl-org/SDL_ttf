@@ -1,2 +1,37 @@
-3.0.0:
- * Updated for SDL 3.0
+3.2.0:
+ * Updated for SDL 3.0, see docs/README-migration.md for details
+ * Added the concept of a text object and text engine, which is able to efficiently render text for a variety of output methods
+ * Added TTF_CreateSurfaceTextEngine() and TTF_DrawSurfaceText() for drawing text to SDL_Surface output
+ * Added TTF_CreateRendererTextEngine() and TTF_DrawRendererText() for drawing text to SDL_Renderer output
+ * Added TTF_CreateGPUTextEngine() and TTF_GetGPUTextDrawData() for drawing text to SDL_GPU output
+ * Added <SDL3_ttf/SDL_textengine.h> so you can create your own custom text engine
+ * Added functions to manage text objects:
+    - TTF_CreateText()
+    - TTF_GetTextProperties()
+    - TTF_SetTextEngine()
+    - TTF_GetTextEngine()
+    - TTF_SetTextFont()
+    - TTF_GetTextFont()
+    - TTF_SetTextColor()
+    - TTF_SetTextColorFloat()
+    - TTF_GetTextColor()
+    - TTF_GetTextColorFloat()
+    - TTF_SetTextPosition()
+    - TTF_GetTextPosition()
+    - TTF_SetTextWrapWidth()
+    - TTF_GetTextWrapWidth()
+    - TTF_SetTextWrapWhitespaceVisible()
+    - TTF_TextWrapWhitespaceVisible()
+    - TTF_SetTextString()
+    - TTF_InsertTextString()
+    - TTF_AppendTextString()
+    - TTF_DeleteTextString()
+    - TTF_GetTextSize()
+    - TTF_GetTextSubString()
+    - TTF_GetTextSubStringForLine()
+    - TTF_GetTextSubStringsForRange()
+    - TTF_GetTextSubStringForPoint()
+    - TTF_GetPreviousTextSubString()
+    - TTF_GetNextTextSubString()
+    - TTF_UpdateText()
+    - TTF_DestroyText()
