@@ -17,9 +17,11 @@ project(SDL3_ttf
     VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}"
 )
 
-include("${SDL3_ttf_SOURCE_DIR}/cmake/GetGitRevisionDescription.cmake")
-include("${SDL3_ttf_SOURCE_DIR}/cmake/PrivateSdlFunctions.cmake")
-include("${SDL3_ttf_SOURCE_DIR}/cmake/sdlmanpages.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/GetGitRevisionDescription.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/PrivateSdlFunctions.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/sdlcpu.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/sdlplatform.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/sdlmanpages.cmake")
 sdl_calculate_derived_version_variables(${MAJOR_VERSION} ${MINOR_VERSION} ${MICRO_VERSION})
 
 message(STATUS "Configuring ${PROJECT_NAME} ${PROJECT_VERSION}")
@@ -76,6 +78,7 @@ option(CMAKE_POSITION_INDEPENDENT_CODE "Build static libraries with -fPIC" ${PLA
 cmake_dependent_option(BUILD_SHARED_LIBS "Build the library as a shared library" ON PLATFORM_SUPPORTS_SHARED OFF)
 
 cmake_dependent_option(SDLTTF_INSTALL "Enable SDL3_ttf install target" ${SDLTTF_ROOTPROJECT} "${sdl3ttf_install_enableable}" OFF)
+cmake_dependent_option(SDLTTF_INSTALL_CPACK "Create binary SDL3_ttf archive using CPack" ${SDLTTF_ROOTPROJECT} "SDLTTF_INSTALL" OFF)
 cmake_dependent_option(SDLTTF_INSTALL_MAN "Install man pages for SDL3_ttf" OFF "SDLTTF_INSTALL" OFF)
 cmake_dependent_option(SDLTTF_RELOCATABLE "Create relocatable SDL_ttf package" "${MSVC}" SDLTTF_INSTALL OFF)
 option(SDLTTF_VENDORED "Use vendored third-party libraries" ${vendored_default})
@@ -109,6 +112,9 @@ endif()
 if(NOT TARGET SDL3::Headers OR NOT TARGET ${sdl3_target_name})
     find_package(SDL3 ${SDL_REQUIRED_VERSION} REQUIRED COMPONENTS ${sdl_required_components})
 endif()
+
+SDL_DetectTargetCPUArchitectures(SDL_CPU_NAMES)
+SDL_DetectCMakePlatform()
 
 # Enable large file support on 32-bit glibc, so that the vendored libraries
 # can access files with large inode numbers
@@ -375,6 +381,20 @@ if(SDLTTF_INSTALL)
         DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/licenses/${PROJECT_NAME}"
         COMPONENT library
     )
+
+    if(SDLTTF_INSTALL_CPACK)
+        if(MSVC)
+            set(CPACK_GENERATOR "ZIP")
+        else()
+            set(CPACK_GENERATOR "TGZ")
+        endif()
+        configure_file(cmake/CPackProjectConfig.cmake.in CPackProjectConfig.cmake @ONLY)
+        set(CPACK_PROJECT_CONFIG_FILE "${PROJECT_BINARY_DIR}/CPackProjectConfig.cmake")
+        # CPACK_SOURCE_PACKAGE_FILE_NAME must end with "-src" (so we can block creating a source archive)
+        set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}-src")
+        set(CPACK_PACKAGE_DIRECTORY "${CMAKE_BINARY_DIR}/dist")
+        include(CPack)
+    endif()
 
     if(SDLTTF_INSTALL_MAN)
         sdl_get_git_revision_hash(SDLTTF_REVISION)
