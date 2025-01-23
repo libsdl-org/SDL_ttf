@@ -42,7 +42,7 @@
 
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-textengine surface|renderer] [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-editbox] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [-textengine surface|renderer] [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-disable-editbox] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
@@ -292,7 +292,7 @@ int main(int argc, char *argv[])
     int kerning = 1;
     bool wrap = false;
     TTF_HorizontalAlignment align = TTF_HORIZONTAL_ALIGN_LEFT;
-    bool editbox = false;
+    bool editbox = true;
     bool dump = false;
     char *message, string[128];
 
@@ -391,8 +391,8 @@ int main(int argc, char *argv[])
             backcol->b = (Uint8)b;
             backcol->a = (Uint8)a;
         } else
-        if (SDL_strcmp(argv[i], "-editbox") == 0) {
-            editbox = true;
+        if (SDL_strcmp(argv[i], "-disable-editbox") == 0) {
+            editbox = false;
         } else
         if (SDL_strcmp(argv[i], "-dump") == 0) {
             dump = true;
