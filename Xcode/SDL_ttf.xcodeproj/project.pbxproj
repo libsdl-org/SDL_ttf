@@ -139,7 +139,6 @@
 		F384BE19261EC7650028A248 /* hb-ot-shape-fallback.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2C261EC7650028A248 /* hb-ot-shape-fallback.cc */; };
 		F384BE1F261EC7650028A248 /* hb-ot-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BD2D261EC7650028A248 /* hb-ot-shape.cc */; };
 		F384BE48261EC9470028A248 /* hb-fallback-shape.cc in Sources */ = {isa = PBXBuildFile; fileRef = F384BE47261EC9470028A248 /* hb-fallback-shape.cc */; };
-		F3E1F8762A79462A00AC76D3 /* config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F3E1F8752A79462A00AC76D3 /* config.xcconfig */; };
 		F3F7BDF72CB6FD6700C984AF /* SDL_hashtable.h in Headers */ = {isa = PBXBuildFile; fileRef = F3F7BDF12CB6FD6700C984AF /* SDL_hashtable.h */; };
 		F3F7BDF82CB6FD6700C984AF /* stb_rect_pack.h in Headers */ = {isa = PBXBuildFile; fileRef = F3F7BDF62CB6FD6700C984AF /* stb_rect_pack.h */; };
 		F3F7BDF92CB6FD6700C984AF /* SDL_renderer_textengine.c in Sources */ = {isa = PBXBuildFile; fileRef = F3F7BDF32CB6FD6700C984AF /* SDL_renderer_textengine.c */; };
@@ -572,7 +571,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F3E1F8762A79462A00AC76D3 /* config.xcconfig in Resources */,
 				F341242D2D42C47A00D6C2B7 /* LICENSE.txt in Resources */,
 				F341242E2D42C47A00D6C2B7 /* README.md in Resources */,
 				7FC2F5DC285AC0D600836845 /* CMake in Resources */,
