@@ -380,7 +380,7 @@ static bool UpdateGPUTexture(SDL_GPUDevice *device, SDL_GPUTexture *texture,
 
 static bool UpdateGlyph(SDL_GPUDevice *device, AtlasGlyph *glyph, SDL_Surface *surface)
 {
-    if (glyph->rect.w > 0 || glyph->rect.h > 0) {
+    if (glyph->rect.w > 0 && glyph->rect.h > 0) {
         /* FIXME: We should update the whole texture at once or at least cache the transfer buffers */
         UpdateGPUTexture(device, glyph->atlas->texture, &glyph->rect, surface->pixels, surface->pitch);
     }
