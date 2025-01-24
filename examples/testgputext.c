@@ -169,7 +169,7 @@ void transfer_data(Context *context, GeometryData *geometry_data)
 void draw(Context *context, SDL_Mat4X4 *matrices, int num_matrices, TTF_GPUAtlasDrawSequence *draw_sequence)
 {
     SDL_GPUTexture *swapchain_texture;
-    check_error_bool(SDL_AcquireGPUSwapchainTexture(context->cmd_buf, context->window, &swapchain_texture, NULL, NULL));
+    check_error_bool(SDL_WaitAndAcquireGPUSwapchainTexture(context->cmd_buf, context->window, &swapchain_texture, NULL, NULL));
 
     if (swapchain_texture != NULL) {
         SDL_GPUColorTargetInfo colour_target_info = { 0 };
@@ -333,7 +333,7 @@ int main(int argc, char *argv[])
     geometry_data.indices = SDL_calloc(MAX_INDEX_COUNT, sizeof(int));
 
     check_error_bool(TTF_Init());
-    TTF_Font *font = check_error_ptr(TTF_OpenFont(font_filename, 50));
+    TTF_Font *font = check_error_ptr(TTF_OpenFont(font_filename, 50)); /* Preferably use a Monospaced font */
     if (!font)
         running = false;
     TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
@@ -347,6 +347,7 @@ int main(int argc, char *argv[])
     float rot_angle = 0;
     char str[] = "     \nSDL is cool";
     SDL_FColor colour = {1.0f, 1.0f, 0.0f, 1.0f};
+    TTF_Text *text = check_error_ptr(TTF_CreateText(engine, font, str, 0));
 
     while (running) {
         SDL_Event event;
@@ -362,12 +363,11 @@ int main(int argc, char *argv[])
             str[i] = 65 + SDL_rand(26);
         }
 
-        rot_angle = SDL_fmodf(rot_angle + 0.01, 2 * SDL_PI_F);
-
         int tw, th;
-        TTF_Text *text = check_error_ptr(TTF_CreateText(engine, font, str, 0));
         check_error_bool(TTF_GetTextSize(text, &tw, &th));
-        TTF_SetTextWrapWidth(text, 0);
+        TTF_SetTextString(text, str, 0);
+
+        rot_angle = SDL_fmodf(rot_angle + 0.01, 2 * SDL_PI_F);
 
         // Create a model matrix to make the text rotate
         SDL_Mat4X4 model;
@@ -391,12 +391,11 @@ int main(int argc, char *argv[])
 
         geometry_data.vertex_count = 0;
         geometry_data.index_count = 0;
-
-        TTF_DestroyText(text);
     }
 
     SDL_free(geometry_data.vertices);
     SDL_free(geometry_data.indices);
+    TTF_DestroyText(text);
     TTF_DestroyGPUTextEngine(engine);
     free_context(&context);
     SDL_Quit();
