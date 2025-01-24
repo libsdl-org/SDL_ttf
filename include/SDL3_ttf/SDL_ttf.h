@@ -1810,7 +1810,7 @@ extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetTextProperties(TTF_Text *tex
 
 /**
  * Set the text engine used by a text object.
- * 
+ *
  * This function may cause the internal text representation to be rebuilt.
  *
  * \param text the TTF_Text to modify.
@@ -1849,7 +1849,7 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_GetTextEngine(TTF_Text *text);
  * When a text object has a font, any changes to the font will automatically
  * regenerate the text. If you set the font to NULL, the text will continue to
  * render but changes to the font will no longer affect the text.
- * 
+ *
  * This function may cause the internal text representation to be rebuilt.
  *
  * \param text the TTF_Text to modify.
@@ -1983,7 +1983,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextColorFloat(TTF_Text *text, float *r,
  *
  * This can be used to position multiple text objects within a single wrapping
  * text area.
- * 
+ *
  * This function may cause the internal text representation to be rebuilt.
  *
  * \param text the TTF_Text to modify.
@@ -2019,7 +2019,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextPosition(TTF_Text *text, int *x, int
 
 /**
  * Set whether wrapping is enabled on a text object.
- * 
+ *
  * This function may cause the internal text representation to be rebuilt.
  *
  * \param text the TTF_Text to modify.
@@ -2062,7 +2062,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapWidth(TTF_Text *text, int *wrap_
  * alignment and wrapping. This is good for editing, but looks better when
  * centered or aligned if whitespace around line wrapping is hidden. This
  * defaults false.
- * 
+ *
  * This function may cause the internal text representation to be rebuilt.
  *
  * \param text the TTF_Text to modify.
@@ -2098,7 +2098,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_TextWrapWhitespaceVisible(TTF_Text *text);
 
 /**
  * Set the UTF-8 text used by a text object.
- * 
+ *
  * This function may cause the internal text representation to be rebuilt.
  *
  * \param text the TTF_Text to modify.
@@ -2121,7 +2121,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextString(TTF_Text *text, const char *s
 
 /**
  * Insert UTF-8 text into a text object.
- * 
+ *
  * This function may cause the internal text representation to be rebuilt.
  *
  * \param text the TTF_Text to modify.
@@ -2148,7 +2148,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_InsertTextString(TTF_Text *text, int offset
 
 /**
  * Append UTF-8 text to a text object.
- * 
+ *
  * This function may cause the internal text representation to be rebuilt.
  *
  * \param text the TTF_Text to modify.
@@ -2171,7 +2171,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_AppendTextString(TTF_Text *text, const char
 
 /**
  * Delete UTF-8 text from a text object.
- * 
+ *
  * This function may cause the internal text representation to be rebuilt.
  *
  * \param text the TTF_Text to modify.
