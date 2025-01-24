@@ -339,15 +339,16 @@ int main(int argc, char *argv[])
     TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
     TTF_TextEngine *engine = check_error_ptr(TTF_CreateGPUTextEngine(context.device));
 
+    char str[] = "     \nSDL is cool";
+    TTF_Text *text = check_error_ptr(TTF_CreateText(engine, font, str, 0));
+
     SDL_Mat4X4 *matrices = (SDL_Mat4X4[]){
         SDL_MatrixPerspective(SDL_PI_F / 2.0f, 800.0f / 600.0f, 0.1f, 100.0f),
         SDL_MatrixIdentity()
     };
 
     float rot_angle = 0;
-    char str[] = "     \nSDL is cool";
     SDL_FColor colour = {1.0f, 1.0f, 0.0f, 1.0f};
-    TTF_Text *text = check_error_ptr(TTF_CreateText(engine, font, str, 0));
 
     while (running) {
         SDL_Event event;
@@ -362,10 +363,10 @@ int main(int argc, char *argv[])
         for (int i = 0; i < 5; i++) {
             str[i] = 65 + SDL_rand(26);
         }
+        TTF_SetTextString(text, str, 0);
 
         int tw, th;
         check_error_bool(TTF_GetTextSize(text, &tw, &th));
-        TTF_SetTextString(text, str, 0);
 
         rot_angle = SDL_fmodf(rot_angle + 0.01, 2 * SDL_PI_F);
 
