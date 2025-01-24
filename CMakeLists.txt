@@ -91,7 +91,7 @@ cmake_dependent_option(SDLTTF_SAMPLES_INSTALL "Install the SDL3_ttf sample progr
 set(SDLTTF_FREETYPE ON)
 set(SDLTTF_FREETYPE_VENDORED "${SDLTTF_VENDORED}")
 
-option(SDLTTF_HARFBUZZ "Use harfbuzz to improve text shaping" OFF)
+option(SDLTTF_HARFBUZZ "Use harfbuzz to improve text shaping" ON)
 set(SDLTTF_HARFBUZZ_VENDORED "${SDLTTF_VENDORED}")
 
 # Save BUILD_SHARED_LIBS variable
