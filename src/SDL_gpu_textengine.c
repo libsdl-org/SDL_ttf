@@ -505,6 +505,7 @@ static bool CreateMissingGlyphs(TTF_GPUTextEngineData *enginedata, TTF_GPUTextEn
     for (int i = 0; i < num_ops; ++i) {
         TTF_DrawOperation *op = &ops[i];
         if (op->cmd == TTF_DRAW_COMMAND_COPY && !op->copy.reserved) {
+            TTF_Font *glyph_font = op->copy.glyph_font;
             Uint32 glyph_index = op->copy.glyph_index;
             if (SDL_FindInHashTable(checked, (const void *)(uintptr_t)glyph_index, NULL)) {
                 continue;
@@ -513,7 +514,7 @@ static bool CreateMissingGlyphs(TTF_GPUTextEngineData *enginedata, TTF_GPUTextEn
                 goto done;
             }
 
-            surfaces[i] = TTF_GetGlyphImageForIndex(fontdata->font, glyph_index);
+            surfaces[i] = TTF_GetGlyphImageForIndex(glyph_font, glyph_index);
             if (!surfaces[i]) {
                 goto done;
             }

@@ -218,6 +218,7 @@ typedef struct cached_glyph {
 /* Internal buffer to store positions computed by TTF_Size_Internal()
  * for rendered string by Render_Line() */
 typedef struct PosBuf {
+    TTF_Font *font;
     FT_UInt index;
     int x;
     int y;
@@ -1173,12 +1174,13 @@ static bool Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart,
     int i;                                                                                                              \
     Uint8 fg_alpha = (fg ? fg->a : 0);                                                                                  \
     for (i = 0; i < font->pos_len; i++) {                                                                               \
+        TTF_Font *glyph_font = font->pos_buf[i].font;                                                                   \
         FT_UInt idx = font->pos_buf[i].index;                                                                           \
-        int x       = font->pos_buf[i].x;                                                                               \
-        int y       = font->pos_buf[i].y;                                                                               \
+        int x = font->pos_buf[i].x;                                                                                     \
+        int y = font->pos_buf[i].y;                                                                                     \
         TTF_Image *image;                                                                                               \
                                                                                                                         \
-        if (Find_GlyphByIndex(font, idx, WB_WP_WC, WS, x & 63, NULL, &image)) {                                         \
+        if (Find_GlyphByIndex(glyph_font, idx, WB_WP_WC, WS, x & 63, NULL, &image)) {                                   \
             int above_w, above_h;                                                                                       \
             Uint32 dstskip;                                                                                             \
             Sint32 srcskip; /* Can be negative */                                                                       \
@@ -1435,13 +1437,14 @@ static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int w
     bounds.h = font->height;
 
     for (i = 0; i < font->pos_len; i++) {
+        TTF_Font *glyph_font = font->pos_buf[i].font;
         FT_UInt idx = font->pos_buf[i].index;
-        int x       = font->pos_buf[i].x;
-        int y       = font->pos_buf[i].y;
-        int offset  = font->pos_buf[i].offset;
+        int x = font->pos_buf[i].x;
+        int y = font->pos_buf[i].y;
+        int offset = font->pos_buf[i].offset;
         c_glyph *glyph;
 
-        if (Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
+        if (Find_GlyphByIndex(glyph_font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
             int above_w, above_h;
             int glyph_x = 0;
             int glyph_y = 0;
@@ -1480,6 +1483,7 @@ static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int w
                 op = &ops[op_index++];
                 op->cmd = TTF_DRAW_COMMAND_COPY;
                 op->copy.text_offset = offset;
+                op->copy.glyph_font = glyph_font;
                 op->copy.glyph_index = idx;
                 op->copy.src.x = glyph_x;
                 op->copy.src.y = glyph_y;
@@ -3093,6 +3097,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
     // Load and render each character
     int offset = 0;
     for (g = 0; g < glyph_count; g++) {
+        TTF_Font *glyph_font = font;
         FT_UInt idx   = hb_glyph_info[g].codepoint;
         int x_advance = hb_glyph_position[g].x_advance;
         int y_advance = hb_glyph_position[g].y_advance;
@@ -3107,7 +3112,8 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
     while (length > 0) {
         offset = (int)(text - start);
         Uint32 c = SDL_StepUTF8(&text, &length);
-        FT_UInt idx = get_char_index(font, c);
+        TTF_Font *glyph_font = font;
+        FT_UInt idx = get_char_index(glyph_font, c);
 
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
@@ -3117,7 +3123,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
             --length;
         }
 #endif
-        if (!Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
+        if (!Find_GlyphByIndex(glyph_font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
             goto failure;
         }
 
@@ -3136,7 +3142,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
 
 #if TTF_USE_HARFBUZZ
         // Compute positions
-        pos_x  = x                     + x_offset;
+        pos_x  = x                         + x_offset;
         pos_y  = y + F26Dot6(font->ascent) - y_offset;
         x     += x_advance + advance_if_bold;
         y     += y_advance;
@@ -3147,7 +3153,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         if (font->use_kerning) {
             if (prev_index && glyph->index) {
                 FT_Vector delta;
-                FT_Get_Kerning(font->face, prev_index, glyph->index, FT_KERNING_UNFITTED, &delta);
+                FT_Get_Kerning(glyph_font->face, prev_index, glyph->index, FT_KERNING_UNFITTED, &delta);
                 x += delta.x;
             }
             prev_index = glyph->index;
@@ -3177,9 +3183,10 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         pos_y = F26Dot6(font->ascent);
 #endif
         // Store things for Render_Line()
+        font->pos_buf[font->pos_len].font   = glyph_font;
+        font->pos_buf[font->pos_len].index  = idx;
         font->pos_buf[font->pos_len].x      = pos_x;
         font->pos_buf[font->pos_len].y      = pos_y;
-        font->pos_buf[font->pos_len].index  = idx;
         font->pos_buf[font->pos_len].offset = offset;
         font->pos_len += 1;
 

@@ -79,7 +79,8 @@ typedef struct TTF_CopyOperation
                                  later. In this case the glyphs and codepoints are grouped
                                  together and the group bounding box is the union of the dst
                                  rectangles for the corresponding glyphs. */
-    Uint32 glyph_index;     /**< The glyph index of the glyph to be drawn, can be passed to TTF_GetGlyphForIndex() */
+    TTF_Font *glyph_font;   /**< The font containing the glyph to be drawn, can be passed to TTF_GetGlyphImageForIndex() */
+    Uint32 glyph_index;     /**< The glyph index of the glyph to be drawn, can be passed to TTF_GetGlyphImageForIndex() */
     SDL_Rect src;           /**< The area within the glyph to be drawn */
     SDL_Rect dst;           /**< The drawing coordinates of the glyph, in pixels. The x coordinate is relative to the left side of the text area, going right, and the y coordinate is relative to the top side of the text area, going down. */
     void *reserved;
