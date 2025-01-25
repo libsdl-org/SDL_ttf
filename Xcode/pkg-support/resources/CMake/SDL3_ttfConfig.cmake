@@ -46,7 +46,7 @@ if(NOT TARGET SDL3_ttf::SDL3_ttf-shared)
     set_target_properties(SDL3_ttf::SDL3_ttf-shared
         PROPERTIES
             FRAMEWORK "TRUE"
-            IMPORTED_LOCATION "${_sdl_ttf_framework_path}"
+            IMPORTED_LOCATION "${_sdl_ttf_framework_path}/SDL3_ttf"
             COMPATIBLE_INTERFACE_BOOL "SDL3_SHARED"
             INTERFACE_SDL3_SHARED "ON"
             COMPATIBLE_INTERFACE_STRING "SDL_VERSION"

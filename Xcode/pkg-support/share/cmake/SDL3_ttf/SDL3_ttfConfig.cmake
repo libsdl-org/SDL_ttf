@@ -107,7 +107,7 @@ if(NOT TARGET SDL3_ttf::SDL3_ttf-shared)
         set_target_properties(SDL3_ttf::SDL3_ttf-shared
             PROPERTIES
                 FRAMEWORK "TRUE"
-                IMPORTED_LOCATION "${_sdl3_ttf_framework_path}"
+                IMPORTED_LOCATION "${_sdl3_ttf_framework_path}/SDL3_ttf"
         )
     endif()
     set_target_properties(SDL3_ttf::SDL3_ttf-shared
