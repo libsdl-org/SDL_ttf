@@ -80,12 +80,12 @@ static TTF_SurfaceTextEngineGlyphData *CreateGlyphData(SDL_Surface *surface)
     return data;
 }
 
-static TTF_SurfaceTextEngineGlyphData *GetGlyphData(TTF_SurfaceTextEngineFontData *fontdata, Uint32 idx)
+static TTF_SurfaceTextEngineGlyphData *GetGlyphData(TTF_SurfaceTextEngineFontData *fontdata, TTF_Font *glyph_font, Uint32 glyph_index)
 {
     TTF_SurfaceTextEngineGlyphData *data;
 
-    if (!SDL_FindInHashTable(fontdata->glyphs, (const void *)(uintptr_t)idx, (const void **)&data)) {
-        SDL_Surface *surface = TTF_GetGlyphImageForIndex(fontdata->font, idx);
+    if (!SDL_FindInHashTable(fontdata->glyphs, (const void *)(uintptr_t)glyph_index, (const void **)&data)) {
+        SDL_Surface *surface = TTF_GetGlyphImageForIndex(glyph_font, glyph_index);
         if (!surface) {
             return NULL;
         }
@@ -95,7 +95,7 @@ static TTF_SurfaceTextEngineGlyphData *GetGlyphData(TTF_SurfaceTextEngineFontDat
             return NULL;
         }
 
-        if (!SDL_InsertIntoHashTable(fontdata->glyphs, (const void *)(uintptr_t)idx, data)) {
+        if (!SDL_InsertIntoHashTable(fontdata->glyphs, (const void *)(uintptr_t)glyph_index, data)) {
             DestroyGlyphData(data);
             return NULL;
         }
@@ -140,7 +140,7 @@ static TTF_SurfaceTextEngineTextData *CreateTextData(TTF_SurfaceTextEngineFontDa
     for (int i = 0; i < data->num_ops; ++i) {
         TTF_DrawOperation *op = &data->ops[i];
         if (op->cmd == TTF_DRAW_COMMAND_COPY) {
-            TTF_SurfaceTextEngineGlyphData *glyph = GetGlyphData(fontdata, op->copy.glyph_index);
+            TTF_SurfaceTextEngineGlyphData *glyph = GetGlyphData(fontdata, op->copy.glyph_font, op->copy.glyph_index);
             if (!glyph) {
                 DestroyTextData(data);
                 return NULL;
