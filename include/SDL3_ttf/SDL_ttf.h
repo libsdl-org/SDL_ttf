@@ -802,108 +802,6 @@ typedef enum TTF_Direction
 } TTF_Direction;
 
 /**
- * Render UTF-8 text at fast quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
- * will be set to the text color.
- *
- * This will not word-wrap the string; you'll get a surface with a single line
- * of text, as long as the string requires. You can use
- * TTF_RenderText_Solid_Wrapped() instead if you need to wrap the output to
- * multiple lines.
- *
- * This will not wrap on newline characters.
- *
- * You can render at other quality levels with TTF_RenderText_Shaded,
- * TTF_RenderText_Blended, and TTF_RenderText_LCD.
- *
- * \param font the font to render with.
- * \param text text to render, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated
- *               text.
- * \param fg the foreground color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \threadsafety This function should be called on the thread that created the
- *               font.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderText_Blended
- * \sa TTF_RenderText_LCD
- * \sa TTF_RenderText_Shaded
- * \sa TTF_RenderText_Solid
- * \sa TTF_RenderText_Solid_Wrapped
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font, const char *text, size_t length, SDL_Color fg);
-
-/**
- * Render word-wrapped UTF-8 text at fast quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
- * will be set to the text color.
- *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
- * it extends beyond `wrapLength` in pixels.
- *
- * If wrapLength is 0, this function will only wrap on newline characters.
- *
- * You can render at other quality levels with TTF_RenderText_Shaded_Wrapped,
- * TTF_RenderText_Blended_Wrapped, and TTF_RenderText_LCD_Wrapped.
- *
- * \param font the font to render with.
- * \param text text to render, in UTF-8 encoding.
- * \param length the length of the text, in bytes, or 0 for null terminated
- *               text.
- * \param fg the foreground color for the text.
- * \param wrapLength the maximum width of the text surface or 0 to wrap on
- *                   newline characters.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \threadsafety This function should be called on the thread that created the
- *               font.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderText_Blended_Wrapped
- * \sa TTF_RenderText_LCD_Wrapped
- * \sa TTF_RenderText_Shaded_Wrapped
- * \sa TTF_RenderText_Solid
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, int wrapLength);
-
-/**
- * Render a single 32-bit glyph at fast quality to a new 8-bit surface.
- *
- * This function will allocate a new 8-bit, palettized surface. The surface's
- * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
- * will be set to the text color.
- *
- * The glyph is rendered without any padding or centering in the X direction,
- * and aligned normally in the Y direction.
- *
- * You can render at other quality levels with TTF_RenderGlyph_Shaded,
- * TTF_RenderGlyph_Blended, and TTF_RenderGlyph_LCD.
- *
- * \param font the font to render with.
- * \param ch the character to render.
- * \param fg the foreground color for the text.
- * \returns a new 8-bit, palettized surface, or NULL if there was an error.
- *
- * \threadsafety This function should be called on the thread that created the
- *               font.
- *
- * \since This function is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_RenderGlyph_Blended
- * \sa TTF_RenderGlyph_LCD
- * \sa TTF_RenderGlyph_Shaded
- */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font, Uint32 ch, SDL_Color fg);
-
-/**
  * Set direction to be used for text shaping by a font.
  *
  * Possible direction values are:
@@ -1187,6 +1085,108 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSizeWrapped(TTF_Font *font, const 
  * \since This function is available since SDL_ttf 3.0.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int max_width, int *measured_width, size_t *measured_length);
+
+/**
+ * Render UTF-8 text at fast quality to a new 8-bit surface.
+ *
+ * This function will allocate a new 8-bit, palettized surface. The surface's
+ * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
+ * will be set to the text color.
+ *
+ * This will not word-wrap the string; you'll get a surface with a single line
+ * of text, as long as the string requires. You can use
+ * TTF_RenderText_Solid_Wrapped() instead if you need to wrap the output to
+ * multiple lines.
+ *
+ * This will not wrap on newline characters.
+ *
+ * You can render at other quality levels with TTF_RenderText_Shaded,
+ * TTF_RenderText_Blended, and TTF_RenderText_LCD.
+ *
+ * \param font the font to render with.
+ * \param text text to render, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
+ * \param fg the foreground color for the text.
+ * \returns a new 8-bit, palettized surface, or NULL if there was an error.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_RenderText_Blended
+ * \sa TTF_RenderText_LCD
+ * \sa TTF_RenderText_Shaded
+ * \sa TTF_RenderText_Solid
+ * \sa TTF_RenderText_Solid_Wrapped
+ */
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font, const char *text, size_t length, SDL_Color fg);
+
+/**
+ * Render word-wrapped UTF-8 text at fast quality to a new 8-bit surface.
+ *
+ * This function will allocate a new 8-bit, palettized surface. The surface's
+ * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
+ * will be set to the text color.
+ *
+ * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * it extends beyond `wrapLength` in pixels.
+ *
+ * If wrapLength is 0, this function will only wrap on newline characters.
+ *
+ * You can render at other quality levels with TTF_RenderText_Shaded_Wrapped,
+ * TTF_RenderText_Blended_Wrapped, and TTF_RenderText_LCD_Wrapped.
+ *
+ * \param font the font to render with.
+ * \param text text to render, in UTF-8 encoding.
+ * \param length the length of the text, in bytes, or 0 for null terminated
+ *               text.
+ * \param fg the foreground color for the text.
+ * \param wrapLength the maximum width of the text surface or 0 to wrap on
+ *                   newline characters.
+ * \returns a new 8-bit, palettized surface, or NULL if there was an error.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_RenderText_Blended_Wrapped
+ * \sa TTF_RenderText_LCD_Wrapped
+ * \sa TTF_RenderText_Shaded_Wrapped
+ * \sa TTF_RenderText_Solid
+ */
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font *font, const char *text, size_t length, SDL_Color fg, int wrapLength);
+
+/**
+ * Render a single 32-bit glyph at fast quality to a new 8-bit surface.
+ *
+ * This function will allocate a new 8-bit, palettized surface. The surface's
+ * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
+ * will be set to the text color.
+ *
+ * The glyph is rendered without any padding or centering in the X direction,
+ * and aligned normally in the Y direction.
+ *
+ * You can render at other quality levels with TTF_RenderGlyph_Shaded,
+ * TTF_RenderGlyph_Blended, and TTF_RenderGlyph_LCD.
+ *
+ * \param font the font to render with.
+ * \param ch the character to render.
+ * \param fg the foreground color for the text.
+ * \returns a new 8-bit, palettized surface, or NULL if there was an error.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_RenderGlyph_Blended
+ * \sa TTF_RenderGlyph_LCD
+ * \sa TTF_RenderGlyph_Shaded
+ */
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font, Uint32 ch, SDL_Color fg);
 
 /**
  * Render UTF-8 text at high quality to a new 8-bit surface.
