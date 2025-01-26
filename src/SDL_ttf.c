@@ -217,13 +217,23 @@ typedef struct cached_glyph {
 
 /* Internal buffer to store positions computed by TTF_Size_Internal()
  * for rendered string by Render_Line() */
-typedef struct PosBuf {
+typedef struct GlyphPosition {
     TTF_Font *font;
     FT_UInt index;
+    int x_offset;
+    int y_offset;
+    int x_advance;
+    int y_advance;
     int x;
     int y;
     int offset;
-} PosBuf_t;
+} GlyphPosition;
+
+typedef struct GlyphPositions {
+    GlyphPosition *pos;
+    int len;
+    int maxlen;
+} GlyphPositions;
 
 // A structure maintaining a list of fonts
 typedef struct TTF_FontList {
@@ -285,9 +295,7 @@ struct TTF_Font {
 
     /* Internal buffer to store positions computed by TTF_Size_Internal()
      * for rendered string by Render_Line() */
-    PosBuf_t *pos_buf;
-    int pos_len;
-    int pos_max;
+    GlyphPositions positions;
     int num_clusters;
 
     // Hinting modes
@@ -1183,11 +1191,12 @@ static bool Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart,
     const int bpp = ((IS_BLENDED || IS_LCD) ? 4 : 1);                                                                   \
     int i;                                                                                                              \
     Uint8 fg_alpha = (fg ? fg->a : 0);                                                                                  \
-    for (i = 0; i < font->pos_len; i++) {                                                                               \
-        TTF_Font *glyph_font = font->pos_buf[i].font;                                                                   \
-        FT_UInt idx = font->pos_buf[i].index;                                                                           \
-        int x = font->pos_buf[i].x;                                                                                     \
-        int y = font->pos_buf[i].y;                                                                                     \
+    for (i = 0; i < font->positions.len; i++) {                                                                         \
+        GlyphPosition *pos = &font->positions.pos[i];                                                                   \
+        TTF_Font *glyph_font = pos->font;                                                                               \
+        FT_UInt idx = pos->index;                                                                                       \
+        int x = pos->x;                                                                                                 \
+        int y = pos->y;                                                                                                 \
         TTF_Image *image;                                                                                               \
                                                                                                                         \
         if (Find_GlyphByIndex(glyph_font, idx, WB_WP_WC, WS, x & 63, NULL, &image)) {                                   \
@@ -1370,7 +1379,7 @@ static int (*Render_Line_SDF_LCD_SP)(TTF_Font *font, SDL_Surface *textbuf, int x
 
 static bool Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color fg)
 {
-    // Render line (pos_buf) to textbuf at (xstart, ystart)
+    // Render line (positions) to textbuf at (xstart, ystart)
 
     // Subpixel with RENDER_SOLID doesn't make sense.
     // (and 'cached->subpixel.translation' would need to distinguish bitmap/pixmap).
@@ -1446,12 +1455,13 @@ static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int w
     bounds.w = 0;
     bounds.h = font->height;
 
-    for (i = 0; i < font->pos_len; i++) {
-        TTF_Font *glyph_font = font->pos_buf[i].font;
-        FT_UInt idx = font->pos_buf[i].index;
-        int x = font->pos_buf[i].x;
-        int y = font->pos_buf[i].y;
-        int offset = font->pos_buf[i].offset;
+    for (i = 0; i < font->positions.len; i++) {
+        GlyphPosition *pos = &font->positions.pos[i];
+        TTF_Font *glyph_font = pos->font;
+        FT_UInt idx = pos->index;
+        int x = pos->x;
+        int y = pos->y;
+        int offset = pos->offset;
         c_glyph *glyph;
 
         if (Find_GlyphByIndex(glyph_font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
@@ -1505,7 +1515,7 @@ static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int w
                 op->copy.dst.h = op->copy.src.h;
             } else {
                 // Use the distance to the next glyph as our bounds width
-                glyph_width = FT_FLOOR(glyph->advance);
+                glyph_width = FT_FLOOR(pos->x_advance);
             }
 
             bounds.x = x;
@@ -2049,15 +2059,6 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     font->outline = 0;
     font->ft_load_target = FT_LOAD_TARGET_NORMAL;
     TTF_SetFontKerning(font, true);
-
-    font->pos_len = 0;
-    font->pos_max = 16;
-    font->pos_buf = (PosBuf_t *)SDL_malloc(font->pos_max * sizeof (font->pos_buf[0]));
-    if (!font->pos_buf) {
-        SDL_SetError("Out of memory");
-        TTF_CloseFont(font);
-        return NULL;
-    }
 
 #if TTF_USE_HARFBUZZ
     font->hb_font = hb_ft_font_create(face, NULL);
@@ -3134,30 +3135,264 @@ bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *ker
     return true;
 }
 
+static bool TTF_CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions)
+{
+#if TTF_USE_HARFBUZZ
+    // Create a buffer for harfbuzz to use
+    hb_buffer_t *hb_buffer = hb_buffer_create();
+    if (!hb_buffer) {
+        SDL_SetError("Cannot create harfbuzz buffer");
+        return false;
+    }
+
+    // Set global configuration
+    hb_buffer_set_language(hb_buffer, font->hb_language);
+    hb_buffer_set_direction(hb_buffer, font->hb_direction);
+    hb_buffer_set_script(hb_buffer, font->hb_script);
+    hb_buffer_guess_segment_properties(hb_buffer);
+
+    // Layout the text
+    hb_buffer_add_utf8(hb_buffer, text, (int)length, 0, -1);
+
+    hb_feature_t userfeatures[1];
+    userfeatures[0].tag = HB_TAG('k','e','r','n');
+    userfeatures[0].value = font->enable_kerning;
+    userfeatures[0].start = HB_FEATURE_GLOBAL_START;
+    userfeatures[0].end = HB_FEATURE_GLOBAL_END;
+
+    hb_shape(font->hb_font, hb_buffer, userfeatures, 1);
+
+    // Get the result
+    unsigned int glyph_count_u = 0;
+    hb_glyph_info_t *hb_glyph_info = hb_buffer_get_glyph_infos(hb_buffer, &glyph_count_u);
+    hb_glyph_position_t *hb_glyph_position = hb_buffer_get_glyph_positions(hb_buffer, &glyph_count_u);
+
+    // Adjust for bold text
+    int advance_if_bold = 0;
+    if (TTF_HANDLE_STYLE_BOLD(font)) {
+        advance_if_bold = F26Dot6(font->glyph_overhang);
+    }
+
+    // Realloc, if needed
+    int glyph_count = (int)glyph_count_u;
+    if (glyph_count > positions->maxlen) {
+        GlyphPosition *saved = positions->pos;
+        positions->pos = (GlyphPosition *)SDL_realloc(positions->pos, glyph_count * sizeof(*positions->pos));
+        if (positions->pos) {
+            positions->maxlen = glyph_count;
+        } else {
+            positions->pos = saved;
+            hb_buffer_destroy(hb_buffer);
+            return false;
+        }
+    }
+    positions->len = glyph_count;
+
+    for (int i = 0; i < glyph_count; ++i) {
+        GlyphPosition *pos = &positions->pos[i];
+        pos->font = font;
+        pos->index = hb_glyph_info[i].codepoint;
+        pos->x_advance = hb_glyph_position[i].x_advance + advance_if_bold;
+        pos->y_advance = hb_glyph_position[i].y_advance;
+        pos->x_offset = hb_glyph_position[i].x_offset;
+        pos->y_offset = hb_glyph_position[i].y_offset;
+        pos->offset = (int)hb_glyph_info[i].cluster;
+    }
+    hb_buffer_destroy(hb_buffer);
+
+#else
+    bool skip_first = true;
+    FT_UInt prev_index = 0;
+    FT_Pos  prev_delta = 0;
+
+    positions->len = 0;
+
+    // Load each character and sum it's bounding box
+    const char *start = text;
+    int offset = 0;
+    while (length > 0) {
+        offset = (int)(text - start);
+        Uint32 c = SDL_StepUTF8(&text, &length);
+        if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
+            continue;
+        }
+
+        if (c == 0 && length > 0) {
+            --length;
+        }
+
+        FT_UInt idx = get_char_index(font, c);
+        c_glyph *glyph = NULL;
+        if (!Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
+            return SDL_SetError("Couldn't find glyph %u in font", idx);
+        }
+
+        // Realloc, if needed
+        if (positions->len >= positions->maxlen) {
+            GlyphPosition *saved = positions->pos;
+            int maxlen = (positions->maxlen ? positions->maxlen * 2 : 16);
+            positions->pos = (GlyphPosition *)SDL_realloc(positions->pos, maxlen * sizeof(*positions->pos));
+            if (positions->pos) {
+                positions->maxlen = maxlen;
+            } else {
+                positions->pos = saved;
+                return false;
+            }
+        }
+
+        // Compute positions
+        GlyphPosition *pos = &positions->pos[positions->len++];
+        pos->font = font;
+        pos->index = idx;
+        pos->offset = offset;
+        pos->x_advance = glyph->advance;
+        pos->y_advance = 0;
+        pos->x_offset = 0;
+        pos->y_offset = 0;
+        if (font->use_kerning) {
+            if (prev_index && glyph->index) {
+                FT_Vector delta;
+                FT_Get_Kerning(font->face, prev_index, glyph->index, FT_KERNING_UNFITTED, &delta);
+                pos->x_offset += delta.x;
+            }
+            prev_index = glyph->index;
+        }
+        // FT SUBPIXEL : LCD_MODE_LIGHT_SUBPIXEL
+        if (font->render_subpixel) {
+            // Increment by prev_glyph->lsb_delta - prev_glyph->rsb_delta;
+            pos->x_advance += glyph->subpixel.lsb_minus_rsb;
+        } else {
+            // FT KERNING_MODE_SMART: Use `lsb_delta' and `rsb_delta' to improve integer positioning of glyphs
+            if (skip_first) {
+                skip_first = false;
+            } else {
+                if (prev_delta - glyph->kerning_smart.lsb_delta >  32 ) {
+                    pos->x_offset -= 64;
+                } else if (prev_delta - glyph->kerning_smart.lsb_delta < -31 ) {
+                    pos->x_offset += 64;
+                }
+            }
+            prev_delta = glyph->kerning_smart.rsb_delta;
+            pos->x_offset = ((pos->x_offset + 32) & -64); // ROUND()
+        }
+    }
+#endif
+
+    return true;
+}
+
+static bool ReplaceGlyphPositions(GlyphPositions *positions, int start, int length, GlyphPositions *replacement)
+{
+    int initial_offset = positions->pos[start].offset;
+
+    int length_delta = (replacement->len - length);
+    if (length_delta != 0) {
+        int newlen = (positions->len + length_delta);
+        if (newlen > positions->maxlen) {
+            GlyphPosition *pos = SDL_realloc(positions->pos, newlen * sizeof(*pos));
+            if (!pos) {
+                return false;
+            }
+            positions->pos = pos;
+            positions->maxlen = newlen;
+        }
+
+        int remainder = positions->len - (start + length);
+        if (remainder > 0) {
+            SDL_memmove(&positions->pos[start + replacement->len], &positions->pos[start + length], (remainder * sizeof(*positions->pos)));
+        }
+        positions->len = newlen;
+    }
+
+    SDL_memcpy(&positions->pos[start], replacement->pos, length * sizeof(*positions->pos));
+
+    for (int i = 0; i < replacement->len; ++i) {
+        positions->pos[start + i].offset += initial_offset;
+    }
+    return true;
+}
+
+static bool TTF_CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions, TTF_Font *initial_font)
+{
+    if (!initial_font) {
+        initial_font = font;
+    } else if (font == initial_font) {
+        // font fallback loop
+        return true;
+    }
+
+    if (!TTF_CollectGlyphsFromFont(font, text, length, positions)) {
+        return false;
+    }
+
+    // Create spans of missing characters and fill them in from fallback fonts
+    bool complete = false;
+    TTF_FontList *fallback = font->fallbacks;
+    while (!complete && fallback) {
+        complete = true;
+        int start = -1;
+        for (int i = 0; i < positions->len; ++i) {
+            GlyphPosition *pos = &positions->pos[i];
+            if (pos->index == 0) {
+                complete = false;
+                if (start < 0) {
+                    start = i;
+                }
+            } else if (start >= 0) {
+                // Fill in this span with the fallback font
+                GlyphPositions span;
+                SDL_zero(span);
+                int span_offset = positions->pos[start].offset;
+                int span_length = pos->offset - span_offset;
+                TTF_CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, &span, initial_font);
+                if (span.len > 0) {
+                    ReplaceGlyphPositions(positions, start, (i - start), &span);
+                    SDL_free(span.pos);
+                    i = start + span.len;
+                }
+                start = -1;
+            }
+        }
+        if (start >= 0) {
+            // Fill in this span with the fallback font
+            GlyphPositions span;
+            SDL_zero(span);
+            int span_offset = positions->pos[start].offset;
+            int span_length = (int)(length - span_offset);
+            TTF_CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, &span, initial_font);
+            if (span.len > 0) {
+                ReplaceGlyphPositions(positions, start, (positions->len - start), &span);
+                SDL_free(span.pos);
+            }
+        }
+        fallback = fallback->next;
+    }
+
+    return true;
+}
+
+static bool TTF_CollectGlyphs(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions)
+{
+    if (!TTF_CollectGlyphsWithFallbacks(font, text, length, positions, NULL)) {
+        return false;
+    }
+
+    // Make sure any missing characters use the tofu from the initial font
+    for (int i = 0; i < positions->len; ++i) {
+        GlyphPosition *pos = &positions->pos[i];
+        if (pos->index == 0) {
+            pos->font = font;
+        }
+    }
+    return true;
+}
+
 static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, int *w, int *h, int *xstart, int *ystart, bool measure_width, int max_width, int *measured_width, size_t *measured_length)
 {
-    int x = 0;
+    int x = 0, y = 0;
     int pos_x, pos_y;
     int minx = 0, maxx = 0;
     int miny = 0, maxy = 0;
-    c_glyph *glyph;
-#if TTF_USE_HARFBUZZ
-    hb_direction_t hb_direction;
-    hb_script_t hb_script;
-    hb_buffer_t *hb_buffer = NULL;
-    unsigned int g;
-    unsigned int glyph_count;
-    hb_glyph_info_t *hb_glyph_info;
-    hb_glyph_position_t *hb_glyph_position;
-    int y = 0;
-    int advance_if_bold = 0;
-#else
-    int skip_first = 1;
-    TTF_Font *prev_font = NULL;
-    FT_UInt prev_index = 0;
-    FT_Pos  prev_delta = 0;
-#endif
-    int prev_advance = 0;
 
     if (w) {
         *w = 0;
@@ -3183,151 +3418,39 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
     maxy = font->height;
 
     // Reset buffer
-    font->pos_len = 0;
     font->num_clusters = 0;
 
+    GlyphPositions *positions = &font->positions;
+    if (!TTF_CollectGlyphs(font, text, length, positions)) {
+        return false;
+    }
+
     int last_offset = -1;
+    for (int i = 0; i < positions->len; ++i) {
+        GlyphPosition *pos = &positions->pos[i];
 
-#if TTF_USE_HARFBUZZ
-
-    // Adjust for bold text
-    if (TTF_HANDLE_STYLE_BOLD(font)) {
-        advance_if_bold = F26Dot6(font->glyph_overhang);
-    }
-
-    // Create a buffer for harfbuzz to use
-    hb_buffer = hb_buffer_create();
-    if (hb_buffer == NULL) {
-       SDL_SetError("Cannot create harfbuzz buffer");
-       goto failure;
-    }
-
-
-    hb_direction = font->hb_direction;
-    hb_script = font->hb_script;
-
-    // Set global configuration
-    hb_buffer_set_language(hb_buffer, font->hb_language);
-    hb_buffer_set_direction(hb_buffer, hb_direction);
-    hb_buffer_set_script(hb_buffer, hb_script);
-    hb_buffer_guess_segment_properties(hb_buffer);
-
-    // Layout the text
-    hb_buffer_add_utf8(hb_buffer, text, (int)length, 0, -1);
-
-    hb_feature_t userfeatures[1];
-    userfeatures[0].tag = HB_TAG('k','e','r','n');
-    userfeatures[0].value = font->enable_kerning;
-    userfeatures[0].start = HB_FEATURE_GLOBAL_START;
-    userfeatures[0].end = HB_FEATURE_GLOBAL_END;
-
-    hb_shape(font->hb_font, hb_buffer, userfeatures, 1);
-
-    // Get the result
-    hb_glyph_info = hb_buffer_get_glyph_infos(hb_buffer, &glyph_count);
-    hb_glyph_position = hb_buffer_get_glyph_positions(hb_buffer, &glyph_count);
-
-    // Load and render each character
-    int offset = 0;
-    for (g = 0; g < glyph_count; g++) {
-        TTF_Font *glyph_font = font;
-        FT_UInt idx   = hb_glyph_info[g].codepoint;
-        int x_advance = hb_glyph_position[g].x_advance;
-        int y_advance = hb_glyph_position[g].y_advance;
-        int x_offset  = hb_glyph_position[g].x_offset;
-        int y_offset  = hb_glyph_position[g].y_offset;
-
-        offset = (int)hb_glyph_info[g].cluster;
-#else
-    // Load each character and sum it's bounding box
-    const char *start = text;
-    int offset = 0;
-    while (length > 0) {
-        offset = (int)(text - start);
-        Uint32 c = SDL_StepUTF8(&text, &length);
-        TTF_Font *glyph_font = font;
-        FT_UInt idx = get_char_index_fallback(font, c, NULL, &glyph_font);
-
-        if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
-            continue;
+        c_glyph *glyph = NULL;
+        if (!Find_GlyphByIndex(pos->font, pos->index, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
+            return SDL_SetError("Couldn't find glyph %u in font", pos->index);
         }
 
-        if (c == 0 && length > 0) {
-            --length;
-        }
-#endif
-        if (!Find_GlyphByIndex(glyph_font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
-            goto failure;
-        }
-
-        // Realloc, if needed
-        if (font->pos_len >= font->pos_max) {
-            PosBuf_t *saved = font->pos_buf;
-            font->pos_max *= 2;
-            font->pos_buf = (PosBuf_t *)SDL_realloc(font->pos_buf, font->pos_max * sizeof (font->pos_buf[0]));
-            if (font->pos_buf == NULL) {
-                font->pos_max /= 2;
-                font->pos_buf = saved;
-                SDL_SetError("Out of memory");
-                goto failure;
-            }
-        }
-
-#if TTF_USE_HARFBUZZ
         // Compute positions
-        pos_x  = x                         + x_offset;
-        pos_y  = y + F26Dot6(font->ascent) - y_offset;
-        x     += x_advance + advance_if_bold;
-        y     += y_advance;
-#else
-        // Compute positions
-        x += prev_advance;
-        prev_advance = glyph->advance;
-        if (font->use_kerning) {
-            if (prev_font == glyph_font && prev_index && glyph->index) {
-                FT_Vector delta;
-                FT_Get_Kerning(glyph_font->face, prev_index, glyph->index, FT_KERNING_UNFITTED, &delta);
-                x += delta.x;
-            }
-            prev_font = glyph_font;
-            prev_index = glyph->index;
-        }
-        // FT SUBPIXEL : LCD_MODE_LIGHT_SUBPIXEL
-        if (font->render_subpixel) {
-            x += prev_delta;
-            // Increment by prev_glyph->lsb_delta - prev_glyph->rsb_delta;
-            prev_delta = glyph->subpixel.lsb_minus_rsb;
-        } else {
-            // FT KERNING_MODE_SMART: Use `lsb_delta' and `rsb_delta' to improve integer positioning of glyphs
-            if (skip_first) {
-                skip_first = 0;
-            } else {
-                if (prev_delta - glyph->kerning_smart.lsb_delta >  32 ) {
-                    x -= 64;
-                } else if (prev_delta - glyph->kerning_smart.lsb_delta < -31 ) {
-                    x += 64;
-                }
-            }
-            prev_delta = glyph->kerning_smart.rsb_delta;
+        pos_x = x + pos->x_offset;
+        pos_y = y + F26Dot6(font->ascent) - pos->y_offset;
+        x += pos->x_advance;
+        y += pos->y_advance;
+#if !TTF_USE_HARFBUZZ
+        if (!font->render_subpixel) {
             x = ((x + 32) & -64); // ROUND()
         }
-
-        // Compute positions where to copy the glyph bitmap
-        pos_x = x;
-        pos_y = F26Dot6(font->ascent);
 #endif
-        // Store things for Render_Line()
-        font->pos_buf[font->pos_len].font   = glyph_font;
-        font->pos_buf[font->pos_len].index  = idx;
-        font->pos_buf[font->pos_len].x      = pos_x;
-        font->pos_buf[font->pos_len].y      = pos_y;
-        font->pos_buf[font->pos_len].offset = offset;
-        font->pos_len += 1;
+        pos->x = pos_x;
+        pos->y = pos_y;
 
         // Save the number of clusters we've seen
-        if (offset != last_offset) {
+        if (pos->offset != last_offset) {
             ++font->num_clusters;
-            last_offset = offset;
+            last_offset = pos->offset;
         }
 
         // Compute provisional global bounding box
@@ -3341,7 +3464,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
 
         // Measurement mode
         if (measure_width) {
-            int cw = SDL_max(maxx, FT_FLOOR(x + prev_advance)) - minx;
+            int cw = SDL_max(maxx, FT_FLOOR(x)) - minx;
             cw += 2 * font->outline;
             if (!max_width || cw <= max_width) {
                 if (measured_width) {
@@ -3349,15 +3472,18 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
                 }
             } else {
                 if (measured_length) {
-                    *measured_length = (size_t)offset;
+                    *measured_length = (size_t)pos->offset;
                 }
+
+                // Truncate glyph positions
+                positions->len = (i + 1);
                 break;
             }
         }
     }
 
     // Allows to render a string with only one space (bug 4344).
-    maxx = SDL_max(maxx, FT_FLOOR(x + prev_advance));
+    maxx = SDL_max(maxx, FT_FLOOR(x));
 
     /* Initial x start position: often 0, except when a glyph would be written at
      * a negative position. In this case an offset is needed for the whole line. */
@@ -3389,21 +3515,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         *h = (maxy - miny);
         *h += 2 * font->outline;
     }
-
-#if TTF_USE_HARFBUZZ
-    if (hb_buffer) {
-        hb_buffer_destroy(hb_buffer);
-    }
-#endif
     return true;
-
-failure:
-#if TTF_USE_HARFBUZZ
-    if (hb_buffer) {
-        hb_buffer_destroy(hb_buffer);
-    }
-#endif
-    return false;
 }
 
 bool TTF_GetStringSize(TTF_Font *font, const char *text, size_t length, int *w, int *h)
@@ -4123,7 +4235,7 @@ static bool LayoutText(TTF_Text *text)
         }
 
         // Allocate space for the operations on this line
-        additional_ops = (font->pos_len + extra_ops);
+        additional_ops = (font->positions.len + extra_ops);
         new_ops = (TTF_DrawOperation *)SDL_realloc(ops, (max_ops + additional_ops) * sizeof(*new_ops));
         if (!new_ops) {
             goto done;
@@ -5629,8 +5741,8 @@ void TTF_CloseFont(TTF_Font *font)
     if (font->closeio) {
         SDL_CloseIO(font->src);
     }
-    if (font->pos_buf) {
-        SDL_free(font->pos_buf);
+    if (font->positions.pos) {
+        SDL_free(font->positions.pos);
     }
     SDL_free(font);
 }
