@@ -274,6 +274,65 @@ extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetFontProperties(TTF_Font *fon
 extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetFontGeneration(TTF_Font *font);
 
 /**
+ * Add a fallback font.
+ *
+ * Add a font that will be used for glyphs that are not in the current font. The fallback font should have the same size and style as the current font.
+ *
+ * If there are multiple fallback fonts, they are used in the order added.
+ *
+ * This updates any TTF_Text objects using this font.
+ *
+ * \param font the font to modify.
+ * \param fallback the font to add as a fallback.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created both
+ *               fonts.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_ClearFallbackFonts
+ * \sa TTF_RemoveFallbackFont
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_AddFallbackFont(TTF_Font *font, TTF_Font *fallback);
+
+/**
+ * Remove a fallback font.
+ *
+ * This updates any TTF_Text objects using this font.
+ *
+ * \param font the font to modify.
+ * \param fallback the font to remove as a fallback.
+ *
+ * \threadsafety This function should be called on the thread that created both
+ *               fonts.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_AddFallbackFont
+ * \sa TTF_ClearFallbackFonts
+ */
+extern SDL_DECLSPEC void SDLCALL TTF_RemoveFallbackFont(TTF_Font *font, TTF_Font *fallback);
+
+/**
+ * Remove all fallback fonts.
+ *
+ * This updates any TTF_Text objects using this font.
+ *
+ * \param font the font to modify.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_AddFallbackFont
+ * \sa TTF_RemoveFallbackFont
+ */
+extern SDL_DECLSPEC void SDLCALL TTF_ClearFallbackFonts(TTF_Font *font);
+
+/**
  * Set a font's size dynamically.
  *
  * This updates any TTF_Text objects using this font, and clears

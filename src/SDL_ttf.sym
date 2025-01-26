@@ -1,6 +1,8 @@
 SDL3_ttf_0.0.0 {
   global:
+    TTF_AddFallbackFont;
     TTF_AppendTextString;
+    TTF_ClearFallbackFonts;
     TTF_CloseFont;
     TTF_CreateGPUTextEngine;
     TTF_CreateRendererTextEngine;
@@ -64,6 +66,7 @@ SDL3_ttf_0.0.0 {
     TTF_OpenFontIO;
     TTF_OpenFontWithProperties;
     TTF_Quit;
+    TTF_RemoveFallbackFont;
     TTF_RenderGlyph_Blended;
     TTF_RenderGlyph_LCD;
     TTF_RenderGlyph_Shaded;

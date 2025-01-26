@@ -225,6 +225,12 @@ typedef struct PosBuf {
     int offset;
 } PosBuf_t;
 
+// A structure maintaining a list of fonts
+typedef struct TTF_FontList {
+    TTF_Font *font;
+    struct TTF_FontList *next;
+} TTF_FontList;
+
 // The structure used to hold internal font information
 struct TTF_Font {
     // Freetype2 maintains all sorts of useful info itself
@@ -299,6 +305,10 @@ struct TTF_Font {
 
     // Extra layout setting for wrapped text
     TTF_HorizontalAlignment horizontal_align;
+
+    // Fallback fonts
+    TTF_FontList *fallbacks;
+    TTF_FontList *fallback_for;
 };
 
 typedef struct
@@ -2113,16 +2123,25 @@ static bool RemoveFontTextReference(TTF_Font *font, TTF_Text *text)
     return SDL_RemoveFromHashTable(font->text, text);
 }
 
-static void UpdateFontText(TTF_Font *font)
+static void UpdateFontText(TTF_Font *font, TTF_Font *initial_font)
 {
-    if (!font->text) {
+    if (!initial_font) {
+        initial_font = font;
+    } else if (font == initial_font) {
+        // font fallback loop
         return;
     }
 
-    TTF_Text *text = NULL;
-    void *iter = NULL;
-    while (SDL_IterateHashTable(font->text, (const void **)&text, NULL, &iter)) {
-        text->internal->needs_layout_update = true;
+    if (font->text) {
+        TTF_Text *text = NULL;
+        void *iter = NULL;
+        while (SDL_IterateHashTable(font->text, (const void **)&text, NULL, &iter)) {
+            text->internal->needs_layout_update = true;
+        }
+    }
+
+    for (TTF_FontList *list = font->fallback_for; list; list = list->next) {
+        UpdateFontText(list->font, initial_font);
     }
 }
 
@@ -2141,6 +2160,91 @@ Uint32 TTF_GetFontGeneration(TTF_Font *font)
     TTF_CHECK_FONT(font, 0);
 
     return font->generation;
+}
+
+bool TTF_AddFallbackFont(TTF_Font *font, TTF_Font *fallback)
+{
+    TTF_CHECK_FONT(font, false);
+    TTF_CHECK_POINTER("fallback", fallback, false);
+
+    TTF_FontList *fallback_entry = (TTF_FontList *)SDL_calloc(1, sizeof(*fallback_entry));
+    TTF_FontList *fallback_for_entry = (TTF_FontList *)SDL_calloc(1, sizeof(*fallback_entry));
+    if (!fallback_entry || !fallback_for_entry) {
+        SDL_free(fallback_entry);
+        SDL_free(fallback_for_entry);
+        return false;
+    }
+
+    TTF_FontList *prev = NULL;
+    for (TTF_FontList *list = font->fallbacks; list; prev = list, list = list->next) {
+        continue;
+    }
+    fallback_entry->font = fallback;
+    if (prev) {
+        prev->next = fallback_entry;
+    } else {
+        font->fallbacks = fallback_entry;
+    }
+
+    prev = NULL;
+    for (TTF_FontList *list = fallback->fallback_for; list; prev = list, list = list->next) {
+        continue;
+    }
+    fallback_for_entry->font = font;
+    if (prev) {
+        prev->next = fallback_for_entry;
+    } else {
+        fallback->fallback_for = fallback_for_entry;
+    }
+
+    UpdateFontText(font, NULL);
+    return true;
+}
+
+void TTF_RemoveFallbackFont(TTF_Font *font, TTF_Font *fallback)
+{
+    if (!font || !fallback) {
+        return;
+    }
+
+    TTF_FontList *prev = NULL;
+    for (TTF_FontList *list = font->fallbacks; list; prev = list, list = list->next) {
+        if (fallback == list->font) {
+            if (prev) {
+                prev->next = list->next;
+            } else {
+                font->fallbacks = list->next;
+            }
+            SDL_free(list);
+            break;
+        }
+    }
+
+    prev = NULL;
+    for (TTF_FontList *list = fallback->fallback_for; list; prev = list, list = list->next) {
+        if (font == list->font) {
+            if (prev) {
+                prev->next = list->next;
+            } else {
+                fallback->fallback_for = list->next;
+            }
+            SDL_free(list);
+            break;
+        }
+    }
+
+    UpdateFontText(font, NULL);
+}
+
+void TTF_ClearFallbackFonts(TTF_Font *font)
+{
+    if (!font) {
+        return;
+    }
+
+    while (font->fallbacks) {
+        TTF_RemoveFallbackFont(font, font->fallbacks->font);
+    }
 }
 
 // Update font parameter depending on a style change
@@ -2853,20 +2957,52 @@ static FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
     return FT_Get_Char_Index(font->face, ch);
 }
 
+static FT_UInt get_char_index_fallback(TTF_Font *font, Uint32 ch, TTF_Font *initial_font, TTF_Font **glyph_font)
+{
+    if (!initial_font) {
+        initial_font = font;
+    } else if (font == initial_font) {
+        // font fallback loop
+        return 0;
+    }
 
-static bool Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out_glyph)
+    FT_UInt idx = get_char_index(font, ch);
+    if (idx > 0) {
+        if (glyph_font) {
+            *glyph_font = font;
+        }
+    } else {
+        for (TTF_FontList *list = font->fallbacks; list; list = list->next) {
+            idx = get_char_index_fallback(list->font, ch, initial_font, glyph_font);
+            if (idx > 0) {
+                break;
+            }
+        }
+    }
+    return idx;
+}
+
+
+
+static bool Find_GlyphMetrics(TTF_Font *font, Uint32 ch, c_glyph **out_glyph, bool allow_fallback)
 {
     TTF_CHECK_FONT(font, false);
 
-    FT_UInt idx = get_char_index(font, ch);
-    return Find_GlyphByIndex(font, idx, 0, 0, 0, 0, 0, 0, out_glyph, NULL);
+    TTF_Font *glyph_font = font;
+    FT_UInt idx;
+    if (allow_fallback) {
+        idx = get_char_index_fallback(font, ch, NULL, &glyph_font);
+    } else {
+        idx = get_char_index(font, ch);
+    }
+    return Find_GlyphByIndex(glyph_font, idx, 0, 0, 0, 0, 0, 0, out_glyph, NULL);
 }
 
 bool TTF_FontHasGlyph(TTF_Font *font, Uint32 ch)
 {
     TTF_CHECK_FONT(font, false);
 
-    return (get_char_index(font, ch) > 0);
+    return (get_char_index_fallback(font, ch, NULL, NULL) > 0);
 }
 
 SDL_Surface *TTF_GetGlyphImage(TTF_Font *font, Uint32 ch)
@@ -2875,13 +3011,14 @@ SDL_Surface *TTF_GetGlyphImage(TTF_Font *font, Uint32 ch)
 
     TTF_CHECK_FONT(font, NULL);
 
-    idx = get_char_index(font, ch);
+    TTF_Font *glyph_font = NULL;
+    idx = get_char_index_fallback(font, ch, NULL, &glyph_font);
     if (idx == 0) {
         SDL_SetError("Codepoint not in font");
         return NULL;
     }
 
-    return TTF_GetGlyphImageForIndex(font, idx);
+    return TTF_GetGlyphImageForIndex(glyph_font, idx);
 }
 
 SDL_Surface *TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index)
@@ -2939,7 +3076,7 @@ bool TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *m
 
     TTF_CHECK_FONT(font, false);
 
-    if (!Find_GlyphMetrics(font, ch, &glyph)) {
+    if (!Find_GlyphMetrics(font, ch, &glyph, true)) {
         return false;
     }
 
@@ -2983,21 +3120,16 @@ bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *ker
         return true;
     }
 
-    if (!Find_GlyphMetrics(font, ch, &glyph)) {
-        return false;
-    }
+    if (Find_GlyphMetrics(font, ch, &glyph, false) &&
+        Find_GlyphMetrics(font, previous_ch, &prev_glyph, false)) {
+        error = FT_Get_Kerning(font->face, prev_glyph->index, glyph->index, FT_KERNING_DEFAULT, &delta);
+        if (error) {
+            return TTF_SetFTError("Couldn't get glyph kerning", error);
+        }
 
-    if (!Find_GlyphMetrics(font, previous_ch, &prev_glyph)) {
-        return false;
-    }
-
-    error = FT_Get_Kerning(font->face, prev_glyph->index, glyph->index, FT_KERNING_DEFAULT, &delta);
-    if (error) {
-        return TTF_SetFTError("Couldn't get glyph kerning", error);
-    }
-
-    if (kerning) {
-        *kerning = (int)(delta.x >> 6);
+        if (kerning) {
+            *kerning = (int)(delta.x >> 6);
+        }
     }
     return true;
 }
@@ -3021,6 +3153,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
     int advance_if_bold = 0;
 #else
     int skip_first = 1;
+    TTF_Font *prev_font = NULL;
     FT_UInt prev_index = 0;
     FT_Pos  prev_delta = 0;
 #endif
@@ -3113,7 +3246,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         offset = (int)(text - start);
         Uint32 c = SDL_StepUTF8(&text, &length);
         TTF_Font *glyph_font = font;
-        FT_UInt idx = get_char_index(glyph_font, c);
+        FT_UInt idx = get_char_index_fallback(font, c, NULL, &glyph_font);
 
         if (c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
             continue;
@@ -3151,11 +3284,12 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
         x += prev_advance;
         prev_advance = glyph->advance;
         if (font->use_kerning) {
-            if (prev_index && glyph->index) {
+            if (prev_font == glyph_font && prev_index && glyph->index) {
                 FT_Vector delta;
                 FT_Get_Kerning(glyph_font->face, prev_index, glyph->index, FT_KERNING_UNFITTED, &delta);
                 x += delta.x;
             }
+            prev_font = glyph_font;
             prev_index = glyph->index;
         }
         // FT SUBPIXEL : LCD_MODE_LIGHT_SUBPIXEL
@@ -4957,7 +5091,7 @@ bool TTF_SetFontSizeDPI(TTF_Font *font, float ptsize, int hdpi, int vdpi)
     font->vdpi = vdpi;
 
     Flush_Cache(font);
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
 
 #if TTF_USE_HARFBUZZ
     // Call when size or variations settings on underlying FT_Face change.
@@ -5024,7 +5158,7 @@ void TTF_SetFontStyle(TTF_Font *font, TTF_FontStyleFlags style)
     if ((font->style | TTF_STYLE_NO_GLYPH_CHANGE) != (prev_style | TTF_STYLE_NO_GLYPH_CHANGE)) {
         Flush_Cache(font);
     }
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
 }
 
 TTF_FontStyleFlags TTF_GetFontStyle(const TTF_Font *font)
@@ -5086,7 +5220,7 @@ bool TTF_SetFontOutline(TTF_Font *font, int outline)
 
     TTF_InitFontMetrics(font);
     Flush_Cache(font);
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
 
     return true;
 }
@@ -5127,7 +5261,7 @@ void TTF_SetFontHinting(TTF_Font *font, TTF_HintingFlags hinting)
 #endif
 
     Flush_Cache(font);
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
 }
 
 TTF_HintingFlags TTF_GetFontHinting(const TTF_Font *font)
@@ -5154,7 +5288,7 @@ bool TTF_SetFontSDF(TTF_Font *font, bool enabled)
 #if TTF_USE_SDF
     font->render_sdf = enabled;
     Flush_Cache(font);
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
     return true;
 #else
     (void)enabled;
@@ -5187,7 +5321,7 @@ void TTF_SetFontWrapAlignment(TTF_Font *font, TTF_HorizontalAlignment align)
         // Ignore invalid values
         break;
     }
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
 }
 
 TTF_HorizontalAlignment TTF_GetFontWrapAlignment(const TTF_Font *font)
@@ -5227,7 +5361,7 @@ void TTF_SetFontLineSkip(TTF_Font *font, int lineskip)
     }
 
     font->lineskip = lineskip;
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
 }
 
 int TTF_GetFontLineSkip(const TTF_Font *font)
@@ -5251,7 +5385,7 @@ void TTF_SetFontKerning(TTF_Font *font, bool enabled)
 #else
     font->use_kerning   = enabled && FT_HAS_KERNING(font->face);
 #endif
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
 }
 
 bool TTF_GetFontKerning(const TTF_Font *font)
@@ -5319,7 +5453,7 @@ bool TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
     }
 
     font->hb_direction = hb_direction;
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
     return true;
 #else
     (void) direction;
@@ -5373,7 +5507,7 @@ bool TTF_SetFontScript(TTF_Font *font, const char *script)
     }
 
     font->hb_script = hb_script;
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
     return true;
 #else
     (void) script;
@@ -5441,7 +5575,7 @@ bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
     }
 
     font->hb_language = hb_language;
-    UpdateFontText(font);
+    UpdateFontText(font, NULL);
     return true;
 #else
     (void) language_bcp47;
@@ -5471,6 +5605,11 @@ void TTF_CloseFont(TTF_Font *font)
         font->text = NULL;
     }
     Flush_Cache(font);
+
+    TTF_ClearFallbackFonts(font);
+    while (font->fallback_for) {
+        TTF_RemoveFallbackFont(font->fallback_for->font, font);
+    }
 
 #if TTF_USE_HARFBUZZ
     hb_font_destroy(font->hb_font);
