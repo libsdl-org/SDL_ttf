@@ -37,12 +37,15 @@
 //#define DEFAULT_TEXT    "\xc5\xab\xcc\x80\x20\xe1\xba\x83\x20\x6e\xcc\x82\x20\x48\xcc\xa8\x20\x6f\xcd\x9c\x75"
 // Chinese text
 //#define DEFAULT_TEXT    "\xe5\xad\xa6\xe4\xb9\xa0\xe6\x9f\x90\xe8\xaf\xbe\xe7\xa8\x8b\xe5\xbf\x85\xe8\xaf\xbb\xe7\x9a\x84"
+// Mixed English, Chinese, and emoji text
+//#define DEFAULT_TEXT    "The quick brown fox\njumped over the \xe5\xad\xa6\xe4\xb9\xa0\xe6\x9f\x90\xe8\xaf\xbe\xe7\xa8\x8b\xe5\xbf\x85\xe8\xaf\xbb\xe7\x9a\x84 \xf0\x9f\x98\x89"
 #define WIDTH   640
 #define HEIGHT  480
+#define MAX_FALLBACKS 2
 
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-textengine surface|renderer] [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-disable-editbox] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [-textengine surface|renderer] [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-disable-editbox] [-fallback <font>.ttf>] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
@@ -264,13 +267,6 @@ static void HandleKeyDown(Scene *scene, SDL_Event *event)
     }
 }
 
-static void Cleanup(int exitcode)
-{
-    TTF_Quit();
-    SDL_Quit();
-    exit(exitcode);
-}
-
 int main(int argc, char *argv[])
 {
     char *argv0 = argv[0];
@@ -295,14 +291,29 @@ int main(int argc, char *argv[])
     bool editbox = true;
     bool dump = false;
     char *message, string[128];
+    int num_fallbacks = 0;
+    const char *fallback_font_files[MAX_FALLBACKS];
+    TTF_Font *fallback_fonts[MAX_FALLBACKS];
+    int result = 0;
 
     SDL_zero(scene);
     scene.textEngine = TextEngineRenderer;
+
+    SDL_zeroa(fallback_fonts);
 
     /* Default is black and white */
     forecol = &black;
     backcol = &white;
     for (i=1; argv[i] && argv[i][0] == '-'; ++i) {
+        if (SDL_strcmp(argv[i], "-fallback") == 0 && argv[i+1]) {
+            ++i;
+            if (num_fallbacks < MAX_FALLBACKS) {
+                fallback_font_files[num_fallbacks++] = argv[i];
+            } else {
+                SDL_Log("Too many fallback fonts (maximum = %d)\n", MAX_FALLBACKS);
+                return(1);
+            }
+        } else
         if (SDL_strcmp(argv[i], "-textengine") == 0 && argv[i+1]) {
             ++i;
             if (SDL_strcmp(argv[i], "surface") == 0) {
@@ -413,8 +424,8 @@ int main(int argc, char *argv[])
     /* Initialize the TTF library */
     if (!TTF_Init()) {
         SDL_Log("Couldn't initialize TTF: %s\n",SDL_GetError());
-        SDL_Quit();
-        return(2);
+        result = 2;
+        goto done;
     }
 
     /* Open the font file with the requested point size */
@@ -432,7 +443,8 @@ int main(int argc, char *argv[])
     if (font == NULL) {
         SDL_Log("Couldn't load %g pt font from %s: %s\n",
                     ptsize, argv[0], SDL_GetError());
-        Cleanup(2);
+        result = 2;
+        goto done;
     }
     TTF_SetFontStyle(font, renderstyle);
     TTF_SetFontOutline(font, outline);
@@ -440,6 +452,17 @@ int main(int argc, char *argv[])
     TTF_SetFontHinting(font, hinting);
     TTF_SetFontWrapAlignment(font, align);
     scene.font = font;
+
+    for (i = 0; i < num_fallbacks; ++i) {
+        fallback_fonts[i] = TTF_OpenFont(fallback_font_files[i], ptsize);
+        if (!fallback_fonts[i]) {
+            SDL_Log("Couldn't load %g pt font from %s: %s\n",
+                        ptsize, fallback_font_files[i], SDL_GetError());
+            result = 2;
+            goto done;
+        }
+        TTF_AddFallbackFont(font, fallback_fonts[i]);
+    }
 
     if(dump) {
         for(i = 48; i < 123; i++) {
@@ -454,20 +477,23 @@ int main(int argc, char *argv[])
             }
 
         }
-        Cleanup(0);
+        result = 0;
+        goto done;
     }
 
     /* Create a window */
     scene.window = SDL_CreateWindow("showfont demo", WIDTH, HEIGHT, 0);
     if (!scene.window) {
         SDL_Log("SDL_CreateWindow() failed: %s\n", SDL_GetError());
-        Cleanup(2);
+        result = 2;
+        goto done;
     }
     if (scene.textEngine == TextEngineSurface) {
         scene.window_surface = SDL_GetWindowSurface(scene.window);
         if (!scene.window_surface) {
             SDL_Log("SDL_CreateWindowSurface() failed: %s\n", SDL_GetError());
-            Cleanup(2);
+            result = 2;
+            goto done;
         }
         SDL_SetWindowSurfaceVSync(scene.window, 1);
 
@@ -480,7 +506,8 @@ int main(int argc, char *argv[])
     }
     if (!scene.renderer) {
         SDL_Log("SDL_CreateRenderer() failed: %s\n", SDL_GetError());
-        Cleanup(2);
+        result = 2;
+        goto done;
     }
 
     switch (scene.textEngine) {
@@ -488,14 +515,16 @@ int main(int argc, char *argv[])
         engine = TTF_CreateSurfaceTextEngine();
         if (!engine) {
             SDL_Log("Couldn't create surface text engine: %s\n", SDL_GetError());
-            Cleanup(2);
+            result = 2;
+            goto done;
         }
         break;
     case TextEngineRenderer:
         engine = TTF_CreateRendererTextEngine(scene.renderer);
         if (!engine) {
             SDL_Log("Couldn't create renderer text engine: %s\n", SDL_GetError());
-            Cleanup(2);
+            result = 2;
+            goto done;
         }
         break;
     default:
@@ -541,8 +570,8 @@ int main(int argc, char *argv[])
     }
     if (text == NULL) {
         SDL_Log("Couldn't render text: %s\n", SDL_GetError());
-        TTF_CloseFont(font);
-        Cleanup(2);
+        result = 2;
+        goto done;
     }
     scene.messageRect.x = (float)((WIDTH - text->w)/2);
     scene.messageRect.y = (float)((HEIGHT - text->h)/2);
@@ -603,9 +632,15 @@ int main(int argc, char *argv[])
         }
         DrawScene(&scene);
     }
+    result = 0;
+
+done:
     SDL_DestroySurface(text);
     EditBox_Destroy(scene.edit);
     TTF_DestroyText(scene.caption);
+    for (i = 0; i < num_fallbacks; ++i) {
+        TTF_CloseFont(fallback_fonts[i]);
+    }
     TTF_CloseFont(font);
     switch (scene.textEngine) {
     case TextEngineSurface:
@@ -618,8 +653,7 @@ int main(int argc, char *argv[])
         break;
     }
     SDL_DestroyTexture(scene.message);
-    Cleanup(0);
-
-    /* Not reached, but fixes compiler warnings */
-    return 0;
+    TTF_Quit();
+    SDL_Quit();
+    return result;
 }
