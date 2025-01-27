@@ -234,6 +234,7 @@ typedef struct GlyphPositions {
     GlyphPosition *pos;
     int len;
     int maxlen;
+    int num_clusters;
 } GlyphPositions;
 
 typedef struct CachedGlyphPositions {
@@ -310,7 +311,6 @@ struct TTF_Font {
     int next_cached_positions;
     CachedGlyphPositions cached_positions[8];
     GlyphPositions *positions;
-    int num_clusters;
 
     // Hinting modes
     int ft_load_target;
@@ -3439,9 +3439,14 @@ static bool CollectGlyphs(TTF_Font *font, const char *text, size_t length, TTF_D
         return false;
     }
 
-    // Make sure any missing characters use the tofu from the initial font
+    // Calculate the glyph positions and number of clusters
+    int x = 0, y = 0;
+    int last_offset = -1;
+    positions->num_clusters = 0;
     for (int i = 0; i < positions->len; ++i) {
         GlyphPosition *pos = &positions->pos[i];
+
+        // Missing characters use the tofu from the initial font
         if (pos->index == 0 && pos->font != font) {
             pos->font = font;
             if (!Find_GlyphByIndex(font, pos->index, 0, 0, 0, 0, 0, 0, &pos->glyph, NULL)) {
@@ -3451,6 +3456,23 @@ static bool CollectGlyphs(TTF_Font *font, const char *text, size_t length, TTF_D
             pos->y_advance = 0;
             pos->x_offset = 0;
             pos->y_offset = 0;
+        }
+
+        // Compute positions
+        pos->x = x + pos->x_offset;
+        pos->y = y + F26Dot6(pos->font->ascent) - pos->y_offset;
+        x += pos->x_advance;
+        y += pos->y_advance;
+#if !TTF_USE_HARFBUZZ
+        if (!font->render_subpixel) {
+            x = ((x + 32) & -64); // ROUND()
+        }
+#endif
+
+        // Save the number of clusters we've seen
+        if (pos->offset != last_offset) {
+            ++positions->num_clusters;
+            last_offset = pos->offset;
         }
     }
     return true;
@@ -3507,7 +3529,7 @@ static GlyphPositions *GetCachedGlyphPositions(TTF_Font *font, const char *text,
 
 static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, int *w, int *h, int *xstart, int *ystart, bool measure_width, int max_width, int *measured_width, size_t *measured_length)
 {
-    int x = 0, y = 0;
+    int x = 0;
     int pos_x, pos_y;
     int minx = 0, maxx = 0;
     int miny = 0, maxy = 0;
@@ -3535,47 +3557,30 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
 
     maxy = font->height;
 
-    // Reset buffer
-    font->num_clusters = 0;
-
     GlyphPositions *positions = GetCachedGlyphPositions(font, text, length, direction, script);
     if (!positions) {
         return false;
     }
 
-    int last_offset = -1;
     for (int i = 0; i < positions->len; ++i) {
         GlyphPosition *pos = &positions->pos[i];
         c_glyph *glyph = pos->glyph;
 
-        // Compute positions
-        pos_x = x + pos->x_offset;
-        pos_y = y + F26Dot6(font->ascent) - pos->y_offset;
-        x += pos->x_advance;
-        y += pos->y_advance;
-#if !TTF_USE_HARFBUZZ
-        if (!font->render_subpixel) {
-            x = ((x + 32) & -64); // ROUND()
-        }
-#endif
-        pos->x = pos_x;
-        pos->y = pos_y;
-
-        // Save the number of clusters we've seen
-        if (pos->offset != last_offset) {
-            ++font->num_clusters;
-            last_offset = pos->offset;
-        }
-
         // Compute provisional global bounding box
-        pos_x = FT_FLOOR(pos_x) + glyph->sz_left;
-        pos_y = FT_FLOOR(pos_y) - glyph->sz_top;
+        pos_x = FT_FLOOR(pos->x) + glyph->sz_left;
+        pos_y = FT_FLOOR(pos->y) - glyph->sz_top;
 
         minx = SDL_min(minx, pos_x);
         maxx = SDL_max(maxx, pos_x + glyph->sz_width);
         miny = SDL_min(miny, pos_y);
         maxy = SDL_max(maxy, pos_y + glyph->sz_rows);
 
+        x += pos->x_advance;
+#if !TTF_USE_HARFBUZZ
+        if (!font->render_subpixel) {
+            x = ((x + 32) & -64); // ROUND()
+        }
+#endif
         // Measurement mode
         if (measure_width) {
             int cw = SDL_max(maxx, FT_FLOOR(x)) - minx;
@@ -3588,9 +3593,6 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
                 if (measured_length) {
                     *measured_length = (size_t)pos->offset;
                 }
-
-                // Truncate glyph positions
-                positions->len = (i + 1);
                 break;
             }
         }
@@ -3822,7 +3824,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, TTF
     }
 
     // Get the dimensions of the text surface
-    if (!TTF_Size_Internal(font, text, length, direction, script, &width, &height, NULL, NULL, NO_MEASUREMENT)|| !width) {
+    if (!TTF_Size_Internal(font, text, length, direction, script, &width, &height, NULL, NULL, NO_MEASUREMENT) || !width) {
         return SDL_SetError("Text has zero width");
     }
 
@@ -4376,13 +4378,13 @@ static bool LayoutText(TTF_Text *text)
         max_ops += additional_ops;
 
         // Allocate space for the clusters on this line
-        new_clusters = (TTF_SubString *)SDL_realloc(clusters, (max_clusters + font->num_clusters) * sizeof(*new_clusters));
+        new_clusters = (TTF_SubString *)SDL_realloc(clusters, (max_clusters + font->positions->num_clusters) * sizeof(*new_clusters));
         if (!new_clusters) {
             goto done;
         }
-        SDL_memset(new_clusters + max_clusters, 0, font->num_clusters * sizeof(*new_clusters));
+        SDL_memset(new_clusters + max_clusters, 0, font->positions->num_clusters * sizeof(*new_clusters));
         clusters = new_clusters;
-        max_clusters += font->num_clusters;
+        max_clusters += font->positions->num_clusters;
         cluster_offset = (int)(uintptr_t)(strLines[i].text - text->text);
 
         // Create the text drawing operations
