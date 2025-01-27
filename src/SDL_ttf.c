@@ -235,6 +235,12 @@ typedef struct GlyphPositions {
     int maxlen;
 } GlyphPositions;
 
+typedef struct CachedGlyphPositions {
+    char *text;
+    size_t length;
+    GlyphPositions positions;
+} CachedGlyphPositions;
+
 // A structure maintaining a list of fonts
 typedef struct TTF_FontList {
     TTF_Font *font;
@@ -295,7 +301,9 @@ struct TTF_Font {
 
     /* Internal buffer to store positions computed by TTF_Size_Internal()
      * for rendered string by Render_Line() */
-    GlyphPositions positions;
+    int next_cached_positions;
+    CachedGlyphPositions cached_positions[8];
+    GlyphPositions *positions;
     int num_clusters;
 
     // Hinting modes
@@ -1191,8 +1199,8 @@ static bool Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart,
     const int bpp = ((IS_BLENDED || IS_LCD) ? 4 : 1);                                                                   \
     int i;                                                                                                              \
     Uint8 fg_alpha = (fg ? fg->a : 0);                                                                                  \
-    for (i = 0; i < font->positions.len; i++) {                                                                         \
-        GlyphPosition *pos = &font->positions.pos[i];                                                                   \
+    for (i = 0; i < font->positions->len; i++) {                                                                        \
+        GlyphPosition *pos = &font->positions->pos[i];                                                                  \
         TTF_Font *glyph_font = pos->font;                                                                               \
         FT_UInt idx = pos->index;                                                                                       \
         int x = pos->x;                                                                                                 \
@@ -1455,8 +1463,8 @@ static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int w
     bounds.w = 0;
     bounds.h = font->height;
 
-    for (i = 0; i < font->positions.len; i++) {
-        GlyphPosition *pos = &font->positions.pos[i];
+    for (i = 0; i < font->positions->len; i++) {
+        GlyphPosition *pos = &font->positions->pos[i];
         TTF_Font *glyph_font = pos->font;
         FT_UInt idx = pos->index;
         int x = pos->x;
@@ -2356,6 +2364,21 @@ static void Flush_Cache(TTF_Font *font)
         }
     }
 
+    for (unsigned int i = 0; i < SDL_arraysize(font->cached_positions); ++i) {
+        CachedGlyphPositions *cached = &font->cached_positions[i];
+        if (cached->text) {
+            SDL_free(cached->text);
+            cached->text = NULL;
+            cached->length = 0;
+        }
+        if (cached->positions.pos) {
+            SDL_free(cached->positions.pos);
+            cached->positions.pos = NULL;
+            cached->positions.maxlen = 0;
+        }
+    }
+    font->positions = NULL;
+
     ++font->generation;
     if (font->generation == 0) {
         ++font->generation;
@@ -3140,7 +3163,7 @@ bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *ker
     return true;
 }
 
-static bool TTF_CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions)
+static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions)
 {
 #if TTF_USE_HARFBUZZ
     // Create a buffer for harfbuzz to use
@@ -3317,7 +3340,7 @@ static bool ReplaceGlyphPositions(GlyphPositions *positions, int start, int leng
     return true;
 }
 
-static bool TTF_CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions, TTF_Font *initial_font)
+static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions, TTF_Font *initial_font)
 {
     if (!initial_font) {
         initial_font = font;
@@ -3326,7 +3349,7 @@ static bool TTF_CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, siz
         return true;
     }
 
-    if (!TTF_CollectGlyphsFromFont(font, text, length, positions)) {
+    if (!CollectGlyphsFromFont(font, text, length, positions)) {
         return false;
     }
 
@@ -3349,7 +3372,7 @@ static bool TTF_CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, siz
                 SDL_zero(span);
                 int span_offset = positions->pos[start].offset;
                 int span_length = pos->offset - span_offset;
-                TTF_CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, &span, initial_font);
+                CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, &span, initial_font);
                 if (span.len > 0) {
                     ReplaceGlyphPositions(positions, start, (i - start), &span);
                     SDL_free(span.pos);
@@ -3364,7 +3387,7 @@ static bool TTF_CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, siz
             SDL_zero(span);
             int span_offset = positions->pos[start].offset;
             int span_length = (int)(length - span_offset);
-            TTF_CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, &span, initial_font);
+            CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, &span, initial_font);
             if (span.len > 0) {
                 ReplaceGlyphPositions(positions, start, (positions->len - start), &span);
                 SDL_free(span.pos);
@@ -3376,9 +3399,9 @@ static bool TTF_CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, siz
     return true;
 }
 
-static bool TTF_CollectGlyphs(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions)
+static bool CollectGlyphs(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions)
 {
-    if (!TTF_CollectGlyphsWithFallbacks(font, text, length, positions, NULL)) {
+    if (!CollectGlyphsWithFallbacks(font, text, length, positions, NULL)) {
         return false;
     }
 
@@ -3390,6 +3413,51 @@ static bool TTF_CollectGlyphs(TTF_Font *font, const char *text, size_t length, G
         }
     }
     return true;
+}
+
+static GlyphPositions *GetCachedGlyphPositions(TTF_Font *font, const char *text, size_t length)
+{
+    CachedGlyphPositions *cached;
+
+    font->positions = NULL;
+    for (unsigned int i = 0; i < SDL_arraysize(font->cached_positions); ++i) {
+        cached = &font->cached_positions[i];
+        if (length == cached->length &&
+            SDL_memcmp(text, cached->text, length) == 0) {
+#ifdef DEBUG_TTF_CACHE
+            SDL_Log("Found cached positions for '%s'\n", cached->text);
+#endif
+            font->positions = &cached->positions;
+            break;
+        }
+    }
+
+    if (!font->positions) {
+        // We could do something fancy like an LRU cache, but it's probably not worth the complexity
+        cached = &font->cached_positions[font->next_cached_positions];
+        font->next_cached_positions = (font->next_cached_positions + 1) % SDL_arraysize(font->cached_positions);
+        font->positions = &cached->positions;
+
+        SDL_free(cached->text);
+        cached->text = (char *)SDL_malloc(length + 1);
+        if (cached->text) {
+            SDL_memcpy(cached->text, text, length);
+            cached->text[length] = '\0';
+            cached->length = length;
+        } else {
+            cached->length = 0;
+            return NULL;
+        }
+
+        if (!CollectGlyphs(font, text, length, font->positions)) {
+            cached->length = 0;
+            return NULL;
+        }
+#ifdef DEBUG_TTF_CACHE
+        SDL_Log("Added cached positions for '%s'\n", cached->text);
+#endif
+    }
+    return font->positions;
 }
 
 static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, int *w, int *h, int *xstart, int *ystart, bool measure_width, int max_width, int *measured_width, size_t *measured_length)
@@ -3425,8 +3493,8 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
     // Reset buffer
     font->num_clusters = 0;
 
-    GlyphPositions *positions = &font->positions;
-    if (!TTF_CollectGlyphs(font, text, length, positions)) {
+    GlyphPositions *positions = GetCachedGlyphPositions(font, text, length);
+    if (!positions) {
         return false;
     }
 
@@ -4240,7 +4308,7 @@ static bool LayoutText(TTF_Text *text)
         }
 
         // Allocate space for the operations on this line
-        additional_ops = (font->positions.len + extra_ops);
+        additional_ops = (font->positions->len + extra_ops);
         new_ops = (TTF_DrawOperation *)SDL_realloc(ops, (max_ops + additional_ops) * sizeof(*new_ops));
         if (!new_ops) {
             goto done;
@@ -5748,9 +5816,6 @@ void TTF_CloseFont(TTF_Font *font)
     }
     if (font->closeio) {
         SDL_CloseIO(font->src);
-    }
-    if (font->positions.pos) {
-        SDL_free(font->positions.pos);
     }
     SDL_free(font);
 }
