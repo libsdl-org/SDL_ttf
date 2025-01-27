@@ -2967,9 +2967,12 @@ static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
 static FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
 {
     FT_UInt idx = 0;
-    if (!SDL_FindInHashTable(font->glyph_indices, (const void *)(uintptr_t)ch, (const void **)&idx)) {
+    const void *value;
+    if (!SDL_FindInHashTable(font->glyph_indices, (const void *)(uintptr_t)ch, &value)) {
         idx = FT_Get_Char_Index(font->face, ch);
         SDL_InsertIntoHashTable(font->glyph_indices, (const void *)(uintptr_t)ch, (const void *)(uintptr_t)idx);
+    } else {
+        idx = (FT_UInt)(uintptr_t)value;
     }
     return idx;
 }
