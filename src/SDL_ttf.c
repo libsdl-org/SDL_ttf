@@ -284,8 +284,8 @@ struct TTF_Font {
     int strikethrough_top_row;
 
     // Cache for style-transformed glyphs
-    c_glyph cache[256];
-    FT_UInt cache_index[128];
+    SDL_HashTable *glyphs;
+    SDL_HashTable *glyph_indices;
 
     // We are responsible for closing the font stream
     SDL_IOStream *src;
@@ -1994,6 +1994,18 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
         return NULL;
     }
 
+    font->glyphs = SDL_CreateHashTable(NULL, 32, SDL_HashID, SDL_KeyMatchID, SDL_NukeFreeValue, false, false);
+    if (!font->glyphs) {
+        TTF_CloseFont(font);
+        return NULL;
+    }
+
+    font->glyph_indices = SDL_CreateHashTable(NULL, 32, SDL_HashID, SDL_KeyMatchID, NULL, false, false);
+    if (!font->glyph_indices) {
+        TTF_CloseFont(font);
+        return NULL;
+    }
+
     stream = (FT_Stream)SDL_malloc(sizeof (*stream));
     if (stream == NULL) {
         SDL_SetError("Out of memory");
@@ -2319,7 +2331,8 @@ static void TTF_InitFontMetrics(TTF_Font *font)
     font->glyph_overhang = face->size->metrics.y_ppem / 10;
 }
 
-static void Flush_Glyph_Image(TTF_Image *image) {
+static void Flush_Glyph_Image(TTF_Image *image)
+{
     if (image->buffer) {
         SDL_free(image->buffer);
         image->buffer = NULL;
@@ -2329,19 +2342,17 @@ static void Flush_Glyph_Image(TTF_Image *image) {
 static void Flush_Glyph(c_glyph *glyph)
 {
     glyph->stored = 0;
-    glyph->index = 0;
     Flush_Glyph_Image(&glyph->pixmap);
     Flush_Glyph_Image(&glyph->bitmap);
 }
 
 static void Flush_Cache(TTF_Font *font)
 {
-    int i;
-    int size = sizeof (font->cache) / sizeof (font->cache[0]);
-
-    for (i = 0; i < size; ++i) {
-        if (font->cache[i].stored) {
-            Flush_Glyph(&font->cache[i]);
+    c_glyph *glyph = NULL;
+    void *iter = NULL;
+    while (SDL_IterateHashTable(font->glyphs, NULL, (const void **)&glyph, &iter)) {
+        if (glyph->stored) {
+            Flush_Glyph(glyph);
         }
     }
 
@@ -2857,8 +2868,19 @@ static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         int want_bitmap, int want_pixmap, int want_color, int want_lcd, int want_subpixel,
         int translation, c_glyph **out_glyph, TTF_Image **out_image)
 {
-    // cache size is 256, get key by masking
-    c_glyph *glyph = &font->cache[idx & 0xff];
+    c_glyph *glyph = NULL;
+    if (!SDL_FindInHashTable(font->glyphs, (const void *)(uintptr_t)idx, (const void **)&glyph)) {
+        glyph = (c_glyph *)SDL_calloc(1, sizeof(*glyph));
+        if (!glyph) {
+            return false;
+        }
+        glyph->index = idx;
+
+        if (!SDL_InsertIntoHashTable(font->glyphs, (const void *)(uintptr_t)idx, (const void *)glyph)) {
+            SDL_free(glyph);
+            return false;
+        }
+    }
 
     if (out_glyph) {
         *out_glyph = glyph;
@@ -2877,10 +2899,6 @@ static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
          * this allows to render as fast as normal mode. */
         int want = CACHED_METRICS | want_bitmap | want_pixmap | want_color | want_lcd | want_subpixel;
 
-        if (glyph->stored && glyph->index != idx) {
-            Flush_Glyph(glyph);
-        }
-
         if (glyph->subpixel.translation == translation) {
             want &= ~CACHED_SUBPIX;
         }
@@ -2895,31 +2913,30 @@ static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
             }
         }
 
-        glyph->index = idx;
         return Load_Glyph(font, glyph, want, translation);
     } else {
         const int want = CACHED_METRICS | want_bitmap | want_pixmap | want_color | want_lcd;
 
         // Faster check as it gets inlined
         if (want_pixmap) {
-            if ((glyph->stored & CACHED_PIXMAP) && glyph->index == idx) {
+            if (glyph->stored & CACHED_PIXMAP) {
                 return true;
             }
         } else if (want_bitmap) {
-            if ((glyph->stored & CACHED_BITMAP) && glyph->index == idx) {
+            if (glyph->stored & CACHED_BITMAP) {
                 return true;
             }
         } else if (want_color) {
-            if ((glyph->stored & CACHED_COLOR) && glyph->index == idx) {
+            if (glyph->stored & CACHED_COLOR) {
                 return true;
             }
         } else if (want_lcd) {
-            if ((glyph->stored & CACHED_LCD) && glyph->index == idx) {
+            if (glyph->stored & CACHED_LCD) {
                 return true;
             }
         } else {
             // Get metrics
-            if (glyph->stored && glyph->index == idx) {
+            if (glyph->stored) {
                 return true;
             }
         }
@@ -2932,30 +2949,18 @@ static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
             }
         }
 
-        if (glyph->stored && glyph->index != idx) {
-            Flush_Glyph(glyph);
-        }
-
-        glyph->index = idx;
         return Load_Glyph(font, glyph, want, 0);
     }
 }
 
 static FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
 {
-    Uint32 cache_index_size = sizeof (font->cache_index) / sizeof (font->cache_index[0]);
-
-    if (ch < cache_index_size) {
-        FT_UInt idx = font->cache_index[ch];
-        if (idx) {
-            return idx;
-        }
+    FT_UInt idx = 0;
+    if (!SDL_FindInHashTable(font->glyph_indices, (const void *)(uintptr_t)ch, (const void **)&idx)) {
         idx = FT_Get_Char_Index(font->face, ch);
-        font->cache_index[ch] = idx;
-        return idx;
+        SDL_InsertIntoHashTable(font->glyphs, (const void *)(uintptr_t)ch, (const void *)(uintptr_t)idx);
     }
-
-    return FT_Get_Char_Index(font->face, ch);
+    return idx;
 }
 
 static FT_UInt get_char_index_fallback(TTF_Font *font, Uint32 ch, TTF_Font *initial_font, TTF_Font **glyph_font)
@@ -5722,6 +5727,9 @@ void TTF_CloseFont(TTF_Font *font)
     while (font->fallback_for) {
         TTF_RemoveFallbackFont(font->fallback_for->font, font);
     }
+
+    SDL_DestroyHashTable(font->glyphs);
+    SDL_DestroyHashTable(font->glyph_indices);
 
 #if TTF_USE_HARFBUZZ
     hb_font_destroy(font->hb_font);
