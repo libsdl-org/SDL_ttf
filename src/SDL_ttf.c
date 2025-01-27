@@ -220,6 +220,7 @@ typedef struct cached_glyph {
 typedef struct GlyphPosition {
     TTF_Font *font;
     FT_UInt index;
+    c_glyph *glyph;
     int x_offset;
     int y_offset;
     int x_advance;
@@ -1463,98 +1464,93 @@ static bool Render_Line_TextEngine(TTF_Font *font, TTF_Direction direction, int 
         int x = pos->x;
         int y = pos->y;
         int offset = pos->offset;
-        c_glyph *glyph;
+        c_glyph *glyph = pos->glyph;
+        int above_w, above_h;
+        int glyph_x = 0;
+        int glyph_y = 0;
+        int glyph_width = glyph->sz_width;
+        int glyph_rows = glyph->sz_rows;
+        TTF_DrawOperation *op;
 
-        if (Find_GlyphByIndex(glyph_font, idx, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
-            int above_w, above_h;
-            int glyph_x = 0;
-            int glyph_y = 0;
-            int glyph_width = glyph->sz_width;
-            int glyph_rows = glyph->sz_rows;
-            TTF_DrawOperation *op;
+        // Position updated after glyph rendering
+        x = xstart + FT_FLOOR(x) + glyph->sz_left;
+        y = ystart + FT_FLOOR(y) - glyph->sz_top;
 
-            // Position updated after glyph rendering
-            x = xstart + FT_FLOOR(x) + glyph->sz_left;
-            y = ystart + FT_FLOOR(y) - glyph->sz_top;
+        // Make sure glyph is inside text area
+        above_w = x + glyph_width - width;
+        above_h = y + glyph_rows  - height;
 
-            // Make sure glyph is inside text area
-            above_w = x + glyph_width - width;
-            above_h = y + glyph_rows  - height;
+        if (x < 0) {
+            int tmp = -x;
+            x = 0;
+            glyph_x += tmp;
+            glyph_width -= tmp;
+        }
+        if (above_w > 0) {
+            glyph_width -= above_w;
+        }
+        if (y < 0) {
+            int tmp = -y;
+            y = 0;
+            glyph_y += tmp;
+            glyph_rows -= tmp;
+        }
+        if (above_h > 0) {
+            glyph_rows -= above_h;
+        }
 
-            if (x < 0) {
-                int tmp = -x;
-                x = 0;
-                glyph_x += tmp;
-                glyph_width -= tmp;
-            }
-            if (above_w > 0) {
-                glyph_width -= above_w;
-            }
-            if (y < 0) {
-                int tmp = -y;
-                y = 0;
-                glyph_y += tmp;
-                glyph_rows -= tmp;
-            }
-            if (above_h > 0) {
-                glyph_rows -= above_h;
-            }
+        if (glyph_width > 0 && glyph_rows > 0) {
+            op = &ops[op_index++];
+            op->cmd = TTF_DRAW_COMMAND_COPY;
+            op->copy.text_offset = offset;
+            op->copy.glyph_font = glyph_font;
+            op->copy.glyph_index = idx;
+            op->copy.src.x = glyph_x;
+            op->copy.src.y = glyph_y;
+            op->copy.src.w = glyph_width;
+            op->copy.src.h = glyph_rows;
+            op->copy.dst.x = x;
+            op->copy.dst.y = y;
+            op->copy.dst.w = op->copy.src.w;
+            op->copy.dst.h = op->copy.src.h;
+        } else {
+            // Use the distance to the next glyph as our bounds width
+            glyph_width = FT_FLOOR(pos->x_advance);
+        }
 
-            if (glyph_width > 0 && glyph_rows > 0) {
-                op = &ops[op_index++];
-                op->cmd = TTF_DRAW_COMMAND_COPY;
-                op->copy.text_offset = offset;
-                op->copy.glyph_font = glyph_font;
-                op->copy.glyph_index = idx;
-                op->copy.src.x = glyph_x;
-                op->copy.src.y = glyph_y;
-                op->copy.src.w = glyph_width;
-                op->copy.src.h = glyph_rows;
-                op->copy.dst.x = x;
-                op->copy.dst.y = y;
-                op->copy.dst.w = op->copy.src.w;
-                op->copy.dst.h = op->copy.src.h;
-            } else {
-                // Use the distance to the next glyph as our bounds width
-                glyph_width = FT_FLOOR(pos->x_advance);
-            }
-
-            bounds.x = x;
-            bounds.w = glyph_width;
-            if (offset != last_offset) {
-                cluster = &clusters[cluster_index++];
-                cluster->offset = cluster_offset + offset;
-                cluster->line_index = line_index;
-                if (direction == TTF_DIRECTION_INVALID) {
-                    if (last_offset == -1) {
-                        if (i < (font->positions->len - 1)) {
-                            GlyphPosition *next = &font->positions->pos[i + 1];
-                            if (offset < next->offset) {
-                                cluster->flags = TTF_DIRECTION_LTR;
-                            } else {
-                                cluster->flags = TTF_DIRECTION_RTL;
-                            }
-                        } else {
-                            cluster->flags = TTF_DIRECTION_INVALID;
-                        }
-                    } else {
-                        if (offset > last_offset) {
+        bounds.x = x;
+        bounds.w = glyph_width;
+        if (offset != last_offset) {
+            cluster = &clusters[cluster_index++];
+            cluster->offset = cluster_offset + offset;
+            cluster->line_index = line_index;
+            if (direction == TTF_DIRECTION_INVALID) {
+                if (last_offset == -1) {
+                    if (i < (font->positions->len - 1)) {
+                        GlyphPosition *next = &font->positions->pos[i + 1];
+                        if (offset < next->offset) {
                             cluster->flags = TTF_DIRECTION_LTR;
                         } else {
                             cluster->flags = TTF_DIRECTION_RTL;
                         }
+                    } else {
+                        cluster->flags = TTF_DIRECTION_INVALID;
                     }
                 } else {
-                    cluster->flags = direction;
+                    if (offset > last_offset) {
+                        cluster->flags = TTF_DIRECTION_LTR;
+                    } else {
+                        cluster->flags = TTF_DIRECTION_RTL;
+                    }
                 }
-                SDL_copyp(&cluster->rect, &bounds);
-
-                last_offset = offset;
-            } else if (cluster) {
-                SDL_GetRectUnion(&cluster->rect, &bounds, &cluster->rect);
+            } else {
+                cluster->flags = direction;
             }
-        } else {
-            return false;
+            SDL_copyp(&cluster->rect, &bounds);
+
+            last_offset = offset;
+        } else if (cluster) {
+            SDL_GetRectUnion(&cluster->rect, &bounds, &cluster->rect);
         }
     }
 
@@ -3255,6 +3251,9 @@ static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t lengt
         pos->x_offset = hb_glyph_position[i].x_offset;
         pos->y_offset = hb_glyph_position[i].y_offset;
         pos->offset = (int)hb_glyph_info[i].cluster;
+        if (!Find_GlyphByIndex(font, pos->index, 0, 0, 0, 0, 0, 0, &pos->glyph, NULL)) {
+            return SDL_SetError("Couldn't find glyph %u in font", pos->index);
+        }
     }
     hb_buffer_destroy(hb_buffer);
 
@@ -3302,6 +3301,7 @@ static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t lengt
         GlyphPosition *pos = &positions->pos[positions->len++];
         pos->font = font;
         pos->index = idx;
+        pos->glyph = glyph;
         pos->offset = offset;
         pos->x_advance = glyph->advance;
         pos->y_advance = 0;
@@ -3442,8 +3442,15 @@ static bool CollectGlyphs(TTF_Font *font, const char *text, size_t length, TTF_D
     // Make sure any missing characters use the tofu from the initial font
     for (int i = 0; i < positions->len; ++i) {
         GlyphPosition *pos = &positions->pos[i];
-        if (pos->index == 0) {
+        if (pos->index == 0 && pos->font != font) {
             pos->font = font;
+            if (!Find_GlyphByIndex(font, pos->index, 0, 0, 0, 0, 0, 0, &pos->glyph, NULL)) {
+                return SDL_SetError("Couldn't find glyph %u in font", pos->index);
+            }
+            pos->x_advance = pos->glyph->advance;
+            pos->y_advance = 0;
+            pos->x_offset = 0;
+            pos->y_offset = 0;
         }
     }
     return true;
@@ -3539,11 +3546,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
     int last_offset = -1;
     for (int i = 0; i < positions->len; ++i) {
         GlyphPosition *pos = &positions->pos[i];
-
-        c_glyph *glyph = NULL;
-        if (!Find_GlyphByIndex(pos->font, pos->index, 0, 0, 0, 0, 0, 0, &glyph, NULL)) {
-            return SDL_SetError("Couldn't find glyph %u in font", pos->index);
-        }
+        c_glyph *glyph = pos->glyph;
 
         // Compute positions
         pos_x = x + pos->x_offset;
