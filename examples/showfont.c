@@ -45,7 +45,7 @@
 
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-textengine surface|renderer] [-solid] [-shaded] [-blended] [-wrapped] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-disable-editbox] [-fallback <font>.ttf>] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [-textengine surface|renderer] [-solid] [-shaded] [-blended] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-disable-editbox] [-fallback <font>.ttf>] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
