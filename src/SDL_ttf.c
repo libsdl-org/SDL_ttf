@@ -2981,7 +2981,7 @@ static FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
     FT_UInt idx = 0;
     if (!SDL_FindInHashTable(font->glyph_indices, (const void *)(uintptr_t)ch, (const void **)&idx)) {
         idx = FT_Get_Char_Index(font->face, ch);
-        SDL_InsertIntoHashTable(font->glyphs, (const void *)(uintptr_t)ch, (const void *)(uintptr_t)idx);
+        SDL_InsertIntoHashTable(font->glyph_indices, (const void *)(uintptr_t)ch, (const void *)(uintptr_t)idx);
     }
     return idx;
 }
