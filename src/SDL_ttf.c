@@ -251,6 +251,9 @@ typedef struct TTF_FontList {
 
 // The structure used to hold internal font information
 struct TTF_Font {
+    // The name of the font
+    char *name;
+
     // Freetype2 maintains all sorts of useful info itself
     FT_Face face;
 
@@ -1979,6 +1982,20 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
         return NULL;
     }
 
+    if (file) {
+        const char *name = SDL_strrchr(file, '/');
+        if (name) {
+            name += 1;
+        } else {
+            name = SDL_strrchr(file, '\\');
+            if (name) {
+                name += 1;
+            } else {
+                name = file;
+            }
+        }
+        font->name = SDL_strdup(name);
+    }
     font->src = src;
     font->src_offset = src_offset;
     font->closeio = closeio;
@@ -5825,6 +5842,7 @@ void TTF_CloseFont(TTF_Font *font)
     if (font->closeio) {
         SDL_CloseIO(font->src);
     }
+    SDL_free(font->name);
     SDL_free(font);
 }
 
