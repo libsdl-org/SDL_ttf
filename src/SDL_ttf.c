@@ -5700,6 +5700,32 @@ bool TTF_SetFontScript(TTF_Font *font, const char *script)
 #endif
 }
 
+bool TTF_GetFontScript(TTF_Font *font, char *script, size_t script_size)
+{
+    TTF_CHECK_FONT(font, false);
+
+#if TTF_USE_HARFBUZZ
+    TTF_CHECK_POINTER("script", script, false);
+
+    if (script_size < 5) {
+        return SDL_SetError("Insufficient script buffer size");
+    }
+
+    uint8_t untagged_script[4] = { HB_UNTAG(font->hb_script) };
+    script[0] = (char)untagged_script[0];
+    script[1] = (char)untagged_script[1];
+    script[2] = (char)untagged_script[2];
+    script[3] = (char)untagged_script[3];
+    script[4] = '\0';
+    return true;
+
+#else
+    (void) script;
+    (void) script_size;
+    return SDL_Unsupported();
+#endif
+}
+
 bool TTF_GetGlyphScript(Uint32 ch, char *script, size_t script_size)
 {
 #if TTF_USE_HARFBUZZ

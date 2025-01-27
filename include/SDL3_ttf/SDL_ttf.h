@@ -934,6 +934,29 @@ extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetFontDirection(TTF_Font *font);
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScript(TTF_Font *font, const char *script);
 
 /**
+ * Get the script used for text shaping a font.
+ *
+ * The supplied script value will be a null-terminated string of exactly four
+ * characters.
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns
+ * false.
+ *
+ * \param font the font to query.
+ * \param script a pointer filled in with the script used by `ch`.
+ * \param script_size the size of the script buffer, which must be at least 5
+ *                    characters.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetFontScript(TTF_Font *font, char *script, size_t script_size);
+
+/**
  * Get the script used by a 32-bit codepoint.
  *
  * The supplied script value will be a null-terminated string of exactly four
