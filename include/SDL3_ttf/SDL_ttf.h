@@ -867,7 +867,8 @@ typedef enum TTF_Direction
 /**
  * Set the direction to be used for text shaping by a font.
  *
- * This function only supports left-to-right text shaping if SDL_ttf was not built with HarfBuzz support.
+ * This function only supports left-to-right text shaping if SDL_ttf was not
+ * built with HarfBuzz support.
  *
  * This updates any TTF_Text objects using this font.
  *
@@ -934,7 +935,8 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetFontScript(TTF_Font *font);
  * Get the script used by a 32-bit codepoint.
  *
  * \param ch the character code to check.
- * \returns a script tag in the format used by HarfBuzz on success, or 0 on failure; call SDL_GetError() for more information.
+ * \returns a script tag in the format used by HarfBuzz on success, or 0 on
+ *          failure; call SDL_GetError() for more information.
  *
  * \threadsafety This function is thread-safe.
  *
@@ -1931,7 +1933,8 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_GetTextFont(TTF_Text *text);
 /**
  * Set the direction to be used for text shaping a text object.
  *
- * This function only supports left-to-right text shaping if SDL_ttf was not built with HarfBuzz support.
+ * This function only supports left-to-right text shaping if SDL_ttf was not
+ * built with HarfBuzz support.
  *
  * \param text the text to modify.
  * \param direction the new direction for text to flow.
