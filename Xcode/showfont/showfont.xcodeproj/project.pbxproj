@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F34124132D42BE2200D6C2B7 /* editbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F34124122D42BE2200D6C2B7 /* editbox.c */; };
-		F34124142D42BE2200D6C2B7 /* editbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F34124122D42BE2200D6C2B7 /* editbox.c */; };
-		F34124152D42BE2200D6C2B7 /* editbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F34124122D42BE2200D6C2B7 /* editbox.c */; };
+		F34124892D47EDB500D6C2B7 /* editbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F34124882D47EDB500D6C2B7 /* editbox.c */; };
+		F341248A2D47EDB500D6C2B7 /* editbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F34124882D47EDB500D6C2B7 /* editbox.c */; };
+		F341248B2D47EDB500D6C2B7 /* editbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F34124882D47EDB500D6C2B7 /* editbox.c */; };
 		F34400552D403514003F26D7 /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F344004C2D403423003F26D7 /* SDL3.framework */; };
 		F34400562D403514003F26D7 /* SDL3.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F344004C2D403423003F26D7 /* SDL3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F34400572D40352B003F26D7 /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F344004C2D403423003F26D7 /* SDL3.framework */; };
@@ -84,8 +84,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		F34124112D42BE2200D6C2B7 /* editbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = editbox.h; path = /Users/valve/projects/SDL_ttf/examples/editbox.h; sourceTree = "<absolute>"; };
-		F34124122D42BE2200D6C2B7 /* editbox.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = editbox.c; path = /Users/valve/projects/SDL_ttf/examples/editbox.c; sourceTree = "<absolute>"; };
+		F34124872D47EDB500D6C2B7 /* editbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = editbox.h; path = ../../examples/editbox.h; sourceTree = SOURCE_ROOT; };
+		F34124882D47EDB500D6C2B7 /* editbox.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = editbox.c; path = ../../examples/editbox.c; sourceTree = SOURCE_ROOT; };
 		F3E1F8782A79466F00AC76D3 /* config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
 		F3E1F9362A794F9300AC76D3 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = ../../../SDL/Xcode/SDL/SDL.xcodeproj; sourceTree = SOURCE_ROOT; };
 		F3ED80B3281D9E8900C33C5B /* showfont.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = showfont.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,8 +151,8 @@
 		F3ED80AB281D9E8800C33C5B /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				F34124112D42BE2200D6C2B7 /* editbox.h */,
-				F34124122D42BE2200D6C2B7 /* editbox.c */,
+				F34124872D47EDB500D6C2B7 /* editbox.h */,
+				F34124882D47EDB500D6C2B7 /* editbox.c */,
 				F3ED80CA281D9ECB00C33C5B /* showfont.c */,
 			);
 			name = Shared;
@@ -343,7 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3ED80CB281D9ECB00C33C5B /* showfont.c in Sources */,
-				F34124152D42BE2200D6C2B7 /* editbox.c in Sources */,
+				F341248A2D47EDB500D6C2B7 /* editbox.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,7 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3ED80CC281D9ECB00C33C5B /* showfont.c in Sources */,
-				F34124132D42BE2200D6C2B7 /* editbox.c in Sources */,
+				F34124892D47EDB500D6C2B7 /* editbox.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,7 +361,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3ED80DB281D9F2100C33C5B /* showfont.c in Sources */,
-				F34124142D42BE2200D6C2B7 /* editbox.c in Sources */,
+				F341248B2D47EDB500D6C2B7 /* editbox.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
