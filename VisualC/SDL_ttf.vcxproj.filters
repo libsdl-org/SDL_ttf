@@ -381,6 +381,9 @@
     <ClCompile Include="..\external\harfbuzz\src\hb-wasm-api.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\SDL_gpu_textengine.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\version.rc">
