@@ -276,7 +276,8 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetFontGeneration(TTF_Font *font);
 /**
  * Add a fallback font.
  *
- * Add a font that will be used for glyphs that are not in the current font. The fallback font should have the same size and style as the current font.
+ * Add a font that will be used for glyphs that are not in the current font.
+ * The fallback font should have the same size and style as the current font.
  *
  * If there are multiple fallback fonts, they are used in the order added.
  *
@@ -287,8 +288,8 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetFontGeneration(TTF_Font *font);
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \threadsafety This function should be called on the thread that created both
- *               fonts.
+ * \threadsafety This function should be called on the thread that created
+ *               both fonts.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
@@ -305,8 +306,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_AddFallbackFont(TTF_Font *font, TTF_Font *f
  * \param font the font to modify.
  * \param fallback the font to remove as a fallback.
  *
- * \threadsafety This function should be called on the thread that created both
- *               fonts.
+ * \threadsafety This function should be called on the thread that created
+ *               both fonts.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
