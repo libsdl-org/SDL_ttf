@@ -3323,7 +3323,7 @@ static bool ReplaceGlyphPositions(GlyphPositions *positions, int start, int leng
         positions->len = newlen;
     }
 
-    SDL_memcpy(&positions->pos[start], replacement->pos, length * sizeof(*positions->pos));
+    SDL_memcpy(&positions->pos[start], replacement->pos, replacement->len * sizeof(*positions->pos));
 
     for (int i = 0; i < replacement->len; ++i) {
         positions->pos[start + i].offset += initial_offset;
