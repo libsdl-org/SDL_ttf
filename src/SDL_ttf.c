@@ -1442,7 +1442,7 @@ static bool Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font 
 #endif
 }
 
-static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int width, int height, TTF_DrawOperation *ops, int *current_op, TTF_SubString *clusters, int *current_cluster, int cluster_offset, int line_index)
+static bool Render_Line_TextEngine(TTF_Font *font, TTF_Direction direction, int xstart, int ystart, int width, int height, TTF_DrawOperation *ops, int *current_op, TTF_SubString *clusters, int *current_cluster, int cluster_offset, int line_index)
 {
     int i;
     int op_index = *current_op;
@@ -1525,6 +1525,28 @@ static bool Render_Line_TextEngine(TTF_Font *font, int xstart, int ystart, int w
                 cluster = &clusters[cluster_index++];
                 cluster->offset = cluster_offset + offset;
                 cluster->line_index = line_index;
+                if (direction == TTF_DIRECTION_INVALID) {
+                    if (last_offset == -1) {
+                        if (i < (font->positions->len - 1)) {
+                            GlyphPosition *next = &font->positions->pos[i + 1];
+                            if (offset < next->offset) {
+                                cluster->flags = TTF_DIRECTION_LTR;
+                            } else {
+                                cluster->flags = TTF_DIRECTION_RTL;
+                            }
+                        } else {
+                            cluster->flags = TTF_DIRECTION_INVALID;
+                        }
+                    } else {
+                        if (offset > last_offset) {
+                            cluster->flags = TTF_DIRECTION_LTR;
+                        } else {
+                            cluster->flags = TTF_DIRECTION_RTL;
+                        }
+                    }
+                } else {
+                    cluster->flags = direction;
+                }
                 SDL_copyp(&cluster->rect, &bounds);
 
                 last_offset = offset;
@@ -3319,7 +3341,7 @@ static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t lengt
 
 static bool ReplaceGlyphPositions(GlyphPositions *positions, int start, int length, GlyphPositions *replacement)
 {
-    int initial_offset = positions->pos[start].offset;
+    int initial_offset = SDL_min(positions->pos[start].offset, positions->pos[start + length - 1].offset);
 
     int length_delta = (replacement->len - length);
     if (length_delta != 0) {
@@ -3378,9 +3400,10 @@ static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t 
                 // Fill in this span with the fallback font
                 GlyphPositions span;
                 SDL_zero(span);
-                int span_offset = positions->pos[start].offset;
-                int span_length = pos->offset - span_offset;
-                CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, direction, script, &span, initial_font);
+                int min_offset = SDL_min(positions->pos[start].offset, pos->offset);
+                int max_offset = SDL_max(positions->pos[start].offset, pos->offset);
+                int span_length = (max_offset - min_offset);
+                CollectGlyphsWithFallbacks(fallback->font, text + min_offset, span_length, direction, script, &span, initial_font);
                 if (span.len > 0) {
                     ReplaceGlyphPositions(positions, start, (i - start), &span);
                     SDL_free(span.pos);
@@ -3393,9 +3416,12 @@ static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t 
             // Fill in this span with the fallback font
             GlyphPositions span;
             SDL_zero(span);
-            int span_offset = positions->pos[start].offset;
-            int span_length = (int)(length - span_offset);
-            CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, direction, script, &span, initial_font);
+            int min_offset = SDL_min(positions->pos[start].offset, positions->pos[positions->len - 1].offset);
+            int max_offset = SDL_max(positions->pos[start].offset, positions->pos[positions->len - 1].offset);
+            const char *last_text = &text[max_offset];
+            SDL_StepUTF8(&last_text, NULL);
+            int span_length = (int)(last_text - &text[min_offset]);
+            CollectGlyphsWithFallbacks(fallback->font, text + min_offset, span_length, direction, script, &span, initial_font);
             if (span.len > 0) {
                 ReplaceGlyphPositions(positions, start, (positions->len - start), &span);
                 SDL_free(span.pos);
@@ -4211,7 +4237,9 @@ static int CalculateClusterLengths(TTF_Text *text, TTF_SubString *clusters, int 
                 cluster->rect.h = font->height;
             } else {
                 SDL_copyp(&cluster->rect, &clusters[cluster->cluster_index - 1].rect);
-                cluster->rect.x += cluster->rect.w;
+                if ((cluster->flags & TTF_SUBSTRING_DIRECTION_MASK) != TTF_DIRECTION_RTL) {
+                    cluster->rect.x += cluster->rect.w;
+                }
                 cluster->rect.w = 0;
             }
         } else if (cluster->flags & TTF_SUBSTRING_TEXT_END) {
@@ -4223,7 +4251,9 @@ static int CalculateClusterLengths(TTF_Text *text, TTF_SubString *clusters, int 
                 } else {
                     cluster->line_index = last->line_index;
                     SDL_copyp(&cluster->rect, &last->rect);
-                    cluster->rect.x += cluster->rect.w;
+                    if ((cluster->flags & TTF_SUBSTRING_DIRECTION_MASK) != TTF_DIRECTION_RTL) {
+                        cluster->rect.x += cluster->rect.w;
+                    }
                     cluster->rect.w = 0;
                 }
             } else {
@@ -4240,6 +4270,15 @@ static int CalculateClusterLengths(TTF_Text *text, TTF_SubString *clusters, int 
         last = cluster;
     }
     return cluster_index;
+}
+
+static TTF_SubStringFlags GetPreviousClusterDirection(TTF_SubString *clusters, int num_clusters, TTF_Direction direction)
+{
+    if (num_clusters > 1) {
+        return (clusters[num_clusters - 1].flags & TTF_SUBSTRING_DIRECTION_MASK);
+    } else {
+        return (TTF_SubStringFlags)direction;
+    }
 }
 
 static bool LayoutText(TTF_Text *text)
@@ -4293,7 +4332,7 @@ static bool LayoutText(TTF_Text *text)
 
         if (strLines[i].length == 0) {
             cluster = &clusters[num_clusters++];
-            cluster->flags = TTF_SUBSTRING_LINE_END;
+            cluster->flags = GetPreviousClusterDirection(clusters, num_clusters - 1, direction) | TTF_SUBSTRING_LINE_END;
             cluster->offset = (int)(uintptr_t)(strLines[i].text - text->text);
             cluster->line_index = i;
             continue;
@@ -4344,11 +4383,11 @@ static bool LayoutText(TTF_Text *text)
         cluster_offset = (int)(uintptr_t)(strLines[i].text - text->text);
 
         // Create the text drawing operations
-        if (!Render_Line_TextEngine(font, xstart + xoffset, ystart, width, height, ops, &num_ops, clusters, &num_clusters, cluster_offset, i)) {
+        if (!Render_Line_TextEngine(font, direction, xstart + xoffset, ystart, width, height, ops, &num_ops, clusters, &num_clusters, cluster_offset, i)) {
             goto done;
         }
         cluster = &clusters[num_clusters++];
-        cluster->flags = TTF_SUBSTRING_LINE_END;
+        cluster->flags = GetPreviousClusterDirection(clusters, num_clusters - 1, direction) | TTF_SUBSTRING_LINE_END;
         cluster->offset = (int)(uintptr_t)(strLines[i].text - text->text + strLines[i].length);
         cluster->line_index = i;
 
@@ -4362,7 +4401,7 @@ static bool LayoutText(TTF_Text *text)
         }
     }
     cluster = &clusters[num_clusters++];
-    cluster->flags = TTF_SUBSTRING_TEXT_END;
+    cluster->flags = GetPreviousClusterDirection(clusters, num_clusters - 1, direction) | TTF_SUBSTRING_TEXT_END;
     cluster->offset = (int)length;
 
     num_clusters = CalculateClusterLengths(text, clusters, num_clusters, length, lines);
@@ -5031,7 +5070,7 @@ TTF_SubString **TTF_GetTextSubStringsForRange(TTF_Text *text, int offset, int le
         SDL_copyp(substring, &substring1);
         if (length == 0) {
             substring->length = 0;
-            if (TTF_GetTextDirection(text) != TTF_DIRECTION_RTL) {
+            if ((substring->flags & TTF_SUBSTRING_DIRECTION_MASK) != TTF_DIRECTION_RTL) {
                 substring->rect.x += substring->rect.w;
             }
             substring->rect.w = 0;
@@ -5106,8 +5145,7 @@ bool TTF_GetTextSubStringForPoint(TTF_Text *text, int x, int y, TTF_SubString *s
     }
 
     TTF_Direction direction = TTF_GetTextDirection(text);
-    bool prefer_row = (direction == TTF_DIRECTION_INVALID || direction == TTF_DIRECTION_LTR || direction == TTF_DIRECTION_RTL);
-    bool line_ends_right = (direction == TTF_DIRECTION_LTR);
+    bool prefer_row = (direction != TTF_DIRECTION_TTB && direction != TTF_DIRECTION_BTT);
     const TTF_SubString *closest = NULL;
     int closest_dist = INT_MAX;
     int wrap_cost = 100;
@@ -5120,18 +5158,20 @@ bool TTF_GetTextSubStringForPoint(TTF_Text *text, int x, int y, TTF_SubString *s
 
         if (cluster->flags & TTF_SUBSTRING_LINE_END) {
             if (prefer_row && (cluster->flags & TTF_SUBSTRING_LINE_END)) {
+                bool line_ends_left = ((cluster->flags & TTF_SUBSTRING_DIRECTION_MASK) == TTF_DIRECTION_RTL);
                 if ((y >= cluster->rect.y && y < (cluster->rect.y + cluster->rect.h)) &&
-                    ((line_ends_right && x >= cluster->rect.x) ||
-                     (!line_ends_right && x <= cluster->rect.x))) {
+                    ((!line_ends_left && x >= cluster->rect.x) ||
+                     (line_ends_left && x <= cluster->rect.x))) {
                     closest = cluster;
                     break;
                 }
             }
         } else {
             if (prefer_row && (cluster->flags & TTF_SUBSTRING_LINE_START)) {
+                bool line_ends_left = ((cluster->flags & TTF_SUBSTRING_DIRECTION_MASK) == TTF_DIRECTION_RTL);
                 if ((y >= cluster->rect.y && y < (cluster->rect.y + cluster->rect.h)) &&
-                    ((line_ends_right && x < cluster->rect.x) ||
-                     (!line_ends_right && x > cluster->rect.x))) {
+                    ((!line_ends_left && x < cluster->rect.x) ||
+                     (line_ends_left && x > cluster->rect.x))) {
                     closest = cluster;
                     break;
                 }
@@ -5390,7 +5430,7 @@ void TTF_SetFontStyle(TTF_Font *font, TTF_FontStyleFlags style)
     TTF_CHECK_FONT(font,);
 
     prev_style = font->style;
-    face_style = font->face->style_flags;
+    face_style = (TTF_FontStyleFlags)font->face->style_flags;
 
     // Don't add a style if already in the font, SDL_ttf doesn't need to handle them
     if (face_style & FT_STYLE_FLAG_BOLD) {
