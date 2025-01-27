@@ -849,34 +849,29 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontStyleName(const TTF_Font *fo
 /**
  * Direction flags
  *
+ * The values here are chosen to match hb_direction_t.
+ *
  * \since This enum is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontDirection
  */
 typedef enum TTF_Direction
 {
-  TTF_DIRECTION_LTR = 0,    /* Left to Right */
-  TTF_DIRECTION_RTL,        /* Right to Left */
-  TTF_DIRECTION_TTB,        /* Top to Bottom */
-  TTF_DIRECTION_BTT         /* Bottom to Top */
+  TTF_DIRECTION_INVALID = 0,
+  TTF_DIRECTION_LTR = 4,        /**< Left to Right */
+  TTF_DIRECTION_RTL,            /**< Right to Left */
+  TTF_DIRECTION_TTB,            /**< Top to Bottom */
+  TTF_DIRECTION_BTT             /**< Bottom to Top */
 } TTF_Direction;
 
 /**
- * Set direction to be used for text shaping by a font.
+ * Set the direction to be used for text shaping by a font.
  *
- * Possible direction values are:
- *
- * - `TTF_DIRECTION_LTR` (Left to Right)
- * - `TTF_DIRECTION_RTL` (Right to Left)
- * - `TTF_DIRECTION_TTB` (Top to Bottom)
- * - `TTF_DIRECTION_BTT` (Bottom to Top)
- *
- * If SDL_ttf was not built with HarfBuzz support, this function returns
- * false.
+ * This function only supports left-to-right text shaping if SDL_ttf was not built with HarfBuzz support.
  *
  * This updates any TTF_Text objects using this font.
  *
- * \param font the font to specify a direction for.
+ * \param font the font to modify.
  * \param direction the new direction for text to flow.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
@@ -889,17 +884,9 @@ typedef enum TTF_Direction
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction);
 
 /**
- * Get direction to be used for text shaping by a font.
+ * Get the direction to be used for text shaping by a font.
  *
- * Possible direction values are:
- *
- * - `TTF_DIRECTION_LTR` (Left to Right)
- * - `TTF_DIRECTION_RTL` (Right to Left)
- * - `TTF_DIRECTION_TTB` (Top to Bottom)
- * - `TTF_DIRECTION_BTT` (Bottom to Top)
- *
- * If SDL_ttf was not built with HarfBuzz support, this function returns
- * TTF_DIRECTION_LTR.
+ * This defaults to TTF_DIRECTION_INVALID if it hasn't been set.
  *
  * \param font the font to query.
  * \returns the direction to be used for text shaping.
@@ -912,72 +899,48 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direct
 extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetFontDirection(TTF_Font *font);
 
 /**
- * Set script to be used for text shaping by a font.
+ * Set the script to be used for text shaping by a font.
  *
- * The supplied script value must be a null-terminated string of exactly four
- * characters.
- *
- * If SDL_ttf was not built with HarfBuzz support, this function returns
- * false.
+ * This returns false if SDL_ttf isn't build with HarfBuzz support.
  *
  * This updates any TTF_Text objects using this font.
  *
- * \param font the font to specify a script name for.
- * \param script null-terminated string of exactly 4 characters.
+ * \param font the font to modify.
+ * \param script a script tag in the format used by HarfBuzz.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \threadsafety This function is not thread-safe.
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScript(TTF_Font *font, const char *script);
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScript(TTF_Font *font, Uint32 script);
 
 /**
  * Get the script used for text shaping a font.
  *
- * The supplied script value will be a null-terminated string of exactly four
- * characters.
- *
- * If SDL_ttf was not built with HarfBuzz support, this function returns
- * false.
- *
  * \param font the font to query.
- * \param script a pointer filled in with the script used by `ch`.
- * \param script_size the size of the script buffer, which must be at least 5
- *                    characters.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
+ * \returns a script tag in the format used by HarfBuzz.
  *
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_GetFontScript(TTF_Font *font, char *script, size_t script_size);
+extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetFontScript(TTF_Font *font);
 
 /**
  * Get the script used by a 32-bit codepoint.
  *
- * The supplied script value will be a null-terminated string of exactly four
- * characters.
- *
- * If SDL_ttf was not built with HarfBuzz support, this function returns
- * false.
- *
  * \param ch the character code to check.
- * \param script a pointer filled in with the script used by `ch`.
- * \param script_size the size of the script buffer, which must be at least 5
- *                    characters.
- * \returns true on success or false on failure; call SDL_GetError() for more
- *          information.
+ * \returns a script tag in the format used by HarfBuzz on success, or 0 on failure; call SDL_GetError() for more information.
  *
- * \threadsafety This function should be called on the thread that created the
- *               font.
+ * \threadsafety This function is thread-safe.
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphScript(Uint32 ch, char *script, size_t script_size);
+extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetGlyphScript(Uint32 ch);
 
 /**
  * Set language to be used for text shaping by a font.
@@ -1964,6 +1927,70 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextFont(TTF_Text *text, TTF_Font *font)
  * \sa TTF_SetTextFont
  */
 extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_GetTextFont(TTF_Text *text);
+
+/**
+ * Set the direction to be used for text shaping a text object.
+ *
+ * This function only supports left-to-right text shaping if SDL_ttf was not built with HarfBuzz support.
+ *
+ * \param text the text to modify.
+ * \param direction the new direction for text to flow.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetTextDirection(TTF_Text *text, TTF_Direction direction);
+
+/**
+ * Get the direction to be used for text shaping a text object.
+ *
+ * This defaults to the direction of the font used by the text object.
+ *
+ * \param text the text to query.
+ * \returns the direction to be used for text shaping.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetTextDirection(TTF_Text *text);
+
+/**
+ * Set the script to be used for text shaping a text object.
+ *
+ * This returns false if SDL_ttf isn't build with HarfBuzz support.
+ *
+ * \param text the text to modify.
+ * \param script a script tag in the format used by HarfBuzz.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetTextScript(TTF_Text *text, Uint32 script);
+
+/**
+ * Get the script used for text shaping a text object.
+ *
+ * This defaults to the script of the font used by the text object.
+ *
+ * \param text the text to query.
+ * \returns a script tag in the format used by HarfBuzz.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               text.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetTextScript(TTF_Text *text);
 
 /**
  * Set the color of a text object.

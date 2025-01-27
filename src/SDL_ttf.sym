@@ -51,9 +51,11 @@ SDL3_ttf_0.0.0 {
     TTF_GetStringSizeWrapped;
     TTF_GetTextColor;
     TTF_GetTextColorFloat;
+    TTF_GetTextDirection;
     TTF_GetTextEngine;
     TTF_GetTextFont;
     TTF_GetTextPosition;
+    TTF_GetTextScript;
     TTF_GetTextSize;
     TTF_GetTextSubString;
     TTF_GetTextSubStringForLine;
@@ -95,9 +97,11 @@ SDL3_ttf_0.0.0 {
     TTF_SetGPUTextEngineWinding;
     TTF_SetTextColor;
     TTF_SetTextColorFloat;
+    TTF_SetTextDirection;
     TTF_SetTextEngine;
     TTF_SetTextFont;
     TTF_SetTextPosition;
+    TTF_SetTextScript;
     TTF_SetTextString;
     TTF_SetTextWrapWhitespaceVisible;
     TTF_SetTextWrapWidth;

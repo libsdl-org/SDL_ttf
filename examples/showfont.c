@@ -193,7 +193,8 @@ static void HandleKeyDown(Scene *scene, SDL_Event *event)
 
     case SDLK_R:
         /* Toggle layout direction */
-        if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_LTR) {
+        if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_INVALID ||
+            TTF_GetFontDirection(scene->font) == TTF_DIRECTION_LTR) {
             TTF_SetFontDirection(scene->font, TTF_DIRECTION_RTL);
         } else if (TTF_GetFontDirection(scene->font) == TTF_DIRECTION_RTL) {
             TTF_SetFontDirection(scene->font, TTF_DIRECTION_LTR);

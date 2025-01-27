@@ -236,6 +236,8 @@ typedef struct GlyphPositions {
 } GlyphPositions;
 
 typedef struct CachedGlyphPositions {
+    TTF_Direction direction;
+    Uint32 script;
     char *text;
     size_t length;
     GlyphPositions positions;
@@ -311,12 +313,10 @@ struct TTF_Font {
     int render_subpixel;
 #if TTF_USE_HARFBUZZ
     hb_font_t *hb_font;
-    // If HB_SCRIPT_INVALID, use global default script
-    hb_script_t hb_script;
-    // If HB_DIRECTION_INVALID, use global default direction
-    hb_direction_t hb_direction;
     hb_language_t hb_language;
 #endif
+    Uint32 script;
+    TTF_Direction direction;
     bool render_sdf;
 
     // Extra layout setting for wrapped text
@@ -1023,21 +1023,16 @@ static void BG_NEON(const TTF_Image *image, Uint8 *destination, Sint32 srcskip, 
 #endif
 
 // Underline and Strikethrough style. Draw a line at the given row.
-static void Draw_Line(TTF_Font *font, const SDL_Surface *textbuf, int column, int row, int line_width, int line_thickness, Uint32 color, const render_mode_t render_mode)
+static void Draw_Line(TTF_Direction direction, const SDL_Surface *textbuf, int column, int row, int line_width, int line_thickness, Uint32 color, const render_mode_t render_mode)
 {
     int tmp    = row + line_thickness - textbuf->h;
     int x_offset = column * SDL_BYTESPERPIXEL(textbuf->format);
     Uint8 *dst = (Uint8 *)textbuf->pixels + row * textbuf->pitch + x_offset;
-#if TTF_USE_HARFBUZZ
-    hb_direction_t hb_direction = font->hb_direction;
 
     // No Underline/Strikethrough style if direction is vertical
-    if (hb_direction == HB_DIRECTION_TTB || hb_direction == HB_DIRECTION_BTT) {
+    if (direction == TTF_DIRECTION_TTB || direction == TTF_DIRECTION_BTT) {
         return;
     }
-#else
-    (void) font;
-#endif
 
     /* Not needed because of "font->height = SDL_max(font->height, bottom_row);".
      * But if you patch to render textshaping and break line in middle of a cluster,
@@ -1070,21 +1065,16 @@ static void Draw_Line(TTF_Font *font, const SDL_Surface *textbuf, int column, in
     }
 }
 
-static void Draw_Line_TextEngine(TTF_Font *font, int width, int height, int column, int row, int line_width, int line_thickness, TTF_DrawOperation *ops, int *current_op)
+static void Draw_Line_TextEngine(TTF_Direction direction, int width, int height, int column, int row, int line_width, int line_thickness, TTF_DrawOperation *ops, int *current_op)
 {
     int op_index = *current_op;
     TTF_DrawOperation *op = &ops[op_index];
     int tmp    = row + line_thickness - height;
-#if TTF_USE_HARFBUZZ
-    hb_direction_t hb_direction = font->hb_direction;
 
     // No Underline/Strikethrough style if direction is vertical
-    if (hb_direction == HB_DIRECTION_TTB || hb_direction == HB_DIRECTION_BTT) {
+    if (direction == TTF_DIRECTION_TTB || direction == TTF_DIRECTION_BTT) {
         return;
     }
-#else
-    (void) font;
-#endif
 
     /* Not needed because of "font->height = SDL_max(font->height, bottom_row);".
      * But if you patch to render textshaping and break line in middle of a cluster,
@@ -2093,8 +2083,6 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
      * you will get mismatching advances and raster. */
     hb_ft_font_set_load_flags(font->hb_font, FT_LOAD_DEFAULT | font->ft_load_target);
 
-    font->hb_direction = HB_DIRECTION_LTR;
-    font->hb_script = HB_SCRIPT_UNKNOWN;
     font->hb_language = hb_language_from_string("", -1);
 #endif
 
@@ -3163,7 +3151,7 @@ bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *ker
     return true;
 }
 
-static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions)
+static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, GlyphPositions *positions)
 {
 #if TTF_USE_HARFBUZZ
     // Create a buffer for harfbuzz to use
@@ -3175,12 +3163,12 @@ static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t lengt
 
     // Set global configuration
     hb_buffer_set_language(hb_buffer, font->hb_language);
-    hb_buffer_set_direction(hb_buffer, font->hb_direction);
-    hb_buffer_set_script(hb_buffer, font->hb_script);
-    hb_buffer_guess_segment_properties(hb_buffer);
+    hb_buffer_set_direction(hb_buffer, (hb_direction_t)direction);
+    hb_buffer_set_script(hb_buffer, script);
 
     // Layout the text
     hb_buffer_add_utf8(hb_buffer, text, (int)length, 0, -1);
+    hb_buffer_guess_segment_properties(hb_buffer);
 
     hb_feature_t userfeatures[1];
     userfeatures[0].tag = HB_TAG('k','e','r','n');
@@ -3340,7 +3328,7 @@ static bool ReplaceGlyphPositions(GlyphPositions *positions, int start, int leng
     return true;
 }
 
-static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions, TTF_Font *initial_font)
+static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, GlyphPositions *positions, TTF_Font *initial_font)
 {
     if (!initial_font) {
         initial_font = font;
@@ -3349,7 +3337,7 @@ static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t 
         return true;
     }
 
-    if (!CollectGlyphsFromFont(font, text, length, positions)) {
+    if (!CollectGlyphsFromFont(font, text, length, direction, script, positions)) {
         return false;
     }
 
@@ -3372,7 +3360,7 @@ static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t 
                 SDL_zero(span);
                 int span_offset = positions->pos[start].offset;
                 int span_length = pos->offset - span_offset;
-                CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, &span, initial_font);
+                CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, direction, script, &span, initial_font);
                 if (span.len > 0) {
                     ReplaceGlyphPositions(positions, start, (i - start), &span);
                     SDL_free(span.pos);
@@ -3387,7 +3375,7 @@ static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t 
             SDL_zero(span);
             int span_offset = positions->pos[start].offset;
             int span_length = (int)(length - span_offset);
-            CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, &span, initial_font);
+            CollectGlyphsWithFallbacks(fallback->font, text + span_offset, span_length, direction, script, &span, initial_font);
             if (span.len > 0) {
                 ReplaceGlyphPositions(positions, start, (positions->len - start), &span);
                 SDL_free(span.pos);
@@ -3399,9 +3387,9 @@ static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t 
     return true;
 }
 
-static bool CollectGlyphs(TTF_Font *font, const char *text, size_t length, GlyphPositions *positions)
+static bool CollectGlyphs(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, GlyphPositions *positions)
 {
-    if (!CollectGlyphsWithFallbacks(font, text, length, positions, NULL)) {
+    if (!CollectGlyphsWithFallbacks(font, text, length, direction, script, positions, NULL)) {
         return false;
     }
 
@@ -3415,14 +3403,16 @@ static bool CollectGlyphs(TTF_Font *font, const char *text, size_t length, Glyph
     return true;
 }
 
-static GlyphPositions *GetCachedGlyphPositions(TTF_Font *font, const char *text, size_t length)
+static GlyphPositions *GetCachedGlyphPositions(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script)
 {
     CachedGlyphPositions *cached;
 
     font->positions = NULL;
     for (unsigned int i = 0; i < SDL_arraysize(font->cached_positions); ++i) {
         cached = &font->cached_positions[i];
-        if (length == cached->length &&
+        if (direction == cached->direction &&
+            script == cached->script &&
+            length == cached->length &&
             SDL_memcmp(text, cached->text, length) == 0) {
 #ifdef DEBUG_TTF_CACHE
             SDL_Log("Found cached positions for '%s'\n", cached->text);
@@ -3439,6 +3429,8 @@ static GlyphPositions *GetCachedGlyphPositions(TTF_Font *font, const char *text,
         font->positions = &cached->positions;
 
         SDL_free(cached->text);
+        cached->direction = direction;
+        cached->script = script;
         cached->text = (char *)SDL_malloc(length + 1);
         if (cached->text) {
             SDL_memcpy(cached->text, text, length);
@@ -3449,7 +3441,7 @@ static GlyphPositions *GetCachedGlyphPositions(TTF_Font *font, const char *text,
             return NULL;
         }
 
-        if (!CollectGlyphs(font, text, length, font->positions)) {
+        if (!CollectGlyphs(font, text, length, direction, script, font->positions)) {
             cached->length = 0;
             return NULL;
         }
@@ -3460,7 +3452,7 @@ static GlyphPositions *GetCachedGlyphPositions(TTF_Font *font, const char *text,
     return font->positions;
 }
 
-static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, int *w, int *h, int *xstart, int *ystart, bool measure_width, int max_width, int *measured_width, size_t *measured_length)
+static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, int *w, int *h, int *xstart, int *ystart, bool measure_width, int max_width, int *measured_width, size_t *measured_length)
 {
     int x = 0, y = 0;
     int pos_x, pos_y;
@@ -3493,7 +3485,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, i
     // Reset buffer
     font->num_clusters = 0;
 
-    GlyphPositions *positions = GetCachedGlyphPositions(font, text, length);
+    GlyphPositions *positions = GetCachedGlyphPositions(font, text, length, direction, script);
     if (!positions) {
         return false;
     }
@@ -3596,7 +3588,7 @@ bool TTF_GetStringSize(TTF_Font *font, const char *text, size_t length, int *w, 
     if (!length && text) {
         length = SDL_strlen(text);
     }
-    return TTF_Size_Internal(font, text, length, w, h, NULL, NULL, NO_MEASUREMENT);
+    return TTF_Size_Internal(font, text, length, font->direction, font->script, w, h, NULL, NULL, NO_MEASUREMENT);
 }
 
 bool TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int max_width, int *measured_width, size_t *measured_length)
@@ -3604,7 +3596,7 @@ bool TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int max_
     if (!length && text) {
         length = SDL_strlen(text);
     }
-    return TTF_Size_Internal(font, text, length, NULL, NULL, NULL, NULL, true, max_width, measured_width, measured_length);
+    return TTF_Size_Internal(font, text, length, font->direction, font->script, NULL, NULL, NULL, NULL, true, max_width, measured_width, measured_length);
 }
 
 static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, const render_mode_t render_mode)
@@ -3637,7 +3629,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t
 #endif
 
     // Get the dimensions of the text surface
-    if (!TTF_Size_Internal(font, text, length, &width, &height, &xstart, &ystart, NO_MEASUREMENT) || !width) {
+    if (!TTF_Size_Internal(font, text, length, font->direction, font->script, &width, &height, &xstart, &ystart, NO_MEASUREMENT) || !width) {
         SDL_SetError("Text has zero width");
         goto failure;
     }
@@ -3667,11 +3659,11 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t
 
     // Apply underline or strikethrough style, if needed
     if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-        Draw_Line(font, textbuf, 0, ystart + font->underline_top_row, width, font->line_thickness, color, render_mode);
+        Draw_Line(font->direction, textbuf, 0, ystart + font->underline_top_row, width, font->line_thickness, color, render_mode);
     }
 
     if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-        Draw_Line(font, textbuf, 0, ystart + font->strikethrough_top_row, width, font->line_thickness, color, render_mode);
+        Draw_Line(font->direction, textbuf, 0, ystart + font->strikethrough_top_row, width, font->line_thickness, color, render_mode);
     }
 
     return textbuf;
@@ -3755,7 +3747,7 @@ static bool CharacterIsNewLine(Uint32 c)
     return false;
 }
 
-static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int xoffset, int wrap_width, bool trim_whitespace, TTF_Line **lines, int *num_lines, int *w, int *h)
+static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, int xoffset, int wrap_width, bool trim_whitespace, TTF_Line **lines, int *num_lines, int *w, int *h)
 {
     int width, height;
     int i, numLines = 0, rowHeight;
@@ -3781,7 +3773,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
     }
 
     // Get the dimensions of the text surface
-    if (!TTF_GetStringSize(font, text, length, &width, &height) || !width) {
+    if (!TTF_Size_Internal(font, text, length, direction, script, &width, &height, NULL, NULL, NO_MEASUREMENT)|| !width) {
         return SDL_SetError("Text has zero width");
     }
 
@@ -3833,7 +3825,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
                 max_width = SDL_max(max_width - xoffset, 1);
             }
             size_t max_length = 0;
-            if (!TTF_MeasureString(font, spot, left, max_width, NULL, &max_length)) {
+            if (!TTF_Size_Internal(font, spot, left, direction, script, NULL, NULL, NULL, NULL, true, max_width, NULL, &max_length)) {
                 SDL_SetError("Error measure text");
                 goto done;
             }
@@ -3916,7 +3908,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, int
             for (i = 0; i < numLines; i++) {
                 int w_tmp, h_tmp;
 
-                if (TTF_GetStringSize(font, strLines[i].text, strLines[i].length, &w_tmp, &h_tmp)) {
+                if (TTF_Size_Internal(font, strLines[i].text, strLines[i].length, font->direction, font->script, &w_tmp, &h_tmp, NULL, NULL, NO_MEASUREMENT)) {
                     width = SDL_max(w_tmp, width);
                 }
             }
@@ -3959,7 +3951,7 @@ done:
 
 bool TTF_GetStringSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrap_width, int *w, int *h)
 {
-    return GetWrappedLines(font, text, length, 0, wrap_width, true, NULL, NULL, w, h);
+    return GetWrappedLines(font, text, length, font->direction, font->script, 0, wrap_width, true, NULL, NULL, w, h);
 }
 
 static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrap_width, const render_mode_t render_mode)
@@ -3970,7 +3962,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     int i, numLines = 0;
     TTF_Line *strLines = NULL;
 
-    if (!GetWrappedLines(font, text, length, 0, wrap_width, true, &strLines, &numLines, &width, &height)) {
+    if (!GetWrappedLines(font, text, length, font->direction, font->script, 0, wrap_width, true, &strLines, &numLines, &width, &height)) {
         return NULL;
     }
 
@@ -4012,7 +4004,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         int xstart, ystart, line_width, xoffset;
 
         // Initialize xstart, ystart and compute positions
-        if (!TTF_Size_Internal(font, strLines[i].text, strLines[i].length, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
+        if (!TTF_Size_Internal(font, strLines[i].text, strLines[i].length, font->direction, font->script, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
             goto failure;
         }
 
@@ -4036,11 +4028,11 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
 
         // Apply underline or strikethrough style, if needed
         if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-            Draw_Line(font, textbuf, xoffset, ystart + font->underline_top_row, line_width, font->line_thickness, color, render_mode);
+            Draw_Line(font->direction, textbuf, xoffset, ystart + font->underline_top_row, line_width, font->line_thickness, color, render_mode);
         }
 
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-            Draw_Line(font, textbuf, xoffset, ystart + font->strikethrough_top_row, line_width, font->line_thickness, color, render_mode);
+            Draw_Line(font->direction, textbuf, xoffset, ystart + font->strikethrough_top_row, line_width, font->line_thickness, color, render_mode);
         }
     }
 
@@ -4081,6 +4073,8 @@ SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t
 
 struct TTF_TextLayout
 {
+    TTF_Direction direction;
+    Uint32 script;
     int font_height;
     int wrap_length;
     bool wrap_whitespace_visible;
@@ -4242,8 +4236,10 @@ static bool LayoutText(TTF_Text *text)
     int num_clusters = 0, max_clusters = 0, cluster_offset;
     int *lines = NULL;
     bool result = false;
+    TTF_Direction direction = TTF_GetTextDirection(text);
+    Uint32 script = TTF_GetTextScript(text);
 
-    if (!GetWrappedLines(font, text->text, length, text->internal->x, wrap_width, trim_whitespace, &strLines, &numLines, &width, &height)) {
+    if (!GetWrappedLines(font, text->text, length, direction, script, text->internal->x, wrap_width, trim_whitespace, &strLines, &numLines, &width, &height)) {
         return true;
     }
     height += text->internal->y;
@@ -4284,7 +4280,7 @@ static bool LayoutText(TTF_Text *text)
         }
 
         // Initialize xstart, ystart and compute positions
-        if (!TTF_Size_Internal(font, strLines[i].text, strLines[i].length, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
+        if (!TTF_Size_Internal(font, strLines[i].text, strLines[i].length, direction, script, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
             goto done;
         }
 
@@ -4338,11 +4334,11 @@ static bool LayoutText(TTF_Text *text)
 
         // Apply underline or strikethrough style, if needed
         if (TTF_HANDLE_STYLE_UNDERLINE(font)) {
-            Draw_Line_TextEngine(font, width, height, xoffset, ystart + font->underline_top_row, line_width, font->line_thickness, ops, &num_ops);
+            Draw_Line_TextEngine(direction, width, height, xoffset, ystart + font->underline_top_row, line_width, font->line_thickness, ops, &num_ops);
         }
 
         if (TTF_HANDLE_STYLE_STRIKETHROUGH(font)) {
-            Draw_Line_TextEngine(font, width, height, xoffset, ystart + font->strikethrough_top_row, line_width, font->line_thickness, ops, &num_ops);
+            Draw_Line_TextEngine(direction, width, height, xoffset, ystart + font->strikethrough_top_row, line_width, font->line_thickness, ops, &num_ops);
         }
     }
     cluster = &clusters[num_clusters++];
@@ -4462,6 +4458,59 @@ TTF_Font *TTF_GetTextFont(TTF_Text *text)
     TTF_CHECK_POINTER("text", text, NULL);
 
     return text->internal->font;
+}
+
+bool TTF_SetTextDirection(TTF_Text *text, TTF_Direction direction)
+{
+    TTF_CHECK_POINTER("text", text, false);
+
+    if (direction == text->internal->layout->direction) {
+        return true;
+    }
+
+#if !TTF_USE_HARFBUZZ
+    if (direction != TTF_DIRECTION_INVALID && direction != TTF_DIRECTION_LTR) {
+        return SDL_Unsupported();
+    }
+#endif
+
+    text->internal->layout->direction = direction;
+    text->internal->needs_layout_update = true;
+    return true;
+}
+
+TTF_Direction TTF_GetTextDirection(TTF_Text *text)
+{
+    TTF_CHECK_POINTER("text", text, TTF_DIRECTION_INVALID);
+
+    if (text->internal->layout->direction != TTF_DIRECTION_INVALID) {
+        return text->internal->layout->direction;
+    }
+    return TTF_GetFontDirection(text->internal->font);
+}
+
+bool TTF_SetTextScript(TTF_Text *text, Uint32 script)
+{
+    TTF_CHECK_POINTER("text", text, false);
+
+#if TTF_USE_HARFBUZZ
+    text->internal->layout->script = script;
+    text->internal->needs_layout_update = true;
+    return true;
+#else
+    (void) script;
+    return SDL_Unsupported();
+#endif
+}
+
+Uint32 TTF_GetTextScript(TTF_Text *text)
+{
+    TTF_CHECK_POINTER("text", text, 0);
+
+    if (text->internal->layout->script != 0) {
+        return text->internal->layout->script;
+    }
+    return TTF_GetFontScript(text->internal->font);
 }
 
 bool TTF_SetTextColor(TTF_Text *text, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
@@ -4962,7 +5011,7 @@ TTF_SubString **TTF_GetTextSubStringsForRange(TTF_Text *text, int offset, int le
         SDL_copyp(substring, &substring1);
         if (length == 0) {
             substring->length = 0;
-            if (TTF_GetFontDirection(text->internal->font) != TTF_DIRECTION_RTL) {
+            if (TTF_GetTextDirection(text) != TTF_DIRECTION_RTL) {
                 substring->rect.x += substring->rect.w;
             }
             substring->rect.w = 0;
@@ -5036,8 +5085,8 @@ bool TTF_GetTextSubStringForPoint(TTF_Text *text, int x, int y, TTF_SubString *s
         return true;
     }
 
-    TTF_Direction direction = TTF_GetFontDirection(text->internal->font);
-    bool prefer_row = (direction == TTF_DIRECTION_LTR || direction == TTF_DIRECTION_RTL);
+    TTF_Direction direction = TTF_GetTextDirection(text);
+    bool prefer_row = (direction == TTF_DIRECTION_INVALID || direction == TTF_DIRECTION_LTR || direction == TTF_DIRECTION_RTL);
     bool line_ends_right = (direction == TTF_DIRECTION_LTR);
     const TTF_SubString *closest = NULL;
     int closest_dist = INT_MAX;
@@ -5619,79 +5668,34 @@ bool TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction)
 {
     TTF_CHECK_FONT(font, false);
 
-#if TTF_USE_HARFBUZZ
-    hb_direction_t hb_direction;
-    if (direction == TTF_DIRECTION_LTR) {
-        hb_direction = HB_DIRECTION_LTR;
-    } else if (direction == TTF_DIRECTION_RTL) {
-        hb_direction = HB_DIRECTION_RTL;
-    } else if (direction == TTF_DIRECTION_TTB) {
-        hb_direction = HB_DIRECTION_BTT;
-    } else if (direction == TTF_DIRECTION_BTT) {
-        hb_direction = HB_DIRECTION_TTB;
-    } else {
-        return SDL_InvalidParamError("direction");
-    }
-
-    if (hb_direction == font->hb_direction) {
+    if (direction == font->direction) {
         return true;
     }
 
-    font->hb_direction = hb_direction;
+#if !TTF_USE_HARFBUZZ
+    if (direction != TTF_DIRECTION_INVALID && direction != TTF_DIRECTION_LTR) {
+        return SDL_Unsupported();
+    }
+#endif
+
+    font->direction = direction;
     UpdateFontText(font, NULL);
     return true;
-#else
-    (void) direction;
-    return SDL_Unsupported();
-#endif
 }
 
 TTF_Direction TTF_GetFontDirection(TTF_Font *font)
 {
-    TTF_CHECK_FONT(font, TTF_DIRECTION_LTR);
+    TTF_CHECK_FONT(font, TTF_DIRECTION_INVALID);
 
-#if TTF_USE_HARFBUZZ
-    switch (font->hb_direction) {
-    case HB_DIRECTION_LTR:
-        return TTF_DIRECTION_LTR;
-    case HB_DIRECTION_RTL:
-        return TTF_DIRECTION_RTL;
-    case HB_DIRECTION_BTT:
-        return TTF_DIRECTION_TTB;
-    case HB_DIRECTION_TTB:
-        return TTF_DIRECTION_BTT;
-    default:
-        return TTF_DIRECTION_LTR;
-    }
-#else
-    return TTF_DIRECTION_LTR;
-#endif
+    return font->direction;
 }
 
-bool TTF_SetFontScript(TTF_Font *font, const char *script)
+bool TTF_SetFontScript(TTF_Font *font, Uint32 script)
 {
     TTF_CHECK_FONT(font, false);
 
 #if TTF_USE_HARFBUZZ
-    Uint8 a, b, c, d;
-    hb_script_t hb_script;
-
-    if (script == NULL || SDL_strlen(script) != 4) {
-        return SDL_InvalidParamError("script");
-    }
-
-    a = script[0];
-    b = script[1];
-    c = script[2];
-    d = script[3];
-
-    hb_script = HB_TAG(a, b, c, d);
-
-    if (hb_script == font->hb_script) {
-        return true;
-    }
-
-    font->hb_script = hb_script;
+    font->script = script;
     UpdateFontText(font, NULL);
     return true;
 #else
@@ -5700,73 +5704,48 @@ bool TTF_SetFontScript(TTF_Font *font, const char *script)
 #endif
 }
 
-bool TTF_GetFontScript(TTF_Font *font, char *script, size_t script_size)
+Uint32 TTF_GetFontScript(TTF_Font *font)
 {
-    TTF_CHECK_FONT(font, false);
+    TTF_CHECK_FONT(font, 0);
 
-#if TTF_USE_HARFBUZZ
-    TTF_CHECK_POINTER("script", script, false);
-
-    if (script_size < 5) {
-        return SDL_SetError("Insufficient script buffer size");
-    }
-
-    uint8_t untagged_script[4] = { HB_UNTAG(font->hb_script) };
-    script[0] = (char)untagged_script[0];
-    script[1] = (char)untagged_script[1];
-    script[2] = (char)untagged_script[2];
-    script[3] = (char)untagged_script[3];
-    script[4] = '\0';
-    return true;
-
-#else
-    (void) script;
-    (void) script_size;
-    return SDL_Unsupported();
-#endif
+    return font->script;
 }
 
-bool TTF_GetGlyphScript(Uint32 ch, char *script, size_t script_size)
+Uint32 TTF_GetGlyphScript(Uint32 ch)
 {
+    Uint32 script = 0;
+
 #if TTF_USE_HARFBUZZ
-    TTF_CHECK_POINTER("script", script, false);
-
-    if (script_size < 5) {
-        return SDL_SetError("Insufficient script buffer size");
-    }
-
     hb_buffer_t *hb_buffer = hb_buffer_create();
 
     if (hb_buffer == NULL) {
-        return SDL_SetError("Cannot create harfbuzz buffer");
+        SDL_SetError("Cannot create harfbuzz buffer");
+        return 0;
     }
 
-    hb_unicode_funcs_t* hb_unicode_functions = hb_buffer_get_unicode_funcs(hb_buffer);
+    hb_unicode_funcs_t *hb_unicode_functions = hb_buffer_get_unicode_funcs(hb_buffer);
 
     if (hb_unicode_functions == NULL) {
         hb_buffer_destroy(hb_buffer);
-        return SDL_SetError("Cannot get harfbuzz unicode functions");
+        SDL_SetError("Can't get harfbuzz unicode functions");
+        return 0;
     }
 
     hb_buffer_clear_contents(hb_buffer);
     hb_buffer_set_content_type(hb_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
 
-    uint8_t untagged_script[4] = { HB_UNTAG(hb_unicode_script(hb_unicode_functions, ch)) };
-    script[0] = (char)untagged_script[0];
-    script[1] = (char)untagged_script[1];
-    script[2] = (char)untagged_script[2];
-    script[3] = (char)untagged_script[3];
-    script[4] = '\0';
+    script = hb_unicode_script(hb_unicode_functions, ch);
+    if (script == HB_SCRIPT_UNKNOWN) {
+        script = 0;
+    }
 
     hb_buffer_destroy(hb_buffer);
-    return true;
-
-#else
-    (void) script;
-    (void) script_size;
-    (void) ch;
-    return SDL_Unsupported();
 #endif
+
+    if (script == 0) {
+        SDL_SetError("Unknown script");
+    }
+    return script;
 }
 
 bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
