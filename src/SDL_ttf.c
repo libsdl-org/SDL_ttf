@@ -233,8 +233,10 @@ typedef struct GlyphPosition {
 typedef struct GlyphPositions {
     GlyphPosition *pos;
     int len;
-    int maxlen;
+    int width26dot6;
+    int height26dot6;
     int num_clusters;
+    int maxlen;
 } GlyphPositions;
 
 typedef struct CachedGlyphPositions {
@@ -3370,6 +3372,44 @@ static bool ReplaceGlyphPositions(GlyphPositions *positions, int start, int leng
     return true;
 }
 
+static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, GlyphPositions *positions, TTF_Font *initial_font);
+
+static int FillFallbackSpan(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, GlyphPositions *positions, TTF_Font *initial_font, int start, int stop)
+{
+    // Set the starting offset
+    int min_offset = positions->pos[start].offset;
+    int max_offset = min_offset;
+
+    for (int i = start; i < stop; ++i) {
+        if (positions->pos[i].offset < min_offset) {
+            min_offset = positions->pos[i].offset;
+        }
+        if (positions->pos[i].offset > max_offset) {
+            max_offset = positions->pos[i].offset;
+        }
+    }
+    if (stop < positions->len && positions->pos[stop].offset > max_offset) {
+        max_offset = positions->pos[stop].offset;
+    } else {
+        const char *last_text = text + max_offset;
+        SDL_StepUTF8(&last_text, NULL);
+        max_offset = (int)(uintptr_t)(last_text - text);
+    }
+    if (max_offset > (int)length) {
+        max_offset = (int)length;
+    }
+
+    GlyphPositions span;
+    SDL_zero(span);
+    int span_length = (max_offset - min_offset);
+    CollectGlyphsWithFallbacks(font, text + min_offset, span_length, direction, script, &span, initial_font);
+    if (span.len > 0) {
+        ReplaceGlyphPositions(positions, start, (stop - start), &span);
+        SDL_free(span.pos);
+    }
+    return span.len;
+}
+
 static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, GlyphPositions *positions, TTF_Font *initial_font)
 {
     if (!initial_font) {
@@ -3398,34 +3438,16 @@ static bool CollectGlyphsWithFallbacks(TTF_Font *font, const char *text, size_t 
                 }
             } else if (start >= 0) {
                 // Fill in this span with the fallback font
-                GlyphPositions span;
-                SDL_zero(span);
-                int min_offset = SDL_min(positions->pos[start].offset, pos->offset);
-                int max_offset = SDL_max(positions->pos[start].offset, pos->offset);
-                int span_length = (max_offset - min_offset);
-                CollectGlyphsWithFallbacks(fallback->font, text + min_offset, span_length, direction, script, &span, initial_font);
-                if (span.len > 0) {
-                    ReplaceGlyphPositions(positions, start, (i - start), &span);
-                    SDL_free(span.pos);
-                    i = start + span.len;
+                int replaced = FillFallbackSpan(fallback->font, text, length, direction, script, positions, initial_font, start, i);
+                if (replaced > 0) {
+                    i = start + replaced;
                 }
                 start = -1;
             }
         }
         if (start >= 0) {
             // Fill in this span with the fallback font
-            GlyphPositions span;
-            SDL_zero(span);
-            int min_offset = SDL_min(positions->pos[start].offset, positions->pos[positions->len - 1].offset);
-            int max_offset = SDL_max(positions->pos[start].offset, positions->pos[positions->len - 1].offset);
-            const char *last_text = &text[max_offset];
-            SDL_StepUTF8(&last_text, NULL);
-            int span_length = (int)(last_text - &text[min_offset]);
-            CollectGlyphsWithFallbacks(fallback->font, text + min_offset, span_length, direction, script, &span, initial_font);
-            if (span.len > 0) {
-                ReplaceGlyphPositions(positions, start, (positions->len - start), &span);
-                SDL_free(span.pos);
-            }
+            FillFallbackSpan(fallback->font, text, length, direction, script, positions, initial_font, start, positions->len);
         }
         fallback = fallback->next;
     }
@@ -3475,6 +3497,9 @@ static bool CollectGlyphs(TTF_Font *font, const char *text, size_t length, TTF_D
             last_offset = pos->offset;
         }
     }
+    positions->width26dot6 = x;
+    positions->height26dot6 = y;
+
     return true;
 }
 
@@ -3562,38 +3587,86 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
         return false;
     }
 
-    for (int i = 0; i < positions->len; ++i) {
-        GlyphPosition *pos = &positions->pos[i];
-        c_glyph *glyph = pos->glyph;
+    if (positions->len > 0) {
+        if (positions->pos[0].offset == 0) {
+            // Left to right layout
+            for (int i = 0; i < positions->len; ++i) {
+                GlyphPosition *pos = &positions->pos[i];
+                c_glyph *glyph = pos->glyph;
 
-        // Compute provisional global bounding box
-        pos_x = FT_FLOOR(pos->x) + glyph->sz_left;
-        pos_y = FT_FLOOR(pos->y) - glyph->sz_top;
+                // Compute provisional global bounding box
+                pos_x = FT_FLOOR(pos->x) + glyph->sz_left;
+                pos_y = FT_FLOOR(pos->y) - glyph->sz_top;
 
-        minx = SDL_min(minx, pos_x);
-        maxx = SDL_max(maxx, pos_x + glyph->sz_width);
-        miny = SDL_min(miny, pos_y);
-        maxy = SDL_max(maxy, pos_y + glyph->sz_rows);
+                minx = SDL_min(minx, pos_x);
+                maxx = SDL_max(maxx, pos_x + glyph->sz_width);
+                miny = SDL_min(miny, pos_y);
+                maxy = SDL_max(maxy, pos_y + glyph->sz_rows);
 
-        x += pos->x_advance;
+                x += pos->x_advance;
 #if !TTF_USE_HARFBUZZ
-        if (!font->render_subpixel) {
-            x = ((x + 32) & -64); // ROUND()
-        }
+                if (!font->render_subpixel) {
+                    x = ((x + 32) & -64); // ROUND()
+                }
 #endif
-        // Measurement mode
-        if (measure_width) {
-            int cw = SDL_max(maxx, FT_FLOOR(x)) - minx;
-            cw += 2 * font->outline;
-            if (!max_width || cw <= max_width) {
-                if (measured_width) {
-                    *measured_width = cw;
+                // Measurement mode
+                if (measure_width) {
+                    int cw = SDL_max(maxx, FT_FLOOR(x)) - minx;
+                    cw += 2 * font->outline;
+                    if (!max_width || cw <= max_width) {
+                        if (measured_width) {
+                            *measured_width = cw;
+                        }
+                    } else {
+                        if (measured_length) {
+                            *measured_length = (size_t)pos->offset;
+                        }
+                        break;
+                    }
                 }
-            } else {
-                if (measured_length) {
-                    *measured_length = (size_t)pos->offset;
+            }
+        } else {
+            // Right to left layout
+            x = positions->width26dot6;
+            minx = FT_CEIL(positions->width26dot6);
+            for (int i = positions->len; i--; ) {
+                GlyphPosition *pos = &positions->pos[i];
+                c_glyph *glyph = pos->glyph;
+
+                // Compute provisional global bounding box
+                pos_x = FT_FLOOR(pos->x) + glyph->sz_left;
+                pos_y = FT_FLOOR(pos->y) - glyph->sz_top;
+
+                minx = SDL_min(minx, pos_x);
+                maxx = SDL_max(maxx, pos_x + glyph->sz_width);
+                miny = SDL_min(miny, pos_y);
+                maxy = SDL_max(maxy, pos_y + glyph->sz_rows);
+
+                // Measurement mode
+                if (measure_width) {
+                    int cw = SDL_max(maxx, FT_FLOOR(x)) - minx;
+                    cw += 2 * font->outline;
+                    if (!max_width || cw <= max_width) {
+                        if (measured_width) {
+                            *measured_width = cw;
+                        }
+                    } else {
+                        if (measured_length) {
+                            *measured_length = (size_t)pos->offset;
+                        }
+                        break;
+                    }
                 }
-                break;
+
+                x -= pos->x_advance;
+#if !TTF_USE_HARFBUZZ
+                if (!font->render_subpixel) {
+                    x = ((x + 32) & -64); // ROUND()
+                }
+#endif
+            }
+            if (minx > 0) {
+                minx = 0;
             }
         }
     }
@@ -3604,7 +3677,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
     /* Initial x start position: often 0, except when a glyph would be written at
      * a negative position. In this case an offset is needed for the whole line. */
     if (xstart) {
-        *xstart = (minx < 0)? -minx : 0;
+        *xstart = (minx < 0) ? -minx : 0;
         *xstart += font->outline;
         if (font->render_sdf) {
             *xstart += DEFAULT_SDF_SPREAD; // Default 'spread' property
@@ -3613,7 +3686,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
 
     // Initial y start: compensation for a negative y offset
     if (ystart) {
-        *ystart = (miny < 0)? -miny : 0;
+        *ystart = (miny < 0) ? -miny : 0;
         *ystart += font->outline;
         if (font->render_sdf) {
             *ystart += DEFAULT_SDF_SPREAD; // Default 'spread' property
