@@ -2338,10 +2338,11 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSize(TTF_Text *text, int *w, int *h)
  */
 typedef Uint32 TTF_SubStringFlags;
 
-#define TTF_SUBSTRING_TEXT_START    0x00000001  /**< This substring contains the beginning of the text */
-#define TTF_SUBSTRING_LINE_START    0x00000002  /**< This substring contains the beginning of line `line_index` */
-#define TTF_SUBSTRING_LINE_END      0x00000004  /**< This substring contains the end of line `line_index` */
-#define TTF_SUBSTRING_TEXT_END      0x00000008  /**< This substring contains the end of the text */
+#define TTF_SUBSTRING_DIRECTION_MASK    0x000000FF  /**< The mask for the flow direction for this substring */
+#define TTF_SUBSTRING_TEXT_START        0x00000100  /**< This substring contains the beginning of the text */
+#define TTF_SUBSTRING_LINE_START        0x00000200  /**< This substring contains the beginning of line `line_index` */
+#define TTF_SUBSTRING_LINE_END          0x00000400  /**< This substring contains the end of line `line_index` */
+#define TTF_SUBSTRING_TEXT_END          0x00000800  /**< This substring contains the end of the text */
 
 /**
  * The representation of a substring within text.

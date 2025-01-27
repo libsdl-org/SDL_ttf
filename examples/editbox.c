@@ -138,7 +138,7 @@ static void DrawCompositionCursor(EditBox *edit)
             SDL_FRect rect;
 
             SDL_RectToFRect(&cursor.rect, &rect);
-            if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
+            if ((cursor.flags & TTF_SUBSTRING_DIRECTION_MASK) == TTF_DIRECTION_RTL) {
                 rect.x += cursor.rect.w;
             }
             rect.x += edit->rect.x;
@@ -437,7 +437,7 @@ void EditBox_Draw(EditBox *edit)
         if (TTF_GetTextSubString(edit->text, edit->cursor, &cursor)) {
             SDL_FRect cursor_rect;
             SDL_RectToFRect(&cursor.rect, &cursor_rect);
-            if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
+            if ((cursor.flags & TTF_SUBSTRING_DIRECTION_MASK) == TTF_DIRECTION_RTL) {
                 cursor_rect.x += cursor.rect.w;
             }
             cursor_rect.x += edit->rect.x;
@@ -462,14 +462,14 @@ void EditBox_Draw(EditBox *edit)
     }
 }
 
-static int GetCursorTextIndex(TTF_Font *font, int x, const TTF_SubString *substring)
+static int GetCursorTextIndex(int x, const TTF_SubString *substring)
 {
     if (substring->flags & (TTF_SUBSTRING_LINE_END | TTF_SUBSTRING_TEXT_END)) {
         return substring->offset;
     }
 
     bool round_down;
-    if (TTF_GetFontDirection(font) == TTF_DIRECTION_RTL) {
+    if ((substring->flags & TTF_SUBSTRING_DIRECTION_MASK) == TTF_DIRECTION_RTL) {
         round_down = (x > (substring->rect.x + substring->rect.w / 2));
     } else {
         round_down = (x < (substring->rect.x + substring->rect.w / 2));
@@ -519,7 +519,9 @@ void EditBox_MoveCursorLeft(EditBox *edit)
         return;
     }
 
-    if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
+    TTF_SubString substring;
+    if (TTF_GetTextSubString(edit->text, edit->cursor, &substring) &&
+        (substring.flags & TTF_SUBSTRING_DIRECTION_MASK) == TTF_DIRECTION_RTL) {
         MoveCursorIndex(edit, 1);
     } else {
         MoveCursorIndex(edit, -1);
@@ -532,7 +534,9 @@ void EditBox_MoveCursorRight(EditBox *edit)
         return;
     }
 
-    if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
+    TTF_SubString substring;
+    if (TTF_GetTextSubString(edit->text, edit->cursor, &substring) &&
+        (substring.flags & TTF_SUBSTRING_DIRECTION_MASK) == TTF_DIRECTION_RTL) {
         MoveCursorIndex(edit, -1);
     } else {
         MoveCursorIndex(edit, 1);
@@ -549,14 +553,14 @@ void EditBox_MoveCursorUp(EditBox *edit)
     if (TTF_GetTextSubString(edit->text, edit->cursor, &substring)) {
         int fontHeight = TTF_GetFontHeight(edit->font);
         int x, y;
-        if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
+        if ((substring.flags & TTF_SUBSTRING_DIRECTION_MASK) == TTF_DIRECTION_RTL) {
             x = substring.rect.x + substring.rect.w - 1;
         } else {
             x = substring.rect.x;
         }
         y = substring.rect.y - fontHeight / 2;
         if (TTF_GetTextSubStringForPoint(edit->text, x, y, &substring)) {
-            SetCursorPosition(edit, GetCursorTextIndex(edit->font, x, &substring));
+            SetCursorPosition(edit, GetCursorTextIndex(x, &substring));
         }
     }
 }
@@ -571,14 +575,14 @@ void EditBox_MoveCursorDown(EditBox *edit)
     if (TTF_GetTextSubString(edit->text, edit->cursor, &substring)) {
         int fontHeight = TTF_GetFontHeight(edit->font);
         int x, y;
-        if (TTF_GetFontDirection(edit->font) == TTF_DIRECTION_RTL) {
+        if ((substring.flags & TTF_SUBSTRING_DIRECTION_MASK) == TTF_DIRECTION_RTL) {
             x = substring.rect.x + substring.rect.w - 1;
         } else {
             x = substring.rect.x;
         }
         y = substring.rect.y + substring.rect.h + fontHeight / 2;
         if (TTF_GetTextSubStringForPoint(edit->text, x, y, &substring)) {
-            SetCursorPosition(edit, GetCursorTextIndex(edit->font, x, &substring));
+            SetCursorPosition(edit, GetCursorTextIndex(x, &substring));
         }
     }
 }
@@ -714,7 +718,7 @@ static bool HandleMouseDown(EditBox *edit, float x, float y)
         return false;
     }
 
-    SetCursorPosition(edit, GetCursorTextIndex(edit->font, textX, &substring));
+    SetCursorPosition(edit, GetCursorTextIndex(textX, &substring));
     edit->highlighting = true;
     edit->highlight1 = edit->cursor;
     edit->highlight2 = -1;
@@ -737,7 +741,7 @@ static bool HandleMouseMotion(EditBox *edit, float x, float y)
         return false;
     }
 
-    SetCursorPosition(edit, GetCursorTextIndex(edit->font, textX, &substring));
+    SetCursorPosition(edit, GetCursorTextIndex(textX, &substring));
     edit->highlight2 = edit->cursor;
 
     return true;
