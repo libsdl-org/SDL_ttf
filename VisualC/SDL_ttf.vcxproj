@@ -380,6 +380,7 @@
     <ClCompile Include="..\external\harfbuzz\src\hb-wasm-shape.cc" />
     <ClCompile Include="..\src\SDL_gpu_textengine.c" />
     <ClCompile Include="..\src\SDL_hashtable.c" />
+    <ClCompile Include="..\src\SDL_hashtable_ttf.c" />
     <ClCompile Include="..\src\SDL_renderer_textengine.c" />
     <ClCompile Include="..\src\SDL_surface_textengine.c" />
     <ClCompile Include="..\src\SDL_ttf.c" />

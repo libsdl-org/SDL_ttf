@@ -65,6 +65,8 @@
 		F341242A2D42C44700D6C2B7 /* INSTALL.md in Resources */ = {isa = PBXBuildFile; fileRef = F34124292D42C44700D6C2B7 /* INSTALL.md */; };
 		F341242D2D42C47A00D6C2B7 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F341242B2D42C47A00D6C2B7 /* LICENSE.txt */; };
 		F341242E2D42C47A00D6C2B7 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F341242C2D42C47A00D6C2B7 /* README.md */; };
+		F34125C72D491AA800D6C2B7 /* SDL_hashtable_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = F34125C52D491AA800D6C2B7 /* SDL_hashtable_ttf.h */; };
+		F34125C82D491AA800D6C2B7 /* SDL_hashtable_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125C62D491AA800D6C2B7 /* SDL_hashtable_ttf.c */; };
 		F34400402D4033CE003F26D7 /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F344003F2D4033CE003F26D7 /* SDL3.framework */; };
 		F344FFBF2D3EB53C003F26D7 /* SDL_gpu_textengine.c in Sources */ = {isa = PBXBuildFile; fileRef = F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */; };
 		F3696FE4278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
@@ -191,6 +193,8 @@
 		F341242B2D42C47A00D6C2B7 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE.txt; path = ../LICENSE.txt; sourceTree = SOURCE_ROOT; };
 		F341242C2D42C47A00D6C2B7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = SOURCE_ROOT; };
 		F341242F2D42C49B00D6C2B7 /* INSTALL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = INSTALL.md; sourceTree = "<group>"; };
+		F34125C52D491AA800D6C2B7 /* SDL_hashtable_ttf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_hashtable_ttf.h; sourceTree = "<group>"; };
+		F34125C62D491AA800D6C2B7 /* SDL_hashtable_ttf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_hashtable_ttf.c; sourceTree = "<group>"; };
 		F344003F2D4033CE003F26D7 /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL3.framework; sourceTree = "<group>"; };
 		F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_gpu_textengine.c; sourceTree = "<group>"; };
 		F3696FE3278F7107003A7F94 /* sdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdf.c; path = ../external/freetype/src/sdf/sdf.c; sourceTree = "<group>"; };
@@ -335,6 +339,8 @@
 				F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */,
 				F3F7BDF12CB6FD6700C984AF /* SDL_hashtable.h */,
 				F3F7BDF22CB6FD6700C984AF /* SDL_hashtable.c */,
+				F34125C52D491AA800D6C2B7 /* SDL_hashtable_ttf.h */,
+				F34125C62D491AA800D6C2B7 /* SDL_hashtable_ttf.c */,
 				F3F7BDF32CB6FD6700C984AF /* SDL_renderer_textengine.c */,
 				F3F7BDF42CB6FD6700C984AF /* SDL_surface_textengine.c */,
 				F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */,
@@ -500,6 +506,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3F7BDF72CB6FD6700C984AF /* SDL_hashtable.h in Headers */,
+				F34125C72D491AA800D6C2B7 /* SDL_hashtable_ttf.h in Headers */,
 				F3F7BDF82CB6FD6700C984AF /* stb_rect_pack.h in Headers */,
 				BE48FD5F07AFA17000BB41DA /* SDL_ttf.h in Headers */,
 				F33F083D2CC41C810062C26D /* SDL_textengine.h in Headers */,
@@ -648,6 +655,7 @@
 				F384BDBF261EC7650028A248 /* hb-buffer.cc in Sources */,
 				F384BD83261EC7650028A248 /* hb-shaper.cc in Sources */,
 				F384BCD4261EC2BE0028A248 /* type42.c in Sources */,
+				F34125C82D491AA800D6C2B7 /* SDL_hashtable_ttf.c in Sources */,
 				F384BDEF261EC7650028A248 /* hb-face.cc in Sources */,
 				F384BCDF261EC2CF0028A248 /* winfnt.c in Sources */,
 				F384BC2F261EC1710028A248 /* cff.c in Sources */,

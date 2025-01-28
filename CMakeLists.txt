@@ -125,6 +125,7 @@ endif()
 
 add_library(${sdl3_ttf_target_name}
     src/SDL_hashtable.c
+    src/SDL_hashtable_ttf.c
     src/SDL_gpu_textengine.c
     src/SDL_renderer_textengine.c
     src/SDL_surface_textengine.c
