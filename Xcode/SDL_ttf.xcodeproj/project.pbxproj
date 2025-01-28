@@ -67,6 +67,28 @@
 		F341242E2D42C47A00D6C2B7 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F341242C2D42C47A00D6C2B7 /* README.md */; };
 		F34125C72D491AA800D6C2B7 /* SDL_hashtable_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = F34125C52D491AA800D6C2B7 /* SDL_hashtable_ttf.h */; };
 		F34125C82D491AA800D6C2B7 /* SDL_hashtable_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125C62D491AA800D6C2B7 /* SDL_hashtable_ttf.c */; };
+		F34125922D4867F900D6C2B7 /* plutosvg.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125912D4867F900D6C2B7 /* plutosvg.c */; };
+		F34125942D486A1500D6C2B7 /* plutosvg.h in Headers */ = {isa = PBXBuildFile; fileRef = F34125932D486A1500D6C2B7 /* plutosvg.h */; };
+		F34125A92D486A4900D6C2B7 /* plutovg-ft-math.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125992D486A4900D6C2B7 /* plutovg-ft-math.c */; };
+		F34125AA2D486A4900D6C2B7 /* plutovg-ft-raster.c in Sources */ = {isa = PBXBuildFile; fileRef = F341259B2D486A4900D6C2B7 /* plutovg-ft-raster.c */; };
+		F34125AB2D486A4900D6C2B7 /* plutovg-canvas.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125962D486A4900D6C2B7 /* plutovg-canvas.c */; };
+		F34125AC2D486A4900D6C2B7 /* plutovg-font.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125972D486A4900D6C2B7 /* plutovg-font.c */; };
+		F34125AD2D486A4900D6C2B7 /* plutovg-matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = F341259F2D486A4900D6C2B7 /* plutovg-matrix.c */; };
+		F34125AE2D486A4900D6C2B7 /* plutovg-rasterize.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125A32D486A4900D6C2B7 /* plutovg-rasterize.c */; };
+		F34125AF2D486A4900D6C2B7 /* plutovg-blend.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125952D486A4900D6C2B7 /* plutovg-blend.c */; };
+		F34125B02D486A4900D6C2B7 /* plutovg-surface.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125A72D486A4900D6C2B7 /* plutovg-surface.c */; };
+		F34125B12D486A4900D6C2B7 /* plutovg-path.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125A12D486A4900D6C2B7 /* plutovg-path.c */; };
+		F34125B22D486A4900D6C2B7 /* plutovg-paint.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125A02D486A4900D6C2B7 /* plutovg-paint.c */; };
+		F34125B32D486A4900D6C2B7 /* plutovg-ft-stroker.c in Sources */ = {isa = PBXBuildFile; fileRef = F341259D2D486A4900D6C2B7 /* plutovg-ft-stroker.c */; };
+		F34125B42D486A4900D6C2B7 /* plutovg-utils.h in Headers */ = {isa = PBXBuildFile; fileRef = F34125A82D486A4900D6C2B7 /* plutovg-utils.h */; };
+		F34125B52D486A4900D6C2B7 /* plutovg-stb-truetype.h in Headers */ = {isa = PBXBuildFile; fileRef = F34125A62D486A4900D6C2B7 /* plutovg-stb-truetype.h */; };
+		F34125B62D486A4900D6C2B7 /* plutovg-stb-image.h in Headers */ = {isa = PBXBuildFile; fileRef = F34125A42D486A4900D6C2B7 /* plutovg-stb-image.h */; };
+		F34125B72D486A4900D6C2B7 /* plutovg-private.h in Headers */ = {isa = PBXBuildFile; fileRef = F34125A22D486A4900D6C2B7 /* plutovg-private.h */; };
+		F34125B82D486A4900D6C2B7 /* plutovg-ft-raster.h in Headers */ = {isa = PBXBuildFile; fileRef = F341259A2D486A4900D6C2B7 /* plutovg-ft-raster.h */; };
+		F34125B92D486A4900D6C2B7 /* plutovg-ft-types.h in Headers */ = {isa = PBXBuildFile; fileRef = F341259E2D486A4900D6C2B7 /* plutovg-ft-types.h */; };
+		F34125BA2D486A4900D6C2B7 /* plutovg-stb-image-write.h in Headers */ = {isa = PBXBuildFile; fileRef = F34125A52D486A4900D6C2B7 /* plutovg-stb-image-write.h */; };
+		F34125BB2D486A4900D6C2B7 /* plutovg-ft-stroker.h in Headers */ = {isa = PBXBuildFile; fileRef = F341259C2D486A4900D6C2B7 /* plutovg-ft-stroker.h */; };
+		F34125BC2D486A4900D6C2B7 /* plutovg-ft-math.h in Headers */ = {isa = PBXBuildFile; fileRef = F34125982D486A4900D6C2B7 /* plutovg-ft-math.h */; };
 		F34400402D4033CE003F26D7 /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F344003F2D4033CE003F26D7 /* SDL3.framework */; };
 		F344FFBF2D3EB53C003F26D7 /* SDL_gpu_textengine.c in Sources */ = {isa = PBXBuildFile; fileRef = F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */; };
 		F3696FE4278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
@@ -195,6 +217,28 @@
 		F341242F2D42C49B00D6C2B7 /* INSTALL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = INSTALL.md; sourceTree = "<group>"; };
 		F34125C52D491AA800D6C2B7 /* SDL_hashtable_ttf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_hashtable_ttf.h; sourceTree = "<group>"; };
 		F34125C62D491AA800D6C2B7 /* SDL_hashtable_ttf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_hashtable_ttf.c; sourceTree = "<group>"; };
+		F34125912D4867F900D6C2B7 /* plutosvg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = plutosvg.c; path = ../external/plutosvg/source/plutosvg.c; sourceTree = "<group>"; };
+		F34125932D486A1500D6C2B7 /* plutosvg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = plutosvg.h; path = ../external/plutosvg/source/plutosvg.h; sourceTree = "<group>"; };
+		F34125952D486A4900D6C2B7 /* plutovg-blend.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-blend.c"; path = "../external/plutovg/source/plutovg-blend.c"; sourceTree = "<group>"; };
+		F34125962D486A4900D6C2B7 /* plutovg-canvas.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-canvas.c"; path = "../external/plutovg/source/plutovg-canvas.c"; sourceTree = "<group>"; };
+		F34125972D486A4900D6C2B7 /* plutovg-font.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-font.c"; path = "../external/plutovg/source/plutovg-font.c"; sourceTree = "<group>"; };
+		F34125982D486A4900D6C2B7 /* plutovg-ft-math.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "plutovg-ft-math.h"; path = "../external/plutovg/source/plutovg-ft-math.h"; sourceTree = "<group>"; };
+		F34125992D486A4900D6C2B7 /* plutovg-ft-math.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-ft-math.c"; path = "../external/plutovg/source/plutovg-ft-math.c"; sourceTree = "<group>"; };
+		F341259A2D486A4900D6C2B7 /* plutovg-ft-raster.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "plutovg-ft-raster.h"; path = "../external/plutovg/source/plutovg-ft-raster.h"; sourceTree = "<group>"; };
+		F341259B2D486A4900D6C2B7 /* plutovg-ft-raster.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-ft-raster.c"; path = "../external/plutovg/source/plutovg-ft-raster.c"; sourceTree = "<group>"; };
+		F341259C2D486A4900D6C2B7 /* plutovg-ft-stroker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "plutovg-ft-stroker.h"; path = "../external/plutovg/source/plutovg-ft-stroker.h"; sourceTree = "<group>"; };
+		F341259D2D486A4900D6C2B7 /* plutovg-ft-stroker.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-ft-stroker.c"; path = "../external/plutovg/source/plutovg-ft-stroker.c"; sourceTree = "<group>"; };
+		F341259E2D486A4900D6C2B7 /* plutovg-ft-types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "plutovg-ft-types.h"; path = "../external/plutovg/source/plutovg-ft-types.h"; sourceTree = "<group>"; };
+		F341259F2D486A4900D6C2B7 /* plutovg-matrix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-matrix.c"; path = "../external/plutovg/source/plutovg-matrix.c"; sourceTree = "<group>"; };
+		F34125A02D486A4900D6C2B7 /* plutovg-paint.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-paint.c"; path = "../external/plutovg/source/plutovg-paint.c"; sourceTree = "<group>"; };
+		F34125A12D486A4900D6C2B7 /* plutovg-path.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-path.c"; path = "../external/plutovg/source/plutovg-path.c"; sourceTree = "<group>"; };
+		F34125A22D486A4900D6C2B7 /* plutovg-private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "plutovg-private.h"; path = "../external/plutovg/source/plutovg-private.h"; sourceTree = "<group>"; };
+		F34125A32D486A4900D6C2B7 /* plutovg-rasterize.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-rasterize.c"; path = "../external/plutovg/source/plutovg-rasterize.c"; sourceTree = "<group>"; };
+		F34125A42D486A4900D6C2B7 /* plutovg-stb-image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "plutovg-stb-image.h"; path = "../external/plutovg/source/plutovg-stb-image.h"; sourceTree = "<group>"; };
+		F34125A52D486A4900D6C2B7 /* plutovg-stb-image-write.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "plutovg-stb-image-write.h"; path = "../external/plutovg/source/plutovg-stb-image-write.h"; sourceTree = "<group>"; };
+		F34125A62D486A4900D6C2B7 /* plutovg-stb-truetype.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "plutovg-stb-truetype.h"; path = "../external/plutovg/source/plutovg-stb-truetype.h"; sourceTree = "<group>"; };
+		F34125A72D486A4900D6C2B7 /* plutovg-surface.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "plutovg-surface.c"; path = "../external/plutovg/source/plutovg-surface.c"; sourceTree = "<group>"; };
+		F34125A82D486A4900D6C2B7 /* plutovg-utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "plutovg-utils.h"; path = "../external/plutovg/source/plutovg-utils.h"; sourceTree = "<group>"; };
 		F344003F2D4033CE003F26D7 /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL3.framework; sourceTree = "<group>"; };
 		F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_gpu_textengine.c; sourceTree = "<group>"; };
 		F3696FE3278F7107003A7F94 /* sdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdf.c; path = ../external/freetype/src/sdf/sdf.c; sourceTree = "<group>"; };
@@ -334,6 +378,7 @@
 		08FB77ACFE841707C02AAC07 /* Library Source */ = {
 			isa = PBXGroup;
 			children = (
+				F34125902D4867C400D6C2B7 /* PlutoSVG */,
 				F384BB6A261EC02C0028A248 /* FreeType */,
 				F384BD04261EC64F0028A248 /* HarfBuzz */,
 				F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */,
@@ -364,6 +409,35 @@
 				F34124292D42C44700D6C2B7 /* INSTALL.md */,
 			);
 			path = framework;
+			sourceTree = "<group>";
+		};
+		F34125902D4867C400D6C2B7 /* PlutoSVG */ = {
+			isa = PBXGroup;
+			children = (
+				F34125952D486A4900D6C2B7 /* plutovg-blend.c */,
+				F34125962D486A4900D6C2B7 /* plutovg-canvas.c */,
+				F34125972D486A4900D6C2B7 /* plutovg-font.c */,
+				F34125982D486A4900D6C2B7 /* plutovg-ft-math.h */,
+				F34125992D486A4900D6C2B7 /* plutovg-ft-math.c */,
+				F341259A2D486A4900D6C2B7 /* plutovg-ft-raster.h */,
+				F341259B2D486A4900D6C2B7 /* plutovg-ft-raster.c */,
+				F341259C2D486A4900D6C2B7 /* plutovg-ft-stroker.h */,
+				F341259D2D486A4900D6C2B7 /* plutovg-ft-stroker.c */,
+				F341259E2D486A4900D6C2B7 /* plutovg-ft-types.h */,
+				F341259F2D486A4900D6C2B7 /* plutovg-matrix.c */,
+				F34125A02D486A4900D6C2B7 /* plutovg-paint.c */,
+				F34125A12D486A4900D6C2B7 /* plutovg-path.c */,
+				F34125A22D486A4900D6C2B7 /* plutovg-private.h */,
+				F34125A32D486A4900D6C2B7 /* plutovg-rasterize.c */,
+				F34125A42D486A4900D6C2B7 /* plutovg-stb-image.h */,
+				F34125A52D486A4900D6C2B7 /* plutovg-stb-image-write.h */,
+				F34125A62D486A4900D6C2B7 /* plutovg-stb-truetype.h */,
+				F34125A72D486A4900D6C2B7 /* plutovg-surface.c */,
+				F34125A82D486A4900D6C2B7 /* plutovg-utils.h */,
+				F34125932D486A1500D6C2B7 /* plutosvg.h */,
+				F34125912D4867F900D6C2B7 /* plutosvg.c */,
+			);
+			name = PlutoSVG;
 			sourceTree = "<group>";
 		};
 		F384BB6A261EC02C0028A248 /* FreeType */ = {
@@ -505,6 +579,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F34125B42D486A4900D6C2B7 /* plutovg-utils.h in Headers */,
+				F34125B52D486A4900D6C2B7 /* plutovg-stb-truetype.h in Headers */,
+				F34125B62D486A4900D6C2B7 /* plutovg-stb-image.h in Headers */,
+				F34125B72D486A4900D6C2B7 /* plutovg-private.h in Headers */,
+				F34125B82D486A4900D6C2B7 /* plutovg-ft-raster.h in Headers */,
+				F34125B92D486A4900D6C2B7 /* plutovg-ft-types.h in Headers */,
+				F34125BA2D486A4900D6C2B7 /* plutovg-stb-image-write.h in Headers */,
+				F34125BB2D486A4900D6C2B7 /* plutovg-ft-stroker.h in Headers */,
+				F34125BC2D486A4900D6C2B7 /* plutovg-ft-math.h in Headers */,
+				F34125942D486A1500D6C2B7 /* plutosvg.h in Headers */,
 				F3F7BDF72CB6FD6700C984AF /* SDL_hashtable.h in Headers */,
 				F34125C72D491AA800D6C2B7 /* SDL_hashtable_ttf.h in Headers */,
 				F3F7BDF82CB6FD6700C984AF /* stb_rect_pack.h in Headers */,
@@ -671,6 +755,17 @@
 				61047EBA2B48AD0F00868128 /* hb-ot-color.cc in Sources */,
 				61047EB42B48AD0F00868128 /* hb-ot-shaper-thai.cc in Sources */,
 				61047EA42B48AD0F00868128 /* hb-ot-shaper-syllabic.cc in Sources */,
+				F34125A92D486A4900D6C2B7 /* plutovg-ft-math.c in Sources */,
+				F34125AA2D486A4900D6C2B7 /* plutovg-ft-raster.c in Sources */,
+				F34125AB2D486A4900D6C2B7 /* plutovg-canvas.c in Sources */,
+				F34125AC2D486A4900D6C2B7 /* plutovg-font.c in Sources */,
+				F34125AD2D486A4900D6C2B7 /* plutovg-matrix.c in Sources */,
+				F34125AE2D486A4900D6C2B7 /* plutovg-rasterize.c in Sources */,
+				F34125AF2D486A4900D6C2B7 /* plutovg-blend.c in Sources */,
+				F34125B02D486A4900D6C2B7 /* plutovg-surface.c in Sources */,
+				F34125B12D486A4900D6C2B7 /* plutovg-path.c in Sources */,
+				F34125B22D486A4900D6C2B7 /* plutovg-paint.c in Sources */,
+				F34125B32D486A4900D6C2B7 /* plutovg-ft-stroker.c in Sources */,
 				F384BD6B261EC7650028A248 /* hb-shape-plan.cc in Sources */,
 				F384BBAF261EC0DE0028A248 /* ftbase.c in Sources */,
 				F384BC5B261EC1DF0028A248 /* pcf.c in Sources */,
@@ -716,6 +811,7 @@
 				F384BDAD261EC7650028A248 /* hb-font.cc in Sources */,
 				F384BD4D261EC7650028A248 /* hb-ucd.cc in Sources */,
 				F3F7BDF92CB6FD6700C984AF /* SDL_renderer_textengine.c in Sources */,
+				F34125922D4867F900D6C2B7 /* plutosvg.c in Sources */,
 				F3F7BDFA2CB6FD6700C984AF /* SDL_surface_textengine.c in Sources */,
 				F3F7BDFB2CB6FD6700C984AF /* SDL_hashtable.c in Sources */,
 				F384BBB5261EC0DE0028A248 /* ftpatent.c in Sources */,
@@ -799,6 +895,8 @@
 					FT_CONFIG_OPTION_USE_HARFBUZZ,
 					HAVE_CONFIG_H,
 					"TTF_USE_HARFBUZZ=1",
+					"TTF_USE_PLUTOSVG=1",
+					PLUTOSVG_HAS_FREETYPE,
 					"$(CONFIG_PREPROCESSOR_DEFINITIONS)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
@@ -826,6 +924,7 @@
 					"\"$(SRCROOT)/../external/freetype/include\"",
 					"\"$(SRCROOT)/../external/harfbuzz\"",
 					"\"$(SRCROOT)/../external/harfbuzz/src\"",
+					"\"$(SRCROOT)/../external/plutovg/include\"",
 				);
 			};
 			name = Debug;
@@ -848,6 +947,8 @@
 					FT_CONFIG_OPTION_USE_HARFBUZZ,
 					HAVE_CONFIG_H,
 					"TTF_USE_HARFBUZZ=1",
+					"TTF_USE_PLUTOSVG=1",
+					PLUTOSVG_HAS_FREETYPE,
 					"$(CONFIG_PREPROCESSOR_DEFINITIONS)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
@@ -874,6 +975,7 @@
 					"\"$(SRCROOT)/../external/freetype/include\"",
 					"\"$(SRCROOT)/../external/harfbuzz\"",
 					"\"$(SRCROOT)/../external/harfbuzz/src\"",
+					"\"$(SRCROOT)/../external/plutovg/include\"",
 				);
 			};
 			name = Release;

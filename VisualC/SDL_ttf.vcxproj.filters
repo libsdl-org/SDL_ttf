@@ -13,6 +13,9 @@
     <Filter Include="Sources\HarfBuzz">
       <UniqueIdentifier>{1adce3a3-3929-463e-9fc4-76aabd487471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\PlutoSVG">
+      <UniqueIdentifier>{12b2531a-b0bd-49fb-a66e-8397c3e7dcee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\SDL_hashtable.c">
@@ -381,6 +384,42 @@
     <ClCompile Include="..\src\SDL_gpu_textengine.c">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\external\plutosvg\source\plutosvg.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-blend.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-canvas.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-font.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-ft-math.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-ft-raster.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-ft-stroker.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-matrix.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-paint.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-path.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-rasterize.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\plutovg\source\plutovg-surface.c">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\version.rc">
@@ -390,6 +429,36 @@
   <ItemGroup>
     <ClInclude Include="..\include\SDL3_ttf\SDL_ttf.h">
       <Filter>Public Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\plutosvg\source\plutosvg.h">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\plutovg\source\plutovg-ft-math.h">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\plutovg\source\plutovg-ft-raster.h">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\plutovg\source\plutovg-ft-stroker.h">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\plutovg\source\plutovg-ft-types.h">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\plutovg\source\plutovg-private.h">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\plutovg\source\plutovg-stb-image.h">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\plutovg\source\plutovg-stb-image-write.h">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\plutovg\source\plutovg-stb-truetype.h">
+      <Filter>Sources\PlutoSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\plutovg\source\plutovg-utils.h">
+      <Filter>Sources\PlutoSVG</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

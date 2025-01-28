@@ -94,6 +94,9 @@ set(SDLTTF_FREETYPE_VENDORED "${SDLTTF_VENDORED}")
 option(SDLTTF_HARFBUZZ "Use harfbuzz to improve text shaping" ON)
 set(SDLTTF_HARFBUZZ_VENDORED "${SDLTTF_VENDORED}")
 
+option(SDLTTF_PLUTOSVG "Use plutosvg for color emoji support" ON)
+set(SDLTTF_PLUTOSVG_VENDORED "${SDLTTF_VENDORED}")
+
 # Save BUILD_SHARED_LIBS variable
 set(SDLTTF_BUILD_SHARED_LIBS "${BUILD_SHARED_LIBS}")
 
@@ -220,6 +223,34 @@ set(PC_REQUIRES)
 
 # Build freetype and harfbuzz as a static library
 set(BUILD_SHARED_LIBS OFF)
+
+if(SDLTTF_PLUTOSVG)
+    if(SDLTTF_PLUTOSVG_VENDORED)
+        message(STATUS "${PROJECT_NAME}: Using vendored plutosvg library")
+
+        set(PLUTOSVG_ENABLE_FREETYPE ON CACHE BOOL "plutosvg enable freetype" FORCE)
+        set(PLUTOVG_BUILD_EXAMPLES OFF CACHE BOOL "plutosvg build examples" FORCE)
+        if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/plutosvg/CMakeLists.txt")
+            message(FATAL_ERROR "No plutosvg sources found. Install a plutosvg development package or run the download script in the external folder.")
+        endif()
+        add_subdirectory(external/plutosvg EXCLUDE_FROM_ALL)
+        if(NOT TARGET plutosvg::plutosvg)
+            add_library(plutosvg::plutosvg ALIAS plutosvg)
+        endif()
+        if(SDLTTF_BUILD_SHARED_LIBS)
+          target_link_libraries(${sdl3_ttf_target_name} PRIVATE plutosvg::plutosvg)
+        else()
+          target_sources(${sdl3_ttf_target_name} PRIVATE $<TARGET_OBJECTS:plutosvg::plutosvg>)
+          target_include_directories(${sdl3_ttf_target_name} PRIVATE $<TARGET_PROPERTY:plutosvg::plutosvg,INTERFACE_INCLUDE_DIRECTORIES>)
+        endif()
+    else()
+        message(STATUS "${PROJECT_NAME}: Using system plutosvg library")
+        find_package(plutosvg REQUIRED)
+        list(APPEND PC_REQUIRES plutosvg)
+        target_link_libraries(${sdl3_ttf_target_name} PRIVATE plutosvg::plutosvg)
+    endif()
+    target_compile_definitions(${sdl3_ttf_target_name} PRIVATE TTF_USE_PLUTOSVG=1)
+endif()
 
 if(SDLTTF_HARFBUZZ)
     if(SDLTTF_HARFBUZZ_VENDORED)

@@ -601,6 +601,14 @@ static SDL_GPUTexture *GetOperationTexture(TTF_DrawOperation *op)
     return NULL;
 }
 
+static TTF_CopyOperationFlags GetOperationFlags(TTF_DrawOperation *op)
+{
+    if (op->cmd == TTF_DRAW_COMMAND_COPY) {
+        return op->copy.flags;
+    }
+    return 0;
+}
+
 static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops, TTF_GPUTextEngineWinding winding)
 {
     AtlasDrawSequence *sequence = (AtlasDrawSequence *)SDL_calloc(1, sizeof(*sequence));
@@ -612,9 +620,11 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
     SDL_COMPILE_TIME_ASSERT(sizeof_SDL_FPoint, sizeof(SDL_FPoint) == 2 * sizeof(float));
 
     SDL_GPUTexture *texture = GetOperationTexture(&ops[0]);
+    TTF_CopyOperationFlags flags = GetOperationFlags(&ops[0]);
     TTF_DrawOperation *end = NULL;
     for (int i = 1; i < num_ops; ++i) {
-        if (GetOperationTexture(&ops[i]) != texture) {
+        if (GetOperationTexture(&ops[i]) != texture ||
+            GetOperationFlags(&ops[i]) != flags) {
             end = &ops[i];
             break;
         }
@@ -622,6 +632,7 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
 
     int count = (end ? (int)(end - ops) : num_ops);
     sequence->atlas_texture = texture;
+    sequence->flags = flags;
     sequence->num_vertices = count * 4;
     sequence->num_indices = count * 6;
 

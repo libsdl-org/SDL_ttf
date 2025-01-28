@@ -59,6 +59,11 @@
 #  define TTF_USE_HARFBUZZ 0
 #endif
 
+// Enable PlutoSVG for color emoji rendering
+#ifndef TTF_USE_PLUTOSVG
+#  define TTF_USE_PLUTOSVG 0
+#endif
+
 #ifndef TTF_DEFAULT_DPI
 #define TTF_DEFAULT_DPI 72
 #endif
@@ -89,6 +94,10 @@ SDL_COMPILE_TIME_ASSERT(SDL_TTF_MICRO_VERSION_max, SDL_TTF_MICRO_VERSION <= 999)
 #if TTF_USE_HARFBUZZ
 #include <hb.h>
 #include <hb-ft.h>
+#endif
+
+#if TTF_USE_PLUTOSVG
+#include <plutosvg.h>
 #endif
 
 // Round glyph to 16 bytes width and use SSE2 instructions
@@ -1515,6 +1524,9 @@ static bool Render_Line_TextEngine(TTF_Font *font, TTF_Direction direction, int 
             op->copy.dst.y = y;
             op->copy.dst.w = op->copy.src.w;
             op->copy.dst.h = op->copy.src.h;
+            if (FT_HAS_SVG(glyph_font->face)) {
+                op->copy.flags = TTF_COPY_OPERATION_IMAGE;
+            }
         } else {
             // Use the distance to the next glyph as our bounds width
             glyph_width = FT_FLOOR(pos->x_advance);
@@ -1877,6 +1889,11 @@ bool TTF_Init(void)
         FT_Property_Set(TTF_state.library, "sdf", "overlaps", &overlaps);
 #endif
 #endif
+
+#if TTF_USE_PLUTOSVG
+        FT_Property_Set(TTF_state.library, "ot-svg", "svg-hooks", plutosvg_ft_svg_hooks());
+#endif
+
         TTF_state.lock = SDL_CreateMutex();
     } else {
         (void)SDL_AtomicDecRef(&TTF_state.refcount);
@@ -2424,6 +2441,11 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
         ft_load |= FT_LOAD_COLOR;
     }
 #endif
+
+    if (FT_HAS_SVG(font->face)) {
+        // We won't get metrics unless we add FT_LOAD_COLOR
+        ft_load |= FT_LOAD_COLOR;
+    }
 
     error = FT_Load_Glyph(font->face, cached->index, ft_load);
     if (error) {
@@ -3088,7 +3110,7 @@ SDL_Surface *TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index)
 
     TTF_CHECK_FONT(font, NULL);
 
-    if (!Find_GlyphByIndex(font, glyph_index, 0, CACHED_PIXMAP, 0, 0, 0, 0, NULL, &image)) {
+    if (!Find_GlyphByIndex(font, glyph_index, PIXMAP, 0, 0, NULL, &image)) {
         return NULL;
     }
 
