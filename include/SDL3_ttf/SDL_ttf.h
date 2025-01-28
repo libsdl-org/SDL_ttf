@@ -601,8 +601,9 @@ extern SDL_DECLSPEC TTF_HintingFlags SDLCALL TTF_GetFontHinting(const TTF_Font *
 /**
  * Enable Signed Distance Field rendering for a font.
  *
- * This works with the Blended APIs. SDF is a technique that
- * helps fonts look sharp even when scaling and rotating.
+ * SDF is a technique that helps fonts look sharp even when scaling and rotating, and requires special shader support for display.
+ *
+ * This works with Blended APIs, and generates the raw signed distance values in the alpha channel of the resulting texture.
  *
  * This updates any TTF_Text objects using this font, and clears already-generated glyphs, if any, from the cache.
  *
