@@ -1667,9 +1667,15 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroySurfaceTextEngine(TTF_TextEngine *en
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngine(SDL_Renderer *renderer);
 
 /**
- * Create a text engine for drawing text on an SDL renderer.
+ * Create a text engine for drawing text on an SDL renderer, with the specified properties.
+ * 
+ * These are the supported properties:
  *
- * \param renderer the renderer to use for creating textures and drawing text.
+ * - `TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER`: the renderer to use for creating textures
+ *   and drawing text
+ * - `TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE`: the size of the texture atlas
+ *
+ * \param props the properties to use
  * \returns a TTF_TextEngine object or NULL on failure; call SDL_GetError()
  *          for more information.
  *
@@ -1745,14 +1751,16 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *e
  */
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngine(SDL_GPUDevice *device);
 
-#define TTF_PROP_GPU_TEXT_ENGINE_DEVICE                   "SDL_ttf.gpu_text_engine.create.device"
-#define TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE       "SDL_ttf.gpu_text_engine.create.atlas_texture_size"
-
 /**
- * Create a text engine for drawing text with the SDL GPU API.
+ * Create a text engine for drawing text with the SDL GPU API, with the specified properties.
+ * 
+ * These are the supported properties:
  *
- * \param device the SDL_GPUDevice to use for creating textures and drawing
- *               text.
+ * - `TTF_PROP_GPU_TEXT_ENGINE_DEVICE`: the SDL_GPUDevice to use for creating
+ *   textures and drawing text.
+ * - `TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE`: the size of the texture atlas
+ *
+ * \param props the properties to use.
  * \returns a TTF_TextEngine object or NULL on failure; call SDL_GetError()
  *          for more information.
  *
@@ -1764,6 +1772,9 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngine(SDL_GPUDevi
  * \sa TTF_DestroyGPUTextEngine
  */
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngineWithProperties(SDL_PropertiesID props);
+
+#define TTF_PROP_GPU_TEXT_ENGINE_DEVICE                   "SDL_ttf.gpu_text_engine.create.device"
+#define TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE       "SDL_ttf.gpu_text_engine.create.atlas_texture_size"
 
 /**
  * Draw sequence returned by TTF_GetGPUTextDrawData
