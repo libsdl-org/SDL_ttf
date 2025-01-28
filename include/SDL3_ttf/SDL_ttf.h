@@ -565,6 +565,18 @@ typedef enum TTF_HintingFlags
 extern SDL_DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, TTF_HintingFlags hinting);
 
 /**
+ * Query the number of faces of a font.
+ *
+ * \param font the font to query.
+ * \returns the number of FreeType font faces.
+ *
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC int SDLCALL TTF_GetNumFontFaces(const TTF_Font *font);
+
+/**
  * Query a font's current FreeType hinter setting.
  *
  * The hinter setting is a single value:

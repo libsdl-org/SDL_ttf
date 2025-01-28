@@ -44,6 +44,7 @@ The following functions have been renamed:
 * TTF_FontFaceFamilyName() => TTF_GetFontFamilyName()
 * TTF_FontFaceIsFixedWidth() => TTF_FontIsFixedWidth()
 * TTF_FontFaceStyleName() => TTF_GetFontStyleName()
+* TTF_FontFaces() => TTF_GetNumFontFaces()
 * TTF_FontHeight() => TTF_GetFontHeight()
 * TTF_FontLineSkip() => TTF_GetFontLineSkip()
 * TTF_GetFontWrappedAlign() => TTF_GetFontWrapAlignment()
@@ -71,7 +72,6 @@ The following functions have been renamed:
 
 The following functions have been removed:
 * TTF_ByteSwappedUNICODE()
-* TTF_FontFaces() - can be retrieved from the font FT_Face, available in TTF_PROP_FONT_FACE_POINTER
 * TTF_GetFontKerningSizeGlyphs() - replaced with TTF_GetGlyphKerning()
 * TTF_GetFontKerningSizeGlyphs32() - replaced with TTF_GetGlyphKerning()
 * TTF_MeasureText() - replaced with TTF_MeasureString()
@@ -95,7 +95,6 @@ The following functions have been removed:
 * TTF_RenderUNICODE_Solid()
 * TTF_RenderUNICODE_Solid_Wrapped()
 * TTF_SizeUNICODE()
-
 The following symbols have been renamed:
 * TTF_WRAPPED_ALIGN_CENTER => TTF_HORIZONTAL_ALIGN_CENTER
 * TTF_WRAPPED_ALIGN_LEFT => TTF_HORIZONTAL_ALIGN_LEFT
