@@ -23,8 +23,6 @@
 #include "SDL_hashtable.h"
 #include "SDL_hashtable_ttf.h"
 
-#define ATLAS_TEXTURE_SIZE  1024
-
 #define STB_RECT_PACK_IMPLEMENTATION
 #define STBRP_STATIC
 #define STBRP_SORT SDL_qsort
@@ -84,6 +82,7 @@ typedef struct TTF_RendererTextEngineData
     SDL_Renderer *renderer;
     SDL_HashTable *fonts;
     AtlasTexture *atlas;
+    int atlas_texture_size;
 } TTF_RendererTextEngineData;
 
 
@@ -182,27 +181,27 @@ static void DestroyAtlas(AtlasTexture *atlas)
     SDL_free(atlas);
 }
 
-static AtlasTexture *CreateAtlas(SDL_Renderer *renderer)
+static AtlasTexture *CreateAtlas(SDL_Renderer *renderer, int atlas_texture_size)
 {
     AtlasTexture *atlas = (AtlasTexture *)SDL_calloc(1, sizeof(*atlas));
     if (!atlas) {
         return NULL;
     }
 
-    atlas->texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, ATLAS_TEXTURE_SIZE, ATLAS_TEXTURE_SIZE);
+    atlas->texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, atlas_texture_size, atlas_texture_size);
     if (!atlas->texture) {
         DestroyAtlas(atlas);
         return NULL;
     }
     SDL_SetTextureScaleMode(atlas->texture, SDL_SCALEMODE_NEAREST);
 
-    int num_nodes = ATLAS_TEXTURE_SIZE / 4;
+    int num_nodes = atlas_texture_size / 4;
     atlas->packing_nodes = (stbrp_node *)SDL_calloc(num_nodes, sizeof(*atlas->packing_nodes));
     if (!atlas->packing_nodes) {
         DestroyAtlas(atlas);
         return NULL;
     }
-    stbrp_init_target(&atlas->packer, ATLAS_TEXTURE_SIZE, ATLAS_TEXTURE_SIZE, atlas->packing_nodes, num_nodes);
+    stbrp_init_target(&atlas->packer, atlas_texture_size, atlas_texture_size, atlas->packing_nodes, num_nodes);
     stbrp_setup_heuristic(&atlas->packer, STBRP_HEURISTIC_Skyline_default);
 
     return atlas;
@@ -240,7 +239,7 @@ static void ReleaseGlyph(AtlasGlyph *glyph)
     }
 }
 
-static AtlasGlyph *CreateGlyph(AtlasTexture *atlas, const stbrp_rect *area)
+static AtlasGlyph *CreateGlyph(AtlasTexture *atlas, int atlas_texture_size, const stbrp_rect *area)
 {
     AtlasGlyph *glyph = (AtlasGlyph *)SDL_calloc(1, sizeof(*glyph));
     if (!glyph) {
@@ -254,10 +253,10 @@ static AtlasGlyph *CreateGlyph(AtlasTexture *atlas, const stbrp_rect *area)
     glyph->rect.w = area->w;
     glyph->rect.h = area->h;
 
-    const float minu = (float)area->x / ATLAS_TEXTURE_SIZE;
-    const float minv = (float)area->y / ATLAS_TEXTURE_SIZE;
-    const float maxu = (float)(area->x + area->w) / ATLAS_TEXTURE_SIZE;
-    const float maxv = (float)(area->y + area->h) / ATLAS_TEXTURE_SIZE;
+    const float minu = (float)area->x / atlas_texture_size;
+    const float minv = (float)area->y / atlas_texture_size;
+    const float maxu = (float)(area->x + area->w) / atlas_texture_size;
+    const float maxv = (float)(area->y + area->h) / atlas_texture_size;
     glyph->texcoords[0] = minu;
     glyph->texcoords[1] = minv;
     glyph->texcoords[2] = maxu;
@@ -373,7 +372,7 @@ static bool ResolveMissingGlyphs(TTF_RendererTextEngineData *enginedata, AtlasTe
             continue;
         }
 
-        AtlasGlyph *glyph = CreateGlyph(atlas, &missing[i]);
+        AtlasGlyph *glyph = CreateGlyph(atlas, enginedata->atlas_texture_size, &missing[i]);
         if (!glyph) {
             return false;
         }
@@ -407,7 +406,7 @@ static bool ResolveMissingGlyphs(TTF_RendererTextEngineData *enginedata, AtlasTe
     }
 
     if (!atlas->next) {
-        atlas->next = CreateAtlas(enginedata->renderer);
+        atlas->next = CreateAtlas(enginedata->renderer, enginedata->atlas_texture_size);
         if (!atlas->next) {
             return false;
         }
@@ -421,6 +420,7 @@ static bool CreateMissingGlyphs(TTF_RendererTextEngineData *enginedata, TTF_Rend
     SDL_Surface **surfaces = NULL;
     SDL_HashTable *checked = NULL;
     bool result = false;
+    int atlas_texture_size = enginedata->atlas_texture_size;
 
     // Build a list of missing glyphs
     missing = (stbrp_rect *)SDL_calloc(num_missing, sizeof(*missing));
@@ -455,10 +455,10 @@ static bool CreateMissingGlyphs(TTF_RendererTextEngineData *enginedata, TTF_Rend
             if (!surfaces[i]) {
                 goto done;
             }
-            if (surfaces[i]->w > ATLAS_TEXTURE_SIZE || surfaces[i]->h > ATLAS_TEXTURE_SIZE) {
+            if (surfaces[i]->w > atlas_texture_size || surfaces[i]->h > atlas_texture_size) {
                 SDL_SetError("Glyph surface %dx%d larger than atlas texture %dx%d",
                     surfaces[i]->w, surfaces[i]->h,
-                    ATLAS_TEXTURE_SIZE, ATLAS_TEXTURE_SIZE);
+                    atlas_texture_size, atlas_texture_size);
                 goto done;
             }
 
@@ -475,7 +475,7 @@ static bool CreateMissingGlyphs(TTF_RendererTextEngineData *enginedata, TTF_Rend
 
     // Create the texture atlas if necessary
     if (!enginedata->atlas) {
-        enginedata->atlas = CreateAtlas(enginedata->renderer);
+        enginedata->atlas = CreateAtlas(enginedata->renderer, atlas_texture_size);
         if (!enginedata->atlas) {
             goto done;
         }
@@ -766,13 +766,14 @@ static void NukeFontData(const void *key, const void *value, void *unused)
     DestroyFontData(data);
 }
 
-static TTF_RendererTextEngineData *CreateEngineData(SDL_Renderer *renderer)
+static TTF_RendererTextEngineData *CreateEngineData(SDL_Renderer *renderer, int atlas_texture_size)
 {
     TTF_RendererTextEngineData *data = (TTF_RendererTextEngineData *)SDL_calloc(1, sizeof(*data));
     if (!data) {
         return NULL;
     }
     data->renderer = renderer;
+    data->atlas_texture_size = atlas_texture_size;
 
     data->fonts = SDL_CreateHashTable(NULL, 4, SDL_HashPointer, SDL_KeyMatchPointer, NukeFontData, false, false);
     if (!data->fonts) {
@@ -828,6 +829,19 @@ static void SDLCALL DestroyText(void *userdata, TTF_Text *text)
 
 TTF_TextEngine *TTF_CreateRendererTextEngine(SDL_Renderer *renderer)
 {
+    SDL_PropertiesID props = SDL_CreateProperties();
+    if (props == 0) {
+        SDL_SetError("Failed to create renderer text engine.");
+        return NULL;
+    }
+    SDL_SetPointerProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER, renderer);
+
+    return TTF_CreateRendererTextEngineWithProperties(props);
+}
+
+TTF_TextEngine *TTF_CreateRendererTextEngineWithProperties(SDL_PropertiesID props)
+{
+    SDL_Renderer *renderer = SDL_GetPointerProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER, NULL);
     if (!renderer) {
         SDL_InvalidParamError("renderer");
         return NULL;
@@ -838,10 +852,12 @@ TTF_TextEngine *TTF_CreateRendererTextEngine(SDL_Renderer *renderer)
         return NULL;
     }
 
+    int atlas_texture_size = SDL_GetNumberProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE, 512);
+
     SDL_INIT_INTERFACE(engine);
     engine->CreateText = CreateText;
     engine->DestroyText = DestroyText;
-    engine->userdata = CreateEngineData(renderer);
+    engine->userdata = CreateEngineData(renderer, atlas_texture_size);
     if (!engine->userdata) {
         TTF_DestroyRendererTextEngine(engine);
         return NULL;
