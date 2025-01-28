@@ -1741,6 +1741,7 @@ typedef struct TTF_GPUAtlasDrawSequence
     int num_vertices;                       /**< Number of vertices */
     int *indices;                           /**< An array of indices into the 'vertices' arrays */
     int num_indices;                        /**< Number of indices */
+    Uint32 flags;                           /**< TTF_CopyOperationFlags */
 
     struct TTF_GPUAtlasDrawSequence *next;  /**< The next sequence (will be NULL in case of the last sequence) */
 } TTF_GPUAtlasDrawSequence;

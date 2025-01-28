@@ -311,7 +311,9 @@ static void DrawCopy(TTF_SurfaceTextEngineTextData *data, const TTF_CopyOperatio
         data->color.g != glyph->color.g ||
         data->color.b != glyph->color.b ||
         data->color.a != glyph->color.a) {
-        SDL_SetSurfaceColorMod(glyph->surface, data->color.r, data->color.g, data->color.b);
+        if (!(op->flags & TTF_COPY_OPERATION_IMAGE)) {
+            SDL_SetSurfaceColorMod(glyph->surface, data->color.r, data->color.g, data->color.b);
+        }
         SDL_SetSurfaceAlphaMod(glyph->surface, data->color.a);
         SDL_copyp(&glyph->color, &data->color);
     }

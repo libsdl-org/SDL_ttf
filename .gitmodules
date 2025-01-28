@@ -6,3 +6,9 @@
 	path = external/harfbuzz
 	url = https://github.com/libsdl-org/harfbuzz.git
 	branch = 8.1.1-SDL
+[submodule "external/plutosvg"]
+	path = external/plutosvg
+	url = https://github.com/libsdl-org/plutosvg.git
+[submodule "external/plutovg"]
+	path = external/plutovg
+	url = https://github.com/libsdl-org/plutovg.git
