@@ -3941,6 +3941,9 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, TTF
             if (numLines > 0) {
                 strLines[numLines - 1].length = spot - strLines[numLines - 1].text;
             }
+            if (*spot == '\0') {
+                break;
+            }
             strLines[numLines].text = spot;
             strLines[numLines].length = left;
             ++numLines;
