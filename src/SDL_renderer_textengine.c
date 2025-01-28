@@ -843,16 +843,21 @@ TTF_TextEngine *TTF_CreateRendererTextEngineWithProperties(SDL_PropertiesID prop
 {
     SDL_Renderer *renderer = SDL_GetPointerProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER, NULL);
     if (!renderer) {
-        SDL_InvalidParamError("renderer");
+        SDL_SetError("Failed to create renderer text engine: Invalid renderer.");
         return NULL;
     }
 
     TTF_TextEngine *engine = (TTF_TextEngine *)SDL_malloc(sizeof(*engine));
     if (!engine) {
+        SDL_SetError("Failed to create renderer text engine.");
         return NULL;
     }
 
     int atlas_texture_size = SDL_GetNumberProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE, 512);
+    if (atlas_texture_size <= 0) {
+        SDL_SetError("Failed to create renderer text engine: Invalid texture atlas size.");
+        return NULL;
+    }
 
     SDL_INIT_INTERFACE(engine);
     engine->CreateText = CreateText;

@@ -943,7 +943,7 @@ TTF_TextEngine *TTF_CreateGPUTextEngineWithProperties(SDL_PropertiesID props)
 {
     SDL_GPUDevice *device = SDL_GetPointerProperty(props, TTF_PROP_GPU_TEXT_ENGINE_DEVICE, NULL);
     if (!device) {
-        SDL_InvalidParamError("device");
+        SDL_SetError("Failed to create GPU text engine: Invalid device.");
         return NULL;
     }
 
@@ -954,6 +954,10 @@ TTF_TextEngine *TTF_CreateGPUTextEngineWithProperties(SDL_PropertiesID props)
     }
 
     int atlas_texture_size = SDL_GetNumberProperty(props, TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE, 512);
+    if (atlas_texture_size <= 0) {
+        SDL_SetError("Failed to create GPU text engine: Invalid texture atlas size.");
+        return NULL;
+    }
 
     SDL_INIT_INTERFACE(engine);
     engine->CreateText = CreateText;
