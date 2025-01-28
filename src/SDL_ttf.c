@@ -2399,6 +2399,7 @@ static void Flush_Cache(TTF_Font *font)
         if (cached->positions.pos) {
             SDL_free(cached->positions.pos);
             cached->positions.pos = NULL;
+            cached->positions.len = 0;
             cached->positions.maxlen = 0;
         }
     }
