@@ -21,6 +21,7 @@
 #include <SDL3_ttf/SDL_textengine.h>
 
 #include "SDL_hashtable.h"
+#include "SDL_hashtable_ttf.h"
 
 #define ATLAS_TEXTURE_SIZE  1024
 
@@ -321,9 +322,9 @@ static bool UpdateGlyph(AtlasGlyph *glyph, SDL_Surface *surface)
     return true;
 }
 
-static bool AddGlyphToFont(TTF_RendererTextEngineFontData *fontdata, Uint32 glyph_index, AtlasGlyph *glyph)
+static bool AddGlyphToFont(TTF_RendererTextEngineFontData *fontdata, TTF_Font *glyph_font, Uint32 glyph_index, AtlasGlyph *glyph)
 {
-    if (!SDL_InsertIntoHashTable(fontdata->glyphs, (const void *)(uintptr_t)glyph_index, glyph)) {
+    if (!SDL_InsertIntoGlyphHashTable(fontdata->glyphs, glyph_font, glyph_index, glyph)) {
         return false;
     }
     return true;
@@ -345,12 +346,13 @@ static bool ResolveMissingGlyphs(TTF_RendererTextEngineData *enginedata, AtlasTe
                 return false;
             }
 
-            if (!AddGlyphToFont(fontdata, ops[missing[i].id].copy.glyph_index, glyph)) {
+            TTF_DrawOperation *op = &ops[missing[i].id];
+            if (!AddGlyphToFont(fontdata, op->copy.glyph_font, op->copy.glyph_index, glyph)) {
                 ReleaseGlyph(glyph);
                 return false;
             }
 
-            ops[missing[i].id].copy.reserved = glyph;
+            op->copy.reserved = glyph;
 
             // Remove this from the missing entries
             --num_missing;
@@ -381,12 +383,13 @@ static bool ResolveMissingGlyphs(TTF_RendererTextEngineData *enginedata, AtlasTe
             return false;
         }
 
-        if (!AddGlyphToFont(fontdata, ops[missing[i].id].copy.glyph_index, glyph)) {
+        TTF_DrawOperation *op = &ops[missing[i].id];
+        if (!AddGlyphToFont(fontdata, op->copy.glyph_font, op->copy.glyph_index, glyph)) {
             ReleaseGlyph(glyph);
             return false;
         }
 
-        ops[missing[i].id].copy.reserved = glyph;
+        op->copy.reserved = glyph;
     }
 
     if (all_packed) {
@@ -430,7 +433,7 @@ static bool CreateMissingGlyphs(TTF_RendererTextEngineData *enginedata, TTF_Rend
         goto done;
     }
 
-    checked = SDL_CreateHashTable(NULL, 4, SDL_HashID, SDL_KeyMatchID, NULL, false, false);
+    checked = SDL_CreateGlyphHashTable(NULL);
     if (!checked) {
         goto done;
     }
@@ -441,10 +444,10 @@ static bool CreateMissingGlyphs(TTF_RendererTextEngineData *enginedata, TTF_Rend
         if (op->cmd == TTF_DRAW_COMMAND_COPY && !op->copy.reserved) {
             TTF_Font *glyph_font = op->copy.glyph_font;
             Uint32 glyph_index = op->copy.glyph_index;
-            if (SDL_FindInHashTable(checked, (const void *)(uintptr_t)glyph_index, NULL)) {
+            if (SDL_FindInGlyphHashTable(checked, glyph_font, glyph_index, NULL)) {
                 continue;
             }
-            if (!SDL_InsertIntoHashTable(checked, (const void *)(uintptr_t)glyph_index, NULL)) {
+            if (!SDL_InsertIntoGlyphHashTable(checked, glyph_font, glyph_index, NULL)) {
                 goto done;
             }
 
@@ -486,7 +489,7 @@ static bool CreateMissingGlyphs(TTF_RendererTextEngineData *enginedata, TTF_Rend
     for (int i = 0; i < num_ops; ++i) {
         TTF_DrawOperation *op = &ops[i];
         if (op->cmd == TTF_DRAW_COMMAND_COPY && !op->copy.reserved) {
-            if (!SDL_FindInHashTable(fontdata->glyphs, (const void *)(uintptr_t)op->copy.glyph_index, (const void **)&op->copy.reserved)) {
+            if (!SDL_FindInGlyphHashTable(fontdata->glyphs, op->copy.glyph_font, op->copy.glyph_index, (const void **)&op->copy.reserved)) {
                 // Something is very wrong...
                 goto done;
             }
@@ -496,7 +499,7 @@ static bool CreateMissingGlyphs(TTF_RendererTextEngineData *enginedata, TTF_Rend
     result = true;
 
 done:
-    SDL_DestroyHashTable(checked);
+    SDL_DestroyGlyphHashTable(checked);
     if (surfaces) {
         for (int i = 0; i < num_ops; ++i) {
             SDL_DestroySurface(surfaces[i]);
@@ -659,7 +662,7 @@ static TTF_RendererTextEngineTextData *CreateTextData(TTF_RendererTextEngineData
 
         ++num_glyphs;
 
-        if (!SDL_FindInHashTable(fontdata->glyphs, (const void *)(uintptr_t)op->copy.glyph_index, (const void **)&op->copy.reserved)) {
+        if (!SDL_FindInGlyphHashTable(fontdata->glyphs, op->copy.glyph_font, op->copy.glyph_index, (const void **)&op->copy.reserved)) {
             ++num_missing;
         }
     }
@@ -703,17 +706,15 @@ static void DestroyFontData(TTF_RendererTextEngineFontData *data)
 {
     if (data) {
         if (data->glyphs) {
-            SDL_DestroyHashTable(data->glyphs);
+            SDL_DestroyGlyphHashTable(data->glyphs);
         }
         SDL_free(data);
     }
 }
 
-static void NukeGlyph(const void *key, const void *value, void *unused)
+static void NukeGlyph(const void *value)
 {
     AtlasGlyph *glyph = (AtlasGlyph *)value;
-    (void)key;
-    (void)unused;
     ReleaseGlyph(glyph);
 }
 
@@ -725,7 +726,7 @@ static TTF_RendererTextEngineFontData *CreateFontData(TTF_RendererTextEngineData
     }
     data->font = font;
     data->generation = font_generation;
-    data->glyphs = SDL_CreateHashTable(NULL, 4, SDL_HashID, SDL_KeyMatchID, NukeGlyph, false, false);
+    data->glyphs = SDL_CreateGlyphHashTable(NukeGlyph);
     if (!data->glyphs) {
         DestroyFontData(data);
         return NULL;

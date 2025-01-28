@@ -24,6 +24,9 @@
     <ClCompile Include="..\src\SDL_hashtable.c">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\SDL_hashtable_ttf.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\SDL_renderer_textengine.c">
       <Filter>Sources</Filter>
     </ClCompile>
