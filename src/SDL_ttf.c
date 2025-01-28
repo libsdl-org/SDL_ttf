@@ -68,6 +68,15 @@
 #define TTF_DEFAULT_DPI 72
 #endif
 
+// FT_FACE_FLAG_SVG and FT_HAS_SVG require freetype 2.12+
+#ifndef FT_FACE_FLAG_SVG
+#define FT_FACE_FLAG_SVG               ( 1L << 16 )
+#endif
+#ifndef FT_HAS_SVG
+#define FT_HAS_SVG( face ) \
+          ( !!( (face)->face_flags & FT_FACE_FLAG_SVG ) )
+#endif
+
 /**
  * ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark)
  */
