@@ -155,7 +155,7 @@ static void HandleKeyDown(Scene *scene, SDL_Event *event)
             TTF_SetFontWrapAlignment(scene->font, TTF_HORIZONTAL_ALIGN_LEFT);
             break;
         default:
-            SDL_Log("Unknown wrap alignment: %d\n", TTF_GetFontWrapAlignment(scene->font));
+            SDL_Log("Unknown wrap alignment: %d", TTF_GetFontWrapAlignment(scene->font));
             break;
         }
         break;
@@ -313,7 +313,7 @@ int main(int argc, char *argv[])
             if (num_fallbacks < MAX_FALLBACKS) {
                 fallback_font_files[num_fallbacks++] = argv[i];
             } else {
-                SDL_Log("Too many fallback fonts (maximum = %d)\n", MAX_FALLBACKS);
+                SDL_Log("Too many fallback fonts (maximum = %d)", MAX_FALLBACKS);
                 return(1);
             }
         } else
@@ -426,7 +426,7 @@ int main(int argc, char *argv[])
 
     /* Initialize the TTF library */
     if (!TTF_Init()) {
-        SDL_Log("Couldn't initialize TTF: %s\n",SDL_GetError());
+        SDL_Log("Couldn't initialize TTF: %s",SDL_GetError());
         result = 2;
         goto done;
     }
@@ -444,7 +444,7 @@ int main(int argc, char *argv[])
     }
     font = TTF_OpenFont(argv[0], ptsize);
     if (font == NULL) {
-        SDL_Log("Couldn't load %g pt font from %s: %s\n",
+        SDL_Log("Couldn't load %g pt font from %s: %s",
                     ptsize, argv[0], SDL_GetError());
         result = 2;
         goto done;
@@ -459,7 +459,7 @@ int main(int argc, char *argv[])
     for (i = 0; i < num_fallbacks; ++i) {
         fallback_fonts[i] = TTF_OpenFont(fallback_font_files[i], ptsize);
         if (!fallback_fonts[i]) {
-            SDL_Log("Couldn't load %g pt font from %s: %s\n",
+            SDL_Log("Couldn't load %g pt font from %s: %s",
                         ptsize, fallback_font_files[i], SDL_GetError());
             result = 2;
             goto done;
@@ -487,14 +487,14 @@ int main(int argc, char *argv[])
     /* Create a window */
     scene.window = SDL_CreateWindow("showfont demo", WIDTH, HEIGHT, 0);
     if (!scene.window) {
-        SDL_Log("SDL_CreateWindow() failed: %s\n", SDL_GetError());
+        SDL_Log("SDL_CreateWindow() failed: %s", SDL_GetError());
         result = 2;
         goto done;
     }
     if (scene.textEngine == TextEngineSurface) {
         scene.window_surface = SDL_GetWindowSurface(scene.window);
         if (!scene.window_surface) {
-            SDL_Log("SDL_CreateWindowSurface() failed: %s\n", SDL_GetError());
+            SDL_Log("SDL_CreateWindowSurface() failed: %s", SDL_GetError());
             result = 2;
             goto done;
         }
@@ -508,7 +508,7 @@ int main(int argc, char *argv[])
         }
     }
     if (!scene.renderer) {
-        SDL_Log("SDL_CreateRenderer() failed: %s\n", SDL_GetError());
+        SDL_Log("SDL_CreateRenderer() failed: %s", SDL_GetError());
         result = 2;
         goto done;
     }
@@ -517,7 +517,7 @@ int main(int argc, char *argv[])
     case TextEngineSurface:
         engine = TTF_CreateSurfaceTextEngine();
         if (!engine) {
-            SDL_Log("Couldn't create surface text engine: %s\n", SDL_GetError());
+            SDL_Log("Couldn't create surface text engine: %s", SDL_GetError());
             result = 2;
             goto done;
         }
@@ -525,7 +525,7 @@ int main(int argc, char *argv[])
     case TextEngineRenderer:
         engine = TTF_CreateRendererTextEngine(scene.renderer);
         if (!engine) {
-            SDL_Log("Couldn't create renderer text engine: %s\n", SDL_GetError());
+            SDL_Log("Couldn't create renderer text engine: %s", SDL_GetError());
             result = 2;
             goto done;
         }
@@ -572,7 +572,7 @@ int main(int argc, char *argv[])
         break;
     }
     if (text == NULL) {
-        SDL_Log("Couldn't render text: %s\n", SDL_GetError());
+        SDL_Log("Couldn't render text: %s", SDL_GetError());
         result = 2;
         goto done;
     }
@@ -581,7 +581,7 @@ int main(int argc, char *argv[])
     scene.messageRect.w = (float)text->w;
     scene.messageRect.h = (float)text->h;
     scene.message = SDL_CreateTextureFromSurface(scene.renderer, text);
-    SDL_Log("Font is generally %d big, and string is %d big\n",
+    SDL_Log("Font is generally %d big, and string is %d big",
                         TTF_GetFontHeight(font), text->h);
 
     if (editbox) {

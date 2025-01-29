@@ -714,7 +714,7 @@ static bool HandleMouseDown(EditBox *edit, float x, float y)
     int textX = (int)SDL_roundf(x - edit->rect.x);
     int textY = (int)SDL_roundf(y - edit->rect.y);
     if (!TTF_GetTextSubStringForPoint(edit->text, textX, textY, &substring)) {
-        SDL_Log("Couldn't get cursor location: %s\n", SDL_GetError());
+        SDL_Log("Couldn't get cursor location: %s", SDL_GetError());
         return false;
     }
 
@@ -737,7 +737,7 @@ static bool HandleMouseMotion(EditBox *edit, float x, float y)
     int textX = (int)SDL_roundf(x - edit->rect.x);
     int textY = (int)SDL_roundf(y - edit->rect.y);
     if (!TTF_GetTextSubStringForPoint(edit->text, textX, textY, &substring)) {
-        SDL_Log("Couldn't get cursor location: %s\n", SDL_GetError());
+        SDL_Log("Couldn't get cursor location: %s", SDL_GetError());
         return false;
     }
 

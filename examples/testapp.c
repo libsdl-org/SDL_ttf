@@ -929,14 +929,14 @@ int main(void)
            if (!engine_surface) {
                 engine_surface = TTF_CreateSurfaceTextEngine();
                 if (!engine_surface) {
-                    SDL_Log("Couldn't create surface text engine: %s\n", SDL_GetError());
+                    SDL_Log("Couldn't create surface text engine: %s", SDL_GetError());
                 }
             }
 
             if (!engine_renderer) {
                 engine_renderer = TTF_CreateRendererTextEngine(renderer);
                 if (!engine_renderer) {
-                    SDL_Log("Couldn't create renderer text engine: %s\n", SDL_GetError());
+                    SDL_Log("Couldn't create renderer text engine: %s", SDL_GetError());
                 }
 
             }
