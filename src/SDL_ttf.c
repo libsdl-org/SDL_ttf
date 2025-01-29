@@ -1197,7 +1197,7 @@ static bool Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart,
     const int alignment = Get_Alignment() - 1;                                                                          \
     const int bpp = ((IS_BLENDED || IS_LCD) ? 4 : 1);                                                                   \
     int i;                                                                                                              \
-    Uint8 fg_alpha = (fg ? fg->a : 0);                                                                                  \
+    Uint8 fg_alpha = (fg ? fg->a : SDL_ALPHA_OPAQUE);                                                                                  \
     for (i = 0; i < font->positions->len; i++) {                                                                        \
         GlyphPosition *pos = &font->positions->pos[i];                                                                  \
         TTF_Font *glyph_font = pos->font;                                                                               \
