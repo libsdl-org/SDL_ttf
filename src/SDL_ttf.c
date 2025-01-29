@@ -2638,7 +2638,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
         // Compute pitch: glyph is padded right to be able to read an 'aligned' size expanding on the right
         dst->pitch = dst->width + alignment;
 #if TTF_USE_COLOR
-        if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
+        if (src->pixel_mode == FT_PIXEL_MODE_BGRA && (want & CACHED_COLOR)) {
             dst->pitch += 3 * dst->width;
         }
 #endif
@@ -2816,7 +2816,27 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
                     NORMAL_GRAY4(remainder);
 #if TTF_USE_COLOR
                 } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
-                    SDL_memcpy(dstp, srcp, 4 * src->width);
+                    if (want & CACHED_COLOR) {
+                        SDL_memcpy(dstp, srcp, 4 * src->width);
+                    } else {
+                        // Convert to grayscale
+                        while (quotient--) {
+                            Uint8 r, g, b, a;
+                            b = *srcp++;
+                            g = *srcp++;
+                            r = *srcp++;
+                            a = *srcp++;
+                            if (a != 0) {
+                                // Technically we should do this in linear colorspace
+                                // Y = 0.2126 * R + 0.7152 * G + 0.0722 * B
+                                *dstp++ = 255 - (Uint8)(((int)r * 54) / 255 +
+                                                        ((int)g * 182) / 255 +
+                                                        ((int)b * 18) / 255);
+                            } else {
+                                *dstp++ = 0;
+                            }
+                        }
+                    }
 #endif
                 } else if (src->pixel_mode == FT_PIXEL_MODE_LCD) {
                     while (quotient--) {
@@ -2871,7 +2891,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
         }
 
 #if TTF_USE_COLOR
-        if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
+        if (src->pixel_mode == FT_PIXEL_MODE_BGRA && (want & CACHED_COLOR)) {
             dst->is_color = 1;
         } else {
             dst->is_color = 0;
