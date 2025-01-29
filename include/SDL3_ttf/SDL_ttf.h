@@ -1564,13 +1564,20 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *f
 extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font, Uint32 ch, SDL_Color fg, SDL_Color bg);
 
 
-/* A text engine used to create text objects
+/**
+ * A text engine used to create text objects
  *
  * This is a public interface that can be used by applications and libraries. See <SDL3_ttf/SDL_textengine.h> for details.
+ *
+ * \since This struct is available since SDL_ttf 3.0.0.
  */
 typedef struct TTF_TextEngine TTF_TextEngine;
 
-/* Internal data for TTF_Text */
+/**
+ * Internal data for TTF_Text
+ *
+ * \since This struct is available since SDL_ttf 3.0.0.
+ */
 typedef struct TTF_TextData TTF_TextData;
 
 /**
