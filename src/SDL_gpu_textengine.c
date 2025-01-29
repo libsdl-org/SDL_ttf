@@ -949,11 +949,10 @@ TTF_TextEngine *TTF_CreateGPUTextEngineWithProperties(SDL_PropertiesID props)
 
     TTF_TextEngine *engine = (TTF_TextEngine *)SDL_malloc(sizeof(*engine));
     if (!engine) {
-        SDL_SetError("Failed to create GPU text engine.");
         return NULL;
     }
 
-    int atlas_texture_size = (int)SDL_GetNumberProperty(props, TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE, 512);
+    int atlas_texture_size = (int)SDL_GetNumberProperty(props, TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE, 1024);
     if (atlas_texture_size <= 0) {
         SDL_SetError("Failed to create GPU text engine: Invalid texture atlas size.");
         return NULL;
