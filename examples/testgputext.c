@@ -284,7 +284,7 @@ int main(int argc, char *argv[])
 
     (void)argc;
     for (int i = 1; argv[i]; ++i) {
-        if (SDL_strcasecmp(argv[i], "-sdf") == 0) {
+        if (SDL_strcasecmp(argv[i], "--sdf") == 0) {
             use_SDF = true;
         } else if (*argv[i] == '-') {
             break;
@@ -294,7 +294,7 @@ int main(int argc, char *argv[])
         }
     }
     if (!font_filename) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Usage: testgputext [-sdf] FONT_FILENAME");
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Usage: testgputext [--sdf] FONT_FILENAME");
         return 2;
     }
 
