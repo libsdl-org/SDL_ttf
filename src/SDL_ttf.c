@@ -3609,7 +3609,7 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
     if (positions->len > 0) {
         minx = INT_MAX;
         maxx = INT_MIN;
-        miny = INT_MAX;
+        miny = 0;
         maxy = font->height;
 
         if (positions->pos[0].offset == 0) {
