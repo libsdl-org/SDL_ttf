@@ -380,10 +380,10 @@ static bool UpdateGPUTexture(SDL_GPUDevice *device, SDL_GPUTexture *texture,
 
 static bool UpdateGlyph(SDL_GPUDevice *device, AtlasGlyph *glyph, SDL_Surface *surface)
 {
-    if (glyph->rect.w > 0 && glyph->rect.h > 0) {
-        /* FIXME: We should update the whole texture at once or at least cache the transfer buffers */
-        UpdateGPUTexture(device, glyph->atlas->texture, &glyph->rect, surface->pixels, surface->pitch);
-    }
+    SDL_assert(glyph->rect.w > 0 && glyph->rect.h > 0);
+
+    /* FIXME: We should update the whole texture at once or at least cache the transfer buffers */
+    UpdateGPUTexture(device, glyph->atlas->texture, &glyph->rect, surface->pixels, surface->pitch);
     return true;
 }
 
@@ -601,6 +601,14 @@ static SDL_GPUTexture *GetOperationTexture(TTF_DrawOperation *op)
     return NULL;
 }
 
+static TTF_CopyOperationFlags GetOperationFlags(TTF_DrawOperation *op)
+{
+    if (op->cmd == TTF_DRAW_COMMAND_COPY) {
+        return op->copy.flags;
+    }
+    return 0;
+}
+
 static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops, TTF_GPUTextEngineWinding winding)
 {
     AtlasDrawSequence *sequence = (AtlasDrawSequence *)SDL_calloc(1, sizeof(*sequence));
@@ -612,9 +620,11 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
     SDL_COMPILE_TIME_ASSERT(sizeof_SDL_FPoint, sizeof(SDL_FPoint) == 2 * sizeof(float));
 
     SDL_GPUTexture *texture = GetOperationTexture(&ops[0]);
+    TTF_CopyOperationFlags flags = GetOperationFlags(&ops[0]);
     TTF_DrawOperation *end = NULL;
     for (int i = 1; i < num_ops; ++i) {
-        if (GetOperationTexture(&ops[i]) != texture) {
+        if (GetOperationTexture(&ops[i]) != texture ||
+            GetOperationFlags(&ops[i]) != flags) {
             end = &ops[i];
             break;
         }
@@ -622,6 +632,7 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
 
     int count = (end ? (int)(end - ops) : num_ops);
     sequence->atlas_texture = texture;
+    sequence->flags = flags;
     sequence->num_vertices = count * 4;
     sequence->num_indices = count * 6;
 

@@ -54,7 +54,7 @@ static void SDL_NukeFreeGlyphHashtableKey(const void *key, const void *value, vo
 
 SDL_HashTable *SDL_CreateGlyphHashTable(SDL_GlyphHashTable_NukeFn nukefn)
 {
-    const int num_buckets = 4; // FIXME: Is this a good value?
+    const int num_buckets = 32;
     return SDL_CreateHashTable(nukefn, num_buckets, SDL_HashGlyphHashtableKey, SDL_KeyMatchGlyphHashtableKey, SDL_NukeFreeGlyphHashtableKey, false, false);
 }
 

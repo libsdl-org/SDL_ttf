@@ -601,8 +601,9 @@ extern SDL_DECLSPEC TTF_HintingFlags SDLCALL TTF_GetFontHinting(const TTF_Font *
 /**
  * Enable Signed Distance Field rendering for a font.
  *
- * This works with the Blended APIs. SDF is a technique that
- * helps fonts look sharp even when scaling and rotating.
+ * SDF is a technique that helps fonts look sharp even when scaling and rotating, and requires special shader support for display.
+ *
+ * This works with Blended APIs, and generates the raw signed distance values in the alpha channel of the resulting texture.
  *
  * This updates any TTF_Text objects using this font, and clears already-generated glyphs, if any, from the cache.
  *
@@ -1563,13 +1564,21 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *f
 extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font, Uint32 ch, SDL_Color fg, SDL_Color bg);
 
 
-/* A text engine used to create text objects
+/**
+ * A text engine used to create text objects
  *
- * This is a public interface that can be used by applications and libraries. See <SDL3_ttf/SDL_textengine.h> for details.
+ * This is a public interface that can be used by applications and libraries.
+ * See <SDL3_ttf/SDL_textengine.h> for details.
+ *
+ * \since This struct is available since SDL_ttf 3.0.0.
  */
 typedef struct TTF_TextEngine TTF_TextEngine;
 
-/* Internal data for TTF_Text */
+/**
+ * Internal data for TTF_Text
+ *
+ * \since This struct is available since SDL_ttf 3.0.0.
+ */
 typedef struct TTF_TextData TTF_TextData;
 
 /**
@@ -1791,6 +1800,7 @@ typedef struct TTF_GPUAtlasDrawSequence
     int num_vertices;                       /**< Number of vertices */
     int *indices;                           /**< An array of indices into the 'vertices' arrays */
     int num_indices;                        /**< Number of indices */
+    Uint32 flags;                           /**< TTF_CopyOperationFlags */
 
     struct TTF_GPUAtlasDrawSequence *next;  /**< The next sequence (will be NULL in case of the last sequence) */
 } TTF_GPUAtlasDrawSequence;

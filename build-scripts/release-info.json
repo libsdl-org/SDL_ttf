@@ -81,10 +81,7 @@
         "lib/@<@ARCH@>@": [
           "VisualC/@<@PLATFORM@>@/@<@CONFIGURATION@>@/SDL3_ttf.dll",
           "VisualC/@<@PLATFORM@>@/@<@CONFIGURATION@>@/SDL3_ttf.lib",
-          "VisualC/@<@PLATFORM@>@/@<@CONFIGURATION@>@/SDL3_ttf.pdb",
-          "VisualC/external/lib/@<@ARCH@>@/LICENSE.freetype.txt",
-          "VisualC/external/lib/@<@ARCH@>@/LICENSE.harfbuzz.txt",
-          "VisualC/external/lib/@<@ARCH@>@/LICENSE.zlib.txt"
+          "VisualC/@<@PLATFORM@>@/@<@CONFIGURATION@>@/SDL3_ttf.pdb"
         ]
       }
     },

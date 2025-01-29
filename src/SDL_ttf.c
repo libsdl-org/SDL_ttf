@@ -59,8 +59,22 @@
 #  define TTF_USE_HARFBUZZ 0
 #endif
 
+// Enable PlutoSVG for color emoji rendering
+#ifndef TTF_USE_PLUTOSVG
+#  define TTF_USE_PLUTOSVG 0
+#endif
+
 #ifndef TTF_DEFAULT_DPI
 #define TTF_DEFAULT_DPI 72
+#endif
+
+// FT_FACE_FLAG_SVG and FT_HAS_SVG require freetype 2.12+
+#ifndef FT_FACE_FLAG_SVG
+#define FT_FACE_FLAG_SVG               ( 1L << 16 )
+#endif
+#ifndef FT_HAS_SVG
+#define FT_HAS_SVG( face ) \
+          ( !!( (face)->face_flags & FT_FACE_FLAG_SVG ) )
 #endif
 
 /**
@@ -89,6 +103,10 @@ SDL_COMPILE_TIME_ASSERT(SDL_TTF_MICRO_VERSION_max, SDL_TTF_MICRO_VERSION <= 999)
 #if TTF_USE_HARFBUZZ
 #include <hb.h>
 #include <hb-ft.h>
+#endif
+
+#if TTF_USE_PLUTOSVG
+#include <plutosvg.h>
 #endif
 
 // Round glyph to 16 bytes width and use SSE2 instructions
@@ -528,18 +546,10 @@ static void BG_Blended_Opaque_SDF(const TTF_Image *image, Uint32 *destination, S
     Uint32       width  = image->width;
     Uint32       height = image->rows;
 
-    Uint32 s;
-    Uint32 d;
-
     while (height--) {
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-            d = *dst;
-            s = ((Uint32)*src++) << 24;
-            if (s > d) {
-                *dst = s;
-            }
-            dst++;
+            *dst++ = ((Uint32)*src++) << 24;
         , width);
         /* *INDENT-ON* */
         src += srcskip;
@@ -548,6 +558,8 @@ static void BG_Blended_Opaque_SDF(const TTF_Image *image, Uint32 *destination, S
 }
 
 // Blended non-opaque SDF
+// Note: This doesn't make sense when we're outputting raw SDF values.
+//       We'll just copy the alpha channel as-is for now.
 static void BG_Blended_SDF(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
 {
     const Uint8 *src    = image->buffer;
@@ -555,20 +567,11 @@ static void BG_Blended_SDF(const TTF_Image *image, Uint32 *destination, Sint32 s
     Uint32       width  = image->width;
     Uint32       height = image->rows;
 
-    Uint32 s;
-    Uint32 d;
-
-    Uint32 tmp;
+    (void)fg_alpha;
     while (height--) {
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-            d = *dst;
-            tmp = fg_alpha * (*src++);
-            s = DIVIDE_BY_255(tmp) << 24;
-            if (s > d) {
-                *dst = s;
-            }
-            dst++;
+            *dst++ = ((Uint32)*src++) << 24;
         , width);
         /* *INDENT-ON* */
         src += srcskip;
@@ -1478,27 +1481,29 @@ static bool Render_Line_TextEngine(TTF_Font *font, TTF_Direction direction, int 
         x = xstart + FT_FLOOR(x) + glyph->sz_left;
         y = ystart + FT_FLOOR(y) - glyph->sz_top;
 
-        // Make sure glyph is inside text area
-        above_w = x + glyph_width - width;
-        above_h = y + glyph_rows  - height;
+        if (!glyph_font->render_sdf) {
+            // Make sure glyph is inside text area
+            above_w = x + glyph_width - width;
+            above_h = y + glyph_rows  - height;
 
-        if (x < 0) {
-            int tmp = -x;
-            x = 0;
-            glyph_x += tmp;
-            glyph_width -= tmp;
-        }
-        if (above_w > 0) {
-            glyph_width -= above_w;
-        }
-        if (y < 0) {
-            int tmp = -y;
-            y = 0;
-            glyph_y += tmp;
-            glyph_rows -= tmp;
-        }
-        if (above_h > 0) {
-            glyph_rows -= above_h;
+            if (x < 0) {
+                int tmp = -x;
+                x = 0;
+                glyph_x += tmp;
+                glyph_width -= tmp;
+            }
+            if (above_w > 0) {
+                glyph_width -= above_w;
+            }
+            if (y < 0) {
+                int tmp = -y;
+                y = 0;
+                glyph_y += tmp;
+                glyph_rows -= tmp;
+            }
+            if (above_h > 0) {
+                glyph_rows -= above_h;
+            }
         }
 
         if (glyph_width > 0 && glyph_rows > 0) {
@@ -1515,6 +1520,15 @@ static bool Render_Line_TextEngine(TTF_Font *font, TTF_Direction direction, int 
             op->copy.dst.y = y;
             op->copy.dst.w = op->copy.src.w;
             op->copy.dst.h = op->copy.src.h;
+            if (glyph_font->render_sdf) {
+                op->copy.dst.x -= DEFAULT_SDF_SPREAD;
+                op->copy.dst.y -= DEFAULT_SDF_SPREAD;
+                op->copy.dst.w -= DEFAULT_SDF_SPREAD;
+                op->copy.dst.h -= DEFAULT_SDF_SPREAD;
+            }
+            if (FT_HAS_SVG(glyph_font->face)) {
+                op->copy.flags = TTF_COPY_OPERATION_IMAGE;
+            }
         } else {
             // Use the distance to the next glyph as our bounds width
             glyph_width = FT_FLOOR(pos->x_advance);
@@ -1877,6 +1891,11 @@ bool TTF_Init(void)
         FT_Property_Set(TTF_state.library, "sdf", "overlaps", &overlaps);
 #endif
 #endif
+
+#if TTF_USE_PLUTOSVG
+        FT_Property_Set(TTF_state.library, "ot-svg", "svg-hooks", plutosvg_ft_svg_hooks());
+#endif
+
         TTF_state.lock = SDL_CreateMutex();
     } else {
         (void)SDL_AtomicDecRef(&TTF_state.refcount);
@@ -2425,6 +2444,11 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
     }
 #endif
 
+    if (FT_HAS_SVG(font->face)) {
+        // We won't get metrics unless we add FT_LOAD_COLOR
+        ft_load |= FT_LOAD_COLOR;
+    }
+
     error = FT_Load_Glyph(font->face, cached->index, ft_load);
     if (error) {
         return TTF_SetFTError("FT_Load_Glyph() failed", error);
@@ -2500,7 +2524,6 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
 
         // Adjust for SDF
         if (font->render_sdf) {
-            // Default 'spread' property
             cached->sz_width += 2 * DEFAULT_SDF_SPREAD;
             cached->sz_rows  += 2 * DEFAULT_SDF_SPREAD;
         }
@@ -2806,30 +2829,9 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
                         *dstp++ = r;
                         *dstp++ = alpha;
                     }
+
                 } else {
-#if TTF_USE_SDF
-                    if (ft_render_mode != FT_RENDER_MODE_SDF) {
-                        SDL_memcpy(dstp, srcp, src->width);
-                    } else {
-                        unsigned int x;
-                        for (x = 0; x < src->width; x++) {
-                            Uint8 s = srcp[x];
-                            Uint8 d;
-                            if (s < 128) {
-                                d = 256 - (128 - s) * 2;
-                            } else {
-                                d = 255;
-                                /* some glitch ?
-                                if (s == 255) {
-                                    d = 0;
-                                }*/
-                            }
-                            dstp[x] = d;
-                        }
-                    }
-#else
                     SDL_memcpy(dstp, srcp, src->width);
-#endif
                 }
             }
         }
@@ -3088,8 +3090,18 @@ SDL_Surface *TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index)
 
     TTF_CHECK_FONT(font, NULL);
 
-    if (!Find_GlyphByIndex(font, glyph_index, 0, CACHED_PIXMAP, 0, 0, 0, 0, NULL, &image)) {
-        return NULL;
+    if (font->render_sdf) {
+        if (!Find_GlyphByIndex(font, glyph_index, COLOR, 0, 0, NULL, &image)) {
+            return NULL;
+        }
+    } else {
+        if (!Find_GlyphByIndex(font, glyph_index, PIXMAP, 0, 0, NULL, &image)) {
+            return NULL;
+        }
+    }
+
+    if (image->width == 0 || image->rows == 0) {
+        return SDL_CreateSurface(1, 1, SDL_PIXELFORMAT_ARGB8888);
     }
 
     surface = SDL_CreateSurface(image->width, image->rows, SDL_PIXELFORMAT_ARGB8888);
@@ -3553,12 +3565,13 @@ static GlyphPositions *GetCachedGlyphPositions(TTF_Font *font, const char *text,
     return font->positions;
 }
 
-static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, int *w, int *h, int *xstart, int *ystart, bool measure_width, int max_width, int *measured_width, size_t *measured_length)
+static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, int *w, int *h, int *xstart, int *ystart, bool measure_width, int max_width, int *measured_width, size_t *measured_length, bool include_spread)
 {
     int x = 0;
     int pos_x, pos_y;
-    int minx = 0, maxx = 0;
-    int miny = 0, maxy = 0;
+    int minx, maxx;
+    int miny, maxy;
+    int spread_adjustment;
 
     if (w) {
         *w = 0;
@@ -3581,7 +3594,11 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
         *measured_length = length;
     }
 
-    maxy = font->height;
+    if (font->render_sdf && !include_spread) {
+        spread_adjustment = DEFAULT_SDF_SPREAD;
+    } else {
+        spread_adjustment = 0;
+    }
 
     GlyphPositions *positions = GetCachedGlyphPositions(font, text, length, direction, script);
     if (!positions) {
@@ -3589,6 +3606,11 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
     }
 
     if (positions->len > 0) {
+        minx = INT_MAX;
+        maxx = INT_MIN;
+        miny = INT_MAX;
+        maxy = font->height;
+
         if (positions->pos[0].offset == 0) {
             // Left to right layout
             for (int i = 0; i < positions->len; ++i) {
@@ -3596,13 +3618,13 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
                 c_glyph *glyph = pos->glyph;
 
                 // Compute provisional global bounding box
-                pos_x = FT_FLOOR(pos->x) + glyph->sz_left;
-                pos_y = FT_FLOOR(pos->y) - glyph->sz_top;
+                pos_x = FT_FLOOR(pos->x) + glyph->sz_left + spread_adjustment;
+                pos_y = FT_FLOOR(pos->y) - glyph->sz_top + spread_adjustment;
 
                 minx = SDL_min(minx, pos_x);
-                maxx = SDL_max(maxx, pos_x + glyph->sz_width);
+                maxx = SDL_max(maxx, pos_x + glyph->sz_width - 2 * spread_adjustment);
                 miny = SDL_min(miny, pos_y);
-                maxy = SDL_max(maxy, pos_y + glyph->sz_rows);
+                maxy = SDL_max(maxy, pos_y + glyph->sz_rows - 2 * spread_adjustment);
 
                 x += pos->x_advance;
 #if !TTF_USE_HARFBUZZ
@@ -3635,13 +3657,13 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
                 c_glyph *glyph = pos->glyph;
 
                 // Compute provisional global bounding box
-                pos_x = FT_FLOOR(pos->x) + glyph->sz_left;
-                pos_y = FT_FLOOR(pos->y) - glyph->sz_top;
+                pos_x = FT_FLOOR(pos->x) + glyph->sz_left + spread_adjustment;
+                pos_y = FT_FLOOR(pos->y) - glyph->sz_top + spread_adjustment;
 
                 minx = SDL_min(minx, pos_x);
-                maxx = SDL_max(maxx, pos_x + glyph->sz_width);
+                maxx = SDL_max(maxx, pos_x + glyph->sz_width - 2 * spread_adjustment);
                 miny = SDL_min(miny, pos_y);
-                maxy = SDL_max(maxy, pos_y + glyph->sz_rows);
+                maxy = SDL_max(maxy, pos_y + glyph->sz_rows - 2 * spread_adjustment);
 
                 // Measurement mode
                 if (measure_width) {
@@ -3670,6 +3692,11 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
                 minx = 0;
             }
         }
+    } else {
+        minx = 0;
+        maxx = 0;
+        miny = 0;
+        maxy = font->height;
     }
 
     // Allows to render a string with only one space (bug 4344).
@@ -3680,8 +3707,8 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
     if (xstart) {
         *xstart = (minx < 0) ? -minx : 0;
         *xstart += font->outline;
-        if (font->render_sdf) {
-            *xstart += DEFAULT_SDF_SPREAD; // Default 'spread' property
+        if (font->render_sdf && include_spread) {
+            *xstart += DEFAULT_SDF_SPREAD;
         }
     }
 
@@ -3689,8 +3716,8 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
     if (ystart) {
         *ystart = (miny < 0) ? -miny : 0;
         *ystart += font->outline;
-        if (font->render_sdf) {
-            *ystart += DEFAULT_SDF_SPREAD; // Default 'spread' property
+        if (font->render_sdf && include_spread) {
+            *ystart += DEFAULT_SDF_SPREAD;
         }
     }
 
@@ -3713,7 +3740,7 @@ bool TTF_GetStringSize(TTF_Font *font, const char *text, size_t length, int *w, 
     if (!length && text) {
         length = SDL_strlen(text);
     }
-    return TTF_Size_Internal(font, text, length, font->direction, font->script, w, h, NULL, NULL, NO_MEASUREMENT);
+    return TTF_Size_Internal(font, text, length, font->direction, font->script, w, h, NULL, NULL, NO_MEASUREMENT, true);
 }
 
 bool TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int max_width, int *measured_width, size_t *measured_length)
@@ -3721,7 +3748,7 @@ bool TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int max_
     if (!length && text) {
         length = SDL_strlen(text);
     }
-    return TTF_Size_Internal(font, text, length, font->direction, font->script, NULL, NULL, NULL, NULL, true, max_width, measured_width, measured_length);
+    return TTF_Size_Internal(font, text, length, font->direction, font->script, NULL, NULL, NULL, NULL, true, max_width, measured_width, measured_length, true);
 }
 
 static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, const render_mode_t render_mode)
@@ -3754,7 +3781,7 @@ static SDL_Surface* TTF_Render_Internal(TTF_Font *font, const char *text, size_t
 #endif
 
     // Get the dimensions of the text surface
-    if (!TTF_Size_Internal(font, text, length, font->direction, font->script, &width, &height, &xstart, &ystart, NO_MEASUREMENT) || !width) {
+    if (!TTF_Size_Internal(font, text, length, font->direction, font->script, &width, &height, &xstart, &ystart, NO_MEASUREMENT, true) || !width) {
         SDL_SetError("Text has zero width");
         goto failure;
     }
@@ -3872,7 +3899,7 @@ static bool CharacterIsNewLine(Uint32 c)
     return false;
 }
 
-static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, int xoffset, int wrap_width, bool trim_whitespace, TTF_Line **lines, int *num_lines, int *w, int *h)
+static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, TTF_Direction direction, Uint32 script, int xoffset, int wrap_width, bool trim_whitespace, TTF_Line **lines, int *num_lines, int *w, int *h, bool include_spread)
 {
     int width, height;
     int i, numLines = 0, rowHeight;
@@ -3898,7 +3925,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, TTF
     }
 
     // Get the dimensions of the text surface
-    if (!TTF_Size_Internal(font, text, length, direction, script, &width, &height, NULL, NULL, NO_MEASUREMENT) || !width) {
+    if (!TTF_Size_Internal(font, text, length, direction, script, &width, &height, NULL, NULL, NO_MEASUREMENT, include_spread) || !width) {
         return SDL_SetError("Text has zero width");
     }
 
@@ -3953,7 +3980,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, TTF
                 max_width = SDL_max(max_width - xoffset, 1);
             }
             size_t max_length = 0;
-            if (!TTF_Size_Internal(font, spot, left, direction, script, NULL, NULL, NULL, NULL, true, max_width, NULL, &max_length)) {
+            if (!TTF_Size_Internal(font, spot, left, direction, script, NULL, NULL, NULL, NULL, true, max_width, NULL, &max_length, include_spread)) {
                 SDL_SetError("Error measure text");
                 goto done;
             }
@@ -4036,7 +4063,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, TTF
             for (i = 0; i < numLines; i++) {
                 int w_tmp, h_tmp;
 
-                if (TTF_Size_Internal(font, strLines[i].text, strLines[i].length, font->direction, font->script, &w_tmp, &h_tmp, NULL, NULL, NO_MEASUREMENT)) {
+                if (TTF_Size_Internal(font, strLines[i].text, strLines[i].length, font->direction, font->script, &w_tmp, &h_tmp, NULL, NULL, NO_MEASUREMENT, include_spread)) {
                     width = SDL_max(w_tmp, width);
                 }
             }
@@ -4079,7 +4106,7 @@ done:
 
 bool TTF_GetStringSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrap_width, int *w, int *h)
 {
-    return GetWrappedLines(font, text, length, font->direction, font->script, 0, wrap_width, true, NULL, NULL, w, h);
+    return GetWrappedLines(font, text, length, font->direction, font->script, 0, wrap_width, true, NULL, NULL, w, h, true);
 }
 
 static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text, size_t length, SDL_Color fg, SDL_Color bg, int wrap_width, const render_mode_t render_mode)
@@ -4090,7 +4117,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
     int i, numLines = 0;
     TTF_Line *strLines = NULL;
 
-    if (!GetWrappedLines(font, text, length, font->direction, font->script, 0, wrap_width, true, &strLines, &numLines, &width, &height)) {
+    if (!GetWrappedLines(font, text, length, font->direction, font->script, 0, wrap_width, true, &strLines, &numLines, &width, &height, true)) {
         return NULL;
     }
 
@@ -4132,7 +4159,7 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         int xstart, ystart, line_width, xoffset;
 
         // Initialize xstart, ystart and compute positions
-        if (!TTF_Size_Internal(font, strLines[i].text, strLines[i].length, font->direction, font->script, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
+        if (!TTF_Size_Internal(font, strLines[i].text, strLines[i].length, font->direction, font->script, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT, true)) {
             goto failure;
         }
 
@@ -4380,7 +4407,7 @@ static bool LayoutText(TTF_Text *text)
     TTF_Direction direction = TTF_GetTextDirection(text);
     Uint32 script = TTF_GetTextScript(text);
 
-    if (!GetWrappedLines(font, text->text, length, direction, script, text->internal->x, wrap_width, trim_whitespace, &strLines, &numLines, &width, &height)) {
+    if (!GetWrappedLines(font, text->text, length, direction, script, text->internal->x, wrap_width, trim_whitespace, &strLines, &numLines, &width, &height, false)) {
         return true;
     }
     height += text->internal->y;
@@ -4421,7 +4448,7 @@ static bool LayoutText(TTF_Text *text)
         }
 
         // Initialize xstart, ystart and compute positions
-        if (!TTF_Size_Internal(font, strLines[i].text, strLines[i].length, direction, script, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT)) {
+        if (!TTF_Size_Internal(font, strLines[i].text, strLines[i].length, direction, script, &line_width, NULL, &xstart, &ystart, NO_MEASUREMENT, false)) {
             goto done;
         }
 
@@ -5662,9 +5689,11 @@ bool TTF_SetFontSDF(TTF_Font *font, bool enabled)
 {
     TTF_CHECK_FONT(font, false);
 #if TTF_USE_SDF
-    font->render_sdf = enabled;
-    Flush_Cache(font);
-    UpdateFontText(font, NULL);
+    if (font->render_sdf != enabled) {
+        font->render_sdf = enabled;
+        Flush_Cache(font);
+        UpdateFontText(font, NULL);
+    }
     return true;
 #else
     (void)enabled;

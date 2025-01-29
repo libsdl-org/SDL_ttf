@@ -88,19 +88,19 @@
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\external\freetype\include;$(ProjectDir)..\external\harfbuzz\src;$(ProjectDir)..\..\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\external\freetype\include;$(ProjectDir)..\external\harfbuzz\src;$(ProjectDir)..\external\plutosvg\source;$(ProjectDir)..\external\plutovg\include;$(ProjectDir)..\..\SDL\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\SDL\VisualC\$(PlatformName)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\external\freetype\include;$(ProjectDir)..\external\harfbuzz\src;$(ProjectDir)..\..\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\external\freetype\include;$(ProjectDir)..\external\harfbuzz\src;$(ProjectDir)..\external\plutosvg\source;$(ProjectDir)..\external\plutovg\include;$(ProjectDir)..\..\SDL\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\SDL\VisualC\$(PlatformName)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\external\freetype\include;$(ProjectDir)..\external\harfbuzz\src;$(ProjectDir)..\..\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\external\freetype\include;$(ProjectDir)..\external\harfbuzz\src;$(ProjectDir)..\external\plutosvg\source;$(ProjectDir)..\external\plutovg\include;$(ProjectDir)..\..\SDL\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\SDL\VisualC\$(PlatformName)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\external\freetype\include;$(ProjectDir)..\external\harfbuzz\src;$(ProjectDir)..\..\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\external\freetype\include;$(ProjectDir)..\external\harfbuzz\src;$(ProjectDir)..\external\plutosvg\source;$(ProjectDir)..\external\plutovg\include;$(ProjectDir)..\..\SDL\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\SDL\VisualC\$(PlatformName)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,7 +115,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>DLL_EXPORT;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLL_EXPORT;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;TTF_USE_PLUTOSVG=1;PLUTOSVG_HAS_FREETYPE;PLUTOSVG_BUILD_STATIC;PLUTOVG_BUILD_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -143,7 +143,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>DLL_EXPORT;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLL_EXPORT;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;TTF_USE_PLUTOSVG=1;PLUTOSVG_HAS_FREETYPE;PLUTOSVG_BUILD_STATIC;PLUTOVG_BUILD_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -169,7 +169,7 @@
       </HeaderFileName>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>DLL_EXPORT;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLL_EXPORT;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;TTF_USE_PLUTOSVG=1;PLUTOSVG_HAS_FREETYPE;PLUTOSVG_BUILD_STATIC;PLUTOVG_BUILD_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
@@ -196,7 +196,7 @@
       </HeaderFileName>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>DLL_EXPORT;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLL_EXPORT;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;TTF_USE_HARFBUZZ=1;FT_PUBLIC_FUNCTION_ATTRIBUTE=;FT_CONFIG_OPTION_USE_HARFBUZZ;FT2_BUILD_LIBRARY;HAVE_FREETYPE;TTF_USE_PLUTOSVG=1;PLUTOSVG_HAS_FREETYPE;PLUTOSVG_BUILD_STATIC;PLUTOVG_BUILD_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
@@ -211,56 +211,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <CustomBuild Include="external\lib\x86\LICENSE.freetype.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="external\lib\x86\LICENSE.harfbuzz.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="external\lib\x86\LICENSE.zlib.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="external\lib\x64\LICENSE.freetype.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="external\lib\x64\LICENSE.harfbuzz.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="external\lib\x64\LICENSE.zlib.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying %(Filename)%(Extension)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy %(FullPath) "$(SolutionDir)\$(Platform)\$(Configuration)\"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\%(Filename)%(Extension);%(Outputs)</Outputs>
-    </CustomBuild>
-  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\external\freetype\src\autofit\autofit.c" />
     <ClCompile Include="..\external\freetype\src\base\ftbase.c" />
@@ -378,6 +328,18 @@
     <ClCompile Include="..\external\harfbuzz\src\hb-uniscribe.cc" />
     <ClCompile Include="..\external\harfbuzz\src\hb-wasm-api.cc" />
     <ClCompile Include="..\external\harfbuzz\src\hb-wasm-shape.cc" />
+    <ClCompile Include="..\external\plutosvg\source\plutosvg.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-blend.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-canvas.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-font.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-ft-math.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-ft-raster.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-ft-stroker.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-matrix.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-paint.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-path.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-rasterize.c" />
+    <ClCompile Include="..\external\plutovg\source\plutovg-surface.c" />
     <ClCompile Include="..\src\SDL_gpu_textengine.c" />
     <ClCompile Include="..\src\SDL_hashtable.c" />
     <ClCompile Include="..\src\SDL_hashtable_ttf.c" />
@@ -389,6 +351,16 @@
     <ResourceCompile Include="..\src\version.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\external\plutosvg\source\plutosvg.h" />
+    <ClInclude Include="..\external\plutovg\source\plutovg-ft-math.h" />
+    <ClInclude Include="..\external\plutovg\source\plutovg-ft-raster.h" />
+    <ClInclude Include="..\external\plutovg\source\plutovg-ft-stroker.h" />
+    <ClInclude Include="..\external\plutovg\source\plutovg-ft-types.h" />
+    <ClInclude Include="..\external\plutovg\source\plutovg-private.h" />
+    <ClInclude Include="..\external\plutovg\source\plutovg-stb-image-write.h" />
+    <ClInclude Include="..\external\plutovg\source\plutovg-stb-image.h" />
+    <ClInclude Include="..\external\plutovg\source\plutovg-stb-truetype.h" />
+    <ClInclude Include="..\external\plutovg\source\plutovg-utils.h" />
     <ClInclude Include="..\include\SDL3_ttf\SDL_ttf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

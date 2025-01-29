@@ -55,6 +55,7 @@ struct AtlasTexture
 struct AtlasDrawSequence
 {
     SDL_Texture *texture;
+    TTF_CopyOperationFlags flags;
     int num_rects;
     SDL_Rect *rects;
     float *texcoords;
@@ -535,6 +536,14 @@ static SDL_Texture *GetOperationTexture(TTF_DrawOperation *op)
     return NULL;
 }
 
+static TTF_CopyOperationFlags GetOperationFlags(TTF_DrawOperation *op)
+{
+    if (op->cmd == TTF_DRAW_COMMAND_COPY) {
+        return op->copy.flags;
+    }
+    return 0;
+}
+
 static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops)
 {
     AtlasDrawSequence *sequence = (AtlasDrawSequence *)SDL_calloc(1, sizeof(*sequence));
@@ -543,9 +552,11 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
     }
 
     SDL_Texture *texture = GetOperationTexture(&ops[0]);
+    TTF_CopyOperationFlags flags = GetOperationFlags(&ops[0]);
     TTF_DrawOperation *end = NULL;
     for (int i = 1; i < num_ops; ++i) {
-        if (GetOperationTexture(&ops[i]) != texture) {
+        if (GetOperationTexture(&ops[i]) != texture ||
+            GetOperationFlags(&ops[i]) != flags) {
             end = &ops[i];
             break;
         }
@@ -553,6 +564,7 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
 
     int count = (end ? (int)(end - ops) : num_ops);
     sequence->texture = texture;
+    sequence->flags = flags;
     sequence->num_rects = count;
     sequence->rects = (SDL_Rect *)SDL_malloc(count * sizeof(*sequence->rects));
     if (!sequence->rects) {
@@ -907,10 +919,20 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
             *position++ = maxy;
         }
 
+        SDL_FColor color;
+        if (sequence->flags & TTF_COPY_OPERATION_IMAGE) {
+            color.r = 1.0f;
+            color.g = 1.0f;
+            color.b = 1.0f;
+            color.a = text->internal->color.a;
+        } else {
+            SDL_copyp(&color, &text->internal->color);
+        }
+
         SDL_RenderGeometryRaw(renderer,
                               sequence->texture,
                               sequence->positions, 2 * sizeof(float),
-                              &text->internal->color, 0,
+                              &color, 0,
                               sequence->texcoords, 2 * sizeof(float),
                               sequence->num_rects * 4,
                               sequence->indices, sequence->num_rects * 6, sizeof(*sequence->indices));

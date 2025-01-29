@@ -2,16 +2,30 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include "testgputext/shaders/spir-v.h"
-#include "testgputext/shaders/dxbc50.h"
-#include "testgputext/shaders/dxil60.h"
-#include "testgputext/shaders/metal.h"
+// Shaders
+#include "testgputext/shaders/shader.vert.spv.h"
+#include "testgputext/shaders/shader.frag.spv.h"
+#include "testgputext/shaders/shader-sdf.frag.spv.h"
+#include "testgputext/shaders/shader.vert.dxil.h"
+#include "testgputext/shaders/shader.frag.dxil.h"
+#include "testgputext/shaders/shader-sdf.frag.dxil.h"
+#include "testgputext/shaders/shader.vert.msl.h"
+#include "testgputext/shaders/shader.frag.msl.h"
+#include "testgputext/shaders/shader-sdf.frag.msl.h"
+
 #define SDL_MATH_3D_IMPLEMENTATION
 #include "testgputext/SDL_math3d.h"
 
 #define MAX_VERTEX_COUNT 4000
 #define MAX_INDEX_COUNT  6000
-#define SUPPORTED_SHADER_FORMATS (SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXBC | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL)
+#define SUPPORTED_SHADER_FORMATS (SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL)
+
+typedef enum
+{
+    VertexShader,
+    PixelShader,
+    PixelShader_SDF,
+} Shader;
 
 typedef SDL_FPoint Vec2;
 
@@ -65,7 +79,7 @@ void *check_error_ptr(void *ptr)
 
 SDL_GPUShader *load_shader(
     SDL_GPUDevice *device,
-    bool is_vertex,
+    Shader shader,
     Uint32 sampler_count,
     Uint32 uniform_buffer_count,
     Uint32 storage_buffer_count,
@@ -79,29 +93,70 @@ SDL_GPUShader *load_shader(
     createinfo.props = 0;
 
     SDL_GPUShaderFormat format = SDL_GetGPUShaderFormats(device);
-    if (format & SDL_GPU_SHADERFORMAT_DXBC) {
-        createinfo.format = SDL_GPU_SHADERFORMAT_DXBC;
-        createinfo.code = (Uint8*)(is_vertex ? shader_vert_sm50_dxbc : shader_frag_sm50_dxbc);
-        createinfo.code_size = is_vertex ? SDL_arraysize(shader_vert_sm50_dxbc) : SDL_arraysize(shader_frag_sm50_dxbc);
-        createinfo.entrypoint = is_vertex ? "VSMain" : "PSMain";
-    } else if (format & SDL_GPU_SHADERFORMAT_DXIL) {
+    if (format & SDL_GPU_SHADERFORMAT_DXIL) {
         createinfo.format = SDL_GPU_SHADERFORMAT_DXIL;
-        createinfo.code = is_vertex ? shader_vert_sm60_dxil : shader_frag_sm60_dxil;
-        createinfo.code_size = is_vertex ? SDL_arraysize(shader_vert_sm60_dxil) : SDL_arraysize(shader_frag_sm60_dxil);
-        createinfo.entrypoint = is_vertex ? "VSMain" : "PSMain";
+        switch (shader) {
+        case VertexShader:
+            createinfo.code = shader_vert_dxil;
+            createinfo.code_size = shader_vert_dxil_len;
+            createinfo.entrypoint = "VSMain";
+            break;
+        case PixelShader:
+            createinfo.code = shader_frag_dxil;
+            createinfo.code_size = shader_frag_dxil_len;
+            createinfo.entrypoint = "PSMain";
+            break;
+        case PixelShader_SDF:
+            createinfo.code = shader_sdf_frag_dxil;
+            createinfo.code_size = shader_sdf_frag_dxil_len;
+            createinfo.entrypoint = "PSMain";
+            break;
+        }
     } else if (format & SDL_GPU_SHADERFORMAT_MSL) {
         createinfo.format = SDL_GPU_SHADERFORMAT_MSL;
-        createinfo.code = is_vertex ? shader_vert_metal : shader_frag_metal;
-        createinfo.code_size = is_vertex ? shader_vert_metal_len : shader_frag_metal_len;
-        createinfo.entrypoint = "main0";
+        switch (shader) {
+        case VertexShader:
+            createinfo.code = shader_vert_msl;
+            createinfo.code_size = shader_vert_msl_len;
+            createinfo.entrypoint = "main0";
+            break;
+        case PixelShader:
+            createinfo.code = shader_frag_msl;
+            createinfo.code_size = shader_frag_msl_len;
+            createinfo.entrypoint = "main0";
+            break;
+        case PixelShader_SDF:
+            createinfo.code = shader_sdf_frag_msl;
+            createinfo.code_size = shader_sdf_frag_msl_len;
+            createinfo.entrypoint = "main0";
+            break;
+        }
     } else {
         createinfo.format = SDL_GPU_SHADERFORMAT_SPIRV;
-        createinfo.code = is_vertex ? shader_vert_spv : shader_frag_spv;
-        createinfo.code_size = is_vertex ? shader_vert_spv_len : shader_frag_spv_len;
-        createinfo.entrypoint = "main";
+        switch (shader) {
+        case VertexShader:
+            createinfo.code = shader_vert_spv;
+            createinfo.code_size = shader_vert_spv_len;
+            createinfo.entrypoint = "main";
+            break;
+        case PixelShader:
+            createinfo.code = shader_frag_spv;
+            createinfo.code_size = shader_frag_spv_len;
+            createinfo.entrypoint = "main";
+            break;
+        case PixelShader_SDF:
+            createinfo.code = shader_sdf_frag_spv;
+            createinfo.code_size = shader_sdf_frag_spv_len;
+            createinfo.entrypoint = "main";
+            break;
+        }
     }
 
-    createinfo.stage = is_vertex ? SDL_GPU_SHADERSTAGE_VERTEX : SDL_GPU_SHADERSTAGE_FRAGMENT;
+    if (shader == VertexShader) {
+        createinfo.stage = SDL_GPU_SHADERSTAGE_VERTEX;
+    } else {
+        createinfo.stage = SDL_GPU_SHADERSTAGE_FRAGMENT;
+    }
     return SDL_CreateGPUShader(device, &createinfo);
 }
 
@@ -224,12 +279,22 @@ void free_context(Context *context)
 
 int main(int argc, char *argv[])
 {
-    const char *font_filename;
+    const char *font_filename = NULL;
+    bool use_SDF = false;
 
-    if (argc > 1) {
-        font_filename = argv[1];
-    } else {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Usage: testgputext FONT_FILENAME");
+    (void)argc;
+    for (int i = 1; argv[i]; ++i) {
+        if (SDL_strcasecmp(argv[i], "-sdf") == 0) {
+            use_SDF = true;
+        } else if (*argv[i] == '-') {
+            break;
+        } else {
+            font_filename = argv[i];
+            break;
+        }
+    }
+    if (!font_filename) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Usage: testgputext [-sdf] FONT_FILENAME");
         return 2;
     }
 
@@ -243,8 +308,8 @@ int main(int argc, char *argv[])
     context.device = check_error_ptr(SDL_CreateGPUDevice(SUPPORTED_SHADER_FORMATS, true, NULL));
     check_error_bool(SDL_ClaimWindowForGPUDevice(context.device, context.window));
 
-    SDL_GPUShader *vertex_shader = check_error_ptr(load_shader(context.device, true, 0, 1, 0, 0));
-    SDL_GPUShader *fragment_shader = check_error_ptr(load_shader(context.device, false, 1, 0, 0, 0));
+    SDL_GPUShader *vertex_shader = check_error_ptr(load_shader(context.device, VertexShader, 0, 1, 0, 0));
+    SDL_GPUShader *fragment_shader = check_error_ptr(load_shader(context.device, use_SDF ? PixelShader_SDF : PixelShader, 1, 0, 0, 0));
 
     SDL_GPUGraphicsPipelineCreateInfo pipeline_create_info = {
         .target_info = {
@@ -334,8 +399,11 @@ int main(int argc, char *argv[])
 
     check_error_bool(TTF_Init());
     TTF_Font *font = check_error_ptr(TTF_OpenFont(font_filename, 50)); /* Preferably use a Monospaced font */
-    if (!font)
+    if (!font) {
         running = false;
+    }
+    SDL_Log("SDF %s", use_SDF ? "enabled" : "disabled");
+    TTF_SetFontSDF(font, use_SDF);
     TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
     TTF_TextEngine *engine = check_error_ptr(TTF_CreateGPUTextEngine(context.device));
 
@@ -354,6 +422,11 @@ int main(int argc, char *argv[])
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
+            case SDL_EVENT_KEY_UP:
+                if (event.key.key == SDLK_ESCAPE) {
+                    running = false;
+                }
+                break;
             case SDL_EVENT_QUIT:
                 running = false;
                 break;
