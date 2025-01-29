@@ -1567,7 +1567,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font, Ui
 /**
  * A text engine used to create text objects
  *
- * This is a public interface that can be used by applications and libraries. See <SDL3_ttf/SDL_textengine.h> for details.
+ * This is a public interface that can be used by applications and libraries.
+ * See <SDL3_ttf/SDL_textengine.h> for details.
  *
  * \since This struct is available since SDL_ttf 3.0.0.
  */
