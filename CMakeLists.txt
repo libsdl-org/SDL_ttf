@@ -18,6 +18,7 @@ project(SDL3_ttf
 )
 
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/GetGitRevisionDescription.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/PkgConfigHelper.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/PrivateSdlFunctions.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/sdlcpu.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/sdlplatform.cmake")
@@ -85,7 +86,7 @@ option(SDLTTF_VENDORED "Use vendored third-party libraries" ${vendored_default})
 option(SDLTTF_WERROR "Treat warnings as errors" OFF)
 
 option(SDLTTF_STRICT "Fail when a dependency could not be found" OFF)
-set(find_package_strict_arg "QUIET")
+set(find_package_strict_arg )
 set(fatal_error "STATUS")
 if(SDLTTF_STRICT)
     set(find_package_strict_arg "REQUIRED")
@@ -99,6 +100,7 @@ cmake_dependent_option(SDLTTF_SAMPLES_INSTALL "Install the SDL3_ttf sample progr
 set(SDLTTF_FREETYPE ON)
 set(SDLTTF_FREETYPE_VENDORED "${SDLTTF_VENDORED}")
 
+set(HARFBUZZ_REQUIRED_VERSION "2.3.1")
 option(SDLTTF_HARFBUZZ "Use harfbuzz to improve text shaping" ON)
 set(SDLTTF_HARFBUZZ_VENDORED "${SDLTTF_VENDORED}")
 
@@ -265,7 +267,7 @@ if(SDLTTF_HARFBUZZ)
             endif()
         endif()
     else()
-        find_package(harfbuzz ${find_package_strict_arg})
+        find_package(harfbuzz "${HARFBUZZ_REQUIRED_VERSION}" ${find_package_strict_arg})
         if(harfbuzz_FOUND)
             message(STATUS "${PROJECT_NAME}: Using system harfbuzz library")
             list(APPEND PC_REQUIRES harfbuzz)
@@ -424,6 +426,16 @@ if(SDLTTF_INSTALL)
         DESTINATION ${SDLTTF_INSTALL_CMAKEDIR}
         COMPONENT devel
     )
+    if(NOT SDLTTF_VENDORED)
+      install(
+          FILES
+              cmake/PkgConfigHelper.cmake
+              cmake/Findharfbuzz.cmake
+              cmake/Findplutosvg.cmake
+          DESTINATION "${SDLTTF_INSTALL_CMAKEDIR}"
+          COMPONENT devel
+      )
+    endif()
     install(EXPORT SDL3_ttfTargets
         FILE ${sdl3_ttf_target_name}-targets.cmake
         NAMESPACE SDL3_ttf::

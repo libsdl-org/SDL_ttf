@@ -10,10 +10,12 @@ set(SDL3_ttf_FOUND ON)
 
 set(SDLTTF_VENDORED  @SDLTTF_VENDORED@)
 
-set(SDLTTF_HARFBUZZ @SDLTTF_HARFBUZZ@)
-set(SDLTTF_FREETYPE @SDLTTF_FREETYPE@)
+set(SDLTTF_PLUTOSVG @SDLTTF_PLUTOSVG_ENABLED@)
+set(SDLTTF_HARFBUZZ @SDLTTF_HARFBUZZ_ENABLED@)
+set(SDLTTF_FREETYPE @SDLTTF_FREETYPE_ENABLED@)
 
-set(SDLTTF_SDL3_REQUIRED_VERSION  @SDL_REQUIRED_VERSION@)
+set(SDLTTF_HARFBUZZ_REQUIRED_VERSION    @HARFBUZZ_REQUIRED_VERSION@)
+set(SDLTTF_SDL3_REQUIRED_VERSION        @SDL_REQUIRED_VERSION@)
 
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/SDL3_ttf-shared-targets.cmake")
     include("${CMAKE_CURRENT_LIST_DIR}/SDL3_ttf-shared-targets.cmake")
@@ -30,18 +32,24 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/SDL3_ttf-static-targets.cmake")
             message(WARNING "CXX language not enabled. Linking to SDL3_ttf::SDL3_ttf-static might fail.")
         endif()
     else()
-        include(CMakeFindDependencyMacro)
-
         set(_sdl_cmake_module_path "${CMAKE_MODULE_PATH}")
         list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 
-        if(SDLTTF_FREETYPE)
+        include(CMakeFindDependencyMacro)
+        include(PkgConfigHelper)
+
+        if(SDLTTF_FREETYPE AND NOT Freetype::Freetype)
             find_dependency(Freetype)
         endif()
 
-        if(SDLTTF_HARFBUZZ)
+        if(SDLTTF_HARFBUZZ AND NOT harfbuzz::harfbuzz)
             list(APPEND harfbuzz_ROOT "${CMAKE_CURRENT_LIST_DIR}")
-            find_dependency(harfbuzz)
+            find_dependency(harfbuzz ${SDLTTF_HARFBUZZ_REQUIRED_VERSION})
+        endif()
+
+        if(SDLTTF_PLUTOSVG AND NOT plutosvg::plutosvg)
+            list(APPEND plutosvg_ROOT "${CMAKE_CURRENT_LIST_DIR}")
+            find_dependency(plutosvg)
         endif()
 
         set(CMAKE_MODULE_PATH "${_sdl_cmake_module_path}")
