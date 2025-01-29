@@ -47,7 +47,7 @@
 
 
 #define TTF_SHOWFONT_USAGE \
-"Usage: %s [-textengine surface|renderer] [-solid] [-shaded] [-blended] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-wrap] [-align left|center|right] [-fgcol r,g,b,a] [-bgcol r,g,b,a] [-disable-editbox] [-fallback <font>.ttf>] <font>.ttf [ptsize] [text]\n"
+"Usage: %s [--textengine surface|renderer] [--solid] [--shaded] [--blended] [-b] [-i] [-u] [-s] [--outline size] [--hintlight|--hintmono|--hintnone] [--nokerning] [--wrap] [--align left|center|right] [--fgcol r,g,b,a] [--bgcol r,g,b,a] [--disable-editbox] [--fallback <font>.ttf>] <font>.ttf [ptsize] [text]\n"
 
 typedef enum
 {
@@ -308,7 +308,7 @@ int main(int argc, char *argv[])
     forecol = &black;
     backcol = &white;
     for (i=1; argv[i] && argv[i][0] == '-'; ++i) {
-        if (SDL_strcmp(argv[i], "-fallback") == 0 && argv[i+1]) {
+        if (SDL_strcmp(argv[i], "--fallback") == 0 && argv[i+1]) {
             ++i;
             if (num_fallbacks < MAX_FALLBACKS) {
                 fallback_font_files[num_fallbacks++] = argv[i];
@@ -317,7 +317,7 @@ int main(int argc, char *argv[])
                 return(1);
             }
         } else
-        if (SDL_strcmp(argv[i], "-textengine") == 0 && argv[i+1]) {
+        if (SDL_strcmp(argv[i], "--textengine") == 0 && argv[i+1]) {
             ++i;
             if (SDL_strcmp(argv[i], "surface") == 0) {
                 scene.textEngine = TextEngineSurface;
@@ -328,13 +328,13 @@ int main(int argc, char *argv[])
                 return(1);
             }
         } else
-        if (SDL_strcmp(argv[i], "-solid") == 0) {
+        if (SDL_strcmp(argv[i], "--solid") == 0) {
             rendermethod = TextRenderSolid;
         } else
-        if (SDL_strcmp(argv[i], "-shaded") == 0) {
+        if (SDL_strcmp(argv[i], "--shaded") == 0) {
             rendermethod = TextRenderShaded;
         } else
-        if (SDL_strcmp(argv[i], "-blended") == 0) {
+        if (SDL_strcmp(argv[i], "--blended") == 0) {
             rendermethod = TextRenderBlended;
         } else
         if (SDL_strcmp(argv[i], "-b") == 0) {
@@ -349,28 +349,28 @@ int main(int argc, char *argv[])
         if (SDL_strcmp(argv[i], "-s") == 0) {
             renderstyle |= TTF_STYLE_STRIKETHROUGH;
         } else
-        if (SDL_strcmp(argv[i], "-outline") == 0 && argv[i+1]) {
+        if (SDL_strcmp(argv[i], "--outline") == 0 && argv[i+1]) {
             if (SDL_sscanf(argv[++i], "%d", &outline) != 1) {
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
                 return(1);
             }
         } else
-        if (SDL_strcmp(argv[i], "-hintlight") == 0) {
+        if (SDL_strcmp(argv[i], "--hintlight") == 0) {
             hinting = TTF_HINTING_LIGHT;
         } else
-        if (SDL_strcmp(argv[i], "-hintmono") == 0) {
+        if (SDL_strcmp(argv[i], "--hintmono") == 0) {
             hinting = TTF_HINTING_MONO;
         } else
-        if (SDL_strcmp(argv[i], "-hintnone") == 0) {
+        if (SDL_strcmp(argv[i], "--hintnone") == 0) {
             hinting = TTF_HINTING_NONE;
         } else
-        if (SDL_strcmp(argv[i], "-nokerning") == 0) {
+        if (SDL_strcmp(argv[i], "--nokerning") == 0) {
             kerning = 0;
         } else
-        if (SDL_strcmp(argv[i], "-wrap") == 0) {
+        if (SDL_strcmp(argv[i], "--wrap") == 0) {
             wrap = true;
         } else
-        if (SDL_strcmp(argv[i], "-align") == 0 && argv[i+1]) {
+        if (SDL_strcmp(argv[i], "--align") == 0 && argv[i+1]) {
             ++i;
             if (SDL_strcmp(argv[i], "left") == 0) {
                 align = TTF_HORIZONTAL_ALIGN_LEFT;
@@ -383,7 +383,7 @@ int main(int argc, char *argv[])
                 return (1);
             }
         } else
-        if (SDL_strcmp(argv[i], "-fgcol") == 0 && argv[i+1]) {
+        if (SDL_strcmp(argv[i], "--fgcol") == 0 && argv[i+1]) {
             int r, g, b, a = SDL_ALPHA_OPAQUE;
             if (SDL_sscanf(argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
@@ -394,7 +394,7 @@ int main(int argc, char *argv[])
             forecol->b = (Uint8)b;
             forecol->a = (Uint8)a;
         } else
-        if (SDL_strcmp(argv[i], "-bgcol") == 0 && argv[i+1]) {
+        if (SDL_strcmp(argv[i], "--bgcol") == 0 && argv[i+1]) {
             int r, g, b, a = SDL_ALPHA_OPAQUE;
             if (SDL_sscanf(argv[++i], "%d,%d,%d,%d", &r, &g, &b, &a) < 3) {
                 SDL_Log(TTF_SHOWFONT_USAGE, argv0);
@@ -405,10 +405,10 @@ int main(int argc, char *argv[])
             backcol->b = (Uint8)b;
             backcol->a = (Uint8)a;
         } else
-        if (SDL_strcmp(argv[i], "-disable-editbox") == 0) {
+        if (SDL_strcmp(argv[i], "--disable-editbox") == 0) {
             editbox = false;
         } else
-        if (SDL_strcmp(argv[i], "-dump") == 0) {
+        if (SDL_strcmp(argv[i], "--dump") == 0) {
             dump = true;
         } else {
             SDL_Log(TTF_SHOWFONT_USAGE, argv0);

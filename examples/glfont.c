@@ -42,7 +42,7 @@
 #define HEIGHT  480
 
 #define TTF_GLFONT_USAGE \
-"Usage: %s [-b] [-i] [-u] [-fgcol r,g,b] [-bgcol r,g,b] \
+"Usage: %s [-b] [-i] [-u] [--fgcol r,g,b] [--bgcol r,g,b] \
 <font>.ttf [ptsize] [text]\n"
 
 static void SDL_GL_Enter2DMode(int width, int height)
@@ -217,10 +217,10 @@ int main(int argc, char *argv[])
         if (SDL_strcmp(argv[i], "-u") == 0) {
             renderstyle |= TTF_STYLE_UNDERLINE;
         } else
-        if (SDL_strcmp(argv[i], "-dump") == 0) {
+        if (SDL_strcmp(argv[i], "--dump") == 0) {
             dump = 1;
         } else
-        if (SDL_strcmp(argv[i], "-fgcol") == 0) {
+        if (SDL_strcmp(argv[i], "--fgcol") == 0) {
             int r, g, b;
             if (sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3) {
                 fprintf(stderr, TTF_GLFONT_USAGE, argv0);
@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
             forecol->g = (Uint8)g;
             forecol->b = (Uint8)b;
         } else
-        if (SDL_strcmp(argv[i], "-bgcol") == 0) {
+        if (SDL_strcmp(argv[i], "--bgcol") == 0) {
             int r, g, b;
             if (sscanf (argv[++i], "%d,%d,%d", &r, &g, &b) != 3) {
                 fprintf(stderr, TTF_GLFONT_USAGE, argv0);

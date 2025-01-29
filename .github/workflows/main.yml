@@ -112,7 +112,7 @@ jobs:
       if: ${{ runner.os == 'Linux' }}
       run: |
           # Just check that it doesn't crash, we can't really test the results...
-          env -C build/ SDL_VIDEODRIVER=dummy ./showfont -dump /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+          env -C build/ SDL_VIDEODRIVER=dummy ./showfont --dump /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
           # ... but we can at least assert that it outputs a .bmp
           file build/glyph-100.bmp
 
