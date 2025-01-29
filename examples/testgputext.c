@@ -2,16 +2,18 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include "testgputext/shaders/spir-v.h"
-#include "testgputext/shaders/dxbc50.h"
-#include "testgputext/shaders/dxil60.h"
-#include "testgputext/shaders/metal.h"
+#include "testgputext/shaders/shader.vert.spv.h"
+#include "testgputext/shaders/shader.frag.spv.h"
+#include "testgputext/shaders/shader.vert.dxil.h"
+#include "testgputext/shaders/shader.frag.dxil.h"
+#include "testgputext/shaders/shader.vert.msl.h"
+#include "testgputext/shaders/shader.frag.msl.h"
 #define SDL_MATH_3D_IMPLEMENTATION
 #include "testgputext/SDL_math3d.h"
 
 #define MAX_VERTEX_COUNT 4000
 #define MAX_INDEX_COUNT  6000
-#define SUPPORTED_SHADER_FORMATS (SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXBC | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL)
+#define SUPPORTED_SHADER_FORMATS (SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL)
 
 typedef SDL_FPoint Vec2;
 
@@ -79,20 +81,15 @@ SDL_GPUShader *load_shader(
     createinfo.props = 0;
 
     SDL_GPUShaderFormat format = SDL_GetGPUShaderFormats(device);
-    if (format & SDL_GPU_SHADERFORMAT_DXBC) {
-        createinfo.format = SDL_GPU_SHADERFORMAT_DXBC;
-        createinfo.code = (Uint8*)(is_vertex ? shader_vert_sm50_dxbc : shader_frag_sm50_dxbc);
-        createinfo.code_size = is_vertex ? SDL_arraysize(shader_vert_sm50_dxbc) : SDL_arraysize(shader_frag_sm50_dxbc);
-        createinfo.entrypoint = is_vertex ? "VSMain" : "PSMain";
-    } else if (format & SDL_GPU_SHADERFORMAT_DXIL) {
+    if (format & SDL_GPU_SHADERFORMAT_DXIL) {
         createinfo.format = SDL_GPU_SHADERFORMAT_DXIL;
-        createinfo.code = is_vertex ? shader_vert_sm60_dxil : shader_frag_sm60_dxil;
-        createinfo.code_size = is_vertex ? SDL_arraysize(shader_vert_sm60_dxil) : SDL_arraysize(shader_frag_sm60_dxil);
+        createinfo.code = is_vertex ? shader_vert_dxil : shader_frag_dxil;
+        createinfo.code_size = is_vertex ? shader_vert_dxil_len : shader_frag_dxil_len;
         createinfo.entrypoint = is_vertex ? "VSMain" : "PSMain";
     } else if (format & SDL_GPU_SHADERFORMAT_MSL) {
         createinfo.format = SDL_GPU_SHADERFORMAT_MSL;
-        createinfo.code = is_vertex ? shader_vert_metal : shader_frag_metal;
-        createinfo.code_size = is_vertex ? shader_vert_metal_len : shader_frag_metal_len;
+        createinfo.code = is_vertex ? shader_vert_msl : shader_frag_msl;
+        createinfo.code_size = is_vertex ? shader_vert_msl_len : shader_frag_msl_len;
         createinfo.entrypoint = "main0";
     } else {
         createinfo.format = SDL_GPU_SHADERFORMAT_SPIRV;
