@@ -3111,14 +3111,8 @@ SDL_Surface *TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index)
 
     TTF_CHECK_FONT(font, NULL);
 
-    if (font->render_sdf) {
-        if (!Find_GlyphByIndex(font, glyph_index, COLOR, 0, 0, NULL, &image)) {
-            return NULL;
-        }
-    } else {
-        if (!Find_GlyphByIndex(font, glyph_index, PIXMAP, 0, 0, NULL, &image)) {
-            return NULL;
-        }
+    if (!Find_GlyphByIndex(font, glyph_index, COLOR, 0, 0, NULL, &image)) {
+        return NULL;
     }
 
     if (image->width == 0 || image->rows == 0) {
