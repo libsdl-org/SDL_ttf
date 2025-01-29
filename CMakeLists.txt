@@ -48,6 +48,7 @@ if ((TARGET SDL2 OR TARGET SDL2-static) AND SDL2_DISABLE_INSTALL)
     set(sdl2ttf_install_enableable OFF)
 endif()
 
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/PkgConfigHelper.cmake")
 include(CMakeDependentOption)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
@@ -64,6 +65,7 @@ option(SDL2TTF_VENDORED "Use vendored third-party libraries" ${vendored_default}
 set(SDL2TTF_FREETYPE ON)
 set(SDL2TTF_FREETYPE_VENDORED "${SDL2TTF_VENDORED}")
 
+set(HARFBUZZ_REQUIRED_VERSION "2.3.1")
 option(SDL2TTF_HARFBUZZ "Use harfbuzz to improve text shaping" OFF)
 set(SDL2TTF_HARFBUZZ_VENDORED "${SDL2TTF_VENDORED}")
 
@@ -203,7 +205,7 @@ if(SDL2TTF_HARFBUZZ)
         endif()
     else()
         message(STATUS "${PROJECT_NAME}: Using system harfbuzz library")
-        find_package(harfbuzz REQUIRED)
+        find_package(harfbuzz "${HARFBUZZ_REQUIRED_VERSION}" REQUIRED)
         list(APPEND PC_REQUIRES harfbuzz)
     endif()
     target_compile_definitions(SDL2_ttf PRIVATE TTF_USE_HARFBUZZ=1)
@@ -310,6 +312,15 @@ if(SDL2TTF_INSTALL)
         DESTINATION ${SDLTTF_INSTALL_CMAKEDIR}
         COMPONENT devel
     )
+    if(NOT SDLTTF_VENDORED)
+        install(
+            FILES
+                cmake/PkgConfigHelper.cmake
+                cmake/Findharfbuzz.cmake
+            DESTINATION "${SDLTTF_INSTALL_CMAKEDIR}"
+            COMPONENT devel
+        )
+    endif()
     install(EXPORT SDL2_ttfTargets
         FILE SDL2_ttf-${sdl2_ttf_install_name_infix}-targets.cmake
         NAMESPACE SDL2_ttf::
