@@ -13,9 +13,8 @@ set(SDL2TTF_VENDORED  @SDL2TTF_VENDORED@)
 set(SDL2TTF_HARFBUZZ @SDL2TTF_HARFBUZZ@)
 set(SDL2TTF_FREETYPE @SDL2TTF_FREETYPE@)
 
-set(SDL2TTF_SDL2_REQUIRED_VERSION  @SDL_REQUIRED_VERSION@)
-
-include(CMakeFindDependencyMacro)
+set(SDL2TTF_HARFBUZZ_REQUIRED_VERSION    @HARFBUZZ_REQUIRED_VERSION@)
+set(SDL2TTF_SDL2_REQUIRED_VERSION        @SDL_REQUIRED_VERSION@)
 
 if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/SDL2_ttf-shared-targets.cmake")
     include("${CMAKE_CURRENT_LIST_DIR}/SDL2_ttf-shared-targets.cmake")
@@ -37,14 +36,17 @@ if(NOT SDL2TTF_VENDORED)
     set(_sdl_cmake_module_path "${CMAKE_MODULE_PATH}")
     list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 
+    include(CMakeFindDependencyMacro)
+    include(PkgConfigHelper)
+
     if(TARGET SDL2_ttf::SDL2_ttf-static)
-        if(SDL2TTF_FREETYPE)
+        if(SDL2TTF_FREETYPE AND NOT Freetype::Freetype)
             find_dependency(Freetype)
         endif()
 
-        if(SDL2TTF_HARFBUZZ)
+        if(SDL2TTF_HARFBUZZ AND NOT harfbuzz::harfbuzz)
             list(APPEND harfbuzz_ROOT "${CMAKE_CURRENT_LIST_DIR}")
-            find_dependency(harfbuzz)
+            find_dependency(harfbuzz ${SDL2TTF_HARFBUZZ_REQUIRED_VERSION})
         endif()
     endif()
 
