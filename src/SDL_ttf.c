@@ -2607,7 +2607,8 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
             // Render the glyph
             error = FT_Render_Glyph(slot, ft_render_mode);
             if (error) {
-                return TTF_SetFTError("FT_Render_Glyph() failed", error);
+                // Don't fail entirely, just use a 0x0 sized bitmap
+                //return TTF_SetFTError("FT_Render_Glyph() failed", error);
             }
 
             // Access bitmap from slot
