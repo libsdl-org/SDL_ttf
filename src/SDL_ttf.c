@@ -1250,7 +1250,7 @@ static bool Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart,
                         BLIT_GLYPH_BLENDED_OPAQUE_OPTIM(image, (Uint32 *)dst, srcskip, dstskip);                        \
                     } else if (IS_BLENDED) {                                                                            \
                         BLIT_GLYPH_BLENDED_OPTIM(image, (Uint32 *)dst, srcskip, dstskip, fg_alpha);                     \
-                    } else {                                                                                            \
+                    } else if (image->is_color == 0) {                                                                                            \
                         BLIT_GLYPH_OPTIM(image, dst, srcskip, dstskip);                                                 \
                     }                                                                                                   \
                 } else if (IS_BLENDED && image->is_color) {                                                             \
@@ -1284,7 +1284,7 @@ static bool Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart,
                         BG_Blended_Opaque(&image_clipped, (Uint32 *)dst, srcskip, dstskip);                             \
                     } else if (IS_BLENDED) {                                                                            \
                         BG_Blended(&image_clipped, (Uint32 *)dst, srcskip, dstskip, fg_alpha);                          \
-                    } else {                                                                                            \
+                    } else if (image->is_color == 0) {                                                                  \
                         BG(&image_clipped, dst, srcskip, dstskip);                                                      \
                     }                                                                                                   \
                 } else if (IS_BLENDED && image->is_color) {                                                             \
