@@ -1,6 +1,11 @@
 # Save the local path
 SDL_TTF_LOCAL_PATH := $(call my-dir)
 
+# Enable this if you want to use PlutoSVG for emoji support
+SUPPORT_PLUTOSVG ?= true
+PLUTOSVG_LIBRARY_PATH := external/plutosvg
+PLUTOVG_LIBRARY_PATH := external/plutovg
+
 # Enable this if you want to use HarfBuzz
 SUPPORT_HARFBUZZ ?= true
 HARFBUZZ_LIBRARY_PATH := external/harfbuzz
@@ -46,6 +51,24 @@ ifeq ($(SUPPORT_HARFBUZZ),true)
     LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(HARFBUZZ_LIBRARY_PATH)/src
     LOCAL_CFLAGS += -DTTF_USE_HARFBUZZ
     LOCAL_STATIC_LIBRARIES += harfbuzz
+endif
+
+ifeq ($(SUPPORT_PLUTOSVG),true)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(PLUTOVG_LIBRARY_PATH)/include
+    LOCAL_C_FLAGS += -DTTF_USE_PLUTOSVG -DPLUTOSVG_HAS_FREETYPE
+    LOCAL_SRC_FILES += \
+        external/plutosvg/source/plutosvg.c \
+        external/plutovg/source/plutovg-blend.c \
+        external/plutovg/source/plutovg-canvas.c \
+        external/plutovg/source/plutovg-font.c \
+        external/plutovg/source/plutovg-ft-math.c \
+        external/plutovg/source/plutovg-ft-raster.c \
+        external/plutovg/source/plutovg-ft-stroker.c \
+        external/plutovg/source/plutovg-matrix.c \
+        external/plutovg/source/plutovg-paint.c \
+        external/plutovg/source/plutovg-path.c \
+        external/plutovg/source/plutovg-rasterize.c \
+        external/plutovg/source/plutovg-surface.c
 endif
 
 LOCAL_SHARED_LIBRARIES := SDL3
