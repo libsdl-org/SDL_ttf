@@ -1007,7 +1007,8 @@ typedef enum TTF_ImageType
  *
  * \param font the font to query.
  * \param ch the codepoint to check.
- * \param image_type a pointer filled in with the glyph image type, may be NULL.
+ * \param image_type a pointer filled in with the glyph image type, may be
+ *                   NULL.
  * \returns an SDL_Surface containing the glyph, or NULL on failure; call
  *          SDL_GetError() for more information.
  *
@@ -1026,7 +1027,8 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImage(TTF_Font *font, Uint
  *
  * \param font the font to query.
  * \param glyph_index the index of the glyph to return.
- * \param image_type a pointer filled in with the glyph image type, may be NULL.
+ * \param image_type a pointer filled in with the glyph image type, may be
+ *                   NULL.
  * \returns an SDL_Surface containing the glyph, or NULL on failure; call
  *          SDL_GetError() for more information.
  *
