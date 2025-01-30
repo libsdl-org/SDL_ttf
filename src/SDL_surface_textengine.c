@@ -29,6 +29,7 @@ typedef struct TTF_SurfaceTextEngineGlyphData
     int refcount;
     SDL_Color color;
     SDL_Surface *surface;
+    TTF_ImageType image_type;
 } TTF_SurfaceTextEngineGlyphData;
 
 typedef struct TTF_SurfaceTextEngineTextData
@@ -67,7 +68,7 @@ static void DestroyGlyphData(TTF_SurfaceTextEngineGlyphData *data)
     }
 }
 
-static TTF_SurfaceTextEngineGlyphData *CreateGlyphData(SDL_Surface *surface)
+static TTF_SurfaceTextEngineGlyphData *CreateGlyphData(SDL_Surface *surface, TTF_ImageType image_type)
 {
     TTF_SurfaceTextEngineGlyphData *data = (TTF_SurfaceTextEngineGlyphData *)SDL_malloc(sizeof(*data));
     if (data) {
@@ -77,6 +78,7 @@ static TTF_SurfaceTextEngineGlyphData *CreateGlyphData(SDL_Surface *surface)
         data->color.b = 0xFF;
         data->color.a = 0xFF;
         data->surface = surface;
+        data->image_type = image_type;
     }
     return data;
 }
@@ -86,12 +88,13 @@ static TTF_SurfaceTextEngineGlyphData *GetGlyphData(TTF_SurfaceTextEngineFontDat
     TTF_SurfaceTextEngineGlyphData *data;
 
     if (!SDL_FindInGlyphHashTable(fontdata->glyphs, glyph_font, glyph_index, (const void **)&data)) {
-        SDL_Surface *surface = TTF_GetGlyphImageForIndex(glyph_font, glyph_index);
+        TTF_ImageType image_type = TTF_IMAGE_INVALID;
+        SDL_Surface *surface = TTF_GetGlyphImageForIndex(glyph_font, glyph_index, &image_type);
         if (!surface) {
             return NULL;
         }
 
-        data = CreateGlyphData(surface);
+        data = CreateGlyphData(surface, image_type);
         if (!data) {
             return NULL;
         }
@@ -311,8 +314,10 @@ static void DrawCopy(TTF_SurfaceTextEngineTextData *data, const TTF_CopyOperatio
         data->color.g != glyph->color.g ||
         data->color.b != glyph->color.b ||
         data->color.a != glyph->color.a) {
-        if (!(op->flags & TTF_COPY_OPERATION_IMAGE)) {
+        if (glyph->image_type == TTF_IMAGE_ALPHA) {
             SDL_SetSurfaceColorMod(glyph->surface, data->color.r, data->color.g, data->color.b);
+        } else {
+            // Don't alter the color data in the image
         }
         SDL_SetSurfaceAlphaMod(glyph->surface, data->color.a);
         SDL_copyp(&glyph->color, &data->color);

@@ -990,10 +990,24 @@ extern SDL_DECLSPEC bool TTF_SetFontLanguage(TTF_Font *font, const char *languag
 extern SDL_DECLSPEC bool SDLCALL TTF_FontHasGlyph(TTF_Font *font, Uint32 ch);
 
 /**
+ * The type of data in a glyph image
+ *
+ * \since This enum is available since SDL_ttf 3.0.0.
+ */
+typedef enum TTF_ImageType
+{
+    TTF_IMAGE_INVALID,
+    TTF_IMAGE_ALPHA,    /**< The color channels are white */
+    TTF_IMAGE_COLOR,    /**< The color channels have image data */
+    TTF_IMAGE_SDF,      /**< The alpha channel has signed distance field information */
+} TTF_ImageType;
+
+/**
  * Get the pixel image for a UNICODE codepoint.
  *
  * \param font the font to query.
  * \param ch the codepoint to check.
+ * \param image_type a pointer filled in with the glyph image type, may be NULL.
  * \returns an SDL_Surface containing the glyph, or NULL on failure; call
  *          SDL_GetError() for more information.
  *
@@ -1002,7 +1016,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_FontHasGlyph(TTF_Font *font, Uint32 ch);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImage(TTF_Font *font, Uint32 ch);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImage(TTF_Font *font, Uint32 ch, TTF_ImageType *image_type);
 
 /**
  * Get the pixel image for a character index.
@@ -1012,6 +1026,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImage(TTF_Font *font, Uint
  *
  * \param font the font to query.
  * \param glyph_index the index of the glyph to return.
+ * \param image_type a pointer filled in with the glyph image type, may be NULL.
  * \returns an SDL_Surface containing the glyph, or NULL on failure; call
  *          SDL_GetError() for more information.
  *
@@ -1020,7 +1035,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImage(TTF_Font *font, Uint
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index);
+extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index, TTF_ImageType *image_type);
 
 /**
  * Query the metrics (dimensions) of a font's glyph for a UNICODE codepoint.
@@ -1812,7 +1827,7 @@ typedef struct TTF_GPUAtlasDrawSequence
     int num_vertices;                       /**< Number of vertices */
     int *indices;                           /**< An array of indices into the 'vertices' arrays */
     int num_indices;                        /**< Number of indices */
-    Uint32 flags;                           /**< TTF_CopyOperationFlags */
+    TTF_ImageType image_type;               /**< The image type of this draw sequence */
 
     struct TTF_GPUAtlasDrawSequence *next;  /**< The next sequence (will be NULL in case of the last sequence) */
 } TTF_GPUAtlasDrawSequence;
