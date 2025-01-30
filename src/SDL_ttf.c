@@ -2630,6 +2630,13 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
             dst->rows = 0;
         }
 
+        /* Some robustess: loading an SVG emoji (FT_LOAD_COLOR), and rendering it a solid (FT_RENDER_MODE_MONO)
+         * makes previous FT_Render_Glyph() failed */
+        if (!src->buffer) {
+            dst->width = 0;
+            dst->rows = 0;
+        }
+
         // Adjust for bold text
         if (TTF_HANDLE_STYLE_BOLD(font)) {
             dst->width += font->glyph_overhang;
