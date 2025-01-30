@@ -3670,6 +3670,14 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
     miny = 0;
     maxy = font->height;
 
+    if (font->render_sdf) {
+        // The glyph top and left positions jitter around when doing SDF rendering,
+        // but the overall bounding box height is stable.
+        //
+        // This is almost certainly not the right fix, but it seems to work.
+        miny = INT_MAX;
+    }
+
     if (positions->len > 0) {
         if (positions->pos[0].offset == 0) {
             // Left to right layout
