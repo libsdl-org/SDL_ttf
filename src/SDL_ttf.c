@@ -3629,12 +3629,12 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
         return false;
     }
 
-    if (positions->len > 0) {
-        minx = 0;
-        maxx = INT_MIN;
-        miny = 0;
-        maxy = font->height;
+    minx = 0;
+    maxx = 0;
+    miny = 0;
+    maxy = font->height;
 
+    if (positions->len > 0) {
         if (positions->pos[0].offset == 0) {
             // Left to right layout
             for (int i = 0; i < positions->len; ++i) {
@@ -3716,11 +3716,6 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
                 minx = 0;
             }
         }
-    } else {
-        minx = 0;
-        maxx = 0;
-        miny = 0;
-        maxy = font->height;
     }
 
     // Allows to render a string with only one space (bug 4344).
