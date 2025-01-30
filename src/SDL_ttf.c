@@ -69,13 +69,17 @@
 #endif
 
 // FT_FACE_FLAG_SVG and FT_HAS_SVG require freetype 2.12+
-#ifndef FT_FACE_FLAG_SVG
-#define FT_FACE_FLAG_SVG               ( 1L << 16 )
-#endif
 #ifndef FT_HAS_SVG
+#define FT_FACE_FLAG_SVG               ( 1L << 16 )
 #define FT_HAS_SVG( face ) \
           ( !!( (face)->face_flags & FT_FACE_FLAG_SVG ) )
-#endif
+
+#define FT_GLYPH_FORMAT_SVG \
+          ( ( (unsigned long)'S' << 24 ) | \
+            ( (unsigned long)'V' << 16 ) | \
+            ( (unsigned long)'G' << 8  ) | \
+              (unsigned long)' '         )
+#endif // !FT_HAS_SVG
 
 /**
  * ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark)
@@ -2540,7 +2544,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
         FT_Bitmap *src;
         FT_Render_Mode ft_render_mode;
 
-        if (mono) {
+        if (mono && slot->format != FT_GLYPH_FORMAT_SVG) {
             ft_render_mode = FT_RENDER_MODE_MONO;
         } else {
             ft_render_mode = FT_RENDER_MODE_NORMAL;
@@ -2793,6 +2797,23 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
                             MONO_GRAY4(2);
                         }
                         MONO_GRAY4(remainder);
+                    } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
+                        while (quotient--) {
+                            Uint8 r, g, b, a;
+                            b = *srcp++;
+                            g = *srcp++;
+                            r = *srcp++;
+                            a = *srcp++;
+                            unsigned char c = 0;
+                            if (a != 0) {
+                                // Technically we should do this in linear colorspace
+                                // Y = 0.2126 * R + 0.7152 * G + 0.0722 * B
+                                c = 255 - (unsigned char)(((int)r * 54) / 255 +
+                                                          ((int)g * 182) / 255 +
+                                                          ((int)b * 18) / 255);
+                            }
+                            *dstp++ = (c >= 0x80) ? 1 : 0;
+                        }
                     } else {
                         while (quotient--) {
                             unsigned char c = *srcp++;
