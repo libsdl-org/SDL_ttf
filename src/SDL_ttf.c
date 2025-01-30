@@ -3295,6 +3295,8 @@ static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t lengt
     hb_buffer_destroy(hb_buffer);
 
 #else
+    (void)direction;
+    (void)script;
     bool skip_first = true;
     FT_UInt prev_index = 0;
     FT_Pos  prev_delta = 0;
@@ -5933,6 +5935,8 @@ Uint32 TTF_GetGlyphScript(Uint32 ch)
     }
 
     hb_buffer_destroy(hb_buffer);
+#else
+    (void)ch;
 #endif
 
     if (script == 0) {
