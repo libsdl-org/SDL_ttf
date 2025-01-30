@@ -180,9 +180,9 @@ void queue_text_sequence(GeometryData *geometry_data, TTF_GPUAtlasDrawSequence *
 
 void queue_text(GeometryData *geometry_data, TTF_GPUAtlasDrawSequence *sequence, SDL_FColor *colour)
 {
-    do {
+    for ( ; sequence; sequence = sequence->next) {
         queue_text_sequence(geometry_data, sequence, colour);
-    } while ((sequence = sequence->next));
+    }
 }
 
 void set_geometry_data(Context *context, GeometryData *geometry_data)
