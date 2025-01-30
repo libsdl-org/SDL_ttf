@@ -26,6 +26,7 @@ LOCAL_MODULE := SDL3_ttf
 LOCAL_SRC_FILES := \
 	src/SDL_ttf.c.neon \
 	src/SDL_hashtable.c \
+	src/SDL_hashtable_ttf.c \
 	src/SDL_gpu_textengine.c \
 	src/SDL_renderer_textengine.c \
 	src/SDL_surface_textengine.c
