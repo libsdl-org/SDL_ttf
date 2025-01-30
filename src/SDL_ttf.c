@@ -1526,9 +1526,6 @@ static bool Render_Line_TextEngine(TTF_Font *font, TTF_Direction direction, int 
                 op->copy.dst.w -= DEFAULT_SDF_SPREAD;
                 op->copy.dst.h -= DEFAULT_SDF_SPREAD;
             }
-            if (FT_HAS_SVG(glyph_font->face)) {
-                op->copy.flags = TTF_COPY_OPERATION_IMAGE;
-            }
         } else {
             // Use the distance to the next glyph as our bounds width
             glyph_width = FT_FLOOR(pos->x_advance);
@@ -3093,9 +3090,13 @@ bool TTF_FontHasGlyph(TTF_Font *font, Uint32 ch)
     return (get_char_index_fallback(font, ch, NULL, NULL) > 0);
 }
 
-SDL_Surface *TTF_GetGlyphImage(TTF_Font *font, Uint32 ch)
+SDL_Surface *TTF_GetGlyphImage(TTF_Font *font, Uint32 ch, TTF_ImageType *image_type)
 {
     FT_UInt idx;
+
+    if (image_type) {
+        *image_type = TTF_IMAGE_INVALID;
+    }
 
     TTF_CHECK_FONT(font, NULL);
 
@@ -3106,15 +3107,19 @@ SDL_Surface *TTF_GetGlyphImage(TTF_Font *font, Uint32 ch)
         return NULL;
     }
 
-    return TTF_GetGlyphImageForIndex(glyph_font, idx);
+    return TTF_GetGlyphImageForIndex(glyph_font, idx, image_type);
 }
 
-SDL_Surface *TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index)
+SDL_Surface *TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index, TTF_ImageType *image_type)
 {
     const int alignment = Get_Alignment() - 1;
     TTF_Image *image;
     SDL_Surface *surface;
     const Uint8 *src;
+
+    if (image_type) {
+        *image_type = TTF_IMAGE_INVALID;
+    }
 
     TTF_CHECK_FONT(font, NULL);
 
@@ -3134,6 +3139,12 @@ SDL_Surface *TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index)
     src = image->buffer + alignment;
 
     if (image->is_color) {
+        if (image_type) {
+            // We can't tell the difference between SDF data and say, color emoji
+            // Hopefully the application sets the right mode on the font.
+            *image_type = (font->render_sdf ? TTF_IMAGE_SDF : TTF_IMAGE_COLOR);
+        }
+
         if (surface->pitch == image->pitch) {
             SDL_memcpy(surface->pixels, src, image->rows * image->pitch);
         } else {
@@ -3147,6 +3158,10 @@ SDL_Surface *TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index)
             }
         }
     } else {
+        if (image_type) {
+            *image_type = TTF_IMAGE_ALPHA;
+        }
+
         int row, col;
         Uint32 *dst = (Uint32 *)surface->pixels;
         int skip = (surface->pitch - surface->w * 4) / 4;

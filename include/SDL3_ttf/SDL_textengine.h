@@ -64,17 +64,6 @@ typedef struct TTF_FillOperation
 } TTF_FillOperation;
 
 /**
- * Flags used in TTF_CopyOperation
- *
- * \since This datatype is available since SDL_ttf 3.0.0.
- *
- * \sa TTF_CopyOperation
- */
-typedef Uint32 TTF_CopyOperationFlags;
-
-#define TTF_COPY_OPERATION_IMAGE    0x00000001  /**< This copy operation uses an image rather than a glyph, and should not have vertex color applied */
-
-/**
  * A texture copy draw operation.
  *
  * \since This struct is available since SDL_ttf 3.0.0.
@@ -92,7 +81,6 @@ typedef struct TTF_CopyOperation
                                       rectangles for the corresponding glyphs. */
     TTF_Font *glyph_font;           /**< The font containing the glyph to be drawn, can be passed to TTF_GetGlyphImageForIndex() */
     Uint32 glyph_index;             /**< The glyph index of the glyph to be drawn, can be passed to TTF_GetGlyphImageForIndex() */
-    TTF_CopyOperationFlags flags;   /**< The flags for this copy operation */
     SDL_Rect src;                   /**< The area within the glyph to be drawn */
     SDL_Rect dst;                   /**< The drawing coordinates of the glyph, in pixels. The x coordinate is relative to the left side of the text area, going right, and the y coordinate is relative to the top side of the text area, going down. */
     void *reserved;

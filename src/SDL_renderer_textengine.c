@@ -34,10 +34,17 @@ typedef struct AtlasGlyph AtlasGlyph;
 typedef struct AtlasTexture AtlasTexture;
 typedef struct AtlasDrawSequence AtlasDrawSequence;
 
+typedef struct GlyphSurface
+{
+    SDL_Surface *surface;
+    TTF_ImageType image_type;
+} GlyphSurface;
+
 struct AtlasGlyph
 {
     int refcount;
     AtlasTexture *atlas;
+    TTF_ImageType image_type;
     SDL_Rect rect;
     float texcoords[8];
     AtlasGlyph *next;
@@ -55,7 +62,7 @@ struct AtlasTexture
 struct AtlasDrawSequence
 {
     SDL_Texture *texture;
-    TTF_CopyOperationFlags flags;
+    TTF_ImageType image_type;
     int num_rects;
     SDL_Rect *rects;
     float *texcoords;
@@ -300,7 +307,7 @@ static AtlasGlyph *FindUnusedGlyph(AtlasTexture *atlas, int width, int height)
     return NULL;
 }
 
-static bool UpdateGlyph(AtlasGlyph *glyph, SDL_Surface *surface)
+static bool UpdateGlyph(AtlasGlyph *glyph, SDL_Surface *surface, TTF_ImageType image_type)
 {
     SDL_Texture *texture = glyph->atlas->texture;
     void *pixels;
@@ -319,6 +326,8 @@ static bool UpdateGlyph(AtlasGlyph *glyph, SDL_Surface *surface)
         dst += dst_pitch;
     }
     SDL_UnlockTexture(texture);
+
+    glyph->image_type = image_type;
     return true;
 }
 
@@ -330,7 +339,7 @@ static bool AddGlyphToFont(TTF_RendererTextEngineFontData *fontdata, TTF_Font *g
     return true;
 }
 
-static bool ResolveMissingGlyphs(TTF_RendererTextEngineData *enginedata, AtlasTexture *atlas, TTF_RendererTextEngineFontData *fontdata, SDL_Surface **surfaces, TTF_DrawOperation *ops, int num_ops, stbrp_rect *missing, int num_missing)
+static bool ResolveMissingGlyphs(TTF_RendererTextEngineData *enginedata, AtlasTexture *atlas, TTF_RendererTextEngineFontData *fontdata, GlyphSurface *surfaces, TTF_DrawOperation *ops, int num_ops, stbrp_rect *missing, int num_missing)
 {
     // See if we can reuse any existing entries
     if (atlas->free_glyphs) {
@@ -341,7 +350,8 @@ static bool ResolveMissingGlyphs(TTF_RendererTextEngineData *enginedata, AtlasTe
                 continue;
             }
 
-            if (!UpdateGlyph(glyph, surfaces[missing[i].id])) {
+            GlyphSurface *surface = &surfaces[missing[i].id];
+            if (!UpdateGlyph(glyph, surface->surface, surface->image_type)) {
                 ReleaseGlyph(glyph);
                 return false;
             }
@@ -378,7 +388,8 @@ static bool ResolveMissingGlyphs(TTF_RendererTextEngineData *enginedata, AtlasTe
             return false;
         }
 
-        if (!UpdateGlyph(glyph, surfaces[missing[i].id])) {
+        GlyphSurface *surface = &surfaces[missing[i].id];
+        if (!UpdateGlyph(glyph, surface->surface, surface->image_type)) {
             ReleaseGlyph(glyph);
             return false;
         }
@@ -418,7 +429,7 @@ static bool ResolveMissingGlyphs(TTF_RendererTextEngineData *enginedata, AtlasTe
 static bool CreateMissingGlyphs(TTF_RendererTextEngineData *enginedata, TTF_RendererTextEngineFontData *fontdata, TTF_DrawOperation *ops, int num_ops, int num_missing)
 {
     stbrp_rect *missing = NULL;
-    SDL_Surface **surfaces = NULL;
+    GlyphSurface *surfaces = NULL;
     SDL_HashTable *checked = NULL;
     bool result = false;
     int atlas_texture_size = enginedata->atlas_texture_size;
@@ -429,7 +440,7 @@ static bool CreateMissingGlyphs(TTF_RendererTextEngineData *enginedata, TTF_Rend
         goto done;
     }
 
-    surfaces = (SDL_Surface **)SDL_calloc(num_ops, sizeof(*surfaces));
+    surfaces = (GlyphSurface *)SDL_calloc(num_ops, sizeof(*surfaces));
     if (!surfaces) {
         goto done;
     }
@@ -452,20 +463,24 @@ static bool CreateMissingGlyphs(TTF_RendererTextEngineData *enginedata, TTF_Rend
                 goto done;
             }
 
-            surfaces[i] = TTF_GetGlyphImageForIndex(glyph_font, glyph_index);
-            if (!surfaces[i]) {
+            TTF_ImageType image_type = TTF_IMAGE_INVALID;
+            SDL_Surface *surface = TTF_GetGlyphImageForIndex(glyph_font, glyph_index, &image_type);
+            if (!surface) {
                 goto done;
             }
-            if (surfaces[i]->w > atlas_texture_size || surfaces[i]->h > atlas_texture_size) {
+            if (surface->w > atlas_texture_size || surface->h > atlas_texture_size) {
                 SDL_SetError("Glyph surface %dx%d larger than atlas texture %dx%d",
-                    surfaces[i]->w, surfaces[i]->h,
+                    surface->w, surface->h,
                     atlas_texture_size, atlas_texture_size);
                 goto done;
             }
 
+            surfaces[i].surface = surface;
+            surfaces[i].image_type = image_type;
+
             missing[missing_index].id = i;
-            missing[missing_index].w = surfaces[i]->w;
-            missing[missing_index].h = surfaces[i]->h;
+            missing[missing_index].w = surface->w;
+            missing[missing_index].h = surface->h;
             ++missing_index;
         }
     }
@@ -503,7 +518,7 @@ done:
     SDL_DestroyGlyphHashTable(checked);
     if (surfaces) {
         for (int i = 0; i < num_ops; ++i) {
-            SDL_DestroySurface(surfaces[i]);
+            SDL_DestroySurface(surfaces[i].surface);
         }
         SDL_free(surfaces);
     }
@@ -536,12 +551,13 @@ static SDL_Texture *GetOperationTexture(TTF_DrawOperation *op)
     return NULL;
 }
 
-static TTF_CopyOperationFlags GetOperationFlags(TTF_DrawOperation *op)
+static TTF_ImageType GetOperationImageType(TTF_DrawOperation *op)
 {
     if (op->cmd == TTF_DRAW_COMMAND_COPY) {
-        return op->copy.flags;
+        AtlasGlyph *glyph = (AtlasGlyph *)op->copy.reserved;
+        return glyph->image_type;
     }
-    return 0;
+    return TTF_IMAGE_INVALID;
 }
 
 static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops)
@@ -552,11 +568,11 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
     }
 
     SDL_Texture *texture = GetOperationTexture(&ops[0]);
-    TTF_CopyOperationFlags flags = GetOperationFlags(&ops[0]);
+    TTF_ImageType image_type = GetOperationImageType(&ops[0]);
     TTF_DrawOperation *end = NULL;
     for (int i = 1; i < num_ops; ++i) {
         if (GetOperationTexture(&ops[i]) != texture ||
-            GetOperationFlags(&ops[i]) != flags) {
+            GetOperationImageType(&ops[i]) != image_type) {
             end = &ops[i];
             break;
         }
@@ -564,7 +580,7 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
 
     int count = (end ? (int)(end - ops) : num_ops);
     sequence->texture = texture;
-    sequence->flags = flags;
+    sequence->image_type = image_type;
     sequence->num_rects = count;
     sequence->rects = (SDL_Rect *)SDL_malloc(count * sizeof(*sequence->rects));
     if (!sequence->rects) {
@@ -920,13 +936,14 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
         }
 
         SDL_FColor color;
-        if (sequence->flags & TTF_COPY_OPERATION_IMAGE) {
+        if (sequence->image_type == TTF_IMAGE_ALPHA) {
+            SDL_copyp(&color, &text->internal->color);
+        } else {
+            // Don't alter the color data in the image
             color.r = 1.0f;
             color.g = 1.0f;
             color.b = 1.0f;
             color.a = text->internal->color.a;
-        } else {
-            SDL_copyp(&color, &text->internal->color);
         }
 
         SDL_RenderGeometryRaw(renderer,

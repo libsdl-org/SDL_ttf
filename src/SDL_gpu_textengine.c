@@ -36,10 +36,17 @@ typedef struct AtlasGlyph AtlasGlyph;
 typedef struct AtlasTexture AtlasTexture;
 typedef struct TTF_GPUAtlasDrawSequence AtlasDrawSequence;
 
+typedef struct GlyphSurface
+{
+    SDL_Surface *surface;
+    TTF_ImageType image_type;
+} GlyphSurface;
+
 struct AtlasGlyph
 {
     int refcount;
     AtlasTexture *atlas;
+    TTF_ImageType image_type;
     SDL_Rect rect;
     float texcoords[8];
     AtlasGlyph *next;
@@ -378,12 +385,13 @@ static bool UpdateGPUTexture(SDL_GPUDevice *device, SDL_GPUTexture *texture,
     return true;
 }
 
-static bool UpdateGlyph(SDL_GPUDevice *device, AtlasGlyph *glyph, SDL_Surface *surface)
+static bool UpdateGlyph(SDL_GPUDevice *device, AtlasGlyph *glyph, SDL_Surface *surface, TTF_ImageType image_type)
 {
     SDL_assert(glyph->rect.w > 0 && glyph->rect.h > 0);
 
     /* FIXME: We should update the whole texture at once or at least cache the transfer buffers */
     UpdateGPUTexture(device, glyph->atlas->texture, &glyph->rect, surface->pixels, surface->pitch);
+    glyph->image_type = image_type;
     return true;
 }
 
@@ -395,7 +403,7 @@ static bool AddGlyphToFont(TTF_GPUTextEngineFontData *fontdata, TTF_Font *glyph_
     return true;
 }
 
-static bool ResolveMissingGlyphs(TTF_GPUTextEngineData *enginedata, AtlasTexture *atlas, TTF_GPUTextEngineFontData *fontdata, SDL_Surface **surfaces, TTF_DrawOperation *ops, int num_ops, stbrp_rect *missing, int num_missing)
+static bool ResolveMissingGlyphs(TTF_GPUTextEngineData *enginedata, AtlasTexture *atlas, TTF_GPUTextEngineFontData *fontdata, GlyphSurface *surfaces, TTF_DrawOperation *ops, int num_ops, stbrp_rect *missing, int num_missing)
 {
     // See if we can reuse any existing entries
     if (atlas->free_glyphs) {
@@ -406,7 +414,8 @@ static bool ResolveMissingGlyphs(TTF_GPUTextEngineData *enginedata, AtlasTexture
                 continue;
             }
 
-            if (!UpdateGlyph(enginedata->device, glyph, surfaces[missing[i].id])) {
+            GlyphSurface *surface = &surfaces[missing[i].id];
+            if (!UpdateGlyph(enginedata->device, glyph, surface->surface, surface->image_type)) {
                 ReleaseGlyph(glyph);
                 return false;
             }
@@ -443,7 +452,8 @@ static bool ResolveMissingGlyphs(TTF_GPUTextEngineData *enginedata, AtlasTexture
             return false;
         }
 
-        if (!UpdateGlyph(enginedata->device, glyph, surfaces[missing[i].id])) {
+        GlyphSurface *surface = &surfaces[missing[i].id];
+        if (!UpdateGlyph(enginedata->device, glyph, surface->surface, surface->image_type)) {
             ReleaseGlyph(glyph);
             return false;
         }
@@ -483,7 +493,7 @@ static bool ResolveMissingGlyphs(TTF_GPUTextEngineData *enginedata, AtlasTexture
 static bool CreateMissingGlyphs(TTF_GPUTextEngineData *enginedata, TTF_GPUTextEngineFontData *fontdata, TTF_DrawOperation *ops, int num_ops, int num_missing)
 {
     stbrp_rect *missing = NULL;
-    SDL_Surface **surfaces = NULL;
+    GlyphSurface *surfaces = NULL;
     SDL_HashTable *checked = NULL;
     bool result = false;
     int atlas_texture_size = enginedata->atlas_texture_size;
@@ -494,7 +504,7 @@ static bool CreateMissingGlyphs(TTF_GPUTextEngineData *enginedata, TTF_GPUTextEn
         goto done;
     }
 
-    surfaces = (SDL_Surface **)SDL_calloc(num_ops, sizeof(*surfaces));
+    surfaces = (GlyphSurface *)SDL_calloc(num_ops, sizeof(*surfaces));
     if (!surfaces) {
         goto done;
     }
@@ -517,21 +527,25 @@ static bool CreateMissingGlyphs(TTF_GPUTextEngineData *enginedata, TTF_GPUTextEn
                 goto done;
             }
 
-            surfaces[i] = TTF_GetGlyphImageForIndex(glyph_font, glyph_index);
-            if (!surfaces[i]) {
+            TTF_ImageType image_type = TTF_IMAGE_INVALID;
+            SDL_Surface *surface = TTF_GetGlyphImageForIndex(glyph_font, glyph_index, &image_type);
+            if (!surface) {
                 goto done;
             }
-            if (surfaces[i]->w > atlas_texture_size || surfaces[i]->h > atlas_texture_size) {
+            if (surface->w > atlas_texture_size || surface->h > atlas_texture_size) {
                 SDL_SetError("Glyph surface %dx%d larger than atlas texture %dx%d",
-                    surfaces[i]->w, surfaces[i]->h,
+                    surface->w, surface->h,
                     atlas_texture_size, atlas_texture_size);
                 goto done;
             }
 
+            surfaces[i].surface = surface;
+            surfaces[i].image_type = image_type;
+
             missing[missing_index].id = i;
             // Add one pixel extra padding between glyphs
-            missing[missing_index].w = surfaces[i]->w + 1;
-            missing[missing_index].h = surfaces[i]->h + 1;
+            missing[missing_index].w = surface->w + 1;
+            missing[missing_index].h = surface->h + 1;
             ++missing_index;
         }
     }
@@ -569,7 +583,7 @@ done:
     SDL_DestroyGlyphHashTable(checked);
     if (surfaces) {
         for (int i = 0; i < num_ops; ++i) {
-            SDL_DestroySurface(surfaces[i]);
+            SDL_DestroySurface(surfaces[i].surface);
         }
         SDL_free(surfaces);
     }
@@ -601,12 +615,13 @@ static SDL_GPUTexture *GetOperationTexture(TTF_DrawOperation *op)
     return NULL;
 }
 
-static TTF_CopyOperationFlags GetOperationFlags(TTF_DrawOperation *op)
+static TTF_ImageType GetOperationImageType(TTF_DrawOperation *op)
 {
     if (op->cmd == TTF_DRAW_COMMAND_COPY) {
-        return op->copy.flags;
+        AtlasGlyph *glyph = (AtlasGlyph *)op->copy.reserved;
+        return glyph->image_type;
     }
-    return 0;
+    return TTF_IMAGE_INVALID;
 }
 
 static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops, TTF_GPUTextEngineWinding winding)
@@ -620,11 +635,11 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
     SDL_COMPILE_TIME_ASSERT(sizeof_SDL_FPoint, sizeof(SDL_FPoint) == 2 * sizeof(float));
 
     SDL_GPUTexture *texture = GetOperationTexture(&ops[0]);
-    TTF_CopyOperationFlags flags = GetOperationFlags(&ops[0]);
+    TTF_ImageType image_type = GetOperationImageType(&ops[0]);
     TTF_DrawOperation *end = NULL;
     for (int i = 1; i < num_ops; ++i) {
         if (GetOperationTexture(&ops[i]) != texture ||
-            GetOperationFlags(&ops[i]) != flags) {
+            GetOperationImageType(&ops[i]) != image_type) {
             end = &ops[i];
             break;
         }
@@ -632,7 +647,7 @@ static AtlasDrawSequence *CreateDrawSequence(TTF_DrawOperation *ops, int num_ops
 
     int count = (end ? (int)(end - ops) : num_ops);
     sequence->atlas_texture = texture;
-    sequence->flags = flags;
+    sequence->image_type = image_type;
     sequence->num_vertices = count * 4;
     sequence->num_indices = count * 6;
 
