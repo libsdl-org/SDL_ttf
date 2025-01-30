@@ -181,7 +181,7 @@ static AtlasTexture *CreateAtlas(SDL_GPUDevice *device, int atlas_texture_size)
 
     SDL_GPUTextureCreateInfo info = { 0 };
     info.type = SDL_GPU_TEXTURETYPE_2D;
-    info.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+    info.format = SDL_GPU_TEXTUREFORMAT_B8G8R8A8_UNORM;
     info.usage = SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
     info.width = atlas_texture_size;
     info.height = atlas_texture_size;
