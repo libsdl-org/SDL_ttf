@@ -1842,6 +1842,12 @@ typedef struct TTF_GPUAtlasDrawSequence
  * `text` must have been created using a TTF_TextEngine from
  * TTF_CreateGPUTextEngine().
  *
+ * The positive X-axis is taken towards the right and the positive Y-axis is
+ * taken upwards for both the vertex and the texture coordinates, i.e, it
+ * follows the same convention used by the SDL_GPU API. If you want to use a
+ * different coordinate system you will need to transform the vertices
+ * yourself.
+ *
  * If the text looks blocky use linear filtering.
  *
  * \param text the text to draw.
