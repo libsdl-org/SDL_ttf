@@ -862,7 +862,9 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontStyleName(const TTF_Font *fo
 /**
  * Direction flags
  *
- * The values here are chosen to match hb_direction_t.
+ * The values here are chosen to match
+ * [hb_direction_t](https://harfbuzz.github.io/harfbuzz-hb-common.html#hb-direction-t)
+ * .
  *
  * \since This enum is available since SDL_ttf 3.0.0.
  *
