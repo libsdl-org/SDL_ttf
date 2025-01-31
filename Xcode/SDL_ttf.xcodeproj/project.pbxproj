@@ -66,7 +66,7 @@
 		F34125C72D491AA800D6C2B7 /* SDL_hashtable_ttf.h in Headers */ = {isa = PBXBuildFile; fileRef = F34125C52D491AA800D6C2B7 /* SDL_hashtable_ttf.h */; };
 		F34125C82D491AA800D6C2B7 /* SDL_hashtable_ttf.c in Sources */ = {isa = PBXBuildFile; fileRef = F34125C62D491AA800D6C2B7 /* SDL_hashtable_ttf.c */; };
 		F34126662D4B05F800D6C2B7 /* harfbuzz.cc in Sources */ = {isa = PBXBuildFile; fileRef = F34126652D4B05F800D6C2B7 /* harfbuzz.cc */; };
-		F34400402D4033CE003F26D7 /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F344003F2D4033CE003F26D7 /* SDL3.framework */; };
+		F3412A342D4C8DBF00D6C2B7 /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3412A332D4C8DBF00D6C2B7 /* SDL3.framework */; };
 		F344FFBF2D3EB53C003F26D7 /* SDL_gpu_textengine.c in Sources */ = {isa = PBXBuildFile; fileRef = F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */; };
 		F3696FE4278F7107003A7F94 /* sdf.c in Sources */ = {isa = PBXBuildFile; fileRef = F3696FE3278F7107003A7F94 /* sdf.c */; };
 		F384BB6C261EC0760028A248 /* autofit.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BB6B261EC0760028A248 /* autofit.c */; };
@@ -162,7 +162,7 @@
 		F34125C52D491AA800D6C2B7 /* SDL_hashtable_ttf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_hashtable_ttf.h; sourceTree = "<group>"; };
 		F34125C62D491AA800D6C2B7 /* SDL_hashtable_ttf.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_hashtable_ttf.c; sourceTree = "<group>"; };
 		F34126652D4B05F800D6C2B7 /* harfbuzz.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = harfbuzz.cc; path = ../external/harfbuzz/src/harfbuzz.cc; sourceTree = "<group>"; };
-		F344003F2D4033CE003F26D7 /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL3.framework; sourceTree = "<group>"; };
+		F3412A332D4C8DBF00D6C2B7 /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL3.framework; path = macOS/SDL3.framework; sourceTree = "<group>"; };
 		F344FFBE2D3EB53C003F26D7 /* SDL_gpu_textengine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_gpu_textengine.c; sourceTree = "<group>"; };
 		F3696FE3278F7107003A7F94 /* sdf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdf.c; path = ../external/freetype/src/sdf/sdf.c; sourceTree = "<group>"; };
 		F384BB6B261EC0760028A248 /* autofit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = autofit.c; path = ../external/freetype/src/autofit/autofit.c; sourceTree = "<group>"; };
@@ -220,7 +220,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F34400402D4033CE003F26D7 /* SDL3.framework in Frameworks */,
+				F3412A342D4C8DBF00D6C2B7 /* SDL3.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,7 +290,7 @@
 		BE48FD8107AFA26B00BB41DA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F344003F2D4033CE003F26D7 /* SDL3.framework */,
+				F3412A332D4C8DBF00D6C2B7 /* SDL3.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -672,6 +672,9 @@
 				DYLIB_CURRENT_VERSION = 101.0.0;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_TESTABILITY = YES;
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletv*]" = "\"$(PROJECT_DIR)/iOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphone*]" = "\"$(PROJECT_DIR)/iOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(PROJECT_DIR)/macOS\"";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					FT2_BUILD_LIBRARY,
@@ -724,6 +727,9 @@
 				DYLIB_COMPATIBILITY_VERSION = 101.0.0;
 				DYLIB_CURRENT_VERSION = 101.0.0;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				"FRAMEWORK_SEARCH_PATHS[sdk=appletv*]" = "\"$(PROJECT_DIR)/iOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphone*]" = "\"$(PROJECT_DIR)/iOS\"";
+				"FRAMEWORK_SEARCH_PATHS[sdk=macosx*]" = "\"$(PROJECT_DIR)/macOS\"";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					FT2_BUILD_LIBRARY,
