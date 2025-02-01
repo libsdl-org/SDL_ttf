@@ -1726,6 +1726,8 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroySurfaceTextEngine(TTF_TextEngine *en
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_DestroyRendererTextEngine
+ * \sa TTF_DrawRendererText
+ * \sa TTF_CreateRendererTextEngineWithProperties
  */
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngine(SDL_Renderer *renderer);
 
@@ -1749,7 +1751,9 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngine(SDL_Re
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
+ * \sa TTF_CreateRendererTextEngine
  * \sa TTF_DestroyRendererTextEngine
+ * \sa TTF_DrawRendererText
  */
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngineWithProperties(SDL_PropertiesID props);
 
@@ -1812,7 +1816,9 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *e
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
+ * \sa TTF_CreateGPUTextEngineWithProperties
  * \sa TTF_DestroyGPUTextEngine
+ * \sa TTF_GetGPUTextDrawData
  */
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngine(SDL_GPUDevice *device);
 
@@ -1836,7 +1842,9 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngine(SDL_GPUDevi
  *
  * \since This function is available since SDL_ttf 3.0.0.
  *
+ * \sa TTF_CreateGPUTextEngine
  * \sa TTF_DestroyGPUTextEngine
+ * \sa TTF_GetGPUTextDrawData
  */
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngineWithProperties(SDL_PropertiesID props);
 
@@ -1890,7 +1898,7 @@ typedef struct TTF_GPUAtlasDrawSequence
  * \sa TTF_CreateGPUTextEngine
  * \sa TTF_CreateText
  */
-extern SDL_DECLSPEC TTF_GPUAtlasDrawSequence* SDLCALL TTF_GetGPUTextDrawData(TTF_Text *text);
+extern SDL_DECLSPEC TTF_GPUAtlasDrawSequence * SDLCALL TTF_GetGPUTextDrawData(TTF_Text *text);
 
 /**
  * Destroy a text engine created for drawing text with the SDL GPU API.
