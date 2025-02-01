@@ -4,6 +4,7 @@ SDL3_ttf_0.0.0 {
     TTF_AppendTextString;
     TTF_ClearFallbackFonts;
     TTF_CloseFont;
+    TTF_CopyFont;
     TTF_CreateGPUTextEngine;
     TTF_CreateGPUTextEngineWithProperties;
     TTF_CreateRendererTextEngine;

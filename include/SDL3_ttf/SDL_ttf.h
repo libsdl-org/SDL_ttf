@@ -186,10 +186,10 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  *
  * - `TTF_PROP_FONT_CREATE_FILENAME_STRING`: the font file to open, if an
  *   SDL_IOStream isn't being used. This is required if
- *   `TTF_PROP_FONT_CREATE_IOSTREAM_POINTER` isn't set.
+ *   `TTF_PROP_FONT_CREATE_IOSTREAM_POINTER` and `TTF_PROP_FONT_CREATE_EXISTING_FONT` aren't set.
  * - `TTF_PROP_FONT_CREATE_IOSTREAM_POINTER`: an SDL_IOStream containing the
  *   font to be opened. This should not be closed until the font is closed.
- *   This is required if `TTF_PROP_FONT_CREATE_FILENAME_STRING` isn't set.
+ *   This is required if `TTF_PROP_FONT_CREATE_FILENAME_STRING` and `TTF_PROP_FONT_CREATE_EXISTING_FONT` aren't set.
  * - `TTF_PROP_FONT_CREATE_IOSTREAM_OFFSET_NUMBER`: the offset in the iostream
  *   for the beginning of the font, defaults to 0.
  * - `TTF_PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the
@@ -206,6 +206,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  * - `TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER`: the vertical DPI to use for
  *   font rendering, defaults to `TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER`
  *   if set, or 72 otherwise.
+ * - `TTF_PROP_FONT_CREATE_EXISTING_FONT`: an optional TTF_Font that, if set, will be used as the font data source and the initial size and style of the new font.
  *
  * \param props the properties to use.
  * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more
@@ -227,6 +228,27 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_Properties
 #define TTF_PROP_FONT_CREATE_FACE_NUMBER                "SDL_ttf.font.create.face"
 #define TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER      "SDL_ttf.font.create.hdpi"
 #define TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER        "SDL_ttf.font.create.vdpi"
+#define TTF_PROP_FONT_CREATE_EXISTING_FONT              "SDL_ttf.font.create.existing_font"
+
+/**
+ * Create a copy of an existing font.
+ *
+ * The copy will be distinct from the original, but will share the font file and have the same size and style as the original.
+ *
+ * When done with the returned TTF_Font, use TTF_CloseFont() to dispose of it.
+ *
+ * \param existing_font the font to copy.
+ * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               original font.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ *
+ * \sa TTF_CloseFont
+ */
+extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_CopyFont(TTF_Font *existing_font);
 
 /**
  * Get the properties associated with a font.

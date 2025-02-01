@@ -81,6 +81,8 @@
               (unsigned long)' '         )
 #endif // !FT_HAS_SVG
 
+#define TTF_PROP_IOSTREAM_REFCOUNT  "SDL_ttf.font.src.refcount"
+
 /**
  * ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark)
  */
@@ -282,6 +284,7 @@ struct TTF_Font {
 
     // Freetype2 maintains all sorts of useful info itself
     FT_Face face;
+    long face_index;
 
     // Properties exposed to the application
     SDL_PropertiesID props;
@@ -1963,14 +1966,27 @@ static unsigned long IOread(
     return (unsigned long)SDL_ReadIO(font->src, buffer, count);
 }
 
+static void TTF_CloseFontSource(SDL_IOStream *src)
+{
+    SDL_PropertiesID src_props = SDL_GetIOProperties(src);
+    int refcount = (int)SDL_GetNumberProperty(src_props, TTF_PROP_IOSTREAM_REFCOUNT, 0);
+    if (refcount > 0) {
+        --refcount;
+        SDL_SetNumberProperty(src_props, TTF_PROP_IOSTREAM_REFCOUNT, refcount);
+        return;
+    }
+    SDL_CloseIO(src);
+}
+
 TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
 {
+    TTF_Font *existing_font = SDL_GetPointerProperty(props, TTF_PROP_FONT_CREATE_EXISTING_FONT, NULL);
     const char *file = SDL_GetStringProperty(props, TTF_PROP_FONT_CREATE_FILENAME_STRING, NULL);
     SDL_IOStream *src = SDL_GetPointerProperty(props, TTF_PROP_FONT_CREATE_IOSTREAM_POINTER, NULL);
     Sint64 src_offset = SDL_GetNumberProperty(props, TTF_PROP_FONT_CREATE_IOSTREAM_OFFSET_NUMBER, 0);
     bool closeio = SDL_GetBooleanProperty(props, TTF_PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN, false);
     float ptsize = SDL_GetFloatProperty(props, TTF_PROP_FONT_CREATE_SIZE_FLOAT, 0);
-    long index = (long)SDL_GetNumberProperty(props, TTF_PROP_FONT_CREATE_FACE_NUMBER, 0);
+    long face_index = (long)SDL_GetNumberProperty(props, TTF_PROP_FONT_CREATE_FACE_NUMBER, -1);
     unsigned int hdpi = (unsigned int)SDL_GetNumberProperty(props, TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER, 0);
     unsigned int vdpi = (unsigned int)SDL_GetNumberProperty(props, TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER, 0);
     TTF_Font *font;
@@ -1990,17 +2006,32 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
         return NULL;
     }
 
-    if (!src) {
-        if (!file) {
-            SDL_SetError("You must set either TTF_PROP_FONT_CREATE_FILENAME_STRING or TTF_PROP_FONT_CREATE_IOSTREAM_POINTER");
-            return NULL;
-        }
-
-        src = SDL_IOFromFile(file, "rb");
+    if (existing_font) {
         if (!src) {
-            return NULL;
+            src = existing_font->src;
+            src_offset = existing_font->src_offset;
+            closeio = existing_font->closeio;
+
+            if (closeio) {
+                SDL_PropertiesID src_props = SDL_GetIOProperties(src);
+                int refcount = (int)SDL_GetNumberProperty(src_props, TTF_PROP_IOSTREAM_REFCOUNT, 0);
+                ++refcount;
+                SDL_SetNumberProperty(src_props, TTF_PROP_IOSTREAM_REFCOUNT, refcount);
+            }
         }
-        closeio = true;
+    } else {
+        if (!src) {
+            if (!file) {
+                SDL_SetError("You must set either TTF_PROP_FONT_CREATE_FILENAME_STRING or TTF_PROP_FONT_CREATE_IOSTREAM_POINTER");
+                return NULL;
+            }
+
+            src = SDL_IOFromFile(file, "rb");
+            if (!src) {
+                return NULL;
+            }
+            closeio = true;
+        }
     }
 
     // Check to make sure we can seek in this stream
@@ -2008,7 +2039,7 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     if (position < 0) {
         SDL_SetError("Can't seek in stream");
         if (closeio) {
-            SDL_CloseIO(src);
+            TTF_CloseFontSource(src);
         }
         return NULL;
     }
@@ -2017,31 +2048,57 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     if (font == NULL) {
         SDL_SetError("Out of memory");
         if (closeio) {
-            SDL_CloseIO(src);
+            TTF_CloseFontSource(src);
         }
         return NULL;
     }
 
-    if (file) {
-        const char *name = SDL_strrchr(file, '/');
-        if (name) {
-            name += 1;
-        } else {
-            name = SDL_strrchr(file, '\\');
-            if (name) {
-                name += 1;
-            } else {
-                name = file;
-            }
-        }
-        font->name = SDL_strdup(name);
-    }
     font->src = src;
     font->src_offset = src_offset;
     font->closeio = closeio;
     font->generation = 1;
-    font->hdpi = TTF_DEFAULT_DPI;
-    font->vdpi = TTF_DEFAULT_DPI;
+
+    if (existing_font) {
+        if (existing_font->name) {
+            font->name = SDL_strdup(existing_font->name);
+        }
+        if (face_index == -1) {
+            face_index = existing_font->face_index;
+        }
+        if (ptsize == 0.0f) {
+            ptsize = existing_font->ptsize;
+        }
+        if (hdpi == 0) {
+            hdpi = existing_font->hdpi;
+        }
+        if (vdpi == 0) {
+            vdpi = existing_font->vdpi;
+        }
+    } else {
+        if (file) {
+            const char *name = SDL_strrchr(file, '/');
+            if (name) {
+                name += 1;
+            } else {
+                name = SDL_strrchr(file, '\\');
+                if (name) {
+                    name += 1;
+                } else {
+                    name = file;
+                }
+            }
+            font->name = SDL_strdup(name);
+        }
+    }
+    if (face_index < 0) {
+        face_index = 0;
+    }
+    if (hdpi == 0) {
+        hdpi = TTF_DEFAULT_DPI;
+    }
+    if (vdpi == 0) {
+        vdpi = TTF_DEFAULT_DPI;
+    }
 
     font->text = SDL_CreateHashTable(NULL, 16, SDL_HashPointer, SDL_KeyMatchPointer, NULL, false, false);
     if (!font->text) {
@@ -2078,14 +2135,15 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     font->args.stream = stream;
 
     SDL_LockMutex(TTF_state.lock);
-    error = FT_Open_Face(TTF_state.library, &font->args, index, &font->face);
+    error = FT_Open_Face(TTF_state.library, &font->args, face_index, &face);
     SDL_UnlockMutex(TTF_state.lock);
-    if (error || font->face == NULL) {
+    if (error || face == NULL) {
         TTF_SetFTError("Couldn't load font file", error);
         TTF_CloseFont(font);
         return NULL;
     }
-    face = font->face;
+    font->face = face;
+    font->face_index = face_index;
 
     // Set charmap for loaded font
     found = 0;
@@ -2122,10 +2180,17 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     }
 
     // Set the default font style
-    font->style = TTF_STYLE_NORMAL;
-    font->outline = 0;
-    font->ft_load_target = FT_LOAD_TARGET_NORMAL;
-    TTF_SetFontKerning(font, true);
+    if (existing_font) {
+        font->style = existing_font->style;
+        font->outline = existing_font->outline;
+        font->ft_load_target = existing_font->ft_load_target;
+        font->enable_kerning = existing_font->enable_kerning;
+    } else {
+        font->style = TTF_STYLE_NORMAL;
+        font->outline = 0;
+        font->ft_load_target = FT_LOAD_TARGET_NORMAL;
+        TTF_SetFontKerning(font, true);
+    }
 
 #if TTF_USE_HARFBUZZ
     font->hb_font = hb_ft_font_create(face, NULL);
@@ -2173,6 +2238,18 @@ TTF_Font *TTF_OpenFontIO(SDL_IOStream *src, bool closeio, float ptsize)
         SDL_SetPointerProperty(props, TTF_PROP_FONT_CREATE_IOSTREAM_POINTER, src);
         SDL_SetBooleanProperty(props, TTF_PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN, closeio);
         SDL_SetFloatProperty(props, TTF_PROP_FONT_CREATE_SIZE_FLOAT, ptsize);
+        font = TTF_OpenFontWithProperties(props);
+        SDL_DestroyProperties(props);
+    }
+    return font;
+}
+
+TTF_Font *TTF_CopyFont(TTF_Font *existing_font)
+{
+    TTF_Font *font = NULL;
+    SDL_PropertiesID props = SDL_CreateProperties();
+    if (props) {
+        SDL_SetPointerProperty(props, TTF_PROP_FONT_CREATE_EXISTING_FONT, existing_font);
         font = TTF_OpenFontWithProperties(props);
         SDL_DestroyProperties(props);
     }
@@ -6056,7 +6133,7 @@ void TTF_CloseFont(TTF_Font *font)
         SDL_free(font->args.stream);
     }
     if (font->closeio) {
-        SDL_CloseIO(font->src);
+        TTF_CloseFontSource(font->src);
     }
     SDL_free(font->name);
     SDL_free(font);
