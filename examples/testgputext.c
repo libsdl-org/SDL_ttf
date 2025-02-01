@@ -471,6 +471,8 @@ int main(int argc, char *argv[])
     SDL_free(geometry_data.indices);
     TTF_DestroyText(text);
     TTF_DestroyGPUTextEngine(engine);
+    TTF_CloseFont(font);
+    TTF_Quit();
     free_context(&context);
     SDL_Quit();
 
