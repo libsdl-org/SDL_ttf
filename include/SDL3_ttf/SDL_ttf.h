@@ -46,7 +46,7 @@ extern "C" {
  */
 #define SDL_TTF_MAJOR_VERSION   3
 #define SDL_TTF_MINOR_VERSION   1
-#define SDL_TTF_MICRO_VERSION   0
+#define SDL_TTF_MICRO_VERSION   1
 
 /**
  * This is the version number macro for the current SDL_ttf version.
