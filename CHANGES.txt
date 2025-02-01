@@ -40,4 +40,4 @@
     - TTF_UpdateText()
     - TTF_DestroyText()
  * Added TTF_AddFallbackFont() to allow combining fonts with distinct glyph support
- * Updated SDF font support and added an example of using it with the GPU API
+ * Updated SDF font support and added an example of using it with the SDL GPU API
