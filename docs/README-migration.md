@@ -74,6 +74,7 @@ The following functions have been removed:
 * TTF_ByteSwappedUNICODE()
 * TTF_GetFontKerningSizeGlyphs() - replaced with TTF_GetGlyphKerning()
 * TTF_GetFontKerningSizeGlyphs32() - replaced with TTF_GetGlyphKerning()
+* TTF_Linked_Version() - replaced with TTF_Version()
 * TTF_MeasureText() - replaced with TTF_MeasureString()
 * TTF_MeasureUNICODE() - replaced with TTF_MeasureString()
 * TTF_MeasureUTF8() - replaced with TTF_MeasureString()
