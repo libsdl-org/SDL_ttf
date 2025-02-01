@@ -4,40 +4,9 @@
  * Added TTF_CreateSurfaceTextEngine() and TTF_DrawSurfaceText() for drawing text to SDL_Surface output
  * Added TTF_CreateRendererTextEngine() and TTF_DrawRendererText() for drawing text to SDL_Renderer output
  * Added TTF_CreateGPUTextEngine() and TTF_GetGPUTextDrawData() for drawing text to SDL_GPU output
- * Added <SDL3_ttf/SDL_textengine.h> so you can create your own custom text engine
- * Added functions to manage text objects:
-    - TTF_CreateText()
-    - TTF_GetTextProperties()
-    - TTF_SetTextEngine()
-    - TTF_GetTextEngine()
-    - TTF_SetTextFont()
-    - TTF_GetTextFont()
-    - TTF_SetTextDirection()
-    - TTF_GetTextDirection()
-    - TTF_SetTextScript()
-    - TTF_GetTextScript()
-    - TTF_SetTextColor()
-    - TTF_SetTextColorFloat()
-    - TTF_GetTextColor()
-    - TTF_GetTextColorFloat()
-    - TTF_SetTextPosition()
-    - TTF_GetTextPosition()
-    - TTF_SetTextWrapWidth()
-    - TTF_GetTextWrapWidth()
-    - TTF_SetTextWrapWhitespaceVisible()
-    - TTF_TextWrapWhitespaceVisible()
-    - TTF_SetTextString()
-    - TTF_InsertTextString()
-    - TTF_AppendTextString()
-    - TTF_DeleteTextString()
-    - TTF_GetTextSize()
-    - TTF_GetTextSubString()
-    - TTF_GetTextSubStringForLine()
-    - TTF_GetTextSubStringsForRange()
-    - TTF_GetTextSubStringForPoint()
-    - TTF_GetPreviousTextSubString()
-    - TTF_GetNextTextSubString()
-    - TTF_UpdateText()
-    - TTF_DestroyText()
+ * Made the text engine API public in <SDL3_ttf/SDL_textengine.h> so you can integrate text objects into custom font display solutions
+ * Added  so you can create your own custom text engine
+ * Added TTF_CopyFont() to allow you to easily make fonts of different sizes
  * Added TTF_AddFallbackFont() to allow combining fonts with distinct glyph support
+ * Added support for OT-SVG fonts, which are useful as fallback fonts for color emoji support
  * Updated SDF font support and added an example of using it with the SDL GPU API
