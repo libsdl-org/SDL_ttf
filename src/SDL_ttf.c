@@ -346,7 +346,7 @@ struct TTF_Font {
     hb_font_t *hb_font;
     hb_language_t hb_language;
 #endif
-    Uint32 script;
+    Uint32 script; // ISO 15924 script tag
     TTF_Direction direction;
     bool render_sdf;
 
@@ -3352,7 +3352,7 @@ static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t lengt
     // Set global configuration
     hb_buffer_set_language(hb_buffer, font->hb_language);
     hb_buffer_set_direction(hb_buffer, (hb_direction_t)direction);
-    hb_buffer_set_script(hb_buffer, script);
+    hb_buffer_set_script(hb_buffer, hb_script_from_iso15924_tag(script));
 
     // Layout the text
     hb_buffer_add_utf8(hb_buffer, text, (int)length, 0, -1);
@@ -4369,7 +4369,7 @@ SDL_Surface* TTF_RenderText_LCD_Wrapped(TTF_Font *font, const char *text, size_t
 struct TTF_TextLayout
 {
     TTF_Direction direction;
-    Uint32 script;
+    Uint32 script; // ISO 15924 script tag
     int font_height;
     int wrap_length;
     bool wrap_whitespace_visible;
@@ -4815,7 +4815,7 @@ Uint32 TTF_GetTextScript(TTF_Text *text)
 {
     TTF_CHECK_POINTER("text", text, 0);
 
-    if (text->internal->layout->script != 0) {
+    if (text->internal->layout->script) {
         return text->internal->layout->script;
     }
     return TTF_GetFontScript(text->internal->font);
@@ -6001,6 +6001,38 @@ TTF_Direction TTF_GetFontDirection(TTF_Font *font)
     return font->direction;
 }
 
+Uint32 TTF_StringToTag(const char *string)
+{
+    Uint8 bytes[4] = { 0, 0, 0, 0 };
+
+    if (string) {
+        for (size_t i = 0; i < 4 && string[i]; ++i) {
+            bytes[i] = (Uint8)string[i];
+        }
+    }
+
+    Uint32 tag = ((Uint32)bytes[0] << 24) |
+                 ((Uint32)bytes[1] << 16) |
+                 ((Uint32)bytes[2] <<  8) |
+                 ((Uint32)bytes[3] <<  0);
+    return tag;
+}
+
+void TTF_TagToString(Uint32 tag, char *string, size_t size)
+{
+    if (!string || !size) {
+        return;
+    }
+
+    for (size_t i = 0; i < 4 && i < size; ++i) {
+        string[i] = (char)(Uint8)(tag >> 24);
+        tag <<= 8;
+    }
+    if (size > 4) {
+        string[4] = '\0';
+    }
+}
+
 bool TTF_SetFontScript(TTF_Font *font, Uint32 script)
 {
     TTF_CHECK_FONT(font, false);
@@ -6045,10 +6077,7 @@ Uint32 TTF_GetGlyphScript(Uint32 ch)
     hb_buffer_clear_contents(hb_buffer);
     hb_buffer_set_content_type(hb_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
 
-    script = hb_unicode_script(hb_unicode_functions, ch);
-    if (script == HB_SCRIPT_UNKNOWN) {
-        script = 0;
-    }
+    script = hb_script_to_iso15924_tag(hb_unicode_script(hb_unicode_functions, ch));
 
     hb_buffer_destroy(hb_buffer);
 #else
