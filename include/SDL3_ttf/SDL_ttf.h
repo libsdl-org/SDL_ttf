@@ -1005,6 +1005,102 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetGlyphScript(Uint32 ch);
 extern SDL_DECLSPEC bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
 
 /**
+ * Set font features. Overrides previously set features.
+ * 
+ * The syntax is a space-separated list of features.
+ * The feature syntax matches [hb_feature_from_string()](https://harfbuzz.github.io/harfbuzz-hb-common.html#hb-feature-from-string)
+ *
+ * Ignores kerning set by TTF_SetFontKerning() after call with non-null features string.
+ * 
+ * If SDL_ttf was not built with HarfBuzz support, this function returns false.
+ *
+ * This updates any TTF_Text objects using this font.
+ * 
+ * Example:
+ *
+ * ```c
+ * TTF_SetFontFeatures(font, "calt liga=1 -kern +ss01 aalt[3:5]=2");
+ * ```
+ * 
+ * \param font the font to specify features for.
+ * \param features a null-termianted string containing the font feature settings, separated by spaces. May be NULL.
+ * \returns true on success or false on failure; call SDL_GetError()
+ *          for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontFeatures(TTF_Font *font, char *features);
+
+/**
+ * Query a font's font features.
+ *
+ * Note that the returned string is to internal storage, and should not be
+ * modified or free'd by the caller. The string becomes invalid, with the rest
+ * of the font, when `font` is handed to TTF_CloseFont().
+ * And when TTF_SetFontFeatures() is called on the font.
+ * 
+ * \param font the font to query.
+ * 
+ * \returns the font features string set by TTF_SetFontFeatures(), or NULL if not set
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ */
+extern SDL_DECLSPEC char * SDLCALL TTF_GetFontFeatures(TTF_Font *font);
+
+/**
+ * Set font variations. Overrides previously set variations.
+ * 
+ * The syntax is a space-separated list of variations.
+ * The variation syntax matches [hb_variation_from_string()](https://harfbuzz.github.io/harfbuzz-hb-common.html#hb-variation-from-string)
+ * 
+ * If SDL_ttf was not built with HarfBuzz support, this function returns false.
+ *
+ * This updates any TTF_Text objects using this font.
+ * 
+ * Example:
+ *
+ * ```c
+ * TTF_SetFontVariations(font, "wght=600 wdth=125 slnt=-7.5");
+ * ```
+ * 
+ * \param font the font to specify variations for.
+ * \param variations a null-termianted string containing the font feature settings, separated by spaces. May be NULL.
+ * \returns true on success or false on failure; call SDL_GetError()
+ *          for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontVariations(TTF_Font *font, char *variations);
+
+/**
+ * Query a font's font variations.
+ *
+ * Note that the returned string is to internal storage, and should not be
+ * modified or free'd by the caller. The string becomes invalid, with the rest
+ * of the font, when `font` is handed to TTF_CloseFont().
+ * And when TTF_SetFontVariations() is called on the font.
+ * 
+ * \param font the font to query.
+ * 
+ * \returns the font variations string, or NULL if not set
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ */
+extern SDL_DECLSPEC char * SDLCALL TTF_GetFontVariations(TTF_Font *font);
+
+/**
  * Check whether a glyph is provided by the font for a UNICODE codepoint.
  *
  * \param font the font to query.
