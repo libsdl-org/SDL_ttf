@@ -109,6 +109,8 @@ SDL3_ttf_0.0.0 {
     TTF_SetTextString;
     TTF_SetTextWrapWhitespaceVisible;
     TTF_SetTextWrapWidth;
+    TTF_StringToTag;
+    TTF_TagToString;
     TTF_TextWrapWhitespaceVisible;
     TTF_UpdateText;
     TTF_Version;
