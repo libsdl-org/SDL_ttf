@@ -645,7 +645,7 @@ extern SDL_DECLSPEC TTF_HintingFlags SDLCALL TTF_GetFontHinting(const TTF_Font *
  *
  * \sa TTF_GetFontSDF
  */
-extern SDL_DECLSPEC bool TTF_SetFontSDF(TTF_Font *font, bool enabled);
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSDF(TTF_Font *font, bool enabled);
 
 /**
  * Query whether Signed Distance Field rendering is enabled for a font.
@@ -660,7 +660,7 @@ extern SDL_DECLSPEC bool TTF_SetFontSDF(TTF_Font *font, bool enabled);
  *
  * \sa TTF_SetFontSDF
  */
-extern SDL_DECLSPEC bool TTF_GetFontSDF(const TTF_Font *font);
+extern SDL_DECLSPEC bool SDLCALL TTF_GetFontSDF(const TTF_Font *font);
 
 /**
  * The horizontal alignment used when rendering wrapped text.
@@ -848,7 +848,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_FontIsFixedWidth(const TTF_Font *font);
  *
  * \sa TTF_SetFontSDF
  */
-extern SDL_DECLSPEC bool TTF_FontIsScalable(const TTF_Font *font);
+extern SDL_DECLSPEC bool SDLCALL TTF_FontIsScalable(const TTF_Font *font);
 
 /**
  * Query a font's family name.
@@ -1045,7 +1045,7 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetGlyphScript(Uint32 ch);
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
 
 /**
  * Check whether a glyph is provided by the font for a UNICODE codepoint.
@@ -1156,7 +1156,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, 
  *
  * \since This function is available since SDL_ttf 3.0.0.
  */
-extern SDL_DECLSPEC bool TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *kerning);
+extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *kerning);
 
 /**
  * Calculate the dimensions of a rendered string of UTF-8 text.
