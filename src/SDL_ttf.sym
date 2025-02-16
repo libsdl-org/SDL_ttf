@@ -59,6 +59,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetTextEngine;
     TTF_GetTextFont;
     TTF_GetTextPosition;
+    TTF_GetTextProperties;
     TTF_GetTextScript;
     TTF_GetTextSize;
     TTF_GetTextSubString;
