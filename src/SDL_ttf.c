@@ -32,6 +32,8 @@
 #include FT_GLYPH_H
 #include FT_TRUETYPE_IDS_H
 #include FT_IMAGE_H
+#include FT_MULTIPLE_MASTERS_H
+#include FT_SFNT_NAMES_H 
 
 /* Enable rendering with color
  * Freetype may need to be compiled with FT_CONFIG_OPTION_USE_PNG */
@@ -271,6 +273,14 @@ typedef struct CachedGlyphPositions {
     GlyphPositions positions;
 } CachedGlyphPositions;
 
+//naming? it's not from FreeType so maybe FT_ is inappropriate?
+typedef struct FT_Variations { 
+    int len;
+    FT_ULong *tags;
+    FT_Fixed *defaults;
+    FT_Fixed *coords;
+} FT_Variations;
+
 // A structure maintaining a list of fonts
 typedef struct TTF_FontList {
     TTF_Font *font;
@@ -345,6 +355,15 @@ struct TTF_Font {
 #if TTF_USE_HARFBUZZ
     hb_font_t *hb_font;
     hb_language_t hb_language;
+
+    char *features;
+    hb_feature_t *hb_features;
+    int hb_features_len;
+
+    char *variations;
+    hb_variation_t *hb_variations;
+    int hb_variations_len;
+    FT_Variations ft_variations;
 #endif
     Uint32 script; // ISO 15924 script tag
     TTF_Direction direction;
@@ -3358,13 +3377,35 @@ static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t lengt
     hb_buffer_add_utf8(hb_buffer, text, (int)length, 0, -1);
     hb_buffer_guess_segment_properties(hb_buffer);
 
-    hb_feature_t userfeatures[1];
-    userfeatures[0].tag = HB_TAG('k','e','r','n');
-    userfeatures[0].value = font->enable_kerning;
-    userfeatures[0].start = HB_FEATURE_GLOBAL_START;
-    userfeatures[0].end = HB_FEATURE_GLOBAL_END;
+    if (font->hb_variations) {
+#if 0
+        //! hb_font_set_variations does nothing
+        //! hb_font_set_variation doesn't work either
+        // is it supposed to work? Is it a bug in HarfBuzz or does it not work
+        // because we're using FreeType?
+        hb_font_set_variations(font->hb_font, font->variations, font->variations_len);
+#else
+        // should we care if this returns an error? what should we do in that case?
+        FT_Set_Var_Design_Coordinates(font->face, font->ft_variations.len, font->ft_variations.coords);
+#endif
+    } else {
+        // Reset variations to defaults, see note  at 
+        // https://freetype.org/freetype2/docs/reference/ft2-multiple_masters.html#ft_set_var_design_coordinates
+        FT_Set_Var_Design_Coordinates(font->face, 0, 0);
+    }
 
-    hb_shape(font->hb_font, hb_buffer, userfeatures, 1);
+    if (font->hb_features) {
+        hb_shape(font->hb_font, hb_buffer, font->hb_features, font->hb_features_len);
+    } else {
+        hb_feature_t kern_feature = (hb_feature_t){
+            .tag = HB_TAG('k','e','r','n'),
+            .value = font->enable_kerning,
+            .start = HB_FEATURE_GLOBAL_START,
+            .end = HB_FEATURE_GLOBAL_END,
+        };
+
+        hb_shape(font->hb_font, hb_buffer, &kern_feature, 1);
+    }
 
     // Get the result
     unsigned int glyph_count_u = 0;
@@ -6115,6 +6156,211 @@ bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
 #endif
 }
 
+bool TTF_SetFontFeatures(TTF_Font *font, char *features)
+{
+    TTF_CHECK_FONT(font, false);
+
+#if TTF_USE_HARFBUZZ
+    SDL_free(font->hb_features);
+
+    if (features == NULL) {
+        font->hb_features = NULL;
+        font->hb_features_len = 0;
+        UpdateFontText(font, NULL); 
+        return true;
+    }
+
+    int num_features = 0;
+    for (char *cur = features; *cur; ) {
+        while (*cur && *cur == ' ') cur++;
+        if (*cur) num_features++;
+        while (*cur && *cur != ' ') cur++;
+    }
+
+    font->hb_features =  SDL_calloc(sizeof(*font->hb_features), num_features);
+    font->hb_features_len = num_features;
+
+    char *cur = features;
+    for (int i = 0; i < num_features; i++) {
+        while (*cur && *cur == ' ') cur++;
+        // NOTE I think *cur will never be NULL here or above
+        // since i >= num_features when that could happen, so we've already left the loop
+        // should we replace it with asserts? we can't easily do that for the while loop though.
+        // Could just replace the one below with SDL_assert(*cur) or SDL_assert_always(*cur)?
+        // (same note on TTF_SetFontVariations)
+        if (!*cur) break; 
+
+        int len = 0;
+        while (cur[len] && cur[len] != ' ') len++;
+        if (!hb_feature_from_string(cur, len, &font->hb_features[i])) {
+            SDL_SetError("invalid feature '%.*s'", len, cur);
+            SDL_free(font->hb_features);
+            font->hb_features = NULL;
+            font->hb_features_len = 0;
+
+            SDL_free(font->features);
+            font->features = NULL;
+
+            UpdateFontText(font, NULL);
+            return false;
+        }
+        cur += len;
+    }
+
+    SDL_free(font->features);
+    font->features = SDL_strdup(features);
+    if (!font->features) {
+        // use `goto failure` instead?
+        // would consolidate the error handling blocks
+        SDL_free(font->hb_features);
+        font->hb_features = NULL;
+        font->hb_features_len = 0;
+        UpdateFontText(font, NULL); 
+        return SDL_SetError("Out of memory");
+    }
+    UpdateFontText(font, NULL); 
+    return true;
+#else
+    (void) features;
+    return SDL_Unsupported();
+#endif
+}
+
+char *TTF_GetFontFeatures(TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, false);
+
+#if TTF_USE_HARFBUZZ
+    return font->features;
+#else
+    (void) features;
+    return SDL_Unsupported();
+#endif
+}
+
+bool TTF_SetFontVariations(TTF_Font *font, char *variations)
+{
+    TTF_CHECK_FONT(font, false);
+
+#if TTF_USE_HARFBUZZ
+    SDL_free(font->hb_variations);
+
+    if (variations == NULL) {
+        font->hb_variations = NULL;
+        font->hb_variations_len = 0;
+        UpdateFontText(font, NULL); 
+        return true;
+    }
+
+    if (!font->ft_variations.len) {
+        FT_MM_Var *ft_var = NULL;
+        // The documentation (https://freetype.org/freetype2/docs/reference/ft2-multiple_masters.html#ft_mm_var)
+        // talks about named styles, like how 'bold' could be defined as [Weight=1.5,Width=1.1].
+        // is that something we should care about? I don't know if HarfBuzz even parses that.
+        FT_Get_MM_Var(font->face, &ft_var);
+        // check FT_Get_MM_Var return value instead?
+        if (!ft_var) return SDL_SetError("cannot get font variations through FreeType"); 
+
+        font->ft_variations.len = ft_var->num_axis;
+        font->ft_variations.tags     = SDL_calloc(font->ft_variations.len, sizeof(*font->ft_variations.tags));
+        font->ft_variations.defaults = SDL_calloc(font->ft_variations.len, sizeof(*font->ft_variations.defaults));
+        font->ft_variations.coords   = SDL_calloc(font->ft_variations.len, sizeof(*font->ft_variations.coords));
+        if (!font->ft_variations.coords || !font->ft_variations.tags || !font->ft_variations.defaults) {
+            SDL_free(font->ft_variations.tags);
+            SDL_free(font->ft_variations.defaults);
+            SDL_free(font->ft_variations.coords);
+            font->ft_variations = (FT_Variations){0};
+            return SDL_SetError("Out of memory");
+        }
+        for (int i = 0; i < ft_var->num_axis; i++) {
+            font->ft_variations.tags[i]     = ft_var->axis[i].tag;
+            font->ft_variations.defaults[i] = ft_var->axis[i].def;
+        }
+
+        FT_Done_MM_Var(TTF_state.library, ft_var); // should this be checked for an error?
+    }
+
+    int num_variations = 0;
+    for (char *cur = variations; *cur; ) {
+        while (*cur && *cur == ' ') cur++;
+        if (*cur) num_variations++;
+        while (*cur && *cur != ' ') cur++;
+    }
+
+    font->hb_variations = SDL_calloc(sizeof(*font->hb_variations), num_variations);
+    font->hb_variations_len = num_variations;
+
+    char *cur = variations;
+    for (int i = 0; i < num_variations; i++) {
+        while (*cur && *cur == ' ') cur++;
+        if (!*cur) break;
+
+        int len = 0;
+        while (cur[len] && cur[len] != ' ') len++;
+        if (!hb_variation_from_string(cur, len, &font->hb_variations[i])) {
+            SDL_SetError("invalid variation '%.*s'", len, cur);
+            SDL_free(font->hb_variations);
+            font->hb_variations = NULL;
+            font->hb_variations_len = 0;
+
+            SDL_free(font->variations);
+            font->variations = NULL;
+
+            UpdateFontText(font, NULL);
+            return false;
+        }
+        cur += len;
+    }
+
+    SDL_free(font->variations);
+    font->variations = SDL_strdup(variations);
+    if (!font->variations) {
+        SDL_free(font->hb_variations);
+        font->hb_variations = NULL;
+        font->hb_variations_len = 0;
+        UpdateFontText(font, NULL); 
+        return SDL_SetError("Out of memory");
+    }
+
+    // Creating a hb_variation_t array and then doing this separately is not necessary
+    // but if hb_font_set_variations is supposed to work, we don't have to do this at all.
+    // And if it's not supposed to work, we can skip creating the array of hb_variation_t
+    // and just write to the FT_Variations directly
+
+    // O(n*m), but they're small arrays in practice
+    for (int idx = 0; idx < font->ft_variations.len; idx++) {
+        font->ft_variations.coords[idx] = font->ft_variations.defaults[idx];
+
+        for (int fv_idx = 0; fv_idx < font->hb_variations_len; fv_idx++) {
+            hb_variation_t fv = font->hb_variations[fv_idx];
+            if (font->ft_variations.tags[idx] == fv.tag) {
+                font->ft_variations.coords[idx] = SDL_lround(fv.value * 65536.0);
+                break;
+            }
+        }
+    }
+    
+    UpdateFontText(font, NULL); 
+    return true;
+#else
+    (void) variations;
+    return SDL_Unsupported();
+#endif
+}
+
+char *TTF_GetFontVariations(TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, false);
+
+#if TTF_USE_HARFBUZZ
+    return font->variations;
+#else
+    (void) variations;
+    return SDL_Unsupported();
+#endif
+}
+
+
 void TTF_CloseFont(TTF_Font *font)
 {
     if (!font) {
@@ -6148,6 +6394,13 @@ void TTF_CloseFont(TTF_Font *font)
 
 #if TTF_USE_HARFBUZZ
     hb_font_destroy(font->hb_font);
+    SDL_free(font->hb_features);
+    SDL_free(font->hb_variations);
+    SDL_free(font->features);
+    SDL_free(font->variations);
+    SDL_free(font->ft_variations.tags);
+    SDL_free(font->ft_variations.defaults);
+    SDL_free(font->ft_variations.coords);
 #endif
     if (font->props) {
         SDL_DestroyProperties(font->props);
