@@ -2110,19 +2110,19 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
         vdpi = TTF_DEFAULT_DPI;
     }
 
-    font->text = SDL_CreateHashTable(NULL, 16, SDL_HashPointer, SDL_KeyMatchPointer, NULL, false, false);
+    font->text = SDL_CreateHashTable(0, false, SDL_HashPointer, SDL_KeyMatchPointer, NULL, NULL);
     if (!font->text) {
         TTF_CloseFont(font);
         return NULL;
     }
 
-    font->glyphs = SDL_CreateHashTable(NULL, 32, SDL_HashID, SDL_KeyMatchID, SDL_NukeFreeValue, false, false);
+    font->glyphs = SDL_CreateHashTable(128, false, SDL_HashID, SDL_KeyMatchID, SDL_DestroyHashValue, NULL);
     if (!font->glyphs) {
         TTF_CloseFont(font);
         return NULL;
     }
 
-    font->glyph_indices = SDL_CreateHashTable(NULL, 32, SDL_HashID, SDL_KeyMatchID, NULL, false, false);
+    font->glyph_indices = SDL_CreateHashTable(128, false, SDL_HashID, SDL_KeyMatchID, NULL, NULL);
     if (!font->glyph_indices) {
         TTF_CloseFont(font);
         return NULL;
@@ -2268,12 +2268,22 @@ TTF_Font *TTF_CopyFont(TTF_Font *existing_font)
 
 static bool AddFontTextReference(TTF_Font *font, TTF_Text *text)
 {
-    return SDL_InsertIntoHashTable(font->text, text, NULL);
+    return SDL_InsertIntoHashTable(font->text, text, NULL, true);
 }
 
 static bool RemoveFontTextReference(TTF_Font *font, TTF_Text *text)
 {
     return SDL_RemoveFromHashTable(font->text, text);
+}
+
+static bool SDLCALL UpdateFontTextCallback(void *userdata, const SDL_HashTable *table, const void *key, const void *value)
+{
+    TTF_Text *text = (TTF_Text *)key;
+    (void)userdata;
+    (void)table;
+    (void)value;
+    text->internal->needs_layout_update = true;
+    return true;
 }
 
 static void UpdateFontText(TTF_Font *font, TTF_Font *initial_font)
@@ -2286,11 +2296,7 @@ static void UpdateFontText(TTF_Font *font, TTF_Font *initial_font)
     }
 
     if (font->text) {
-        TTF_Text *text = NULL;
-        void *iter = NULL;
-        while (SDL_IterateHashTable(font->text, (const void **)&text, NULL, &iter)) {
-            text->internal->needs_layout_update = true;
-        }
+        SDL_IterateHashTable(font->text, UpdateFontTextCallback, NULL);
     }
 
     for (TTF_FontList *list = font->fallback_for; list; list = list->next) {
@@ -2486,15 +2492,21 @@ static void Flush_Glyph(c_glyph *glyph)
     Flush_Glyph_Image(&glyph->bitmap);
 }
 
+static bool SDLCALL FlushCacheCallback(void *userdata, const SDL_HashTable *table, const void *key, const void *value)
+{
+    c_glyph *glyph = (c_glyph *)value;
+    (void)userdata;
+    (void)table;
+    (void)key;
+    if (glyph->stored) {
+        Flush_Glyph(glyph);
+    }
+    return true;
+}
+
 static void Flush_Cache(TTF_Font *font)
 {
-    c_glyph *glyph = NULL;
-    void *iter = NULL;
-    while (SDL_IterateHashTable(font->glyphs, NULL, (const void **)&glyph, &iter)) {
-        if (glyph->stored) {
-            Flush_Glyph(glyph);
-        }
-    }
+    SDL_IterateHashTable(font->glyphs, FlushCacheCallback, NULL);
 
     for (unsigned int i = 0; i < SDL_arraysize(font->cached_positions); ++i) {
         CachedGlyphPositions *cached = &font->cached_positions[i];
@@ -3057,7 +3069,7 @@ static bool Find_GlyphByIndex(TTF_Font *font, FT_UInt idx,
         }
         glyph->index = idx;
 
-        if (!SDL_InsertIntoHashTable(font->glyphs, (const void *)(uintptr_t)idx, (const void *)glyph)) {
+        if (!SDL_InsertIntoHashTable(font->glyphs, (const void *)(uintptr_t)idx, (const void *)glyph, true)) {
             SDL_free(glyph);
             return false;
         }
@@ -3140,7 +3152,7 @@ static FT_UInt get_char_index(TTF_Font *font, Uint32 ch)
     const void *value;
     if (!SDL_FindInHashTable(font->glyph_indices, (const void *)(uintptr_t)ch, &value)) {
         idx = FT_Get_Char_Index(font->face, ch);
-        SDL_InsertIntoHashTable(font->glyph_indices, (const void *)(uintptr_t)ch, (const void *)(uintptr_t)idx);
+        SDL_InsertIntoHashTable(font->glyph_indices, (const void *)(uintptr_t)ch, (const void *)(uintptr_t)idx, true);
     } else {
         idx = (FT_UInt)(uintptr_t)value;
     }
@@ -6122,6 +6134,20 @@ bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
 #endif
 }
 
+static bool RemoveOneTextCallback(void *userdata, const SDL_HashTable *table, const void *key, const void *value)
+{
+    TTF_Font *font = (TTF_Font *)userdata;
+    TTF_Text *text = (TTF_Text *)key;
+    (void)table;
+    (void)value;
+    if (text->internal->font == font) {
+        TTF_SetTextFont(text, NULL);
+    } else {
+        RemoveFontTextReference(font, text);
+    }
+    return false;
+}
+
 void TTF_CloseFont(TTF_Font *font)
 {
     if (!font) {
@@ -6130,15 +6156,7 @@ void TTF_CloseFont(TTF_Font *font)
 
     if (font->text) {
         while (!SDL_HashTableEmpty(font->text)) {
-            TTF_Text *text = NULL;
-            void *iter = NULL;
-            if (!SDL_IterateHashTable(font->text, (const void **)&text, NULL, &iter)) {
-                break;
-            }
-            if (text && text->internal->font == font) {
-                TTF_SetTextFont(text, NULL);
-            }
-            SDL_RemoveFromHashTable(font->text, text);
+            SDL_IterateHashTable(font->text, RemoveOneTextCallback, font);
         }
         SDL_DestroyHashTable(font->text);
         font->text = NULL;

@@ -760,7 +760,7 @@ static TTF_RendererTextEngineFontData *CreateFontData(TTF_RendererTextEngineData
         return NULL;
     }
 
-    if (!SDL_InsertIntoHashTable(enginedata->fonts, font, data)) {
+    if (!SDL_InsertIntoHashTable(enginedata->fonts, font, data, true)) {
         DestroyFontData(data);
         return NULL;
     }
@@ -786,7 +786,7 @@ static void DestroyEngineData(TTF_RendererTextEngineData *data)
     SDL_free(data);
 }
 
-static void NukeFontData(const void *key, const void *value, void *unused)
+static void SDLCALL NukeFontData(void *unused, const void *key, const void *value)
 {
     TTF_RendererTextEngineFontData *data = (TTF_RendererTextEngineFontData *)value;
     (void)key;
@@ -803,7 +803,7 @@ static TTF_RendererTextEngineData *CreateEngineData(SDL_Renderer *renderer, int 
     data->renderer = renderer;
     data->atlas_texture_size = atlas_texture_size;
 
-    data->fonts = SDL_CreateHashTable(NULL, 4, SDL_HashPointer, SDL_KeyMatchPointer, NukeFontData, false, false);
+    data->fonts = SDL_CreateHashTable(0, false, SDL_HashPointer, SDL_KeyMatchPointer, NukeFontData, NULL);
     if (!data->fonts) {
         DestroyEngineData(data);
         return NULL;
@@ -827,7 +827,7 @@ static bool SDLCALL CreateText(void *userdata, TTF_Text *text)
             return false;
         }
     } else if (font_generation != fontdata->generation) {
-        SDL_EmptyHashTable(fontdata->glyphs);
+        SDL_ClearHashTable(fontdata->glyphs);
         fontdata->generation = font_generation;
     }
 
