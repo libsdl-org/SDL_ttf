@@ -189,7 +189,7 @@ static TTF_SurfaceTextEngineFontData *CreateFontData(TTF_SurfaceTextEngineData *
         return NULL;
     }
 
-    if (!SDL_InsertIntoHashTable(enginedata->fonts, font, data)) {
+    if (!SDL_InsertIntoHashTable(enginedata->fonts, font, data, true)) {
         DestroyFontData(data);
         return NULL;
     }
@@ -209,7 +209,7 @@ static void DestroyEngineData(TTF_SurfaceTextEngineData *data)
     SDL_free(data);
 }
 
-static void NukeFontData(const void *key, const void *value, void *unused)
+static void SDLCALL NukeFontData(void *unused, const void *key, const void *value)
 {
     TTF_SurfaceTextEngineFontData *data = (TTF_SurfaceTextEngineFontData *)value;
     (void)key;
@@ -224,7 +224,7 @@ static TTF_SurfaceTextEngineData *CreateEngineData(void)
         return NULL;
     }
 
-    data->fonts = SDL_CreateHashTable(NULL, 4, SDL_HashPointer, SDL_KeyMatchPointer, NukeFontData, false, false);
+    data->fonts = SDL_CreateHashTable(0, false, SDL_HashPointer, SDL_KeyMatchPointer, NukeFontData, NULL);
     if (!data->fonts) {
         DestroyEngineData(data);
         return NULL;
@@ -248,7 +248,7 @@ static bool SDLCALL CreateText(void *userdata, TTF_Text *text)
             return false;
         }
     } else if (font_generation != fontdata->generation) {
-        SDL_EmptyHashTable(fontdata->glyphs);
+        SDL_ClearHashTable(fontdata->glyphs);
         fontdata->generation = font_generation;
     }
 

@@ -28,13 +28,13 @@ typedef struct GlyphHashtableKey {
     Uint32 glyph_index;
 } GlyphHashtableKey;
 
-static Uint32 SDL_HashGlyphHashtableKey(const void *key, void *unused)
+static Uint32 SDLCALL SDL_HashGlyphHashtableKey(void *unused, const void *key)
 {
     (void)unused;
     return SDL_murmur3_32(key, sizeof(GlyphHashtableKey), 0);
 }
 
-static bool SDL_KeyMatchGlyphHashtableKey(const void *a, const void *b, void *unused)
+static bool SDLCALL SDL_KeyMatchGlyphHashtableKey(void *unused, const void *a, const void *b)
 {
     (void)unused;
     GlyphHashtableKey *A = (GlyphHashtableKey *)a;
@@ -42,7 +42,7 @@ static bool SDL_KeyMatchGlyphHashtableKey(const void *a, const void *b, void *un
     return (A->font == B->font && A->glyph_index == B->glyph_index);
 }
 
-static void SDL_NukeFreeGlyphHashtableKey(const void *key, const void *value, void *data)
+static void SDLCALL SDL_NukeFreeGlyphHashtableKey(void *data, const void *key, const void *value)
 {
     SDL_GlyphHashTable_NukeFn nukefn = (SDL_GlyphHashTable_NukeFn)data;
 
@@ -54,8 +54,7 @@ static void SDL_NukeFreeGlyphHashtableKey(const void *key, const void *value, vo
 
 SDL_HashTable *SDL_CreateGlyphHashTable(SDL_GlyphHashTable_NukeFn nukefn)
 {
-    const int num_buckets = 32;
-    return SDL_CreateHashTable(nukefn, num_buckets, SDL_HashGlyphHashtableKey, SDL_KeyMatchGlyphHashtableKey, SDL_NukeFreeGlyphHashtableKey, false, false);
+    return SDL_CreateHashTable(128, false, SDL_HashGlyphHashtableKey, SDL_KeyMatchGlyphHashtableKey, SDL_NukeFreeGlyphHashtableKey, nukefn);
 }
 
 bool SDL_InsertIntoGlyphHashTable(SDL_HashTable *table, TTF_Font *font, Uint32 glyph_index, const void *value)
@@ -63,7 +62,7 @@ bool SDL_InsertIntoGlyphHashTable(SDL_HashTable *table, TTF_Font *font, Uint32 g
     GlyphHashtableKey *key = (GlyphHashtableKey *)SDL_calloc(1, sizeof(*key));
     key->font = font;
     key->glyph_index = glyph_index;
-    return SDL_InsertIntoHashTable(table, key, value);
+    return SDL_InsertIntoHashTable(table, key, value, true);
 }
 
 bool SDL_FindInGlyphHashTable(SDL_HashTable *table, TTF_Font *font, Uint32 glyph_index, const void **value)
