@@ -9,6 +9,8 @@ First, you should have the Emscripten SDK installed from:
 
 https://emscripten.org/docs/getting_started/downloads.html
 
+Now make sure you have downloaded the external dependencies. You can do that by running `download.sh` in the external directory.
+
 Create the file CMakeLists.txt
 ```cmake
 cmake_minimum_required(VERSION 3.16)
