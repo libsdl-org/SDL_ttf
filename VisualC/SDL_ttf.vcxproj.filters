@@ -205,6 +205,9 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\SDL3_ttf\SDL_textengine.h">
+      <Filter>Public Headers</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\SDL3_ttf\SDL_ttf.h">
       <Filter>Public Headers</Filter>
     </ClInclude>
