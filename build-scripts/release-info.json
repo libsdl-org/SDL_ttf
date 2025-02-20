@@ -16,6 +16,7 @@
   "source": {
     "checks": [
       "src/SDL_ttf.c",
+      "include/SDL3_ttf/SDL_textengine.h",
       "include/SDL3_ttf/SDL_ttf.h",
       "src/SDL_surface_textengine.c"
     ]
@@ -126,7 +127,7 @@
         "cmake/sdlcpu.cmake"
       ],
       "include/SDL3_ttf": [
-        "include/SDL3_ttf/SDL_ttf.h"
+        "include/SDL3_ttf/*.h"
       ]
     },
     "dependencies": {
