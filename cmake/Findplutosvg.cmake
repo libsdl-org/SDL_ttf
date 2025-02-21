@@ -11,6 +11,7 @@ find_library(plutosvg_LIBRARY
 
 find_path(plutosvg_INCLUDE_PATH
     NAMES plutosvg.h
+    PATH_SUFFIXES plutosvg
     HINTS ${PC_PLUTOSVG_INCLUDEDIR}
 )
 
