@@ -1531,8 +1531,8 @@ static bool Render_Line_TextEngine(TTF_Font *font, TTF_Direction direction, int 
             op->copy.glyph_index = idx;
             op->copy.src.x = glyph_x;
             op->copy.src.y = glyph_y;
-            op->copy.src.w = glyph_width;
-            op->copy.src.h = glyph_rows;
+            op->copy.src.w = glyph_width + 2 * font->outline;
+            op->copy.src.h = glyph_rows + 2 * font->outline;
             op->copy.dst.x = x;
             op->copy.dst.y = y;
             op->copy.dst.w = op->copy.src.w;
@@ -1545,7 +1545,7 @@ static bool Render_Line_TextEngine(TTF_Font *font, TTF_Direction direction, int 
             }
         } else {
             // Use the distance to the next glyph as our bounds width
-            glyph_width = FT_FLOOR(pos->x_advance);
+            glyph_width = FT_FLOOR(pos->x_advance) + 2 * font->outline;
         }
 
         bounds.x = x;
