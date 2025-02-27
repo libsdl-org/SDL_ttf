@@ -4196,7 +4196,7 @@ static bool GetWrappedLines(TTF_Font *font, const char *text, size_t length, TTF
             // The line doesn't include any delimiter that caused it to be wrapped.
             if (CharacterIsNewLine(line->text[line->length - 1])) {
                 --line->length;
-                if (line->text[line->length - 1] == '\r') {
+                if (line->length > 0 && line->text[line->length - 1] == '\r') {
                     --line->length;
                 }
             } else if (i < (numLines - 1) &&
