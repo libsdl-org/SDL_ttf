@@ -417,6 +417,7 @@ if(SDLTTF_INSTALL)
     endif()
 
     configure_package_config_file(cmake/SDL3_ttfConfig.cmake.in SDL3_ttfConfig.cmake
+        NO_SET_AND_CHECK_MACRO
         INSTALL_DESTINATION "${SDLTTF_INSTALL_CMAKEDIR}"
     )
     write_basic_package_version_file("${PROJECT_BINARY_DIR}/SDL3_ttfConfigVersion.cmake"
@@ -445,6 +446,8 @@ if(SDLTTF_INSTALL)
         DESTINATION "${SDLTTF_INSTALL_CMAKEDIR}"
         COMPONENT devel
     )
+
+    export(TARGETS ${sdl3_ttf_target_name} NAMESPACE "SDL3_ttf::" FILE "${sdl3_ttf_target_name}-targets.cmake")
 
     if(SDLTTF_RELOCATABLE)
       file(RELATIVE_PATH SDL_PATH_PREFIX_RELATIVE_TO_PKGCONFIG "${CMAKE_INSTALL_PREFIX}/${SDLTTF_PKGCONFIG_INSTALLDIR}" "${CMAKE_INSTALL_PREFIX}")
