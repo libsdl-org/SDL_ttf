@@ -553,51 +553,6 @@ static void BG_Blended_LCD(const TTF_Image *image, Uint32 *destination, Sint32 s
 
 }
 
-#if TTF_USE_SDF
-
-// Blended Opaque SDF
-static void BG_Blended_Opaque_SDF(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
-{
-    const Uint8 *src    = image->buffer;
-    Uint32      *dst    = destination;
-    Uint32       width  = image->width;
-    Uint32       height = image->rows;
-
-    while (height--) {
-        /* *INDENT-OFF* */
-        DUFFS_LOOP4(
-            *dst++ |= ((Uint32)*src++) << 24;
-        , width);
-        /* *INDENT-ON* */
-        src += srcskip;
-        dst  = (Uint32 *)((Uint8 *)dst + dstskip);
-    }
-}
-
-// Blended non-opaque SDF
-// Note: This doesn't make sense when we're outputting raw SDF values.
-//       We'll just copy the alpha channel as-is for now.
-static void BG_Blended_SDF(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip, Uint8 fg_alpha)
-{
-    const Uint8 *src    = image->buffer;
-    Uint32      *dst    = destination;
-    Uint32       width  = image->width;
-    Uint32       height = image->rows;
-
-    (void)fg_alpha;
-    while (height--) {
-        /* *INDENT-OFF* */
-        DUFFS_LOOP4(
-            *dst++ |= ((Uint32)*src++) << 24;
-        , width);
-        /* *INDENT-ON* */
-        src += srcskip;
-        dst  = (Uint32 *)((Uint8 *)dst + dstskip);
-    }
-}
-
-#endif // TTF_USE_SDF
-
 // Blended Opaque
 static void BG_Blended_Opaque(const TTF_Image *image, Uint32 *destination, Sint32 srcskip, Uint32 dstskip)
 {
@@ -1385,18 +1340,6 @@ BUILD_RENDER_LINE(8_LCD_SP              , 0, 0, 1,    LCD, SUBPIX,              
 #endif
 
 
-#if TTF_USE_SDF
-static int (*Render_Line_SDF_Shaded)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg) = NULL;
-BUILD_RENDER_LINE(SDF_Blended           , 1, 0, 0,  COLOR, 0     ,                       , BG_Blended_SDF ,            )
-BUILD_RENDER_LINE(SDF_Blended_Opaque    , 1, 1, 0,  COLOR, 0     , BG_Blended_Opaque_SDF ,                ,            )
-static int (*Render_Line_SDF_Solid)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg) = NULL;
-static int (*Render_Line_SDF_Shaded_SP)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg) = NULL;
-BUILD_RENDER_LINE(SDF_Blended_SP        , 1, 0, 0,  COLOR, SUBPIX,                       , BG_Blended_SDF ,            )
-BUILD_RENDER_LINE(SDF_Blended_Opaque_SP , 1, 1, 0,  COLOR, SUBPIX, BG_Blended_Opaque_SDF ,                ,            )
-static int (*Render_Line_SDF_LCD)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg) = NULL;
-static int (*Render_Line_SDF_LCD_SP)(TTF_Font *font, SDL_Surface *textbuf, int xstart, int ystart, SDL_Color *fg) = NULL;
-#endif
-
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
@@ -1439,12 +1382,6 @@ static bool Render_Line(const render_mode_t render_mode, int subpixel, TTF_Font 
         } else {                                                                                            \
             return Render_Line_##NAME##_Solid(font, textbuf, xstart, ystart, NULL);                         \
         }
-
-#if TTF_USE_SDF
-    if (font->render_sdf && render_mode == RENDER_BLENDED) {
-        Call_Specific_Render_Line(SDF)
-    }
-#endif
 
 #if defined(HAVE_NEON_INTRINSICS)
     if (hasNEON()) {
@@ -4284,16 +4221,6 @@ static SDL_Surface* TTF_Render_Wrapped_Internal(TTF_Font *font, const char *text
         SDL_SetError("LCD rendering is not available for non-scalable font");
         goto failure;
     }
-
-#if TTF_USE_SDF
-    // Invalid cache if we were using SDF
-    if (render_mode != RENDER_BLENDED) {
-        if (font->render_sdf) {
-            font->render_sdf = false;
-            Flush_Cache(font);
-        }
-    }
-#endif
 
     // Create surface for rendering
     if (fg.a == SDL_ALPHA_TRANSPARENT) {
