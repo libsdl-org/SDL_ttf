@@ -1,7 +1,7 @@
 prefix=@SDL_PKGCONFIG_PREFIX@
 exec_prefix=${prefix}
-libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
-includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+libdir=@LIBDIR_FOR_PKG_CONFIG@
+includedir=@INCLUDEDIR_FOR_PKG_CONFIG@
 
 Name: SDL3_ttf
 Description: ttf library for Simple DirectMedia Layer with FreeType 2 support
