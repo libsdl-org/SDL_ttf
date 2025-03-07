@@ -566,7 +566,7 @@ static void BG_Blended_Opaque_SDF(const TTF_Image *image, Uint32 *destination, S
     while (height--) {
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-            *dst++ = ((Uint32)*src++) << 24;
+            *dst++ |= ((Uint32)*src++) << 24;
         , width);
         /* *INDENT-ON* */
         src += srcskip;
@@ -588,7 +588,7 @@ static void BG_Blended_SDF(const TTF_Image *image, Uint32 *destination, Sint32 s
     while (height--) {
         /* *INDENT-OFF* */
         DUFFS_LOOP4(
-            *dst++ = ((Uint32)*src++) << 24;
+            *dst++ |= ((Uint32)*src++) << 24;
         , width);
         /* *INDENT-ON* */
         src += srcskip;
