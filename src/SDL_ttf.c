@@ -3875,9 +3875,6 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
     if (ystart) {
         *ystart = (miny < 0) ? -miny : 0;
         *ystart += font->outline;
-        if (font->render_sdf && include_spread) {
-            *ystart += DEFAULT_SDF_SPREAD;
-        }
     }
 
     // Fill the bounds rectangle
@@ -3890,6 +3887,9 @@ static bool TTF_Size_Internal(TTF_Font *font, const char *text, size_t length, T
     if (h) {
         *h = (maxy - miny);
         *h += 2 * font->outline;
+        if (font->render_sdf && include_spread) {
+            *h += (2 * DEFAULT_SDF_SPREAD);
+        }
     }
     return true;
 }
