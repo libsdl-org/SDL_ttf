@@ -31,3 +31,5 @@ for filename in *.frag.hlsl; do
         make-header "${filename/.hlsl/.dxil}"
     fi
 done
+
+rm -f *.spv *.msl *.dxil
