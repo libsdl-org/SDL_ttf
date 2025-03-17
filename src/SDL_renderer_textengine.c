@@ -367,7 +367,9 @@ static bool ResolveMissingGlyphs(TTF_RendererTextEngineData *enginedata, AtlasTe
             // Remove this from the missing entries
             --num_missing;
             if (i < num_missing) {
-                SDL_memcpy(&missing[i], &missing[i+1], (num_missing - i) * sizeof(missing[i]));
+                for (int j = i; j < num_missing; ++j) {
+                    missing[j] = missing[j + 1];
+                }
             }
         }
         if (num_missing == 0) {
