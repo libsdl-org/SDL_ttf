@@ -31,6 +31,7 @@
 #include FT_STROKER_H
 #include FT_GLYPH_H
 #include FT_TRUETYPE_IDS_H
+#include FT_TRUETYPE_TABLES_H
 #include FT_IMAGE_H
 
 /* Enable rendering with color
@@ -306,6 +307,7 @@ struct TTF_Font {
 
     // The font style
     TTF_FontStyleFlags style;
+    int weight;
     int outline;
     FT_Stroker stroker;
 
@@ -2129,6 +2131,7 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     // Set the default font style
     if (existing_font) {
         font->style = existing_font->style;
+        font->weight = existing_font->weight;
         font->outline = existing_font->outline;
         font->ft_load_target = existing_font->ft_load_target;
         font->enable_kerning = existing_font->enable_kerning;
@@ -2137,6 +2140,16 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
         font->outline = 0;
         font->ft_load_target = FT_LOAD_TARGET_NORMAL;
         TTF_SetFontKerning(font, true);
+
+        // Retrieve the weight from the OS2 TrueType table
+        const TT_OS2 *os2_table = (const TT_OS2 *)FT_Get_Sfnt_Table(face, FT_SFNT_OS2);
+        if (os2_table != NULL && os2_table->usWeightClass != 0) {
+            font->weight = os2_table->usWeightClass;
+        } else if (face->style_flags & FT_STYLE_FLAG_BOLD) {
+            font->weight = TTF_FONT_WEIGHT_BOLD;
+        } else {
+            font->weight = TTF_FONT_WEIGHT_NORMAL;
+        }
     }
 
 #if TTF_USE_HARFBUZZ
@@ -5792,6 +5805,13 @@ bool TTF_GetFontSDF(const TTF_Font *font)
     TTF_CHECK_FONT(font, false);
 
     return font->render_sdf;
+}
+
+int TTF_GetFontWeight(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, -1);
+
+    return font->weight;
 }
 
 void TTF_SetFontWrapAlignment(TTF_Font *font, TTF_HorizontalAlignment align)
