@@ -27,8 +27,10 @@ set(plutosvg_LINK_OPTIONS "${_plutosvg_link_options}" CACHE STRING "Extra link f
 
 set(plutosvg_LINK_DIRECTORIES "${_plutosvg_link_directories}" CACHE STRING "Extra link flags of plutosvg")
 
+find_package(plutovg)
+
 find_package_handle_standard_args(plutosvg
-    REQUIRED_VARS plutosvg_LIBRARY plutosvg_INCLUDE_PATH
+    REQUIRED_VARS plutosvg_LIBRARY plutosvg_INCLUDE_PATH plutovg_FOUND
 )
 
 if(plutosvg_FOUND)
@@ -38,7 +40,7 @@ if(plutosvg_FOUND)
         IMPORTED_LOCATION "${plutosvg_LIBRARY}"
         INTERFACE_INCLUDE_DIRECTORIES "${plutosvg_INCLUDE_PATH}"
         INTERFACE_COMPILE_OPTIONS "${plutosvg_COMPILE_OPTIONS}"
-        INTERFACE_LINK_LIBRARIES "${plutosvg_LINK_LIBRARIES}"
+        INTERFACE_LINK_LIBRARIES "${plutosvg_LINK_LIBRARIES};plutovg::plutovg"
         INTERFACE_LINK_OPTIONS "${plutosvg_LINK_OPTIONS}"
         INTERFACE_LINK_DIRECTORIES "${plutosvg_LINK_DIRECTORIES}"
     )
