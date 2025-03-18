@@ -351,8 +351,12 @@ if(SDLTTF_PLUTOSVG)
         if(SDLTTF_BUILD_SHARED_LIBS)
             set(plutosvg_link_libraries plutosvg::plutosvg)
         else()
-            set(plutosvg_compile_definitions $<TARGET_PROPERTY:plutosvg::plutosvg,INTERFACE_COMPILE_DEFINITIONS>)
-            set(plutosvg_include_directories $<TARGET_PROPERTY:plutosvg::plutosvg,INTERFACE_INCLUDE_DIRECTORIES>)
+            set(plutosvg_compile_definitions
+                $<TARGET_PROPERTY:plutovg::plutovg,INTERFACE_COMPILE_DEFINITIONS>
+                $<TARGET_PROPERTY:plutosvg::plutosvg,INTERFACE_COMPILE_DEFINITIONS>)
+            set(plutosvg_include_directories
+                $<TARGET_PROPERTY:plutovg::plutovg,INTERFACE_INCLUDE_DIRECTORIES>
+                $<TARGET_PROPERTY:plutosvg::plutosvg,INTERFACE_INCLUDE_DIRECTORIES>)
             set(plutosvg_sources $<TARGET_OBJECTS:plutosvg> $<TARGET_OBJECTS:plutovg>)
         endif()
     else()
@@ -436,6 +440,7 @@ if(SDLTTF_INSTALL)
               cmake/PkgConfigHelper.cmake
               cmake/Findharfbuzz.cmake
               cmake/Findplutosvg.cmake
+              cmake/Findplutovg.cmake
           DESTINATION "${SDLTTF_INSTALL_CMAKEDIR}"
           COMPONENT devel
       )
