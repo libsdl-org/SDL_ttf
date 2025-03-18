@@ -15,6 +15,8 @@ find_path(plutovg_INCLUDE_PATH
     HINTS ${PC_PLUTOVG_INCLUDEDIR}
 )
 
+find_library(PLUTOVG_MATH_LIBRARY NAMES m)
+
 if(PC_PLUTOVG_FOUND)
     get_flags_from_pkg_config("${plutovg_LIBRARY}" "PC_PLUTOVG" "_plutovg")
 endif()
@@ -42,5 +44,8 @@ if(plutovg_FOUND)
         INTERFACE_LINK_OPTIONS "${plutovg_LINK_OPTIONS}"
         INTERFACE_LINK_DIRECTORIES "${plutovg_LINK_DIRECTORIES}"
     )
+    if(PLUTOVG_MATH_LIBRARY)
+      set_property(TARGET plutovg::plutovg APPEND PROPERTY INTERFACE_LINK_LIBRARIES "${PLUTOVG_MATH_LIBRARY}")
+    endif()
   endif()
 endif()
