@@ -445,7 +445,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *
  * SDL_ttf. A combination of these flags can be used with functions that set
  * or query font style, such as TTF_SetFontStyle or TTF_GetFontStyle.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This datatype is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_SetFontStyle
  * \sa TTF_GetFontStyle
@@ -666,6 +666,30 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSDF(TTF_Font *font, bool enabled);
  * \sa TTF_SetFontSDF
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetFontSDF(const TTF_Font *font);
+
+/**
+ * Query a font's weight, in terms of the lightness/heaviness of the strokes.
+ *
+ * \param font the font to query.
+ * \returns the font's current weight
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.4.0.
+ */
+extern SDL_DECLSPEC int SDLCALL TTF_GetFontWeight(const TTF_Font *font);
+
+#define TTF_FONT_WEIGHT_THIN        100 /**< Thin (100) named font weight value */
+#define TTF_FONT_WEIGHT_EXTRA_LIGHT 200 /**< ExtraLight (200) named font weight value */
+#define TTF_FONT_WEIGHT_LIGHT       300 /**< Light (300) named font weight value */
+#define TTF_FONT_WEIGHT_NORMAL      400 /**< Normal (400) named font weight value */
+#define TTF_FONT_WEIGHT_MEDIUM      500 /**< Medium (500) named font weight value */
+#define TTF_FONT_WEIGHT_SEMI_BOLD   600 /**< SemiBold (600) named font weight value */
+#define TTF_FONT_WEIGHT_BOLD        700 /**< Bold (700) named font weight value */
+#define TTF_FONT_WEIGHT_EXTRA_BOLD  800 /**< ExtraBold (800) named font weight value */
+#define TTF_FONT_WEIGHT_BLACK       900 /**< Black (900) named font weight value */
+#define TTF_FONT_WEIGHT_EXTRA_BLACK 950 /**< ExtraBlack (950) named font weight value */
 
 /**
  * The horizontal alignment used when rendering wrapped text.
