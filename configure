@@ -13413,11 +13413,11 @@ if test x$ac_prog_cxx_stdcxx = xno
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CXX option to enable C++11 features" >&5
 printf %s "checking for $CXX option to enable C++11 features... " >&6; }
-if test ${ac_cv_prog_cxx_11+y}
+if test ${ac_cv_prog_cxx_cxx11+y}
 then :
   printf %s "(cached) " >&6
 else $as_nop
-  ac_cv_prog_cxx_11=no
+  ac_cv_prog_cxx_cxx11=no
 ac_save_CXX=$CXX
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -13459,11 +13459,11 @@ if test x$ac_prog_cxx_stdcxx = xno
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CXX option to enable C++98 features" >&5
 printf %s "checking for $CXX option to enable C++98 features... " >&6; }
-if test ${ac_cv_prog_cxx_98+y}
+if test ${ac_cv_prog_cxx_cxx98+y}
 then :
   printf %s "(cached) " >&6
 else $as_nop
-  ac_cv_prog_cxx_98=no
+  ac_cv_prog_cxx_cxx98=no
 ac_save_CXX=$CXX
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -13783,11 +13783,11 @@ if test x$ac_prog_cxx_stdcxx = xno
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CXX option to enable C++11 features" >&5
 printf %s "checking for $CXX option to enable C++11 features... " >&6; }
-if test ${ac_cv_prog_cxx_11+y}
+if test ${ac_cv_prog_cxx_cxx11+y}
 then :
   printf %s "(cached) " >&6
 else $as_nop
-  ac_cv_prog_cxx_11=no
+  ac_cv_prog_cxx_cxx11=no
 ac_save_CXX=$CXX
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -13829,11 +13829,11 @@ if test x$ac_prog_cxx_stdcxx = xno
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CXX option to enable C++98 features" >&5
 printf %s "checking for $CXX option to enable C++98 features... " >&6; }
-if test ${ac_cv_prog_cxx_98+y}
+if test ${ac_cv_prog_cxx_cxx98+y}
 then :
   printf %s "(cached) " >&6
 else $as_nop
-  ac_cv_prog_cxx_98=no
+  ac_cv_prog_cxx_cxx98=no
 ac_save_CXX=$CXX
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -19963,9 +19963,20 @@ printf "%s\n" "#define ALIGNOF_STRUCT_CHAR__ $ac_cv_alignof_struct_char__" >>con
 		case "$host" in
 		  *-*-mingw*) hb_os_win32=yes
 			CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
-			# for uniscribe support:
+			# for GDI and uniscribe support:
 			TTF_LIBS="$TTF_LIBS -lusp10 -lgdi32 -lrpcrt4"
 			PC_LIBS="$PC_LIBS -lusp10 -lgdi32 -lrpcrt4"
+		  ;;
+		  *-*-darwin*)
+			# for coretext support:
+			TTF_LIBS="$TTF_LIBS -framework ApplicationServices"
+			PC_LIBS="$PC_LIBS -framework ApplicationServices"
+		  ;;
+		  *-ios-*)
+			# for coretext support:
+			# On iOS CoreText and CoreGraphics are stand-alone frameworks
+			TTF_LIBS="$TTF_LIBS -framework CoreText -framework CoreGraphics -framework CoreFoundation"
+			PC_LIBS="$PC_LIBS -framework CoreText -framework CoreGraphics -framework CoreFoundation"
 		  ;;
 		  *)
 			# compiler might optimize sinf+cosf into sincosf
