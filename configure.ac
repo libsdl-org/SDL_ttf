@@ -243,9 +243,20 @@ if test x$enable_harfbuzz = xyes; then
 		case "$host" in
 		  *-*-mingw*) hb_os_win32=yes
 			CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
-			# for uniscribe support:
+			# for GDI and uniscribe support:
 			TTF_LIBS="$TTF_LIBS -lusp10 -lgdi32 -lrpcrt4"
 			PC_LIBS="$PC_LIBS -lusp10 -lgdi32 -lrpcrt4"
+		  ;;
+		  *-*-darwin*)
+			# for coretext support:
+			TTF_LIBS="$TTF_LIBS -framework ApplicationServices"
+			PC_LIBS="$PC_LIBS -framework ApplicationServices"
+		  ;;
+		  *-ios-*)
+			# for coretext support:
+			# On iOS CoreText and CoreGraphics are stand-alone frameworks
+			TTF_LIBS="$TTF_LIBS -framework CoreText -framework CoreGraphics -framework CoreFoundation"
+			PC_LIBS="$PC_LIBS -framework CoreText -framework CoreGraphics -framework CoreFoundation"
 		  ;;
 		  *)
 			# compiler might optimize sinf+cosf into sincosf
