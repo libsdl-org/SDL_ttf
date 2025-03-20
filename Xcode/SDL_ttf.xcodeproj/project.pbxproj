@@ -109,6 +109,9 @@
 		F384BCD4261EC2BE0028A248 /* type42.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCD3261EC2BE0028A248 /* type42.c */; };
 		F384BCDF261EC2CF0028A248 /* winfnt.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCDE261EC2CF0028A248 /* winfnt.c */; };
 		F384BCF2261EC5130028A248 /* ftcache.c in Sources */ = {isa = PBXBuildFile; fileRef = F384BCF1261EC5130028A248 /* ftcache.c */; };
+		F3CD08932D8E254E00B1F9D2 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3CD08902D8E254E00B1F9D2 /* CoreText.framework */; };
+		F3CD08942D8E254E00B1F9D2 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3CD08912D8E254E00B1F9D2 /* CoreFoundation.framework */; };
+		F3CD08952D8E254E00B1F9D2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3CD08922D8E254E00B1F9D2 /* CoreGraphics.framework */; };
 		F3F7BDF72CB6FD6700C984AF /* SDL_hashtable.h in Headers */ = {isa = PBXBuildFile; fileRef = F3F7BDF12CB6FD6700C984AF /* SDL_hashtable.h */; };
 		F3F7BDF82CB6FD6700C984AF /* stb_rect_pack.h in Headers */ = {isa = PBXBuildFile; fileRef = F3F7BDF62CB6FD6700C984AF /* stb_rect_pack.h */; };
 		F3F7BDF92CB6FD6700C984AF /* SDL_renderer_textengine.c in Sources */ = {isa = PBXBuildFile; fileRef = F3F7BDF32CB6FD6700C984AF /* SDL_renderer_textengine.c */; };
@@ -205,6 +208,9 @@
 		F384BCD3261EC2BE0028A248 /* type42.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = type42.c; path = ../external/freetype/src/type42/type42.c; sourceTree = "<group>"; };
 		F384BCDE261EC2CF0028A248 /* winfnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = winfnt.c; path = ../external/freetype/src/winfonts/winfnt.c; sourceTree = "<group>"; };
 		F384BCF1261EC5130028A248 /* ftcache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ftcache.c; path = ../external/freetype/src/cache/ftcache.c; sourceTree = "<group>"; };
+		F3CD08902D8E254E00B1F9D2 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		F3CD08912D8E254E00B1F9D2 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		F3CD08922D8E254E00B1F9D2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F3E1F8752A79462A00AC76D3 /* config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
 		F3F7BDF12CB6FD6700C984AF /* SDL_hashtable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_hashtable.h; sourceTree = "<group>"; };
 		F3F7BDF22CB6FD6700C984AF /* SDL_hashtable.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_hashtable.c; sourceTree = "<group>"; };
@@ -220,7 +226,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3CD08952D8E254E00B1F9D2 /* CoreGraphics.framework in Frameworks */,
+				F3CD08932D8E254E00B1F9D2 /* CoreText.framework in Frameworks */,
 				F3412A342D4C8DBF00D6C2B7 /* SDL3.framework in Frameworks */,
+				F3CD08942D8E254E00B1F9D2 /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,6 +299,9 @@
 		BE48FD8107AFA26B00BB41DA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F3CD08912D8E254E00B1F9D2 /* CoreFoundation.framework */,
+				F3CD08922D8E254E00B1F9D2 /* CoreGraphics.framework */,
+				F3CD08902D8E254E00B1F9D2 /* CoreText.framework */,
 				F3412A332D4C8DBF00D6C2B7 /* SDL3.framework */,
 			);
 			name = Frameworks;
