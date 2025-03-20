@@ -5755,7 +5755,7 @@ void TTF_SetFontHinting(TTF_Font *font, TTF_HintingFlags hinting)
 
 TTF_HintingFlags TTF_GetFontHinting(const TTF_Font *font)
 {
-    TTF_CHECK_FONT(font, -1);
+    TTF_CHECK_FONT(font, TTF_HINTING_INVALID);
 
     if (font->ft_load_target == FT_LOAD_TARGET_LIGHT) {
         if (font->render_subpixel == 0) {
