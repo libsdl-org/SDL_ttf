@@ -242,15 +242,35 @@ if(SDLTTF_HARFBUZZ)
     set(harfbuzz_include_directories)
     if(SDLTTF_HARFBUZZ_VENDORED)
         message(STATUS "${PROJECT_NAME}: Using vendored harfbuzz library")
+        # HB_BUILD_SUBSET variable is used by harfbuzz
+        set(HB_BUILD_SUBSET OFF CACHE BOOL "build harfbuzz-subset" FORCE)
         # HB_BUILD_UTILS variable is used by harfbuzz
         set(HB_BUILD_UTILS OFF CACHE BOOL "harfbuzz build utils" FORCE)
         # SKIP_INSTALL_LIBRARIES variable is used by harfbuzz
         set(SKIP_INSTALL_LIBRARIES ON CACHE BOOL "harfbuzz install option" FORCE)
         # HB_HAVE_FREETYPE variable is used by harfbuzz
         set(HB_HAVE_FREETYPE ${SDLTTF_FREETYPE} CACHE BOOL "harfbuzz freetype helpers" FORCE)
+        # target-specific harfbuzz backends :
+        if(APPLE)
+            # Minimum version for $<LINK_LIBRARY:feature,library-list>
+            cmake_minimum_required(VERSION 3.24)
+            # HB_HAVE_CORETEXT variable is used by harfbuzz
+            set(HB_HAVE_CORETEXT ON CACHE BOOL "harfbuzz coretext backend" FORCE)
+        endif()
+        if(WIN32)
+            # HB_HAVE_UNISCRIBE variable is used by harfbuzz
+            set(HB_HAVE_UNISCRIBE ON CACHE BOOL "harfbuzz uniscribe backend" FORCE)
+            # HB_HAVE_GDI variable is used by harfbuzz
+            set(HB_HAVE_GDI ON CACHE BOOL "harfbuzz windows backend" FORCE)
+        endif()
+        ## HACK: HACK: These fail detection, we rely on our own vendored FreeType having them ##
+        set(HAVE_FT_GET_VAR_BLEND_COORDINATES 1 CACHE BOOL "FT_Get_Var_Blend_Coordinates" FORCE)
+        set(HAVE_FT_SET_VAR_BLEND_COORDINATES 1 CACHE BOOL "FT_Set_Var_Blend_Coordinates" FORCE)
+        set(HAVE_FT_DONE_MM_VAR 1 CACHE BOOL "FT_Done_MM_Var" FORCE)
+        set(HAVE_FT_GET_TRANSFORM 1 CACHE BOOL "FT_Get_Transform" FORCE)
         sdl_check_project_in_subfolder(external/harfbuzz harfbuzz SDLTTF_VENDORED)
         add_subdirectory(external/harfbuzz EXCLUDE_FROM_ALL)
-        # harfbuzz is a c++ project, enable c++ here to ensure linking to the c++ standard library
+        # harfbuzz is a c++ project, enable c++ here to ensure linking to the c++ standard library.
         enable_language(CXX)
         if(NOT TARGET harfbuzz::harfbuzz)
             add_library(harfbuzz::harfbuzz ALIAS harfbuzz)
@@ -261,9 +281,21 @@ if(SDLTTF_HARFBUZZ)
         else()
             set(harfbuzz_sources $<TARGET_OBJECTS:harfbuzz::harfbuzz>)
             set(harfbuzz_include_directories $<TARGET_PROPERTY:harfbuzz::harfbuzz,INTERFACE_INCLUDE_DIRECTORIES>)
-            if(NOT MSVC)
+            if(WIN32)
+                # for uniscribe and gdi backends :
+                list(APPEND harfbuzz_link_libraries usp10 gdi32 rpcrt4)
+                list(APPEND PC_LIBS -lusp10 -lgdi32 -lrpcrt4)
+            elseif(APPLE)
+                # for coretext backend :
+                list(APPEND harfbuzz_link_libraries "$<LINK_LIBRARY:FRAMEWORK,CoreText>")
+                list(APPEND harfbuzz_link_libraries "$<LINK_LIBRARY:FRAMEWORK,CoreGraphics>")
+                list(APPEND harfbuzz_link_libraries "$<LINK_LIBRARY:FRAMEWORK,CoreFoundation>")
+                list(APPEND PC_LIBS "-Wl,-framework,CoreText")
+                list(APPEND PC_LIBS "-Wl,-framework,CoreGraphics")
+                list(APPEND PC_LIBS "-Wl,-framework,CoreFoundation")
+            else()
                 find_package(Threads)
-                set(harfbuzz_link_librarise Threads::Threads)
+                set(harfbuzz_link_libraries Threads::Threads)
             endif()
         endif()
     else()
