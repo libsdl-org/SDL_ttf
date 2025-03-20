@@ -558,7 +558,8 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
  */
 typedef enum TTF_HintingFlags
 {
-    TTF_HINTING_NORMAL = 0,     /**< Normal hinting applies standard grid-fitting. */
+    TTF_HINTING_INVALID = -1,
+    TTF_HINTING_NORMAL,         /**< Normal hinting applies standard grid-fitting. */
     TTF_HINTING_LIGHT,          /**< Light hinting applies subtle adjustments to improve rendering. */
     TTF_HINTING_MONO,           /**< Monochrome hinting adjusts the font for better rendering at lower resolutions. */
     TTF_HINTING_NONE,           /**< No hinting, the font is rendered without any grid-fitting. */
@@ -615,7 +616,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetNumFontFaces(const TTF_Font *font);
  * - `TTF_HINTING_LIGHT_SUBPIXEL` (available in SDL_ttf 3.0.0 and later)
  *
  * \param font the font to query.
- * \returns the font's current hinter value.
+ * \returns the font's current hinter value, or TTF_HINTING_INVALID if the font is invalid.
  *
  * \threadsafety It is safe to call this function from any thread.
  *
