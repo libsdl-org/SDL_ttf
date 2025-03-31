@@ -1,3 +1,6 @@
+3.2.2:
+ * Added TTF_GetFontWeight()
+
 3.2.0:
  * Updated for SDL 3.0, see docs/README-migration.md for details
  * Added the concept of a text object and text engine, which is able to efficiently render text for a variety of output methods
