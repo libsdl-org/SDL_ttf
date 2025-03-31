@@ -671,7 +671,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontSDF(const TTF_Font *font);
  * Query a font's weight, in terms of the lightness/heaviness of the strokes.
  *
  * \param font the font to query.
- * \returns the font's current weight
+ * \returns the font's current weight.
  *
  * \threadsafety This function should be called on the thread that created the
  *               font.
