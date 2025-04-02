@@ -676,7 +676,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontSDF(const TTF_Font *font);
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.4.0.
+ * \since This function is available since SDL_ttf 3.2.2.
  */
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontWeight(const TTF_Font *font);
 
