@@ -14,11 +14,21 @@
     "re_micro": "^#define SDL_TTF_MICRO_VERSION\\s+([0-9]+)$"
   },
   "source": {
+    "extra-repos": [
+      "external/freetype",
+      "external/harfbuzz",
+      "external/plutovg",
+      "external/plutosvg"
+    ],
     "checks": [
       "src/SDL_ttf.c",
       "include/SDL3_ttf/SDL_textengine.h",
       "include/SDL3_ttf/SDL_ttf.h",
-      "src/SDL_surface_textengine.c"
+      "src/SDL_surface_textengine.c",
+      "external/freetype/include/freetype/freetype.h",
+      "external/harfbuzz/src/hb.h",
+      "external/plutovg/include/plutovg.h",
+      "external/plutosvg/source/plutosvg.h"
     ]
   },
   "dmg": {
