@@ -1158,10 +1158,15 @@ int Render_Line_##NAME(TTF_Font *font, SDL_Surface *textbuf, int xstart, int yst
             int remainder;                                                                                              \
             Uint8 *saved_buffer = image->buffer;                                                                        \
             int saved_width = image->width;                                                                             \
-            image->buffer += alignment;                                                                                 \
+                                                                                                                        \
             /* Position updated after glyph rendering */                                                                \
             x = xstart + FT_FLOOR(x) + image->left;                                                                     \
             y = ystart + FT_FLOOR(y) - image->top;                                                                      \
+                                                                                                                        \
+            if (image->buffer == NULL) {                                                                                \
+                continue;                                                                                               \
+            }                                                                                                           \
+            image->buffer += alignment;                                                                                 \
                                                                                                                         \
             /* Make sure glyph is inside textbuf */                                                                     \
             above_w = x + image->width - textbuf->w;                                                                    \
