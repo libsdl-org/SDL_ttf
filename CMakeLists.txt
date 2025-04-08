@@ -570,7 +570,7 @@ if(SDLTTF_SAMPLES)
 
         if(SDLTTF_SAMPLES_INSTALL)
             install(TARGETS ${prog}
-                RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+                RUNTIME DESTINATION "${CMAKE_INSTALL_LIBEXECDIR}/installed-tests/SDL3_ttf"
             )
         endif()
     endforeach()
