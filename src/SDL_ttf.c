@@ -2950,11 +2950,11 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
                         if (mono) {
                             pixmap[col] |= pixmap[col-1];
                         } else {
-                            int pixel = (pixmap[col] + pixmap[col-1]);
-                            if (pixel > NUM_GRAYS - 1) {
-                                pixel = NUM_GRAYS - 1;
+                            int pixelvalue = (pixmap[col] + pixmap[col-1]);
+                            if (pixelvalue > NUM_GRAYS - 1) {
+                                pixelvalue = NUM_GRAYS - 1;
                             }
-                            pixmap[col] = (Uint8) pixel;
+                            pixmap[col] = (Uint8) pixelvalue;
                         }
                     }
                 }
