@@ -187,11 +187,11 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  * - `TTF_PROP_FONT_CREATE_FILENAME_STRING`: the font file to open, if an
  *   SDL_IOStream isn't being used. This is required if
  *   `TTF_PROP_FONT_CREATE_IOSTREAM_POINTER` and
- *   `TTF_PROP_FONT_CREATE_EXISTING_FONT` aren't set.
+ *   `TTF_PROP_FONT_CREATE_EXISTING_FONT_POINTER` aren't set.
  * - `TTF_PROP_FONT_CREATE_IOSTREAM_POINTER`: an SDL_IOStream containing the
  *   font to be opened. This should not be closed until the font is closed.
  *   This is required if `TTF_PROP_FONT_CREATE_FILENAME_STRING` and
- *   `TTF_PROP_FONT_CREATE_EXISTING_FONT` aren't set.
+ *   `TTF_PROP_FONT_CREATE_EXISTING_FONT_POINTER` aren't set.
  * - `TTF_PROP_FONT_CREATE_IOSTREAM_OFFSET_NUMBER`: the offset in the iostream
  *   for the beginning of the font, defaults to 0.
  * - `TTF_PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN`: true if closing the
@@ -208,7 +208,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  * - `TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER`: the vertical DPI to use for
  *   font rendering, defaults to `TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER`
  *   if set, or 72 otherwise.
- * - `TTF_PROP_FONT_CREATE_EXISTING_FONT`: an optional TTF_Font that, if set,
+ * - `TTF_PROP_FONT_CREATE_EXISTING_FONT_POINTER`: an optional TTF_Font that, if set,
  *   will be used as the font data source and the initial size and style of
  *   the new font.
  *
@@ -232,7 +232,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_Properties
 #define TTF_PROP_FONT_CREATE_FACE_NUMBER                "SDL_ttf.font.create.face"
 #define TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER      "SDL_ttf.font.create.hdpi"
 #define TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER        "SDL_ttf.font.create.vdpi"
-#define TTF_PROP_FONT_CREATE_EXISTING_FONT              "SDL_ttf.font.create.existing_font"
+#define TTF_PROP_FONT_CREATE_EXISTING_FONT_POINTER      "SDL_ttf.font.create.existing_font"
 
 /**
  * Create a copy of an existing font.
@@ -1813,9 +1813,9 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngine(SDL_Re
  *
  * These are the supported properties:
  *
- * - `TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER`: the renderer to use for
+ * - `TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER_POINTER`: the renderer to use for
  *   creating textures and drawing text
- * - `TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE`: the size of the
+ * - `TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER`: the size of the
  *   texture atlas
  *
  * \param props the properties to use.
@@ -1833,8 +1833,8 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngine(SDL_Re
  */
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngineWithProperties(SDL_PropertiesID props);
 
-#define TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER                 "SDL_ttf.renderer_text_engine.create.renderer"
-#define TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE       "SDL_ttf.renderer_text_engine.create.atlas_texture_size"
+#define TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER_POINTER          "SDL_ttf.renderer_text_engine.create.renderer"
+#define TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER "SDL_ttf.renderer_text_engine.create.atlas_texture_size"
 
 /**
  * Draw text to an SDL renderer.
@@ -1904,9 +1904,9 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngine(SDL_GPUDevi
  *
  * These are the supported properties:
  *
- * - `TTF_PROP_GPU_TEXT_ENGINE_DEVICE`: the SDL_GPUDevice to use for creating
+ * - `TTF_PROP_GPU_TEXT_ENGINE_DEVICE_POINTER`: the SDL_GPUDevice to use for creating
  *   textures and drawing text.
- * - `TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE`: the size of the texture
+ * - `TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER`: the size of the texture
  *   atlas
  *
  * \param props the properties to use.
@@ -1924,8 +1924,8 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngine(SDL_GPUDevi
  */
 extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngineWithProperties(SDL_PropertiesID props);
 
-#define TTF_PROP_GPU_TEXT_ENGINE_DEVICE                   "SDL_ttf.gpu_text_engine.create.device"
-#define TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE       "SDL_ttf.gpu_text_engine.create.atlas_texture_size"
+#define TTF_PROP_GPU_TEXT_ENGINE_DEVICE_POINTER            "SDL_ttf.gpu_text_engine.create.device"
+#define TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER "SDL_ttf.gpu_text_engine.create.atlas_texture_size"
 
 /**
  * Draw sequence returned by TTF_GetGPUTextDrawData
