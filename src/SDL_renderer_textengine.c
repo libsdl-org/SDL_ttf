@@ -862,14 +862,14 @@ TTF_TextEngine *TTF_CreateRendererTextEngine(SDL_Renderer *renderer)
         SDL_SetError("Failed to create renderer text engine.");
         return NULL;
     }
-    SDL_SetPointerProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER, renderer);
+    SDL_SetPointerProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER_POINTER, renderer);
 
     return TTF_CreateRendererTextEngineWithProperties(props);
 }
 
 TTF_TextEngine *TTF_CreateRendererTextEngineWithProperties(SDL_PropertiesID props)
 {
-    SDL_Renderer *renderer = SDL_GetPointerProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER, NULL);
+    SDL_Renderer *renderer = SDL_GetPointerProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER_POINTER, NULL);
     if (!renderer) {
         SDL_SetError("Failed to create renderer text engine: Invalid renderer.");
         return NULL;
@@ -881,7 +881,7 @@ TTF_TextEngine *TTF_CreateRendererTextEngineWithProperties(SDL_PropertiesID prop
     }
 
     int max_atlas_texture_size = (int)SDL_GetNumberProperty(SDL_GetRendererProperties(renderer), SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0);
-    int atlas_texture_size = (int)SDL_GetNumberProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE, 1024);
+    int atlas_texture_size = (int)SDL_GetNumberProperty(props, TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER, 1024);
     if (max_atlas_texture_size && atlas_texture_size > max_atlas_texture_size) {
         atlas_texture_size = max_atlas_texture_size;
     }
