@@ -208,9 +208,9 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  * - `TTF_PROP_FONT_CREATE_VERTICAL_DPI_NUMBER`: the vertical DPI to use for
  *   font rendering, defaults to `TTF_PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER`
  *   if set, or 72 otherwise.
- * - `TTF_PROP_FONT_CREATE_EXISTING_FONT_POINTER`: an optional TTF_Font that, if set,
- *   will be used as the font data source and the initial size and style of
- *   the new font.
+ * - `TTF_PROP_FONT_CREATE_EXISTING_FONT_POINTER`: an optional TTF_Font that,
+ *   if set, will be used as the font data source and the initial size and
+ *   style of the new font.
  *
  * \param props the properties to use.
  * \returns a valid TTF_Font, or NULL on failure; call SDL_GetError() for more
@@ -1815,8 +1815,8 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngine(SDL_Re
  *
  * - `TTF_PROP_RENDERER_TEXT_ENGINE_RENDERER_POINTER`: the renderer to use for
  *   creating textures and drawing text
- * - `TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER`: the size of the
- *   texture atlas
+ * - `TTF_PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER`: the size of
+ *   the texture atlas
  *
  * \param props the properties to use.
  * \returns a TTF_TextEngine object or NULL on failure; call SDL_GetError()
@@ -1904,10 +1904,10 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngine(SDL_GPUDevi
  *
  * These are the supported properties:
  *
- * - `TTF_PROP_GPU_TEXT_ENGINE_DEVICE_POINTER`: the SDL_GPUDevice to use for creating
- *   textures and drawing text.
- * - `TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER`: the size of the texture
- *   atlas
+ * - `TTF_PROP_GPU_TEXT_ENGINE_DEVICE_POINTER`: the SDL_GPUDevice to use for
+ *   creating textures and drawing text.
+ * - `TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER`: the size of the
+ *   texture atlas
  *
  * \param props the properties to use.
  * \returns a TTF_TextEngine object or NULL on failure; call SDL_GetError()
