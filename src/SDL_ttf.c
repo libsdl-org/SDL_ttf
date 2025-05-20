@@ -3857,11 +3857,71 @@ bool TTF_GetStringSize(TTF_Font *font, const char *text, size_t length, int *w, 
     return TTF_Size_Internal(font, text, length, font->direction, font->script, w, h, NULL, NULL, NO_MEASUREMENT, true);
 }
 
+#if TTF_USE_HARFBUZZ
+/* Use the advance data to make a fast, ballpark estimate as to how many characters can fit in the given width. */
+static bool MeasureStringEstimate(TTF_Font *font, const char *text, size_t length, int max_width, size_t *measured_length)
+{
+    const char *start = text;
+
+    int width = 0;
+    while (length > 0) {
+        Uint32 c = SDL_StepUTF8(&text, &length);
+        if (c == 0) {
+            break;
+        }
+        if (c == SDL_INVALID_UNICODE_CODEPOINT || c == UNICODE_BOM_NATIVE || c == UNICODE_BOM_SWAPPED) {
+            continue;
+        }
+        c_glyph *glyph = NULL;
+        if (Find_GlyphMetrics(font, c, &glyph, true)) {
+            width += glyph->advance;
+            if (width > max_width) {
+                break;
+            }
+        }
+    }
+
+    *measured_length = (size_t)(text - start);
+    return true;
+}
+#endif
+
 bool TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int max_width, int *measured_width, size_t *measured_length)
 {
     if (!length && text) {
         length = SDL_strlen(text);
     }
+
+#if TTF_USE_HARFBUZZ
+    // If the string appears to be very much longer than the width (e.g. if there are about as many characters as pixels),
+    // then don't make harfbuzz shape the whole thing. Instead, give harfbuzz a prefix of the full string, using font metrics
+    // to make a rough guess as to how much of string is enough. (If the prefix comes up short, then retry with a longer prefix.)
+    if (text && font && length > (size_t)(2 * max_width)) {
+        size_t prefix_length = 0;
+        int extended_width = 2 * max_width;
+        for (int doubling = 0; prefix_length < length; ++doubling) {
+            size_t added_length;
+            if (!MeasureStringEstimate(font, text + prefix_length, length - prefix_length, extended_width, &added_length)) {
+                break;
+            }
+            prefix_length += added_length;
+            size_t n;
+            if (!TTF_Size_Internal(font, text, prefix_length, font->direction, font->script, NULL, NULL, NULL, NULL, true, max_width, measured_width, &n, true)) {
+                return false;
+            }
+            if (n < prefix_length || n == length) {
+                if (measured_length) {
+                    *measured_length = n;
+                }
+                return true;
+            }
+            if (doubling > 0) {
+                extended_width += max_width << doubling;
+            }
+        }
+    }
+#endif
+
     return TTF_Size_Internal(font, text, length, font->direction, font->script, NULL, NULL, NULL, NULL, true, max_width, measured_width, measured_length, true);
 }
 
