@@ -270,6 +270,8 @@ if test x$enable_harfbuzz = xyes; then
 		    fi
 		  ;;
 		esac
+		# Hide inline methods
+		CXXFLAGS="$CXXFLAGS -fvisibility-inlines-hidden"
 		# silence a lot of harfbuzz warnings:
 		CXXFLAGS="$CXXFLAGS -Wno-unused-result"
 		# prevent linking to libstdc++ :

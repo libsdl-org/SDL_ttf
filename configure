@@ -19990,6 +19990,8 @@ printf "%s\n" "#define ALIGNOF_STRUCT_CHAR__ $ac_cv_alignof_struct_char__" >>con
 		    fi
 		  ;;
 		esac
+		# Hide inline methods
+		CXXFLAGS="$CXXFLAGS -fvisibility-inlines-hidden"
 		# silence a lot of harfbuzz warnings:
 		CXXFLAGS="$CXXFLAGS -Wno-unused-result"
 		# prevent linking to libstdc++ :
