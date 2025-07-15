@@ -467,7 +467,7 @@ static void BG_Blended_Color(const TTF_Image *image, Uint32 *destination, Sint32
             DUFFS_LOOP4(
                 SDL_memcpy(dst, src, sizeof(Uint32));
                 src += sizeof(Uint32);
-                dst += sizeof(Uint32);
+                dst += 1;
             , width);
             /* *INDENT-ON* */
             src += srcskip;
