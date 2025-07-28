@@ -30,6 +30,8 @@ add_executable(hello WIN32 hello.c)
 # Link to the actual SDL3 library.
 target_link_libraries(hello PRIVATE SDL3_ttf::SDL3_ttf SDL3::SDL3)
 ```
+Run [external/download.sh](../external/download.sh) or [external/Get-GitModules.ps1](../external/Get-GitModules.ps1)
+
 
 Build:
 ```sh
