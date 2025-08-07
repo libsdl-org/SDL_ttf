@@ -96,7 +96,6 @@ add_library(SDL2_ttf
     SDL_ttf.h
 )
 add_library(SDL2_ttf::${sdl2_ttf_export_name} ALIAS SDL2_ttf)
-sdl_add_platform_link_options(SDL2_ttf)
 target_include_directories(SDL2_ttf PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>"
@@ -437,7 +436,6 @@ if(SDL2TTF_SAMPLES)
             target_link_libraries(${prog} PRIVATE SDL2::SDL2main)
         endif()
         target_link_libraries(${prog} PRIVATE ${sdl2_target_name})
-        sdl_add_platform_link_options(${prog})
     endforeach()
 endif()
 
