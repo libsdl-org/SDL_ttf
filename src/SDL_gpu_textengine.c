@@ -981,6 +981,7 @@ TTF_TextEngine *TTF_CreateGPUTextEngineWithProperties(SDL_PropertiesID props)
     int atlas_texture_size = (int)SDL_GetNumberProperty(props, TTF_PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE_NUMBER, 1024);
     if (atlas_texture_size <= 0) {
         SDL_SetError("Failed to create GPU text engine: Invalid texture atlas size.");
+        SDL_free(engine);
         return NULL;
     }
 
