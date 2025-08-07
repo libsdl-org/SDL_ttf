@@ -44,10 +44,6 @@ LOCAL_SHARED_LIBRARIES := SDL2
 
 LOCAL_EXPORT_C_INCLUDES += $(LOCAL_C_INCLUDES)
 
-# https://developer.android.com/guide/practices/page-sizes
-LOCAL_LDFLAGS += "-Wl,-z,max-page-size=16384"
-LOCAL_LDFLAGS += "-Wl,-z,common-page-size=16384"
-
 include $(BUILD_SHARED_LIBRARY)
 
 ###########################
