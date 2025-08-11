@@ -2314,6 +2314,22 @@ extern SDL_DEPRECATED DECLSPEC int SDLCALL TTF_SetScript(int script); /* hb_scri
 extern DECLSPEC int SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction);
 
 /**
+ * Set additional space in pixels between any two rendered characters.
+ * The spacing value is applied uniformly after each character,
+ * in addition to the normal glyph's advance.
+ * 
+ * Spacing may be a negative value, in which case it will reduce the
+ * distance instead.
+ *
+ * \param font the font to specify a direction for.
+ * \param char_spacing the new spacing value.
+ * \returns 0 on success, or -1 on error.
+ *
+ * \since This function is available since SDL_ttf 2.26.0.
+ */
+extern DECLSPEC int SDLCALL TTF_SetFontCharSpacing(TTF_Font *font, int char_spacing);
+
+/**
  * Set script to be used for text shaping by a font.
  *
  * Any value supplied here will override the global script set with the
