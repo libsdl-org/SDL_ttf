@@ -261,6 +261,18 @@ static void HandleKeyDown(Scene *scene, SDL_Event *event)
         }
         break;
 
+    case SDLK_COMMA:
+        if (event->key.mod & SDL_KMOD_CTRL) {
+            TTF_SetFontCharSpacing(scene->font, TTF_GetFontCharSpacing(scene->font) - 1);
+        }
+        break;
+
+    case SDLK_PERIOD:
+        if (event->key.mod & SDL_KMOD_CTRL) {
+            TTF_SetFontCharSpacing(scene->font, TTF_GetFontCharSpacing(scene->font) + 1);
+        }
+        break;
+
     case SDLK_ESCAPE:
         scene->done = true;
         break;
