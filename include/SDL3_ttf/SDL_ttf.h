@@ -971,16 +971,17 @@ extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetFontDirection(TTF_Font *font);
 
 /**
  * Set additional space in pixels to be applied between any two rendered
- * characters. The spacing value is applied uniformly after each character,
- * in addition to the normal glyph's advance.
- * 
- * Spacing may be a negative value, in which case it will reduce the
- * distance instead.
+ * characters.
+ *
+ * The spacing value is applied uniformly after each character, in addition to
+ * the normal glyph's advance.
+ *
+ * Spacing may be a negative value, in which case it will reduce the distance
+ * instead.
  *
  * This updates any TTF_Text objects using this font.
  *
  * \param font the font to specify a direction for.
- * \param char_spacing the new spacing value.
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
@@ -992,8 +993,8 @@ extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetFontDirection(TTF_Font *font);
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontCharSpacing(TTF_Font *font, int spacing);
 
 /**
- * Get the additional character spacing in pixels to be applied between any two
- * rendered characters.
+ * Get the additional character spacing in pixels to be applied between any
+ * two rendered characters.
  *
  * This defaults to 0 if it hasn't been set.
  *
