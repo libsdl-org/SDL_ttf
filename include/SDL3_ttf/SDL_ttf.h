@@ -987,7 +987,7 @@ extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetFontDirection(TTF_Font *font);
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.4.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontCharSpacing(TTF_Font *font, int spacing);
 
