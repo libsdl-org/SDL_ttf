@@ -99,6 +99,7 @@ cmake_dependent_option(SDLTTF_SAMPLES_INSTALL "Install the SDL3_ttf sample progr
 # For style consistency, create a SDLTTF_FREETYPE CMake variable. This variable is NOT configurable.
 set(SDLTTF_FREETYPE ON)
 set(SDLTTF_FREETYPE_VENDORED "${SDLTTF_VENDORED}")
+set(FREETYPE_REQUIRED_VERSION "2.8.0")
 
 set(HARFBUZZ_REQUIRED_VERSION "2.3.1")
 option(SDLTTF_HARFBUZZ "Use harfbuzz to improve text shaping" ON)
@@ -356,7 +357,7 @@ if(SDLTTF_FREETYPE)
         endif()
     else()
         message(STATUS "${PROJECT_NAME}: Using system freetype library")
-        find_package(Freetype REQUIRED)
+        find_package(Freetype "${FREETYPE_REQUIRED_VERSION}" REQUIRED)
         list(APPEND PC_REQUIRES freetype2)
         target_link_libraries(${sdl3_ttf_target_name} PRIVATE Freetype::Freetype)
     endif()
