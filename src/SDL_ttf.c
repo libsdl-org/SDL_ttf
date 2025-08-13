@@ -34,14 +34,6 @@
 #include FT_TRUETYPE_TABLES_H
 #include FT_IMAGE_H
 
-/* Enable rendering with color
- * Freetype may need to be compiled with FT_CONFIG_OPTION_USE_PNG */
-#if defined(FT_HAS_COLOR)
-#  define TTF_USE_COLOR 1
-#else
-#  define TTF_USE_COLOR 0
-#endif
-
 // Enable Signed Distance Field rendering (requires latest FreeType version)
 #if defined(FT_RASTER_FLAG_SDF)
 #  define TTF_USE_SDF 1
@@ -2518,11 +2510,9 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
 
     int ft_load = FT_LOAD_DEFAULT | font->ft_load_target;
 
-#if TTF_USE_COLOR
     if (want & CACHED_COLOR) {
         ft_load |= FT_LOAD_COLOR;
     }
-#endif
 
     if (FT_HAS_SVG(font->face)) {
         // We won't get metrics unless we add FT_LOAD_COLOR
@@ -2724,11 +2714,9 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
 
         // Compute pitch: glyph is padded right to be able to read an 'aligned' size expanding on the right
         dst->pitch = dst->width + alignment;
-#if TTF_USE_COLOR
         if (src->pixel_mode == FT_PIXEL_MODE_BGRA && (want & CACHED_COLOR)) {
             dst->pitch += 3 * dst->width;
         }
-#endif
         if (src->pixel_mode == FT_PIXEL_MODE_LCD) {
             dst->pitch += 3 * dst->width;
         }
@@ -2771,11 +2759,9 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
                 } else if (src->pixel_mode == FT_PIXEL_MODE_GRAY4) {
                     quotient  = src->width / 2;
                     remainder = src->width & 0x1;
-#if TTF_USE_COLOR
                 } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
                     quotient  = src->width;
                     remainder = 0;
-#endif
                 } else if (src->pixel_mode == FT_PIXEL_MODE_LCD) {
                     quotient  = src->width / 3;
                     remainder = 0;
@@ -2918,7 +2904,6 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
                         NORMAL_GRAY4(2);
                     }
                     NORMAL_GRAY4(remainder);
-#if TTF_USE_COLOR
                 } else if (src->pixel_mode == FT_PIXEL_MODE_BGRA) {
                     if (want & CACHED_COLOR) {
                         SDL_memcpy(dstp, srcp, 4 * src->width);
@@ -2941,7 +2926,6 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
                             }
                         }
                     }
-#endif
                 } else if (src->pixel_mode == FT_PIXEL_MODE_LCD) {
                     while (quotient--) {
                         Uint8 alpha = 0;
@@ -2994,15 +2978,11 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
             dst->buffer -= alignment;
         }
 
-#if TTF_USE_COLOR
         if (src->pixel_mode == FT_PIXEL_MODE_BGRA && (want & CACHED_COLOR)) {
             dst->is_color = 1;
         } else {
             dst->is_color = 0;
         }
-#else
-        dst->is_color = 0;
-#endif
 
         // Mark that we rendered this format
         if (mono) {
@@ -3010,7 +2990,6 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
         } else if (src->pixel_mode == FT_PIXEL_MODE_LCD) {
             cached->stored |= CACHED_LCD;
         } else {
-#if TTF_USE_COLOR
             if (want & CACHED_COLOR) {
                 cached->stored |= CACHED_COLOR;
                 /* Most of the time, glyphs loaded with FT_LOAD_COLOR are non colored, so the cache is
@@ -3025,9 +3004,6 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
                     cached->stored |= CACHED_COLOR;
                 }
             }
-#else
-            cached->stored |= CACHED_COLOR | CACHED_PIXMAP;
-#endif
         }
 
         // Free outlined glyph
