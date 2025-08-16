@@ -887,6 +887,7 @@ TTF_TextEngine *TTF_CreateRendererTextEngineWithProperties(SDL_PropertiesID prop
     }
     if (atlas_texture_size <= 0) {
         SDL_SetError("Failed to create renderer text engine: Invalid texture atlas size.");
+        SDL_free(engine);
         return NULL;
     }
 

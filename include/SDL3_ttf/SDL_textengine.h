@@ -142,7 +142,8 @@ struct TTF_TextEngine
 
     void *userdata;     /**< User data pointer passed to callbacks */
 
-    /* Create a text representation from draw instructions.
+    /**
+     * Create a text representation from draw instructions.
      *
      * All fields of `text` except `internal->engine_text` will already be filled out.
      *
