@@ -5,6 +5,12 @@ The easiest way to use SDL_ttf is to include it along with SDL as subprojects in
 
 We'll start by creating a simple project to build and run [hello.c](hello.c)
 
+Clone the SDL_ttf repo using:
+```
+git clone https://github.com/libsdl-org/SDL_ttf.git vendored/SDL_ttf --recurse-submodules 
+```
+
+
 Create the file CMakeLists.txt
 ```cmake
 cmake_minimum_required(VERSION 3.16)
@@ -30,7 +36,6 @@ add_executable(hello WIN32 hello.c)
 # Link to the actual SDL3 library.
 target_link_libraries(hello PRIVATE SDL3_ttf::SDL3_ttf SDL3::SDL3)
 ```
-Run [external/download.sh](../external/download.sh) or [external/Get-GitModules.ps1](../external/Get-GitModules.ps1)
 
 
 Build:
