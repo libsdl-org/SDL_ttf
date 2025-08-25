@@ -5915,6 +5915,34 @@ bool TTF_GetFontKerning(const TTF_Font *font)
     return font->enable_kerning;
 }
 
+bool TTF_GetFontBBox(const TTF_Font *font, int *minx, int *maxx, int *miny, int *maxy)
+{
+    TTF_CHECK_FONT(font, false);
+
+    /* Bitmap fonts do not contain bbox information */
+    if (!FT_IS_SCALABLE(font->face)) {
+        return false;
+    }
+
+    const FT_Face face = font->face;
+    /* Recalculate FT_Face's bbox from font units to pixels */
+    FT_Fixed xscale = face->size->metrics.x_scale;
+    FT_Fixed yscale = face->size->metrics.y_scale;
+    if (minx) {
+        *minx = FT_CEIL(FT_MulFix(face->bbox.xMin, xscale));
+    }
+    if (maxx) {
+        *maxx = FT_CEIL(FT_MulFix(face->bbox.xMax, xscale));
+    }
+    if (miny) {
+        *miny = FT_CEIL(FT_MulFix(face->bbox.yMin, yscale));
+    }
+    if (maxy) {
+        *maxy = FT_CEIL(FT_MulFix(face->bbox.yMax, yscale));
+    }
+    return true;
+}
+
 int TTF_GetNumFontFaces(const TTF_Font *font)
 {
     TTF_CHECK_FONT(font, 0);
