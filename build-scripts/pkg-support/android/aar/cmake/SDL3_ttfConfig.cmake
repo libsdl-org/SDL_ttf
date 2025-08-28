@@ -1,7 +1,7 @@
 # SDL CMake configuration file:
 # This file is meant to be placed in lib/cmake/SDL3_ttf subfolder of a reconstructed Android SDL3_ttf SDK
 
-cmake_minimum_required(VERSION 3.0...3.28)
+cmake_minimum_required(VERSION 3.0...4.0)
 
 include(FeatureSummary)
 set_package_properties(SDL3_ttf PROPERTIES
