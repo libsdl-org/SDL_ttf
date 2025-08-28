@@ -1,13 +1,24 @@
 # @<@PROJECT_NAME@>@ CMake configuration file:
 # This file is meant to be placed in a cmake subfolder of @<@PROJECT_NAME@>@-devel-@<@PROJECT_VERSION@>@-VC.zip
 
+cmake_minimum_required(VERSION 3.0...4.0)
+
 include(FeatureSummary)
 set_package_properties(SDL3_ttf PROPERTIES
     URL "https://www.libsdl.org/projects/SDL_ttf/"
     DESCRIPTION "Support for TrueType (.ttf) font files with Simple Directmedia Layer"
 )
 
-cmake_minimum_required(VERSION 3.0...3.28)
+# Copied from `configure_package_config_file`
+macro(check_required_components _NAME)
+    foreach(comp ${${_NAME}_FIND_COMPONENTS})
+        if(NOT ${_NAME}_${comp}_FOUND)
+            if(${_NAME}_FIND_REQUIRED_${comp})
+                set(${_NAME}_FOUND FALSE)
+            endif()
+        endif()
+    endforeach()
+endmacro()
 
 set(SDL3_ttf_FOUND TRUE)
 
@@ -56,7 +67,7 @@ unset(_sdl3_ttf_dll)
 set(SDL3_ttf_SDL3_ttf-static_FOUND TRUE)
 
 set(SDL3_ttf_SDL3_ttf_FOUND FALSE)
-if(SDL3_ttf_SDL3_ttf-hared_FOUND OR SDL3_ttf_SDL3_ttf-static_FOUND)
+if(SDL3_ttf_SDL3_ttf-shared_FOUND OR SDL3_ttf_SDL3_ttf-static_FOUND)
     set(SDL3_ttf_SDL3_ttf_FOUND TRUE)
 endif()
 
