@@ -568,6 +568,7 @@ if(SDLTTF_SAMPLES)
     endfunction()
     add_sdl_ttf_example_executable(glfont examples/glfont.c)
     add_sdl_ttf_example_executable(showfont examples/showfont.c examples/editbox.c)
+    add_sdl_ttf_example_executable(showfps examples/showfps.c)
     add_sdl_ttf_example_executable(testapp examples/testapp.c)
     add_sdl_ttf_example_executable(testgputext examples/testgputext.c)
 
