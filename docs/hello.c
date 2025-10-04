@@ -35,7 +35,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
 
     if (!TTF_Init()) {
-        SDL_Log("Couldn't initialise SDL_ttf: %s\n", SDL_GetError());
+        SDL_Log("Couldn't initialize SDL_ttf: %s\n", SDL_GetError());
         return SDL_APP_FAILURE;
     }
 
