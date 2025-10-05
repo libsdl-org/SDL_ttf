@@ -119,5 +119,6 @@ SDL3_ttf_0.0.0 {
     TTF_WasInit;
     TTF_SetFontCharSpacing;
     TTF_GetFontCharSpacing;
+    TTF_GetFontBBox;
   local: *;
 };

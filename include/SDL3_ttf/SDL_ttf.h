@@ -845,6 +845,33 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontKerning(TTF_Font *font, bool enabled
 extern SDL_DECLSPEC bool SDLCALL TTF_GetFontKerning(const TTF_Font *font);
 
 /**
+ * Query the font's bounding box.
+ *
+ * The bounding box defines bounds large enough to contain any glyph from
+ * the font. It is expressed in pixel offsets from glyph's origin (0,0),
+ * with Y axis pointing upwards. Thus maxy offset may be seen as the
+ * "maximum ascender" and miny offset - as the "minimum descender".
+ *
+ * \param font the font to query.
+ * \param minx a pointer filled in with the minimum x coordinate of *any* glyph
+ *             in this font from it's origin. This value may be negative.
+ * \param maxx a pointer filled in with the maximum x coordinate of *any* glyph
+ *             in this font from it's origin.
+ * \param miny a pointer filled in with the minimum y coordinate of *any* glyph
+ *             in this font from it's origin. This value may be negative.
+ * \param maxy a pointer filled in with the maximum y coordinate of *any* glyph
+ *             in this font from it's origin.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.4.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetFontBBox(const TTF_Font *font, int *minx, int *maxx, int *miny, int *maxy);
+
+/**
  * Query whether a font is fixed-width.
  *
  * A "fixed-width" font means all glyphs are the same width across; a
