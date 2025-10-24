@@ -332,7 +332,7 @@ static void DrawCopy(TTF_SurfaceTextEngineTextData *data, const TTF_CopyOperatio
 
 bool TTF_DrawSurfaceText(TTF_Text *text, int x, int y, SDL_Surface *surface)
 {
-    if (!text || !text->internal || text->internal->engine->CreateText != CreateText) {
+    if (!text || !text->internal || !text->internal->engine || text->internal->engine->CreateText != CreateText) {
         return SDL_InvalidParamError("text");
     }
     if (!surface) {
