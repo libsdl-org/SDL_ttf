@@ -19962,7 +19962,8 @@ printf "%s\n" "#define ALIGNOF_STRUCT_CHAR__ $ac_cv_alignof_struct_char__" >>con
 
 		case "$host" in
 		  *-*-mingw*) hb_os_win32=yes
-			CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
+			CFLAGS="$CFLAGS -Wa,-mbig-obj"
+			CXXFLAGS="$CXXFLAGS -Wa,-mbig-obj -static-libgcc -static-libstdc++"
 			# for GDI and uniscribe support:
 			TTF_LIBS="$TTF_LIBS -lusp10 -lgdi32 -lrpcrt4"
 			PC_LIBS="$PC_LIBS -lusp10 -lgdi32 -lrpcrt4"
