@@ -242,7 +242,8 @@ if test x$enable_harfbuzz = xyes; then
 		AC_CHECK_ALIGNOF([struct{char;}])
 		case "$host" in
 		  *-*-mingw*) hb_os_win32=yes
-			CXXFLAGS="$CXXFLAGS -static-libgcc -static-libstdc++"
+			CFLAGS="$CFLAGS -Wa,-mbig-obj"
+			CXXFLAGS="$CXXFLAGS -Wa,-mbig-obj -static-libgcc -static-libstdc++"
 			# for GDI and uniscribe support:
 			TTF_LIBS="$TTF_LIBS -lusp10 -lgdi32 -lrpcrt4"
 			PC_LIBS="$PC_LIBS -lusp10 -lgdi32 -lrpcrt4"
