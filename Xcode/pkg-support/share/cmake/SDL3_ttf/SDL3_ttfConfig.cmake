@@ -2,12 +2,12 @@
 # This file is meant to be placed in share/cmake/SDL3_ttf, next to SDL3_ttf.xcframework
 
 # INTERFACE_LINK_OPTIONS needs CMake 3.12
-cmake_minimum_required(VERSION 3.12...3.28)
+cmake_minimum_required(VERSION 3.12...4.0)
 
 include(FeatureSummary)
 set_package_properties(SDL3_ttf PROPERTIES
-        URL "https://www.libsdl.org/projects/SDL_ttf/"
-        DESCRIPTION "Support for TrueType (.ttf) font files with Simple Directmedia Layer"
+    URL "https://www.libsdl.org/projects/SDL_ttf/"
+    DESCRIPTION "Support for TrueType (.ttf) font files with Simple Directmedia Layer"
 )
 
 # Copied from `configure_package_config_file`
