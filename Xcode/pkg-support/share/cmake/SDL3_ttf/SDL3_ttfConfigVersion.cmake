@@ -3,7 +3,7 @@
 # SDL CMake version configuration file:
 # This file is meant to be placed in share/cmake/SDL3_ttf, next to SDL3_ttf.xcframework
 
-cmake_minimum_required(VERSION 3.12...3.28)
+cmake_minimum_required(VERSION 3.12...4.0)
 
 get_filename_component(_sdl3_ttf_xcframework_parent_path "${CMAKE_CURRENT_LIST_DIR}" REALPATH)                  # /share/cmake/SDL3_ttf/
 get_filename_component(_sdl3_ttf_xcframework_parent_path "${_sdl3_ttf_xcframework_parent_path}" REALPATH)       # /share/cmake/SDL3_ttf/
@@ -15,7 +15,8 @@ set(_sdl3_ttf_framework "${_sdl3_ttf_xcframework}/macos-arm64_x86_64/SDL3_ttf.fr
 set(_sdl3_ttf_version_h "${_sdl3_ttf_framework}/Headers/SDL_ttf.h")                                             # /SDL3_ttf.xcframework/macos-arm64_x86_64/SDL3_ttf.framework/Headers/SDL_ttf.h
 
 if(NOT EXISTS "${_sdl3_ttf_version_h}")
-    message(AUTHOR_WARNING "Cannot not find ${_sdl3_ttf_framework}. This script is meant to be placed in share/cmake/SDL3, next to SDL3.xcframework")
+    message(AUTHOR_WARNING "Cannot not find ${_sdl3_ttf_framework}. This script is meant to be placed in share/cmake/SDL3_ttf, next to SDL3_ttf.xcframework")
+    set(PACKAGE_VERSION_UNSUITABLE TRUE)
     return()
 endif()
 
@@ -36,6 +37,7 @@ if(_sdl_major_re AND _sdl_minor_re AND _sdl_micro_re)
     set(PACKAGE_VERSION "${_sdl_major}.${_sdl_minor}.${_sdl_micro}")
 else()
     message(AUTHOR_WARNING "Could not extract version from SDL_ttf.h.")
+    set(PACKAGE_VERSION_UNSUITABLE TRUE)
     return()
 endif()
 
@@ -45,6 +47,7 @@ unset(_sdl_minor_re)
 unset(_sdl_minor)
 unset(_sdl_micro_re)
 unset(_sdl_micro)
+unset(_sdl_version_h)
 
 if(PACKAGE_FIND_VERSION_RANGE)
     # Package version must be in the requested version range
