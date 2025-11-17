@@ -119,5 +119,6 @@ SDL3_ttf_0.0.0 {
     TTF_WasInit;
     TTF_SetFontCharSpacing;
     TTF_GetFontCharSpacing;
+    # extra symbols go here (don't modify this line)
   local: *;
 };

@@ -6,7 +6,7 @@
 
 cmake_minimum_required(VERSION 3.12...4.0)
 
-# Find SDL_ttf.h.h
+# Find SDL_ttf.h.
 set(_sdl_ttf_h_path "")
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/../../Headers/SDL_ttf.h")
     set(_sdl_ttf_h_path "${CMAKE_CURRENT_LIST_DIR}/../../Headers/SDL_ttf.h")
