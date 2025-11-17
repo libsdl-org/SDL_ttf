@@ -2120,7 +2120,7 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
     font->face_index = face_index;
 
     // Set charmap for loaded font
-    found = 0;
+    found = NULL;
 #if 0 // Font debug code
     for (i = 0; i < face->num_charmaps; i++) {
         FT_CharMap charmap = face->charmaps[i];
@@ -2660,7 +2660,7 @@ static bool Load_Glyph(TTF_Font *font, c_glyph *cached, int want, int translatio
             }
 
             // Render the glyph
-            error = FT_Glyph_To_Bitmap(&glyph, ft_render_mode, 0, 1);
+            error = FT_Glyph_To_Bitmap(&glyph, ft_render_mode, NULL, 1);
             if (error) {
                 FT_Done_Glyph(glyph);
                 return TTF_SetFTError("FT_Glyph_To_Bitmap() failed", error);
@@ -6202,4 +6202,3 @@ int TTF_WasInit(void)
 {
     return SDL_GetAtomicInt(&TTF_state.refcount);
 }
-
