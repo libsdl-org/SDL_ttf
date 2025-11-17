@@ -2331,6 +2331,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextColorFloat(TTF_Text *text, float *r,
  * \param text the TTF_Text to modify.
  * \param x the x offset of the upper left corner of this text in pixels.
  * \param y the y offset of the upper left corner of this text in pixels.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \threadsafety This function should be called on the thread that created the
  *               text.
@@ -2349,6 +2351,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextPosition(TTF_Text *text, int x, int 
  *          this text in pixels, may be NULL.
  * \param y a pointer filled in with the y offset of the upper left corner of
  *          this text in pixels, may be NULL.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \threadsafety This function should be called on the thread that created the
  *               text.
