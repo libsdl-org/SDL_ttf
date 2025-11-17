@@ -18,7 +18,7 @@ jobs:
         - { name: Windows (MSVC+CMake),         os: windows-latest, shell: sh,   cmake: '-DPerl_ROOT=C:/Strawberry/perl/bin/ -DSDLTTF_VENDORED=ON -GNinja', msvc: 1, shared: 1, static: 0, artifact: 'SDL3_ttf-VC-x64' }
         - { name: Windows (mingw64+CMake),      os: windows-latest, shell: 'msys2 {0}', msystem: mingw64, msys-env: mingw-w64-x86_64, shared: 1, static: 0,
             cmake: '-DSDLTTF_VENDORED=OFF -G "Ninja Multi-Config"', artifact: 'SDL3_ttf-mingw64' }
-        - { name: Linux,                        os: ubuntu-latest,  shell: sh,   cmake: '-DSDLTTF_VENDORED=ON -GNinja', shared: 1, static: 0, artifact: 'SDL3_image-linux-x64' }
+        - { name: Linux,                        os: ubuntu-latest,  shell: sh,   cmake: '-DSDLTTF_VENDORED=ON -GNinja', shared: 1, static: 0, test-exports: true, artifact: 'SDL3_image-linux-x64' }
         - { name: 'Linux (static)',             os: ubuntu-latest,  shell: sh,   cmake: '-GNinja -DBUILD_SHARED_LIBS=OFF', shared: 0, static: 1, artifact: 'SDL3_Image-static-linux-x64' }
         - { name: Macos,                        os: macos-latest,   shell: sh,   cmake: '-DSDLTTF_VENDORED=ON -GNinja', shared: 1, static: 0, artifact: 'SDL3_image-macos' }
 
@@ -116,6 +116,12 @@ jobs:
           # ... but we can at least assert that it outputs a .bmp
           file build/glyph-100.bmp
 
+    - name: Verify exports files
+      if: ${{ matrix.platform.test-exports }}
+      run: |
+        set -e
+        python src/genexports.py
+        git diff --exit-code -- src/SDL_image.sym src/SDL_image.exports
     - name: Verify CMake configuration files
       run: |
           cmake -S cmake/test -B cmake_config_build \
