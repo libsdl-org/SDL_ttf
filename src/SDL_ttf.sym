@@ -117,5 +117,6 @@ SDL3_ttf_0.0.0 {
     TTF_UpdateText;
     TTF_Version;
     TTF_WasInit;
+    # extra symbols go here (don't modify this line)
   local: *;
 };
