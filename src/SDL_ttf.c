@@ -2254,9 +2254,6 @@ static bool RemoveFontTextReference(TTF_Font *font, TTF_Text *text)
 static bool SDLCALL UpdateFontTextCallback(void *userdata, const SDL_HashTable *table, const void *key, const void *value)
 {
     TTF_Text *text = (TTF_Text *)key;
-    (void)userdata;
-    (void)table;
-    (void)value;
     text->internal->needs_layout_update = true;
     return true;
 }
@@ -2470,9 +2467,6 @@ static void Flush_Glyph(c_glyph *glyph)
 static bool SDLCALL FlushCacheCallback(void *userdata, const SDL_HashTable *table, const void *key, const void *value)
 {
     c_glyph *glyph = (c_glyph *)value;
-    (void)userdata;
-    (void)table;
-    (void)key;
     if (glyph->stored) {
         Flush_Glyph(glyph);
     }
@@ -3386,8 +3380,6 @@ static bool CollectGlyphsFromFont(TTF_Font *font, const char *text, size_t lengt
     hb_buffer_destroy(hb_buffer);
 
 #else
-    (void)direction;
-    (void)script;
     bool skip_first = true;
     FT_UInt prev_index = 0;
     FT_Pos  prev_delta = 0;
@@ -4774,7 +4766,6 @@ bool TTF_SetTextScript(TTF_Text *text, Uint32 script)
     text->internal->needs_layout_update = true;
     return true;
 #else
-    (void) script;
     return SDL_Unsupported();
 #endif
 }
@@ -5804,7 +5795,6 @@ bool TTF_SetFontSDF(TTF_Font *font, bool enabled)
     }
     return true;
 #else
-    (void)enabled;
     return SDL_SetError("SDL_ttf compiled without SDF support");
 #endif
 }
@@ -6042,7 +6032,6 @@ bool TTF_SetFontScript(TTF_Font *font, Uint32 script)
     UpdateFontText(font, NULL);
     return true;
 #else
-    (void) script;
     return SDL_Unsupported();
 #endif
 }
@@ -6080,8 +6069,6 @@ Uint32 TTF_GetGlyphScript(Uint32 ch)
     script = hb_script_to_iso15924_tag(hb_unicode_script(hb_unicode_functions, ch));
 
     hb_buffer_destroy(hb_buffer);
-#else
-    (void)ch;
 #endif
 
     if (script == 0) {
@@ -6110,7 +6097,6 @@ bool TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47)
     UpdateFontText(font, NULL);
     return true;
 #else
-    (void) language_bcp47;
     return SDL_Unsupported();
 #endif
 }
@@ -6119,8 +6105,6 @@ static bool RemoveOneTextCallback(void *userdata, const SDL_HashTable *table, co
 {
     TTF_Font *font = (TTF_Font *)userdata;
     TTF_Text *text = (TTF_Text *)key;
-    (void)table;
-    (void)value;
     if (text->internal->font == font) {
         TTF_SetTextFont(text, NULL);
     } else {
