@@ -28,15 +28,13 @@ typedef struct GlyphHashtableKey {
     Uint32 glyph_index;
 } GlyphHashtableKey;
 
-static Uint32 SDLCALL SDL_HashGlyphHashtableKey(void *unused, const void *key)
+static Uint32 SDLCALL SDL_HashGlyphHashtableKey(void *userdata, const void *key)
 {
-    (void)unused;
     return SDL_murmur3_32(key, sizeof(GlyphHashtableKey), 0);
 }
 
-static bool SDLCALL SDL_KeyMatchGlyphHashtableKey(void *unused, const void *a, const void *b)
+static bool SDLCALL SDL_KeyMatchGlyphHashtableKey(void *userdata, const void *a, const void *b)
 {
-    (void)unused;
     GlyphHashtableKey *A = (GlyphHashtableKey *)a;
     GlyphHashtableKey *B = (GlyphHashtableKey *)b;
     return (A->font == B->font && A->glyph_index == B->glyph_index);

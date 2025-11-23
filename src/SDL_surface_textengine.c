@@ -209,11 +209,9 @@ static void DestroyEngineData(TTF_SurfaceTextEngineData *data)
     SDL_free(data);
 }
 
-static void SDLCALL NukeFontData(void *unused, const void *key, const void *value)
+static void SDLCALL NukeFontData(void *userdata, const void *key, const void *value)
 {
     TTF_SurfaceTextEngineFontData *data = (TTF_SurfaceTextEngineFontData *)value;
-    (void)key;
-    (void)unused;
     DestroyFontData(data);
 }
 
@@ -264,7 +262,6 @@ static void SDLCALL DestroyText(void *userdata, TTF_Text *text)
 {
     TTF_SurfaceTextEngineTextData *data = (TTF_SurfaceTextEngineTextData *)text->internal->engine_text;
 
-    (void)userdata;
     DestroyTextData(data);
 }
 
