@@ -5065,7 +5065,7 @@ bool TTF_DeleteTextString(TTF_Text *text, int offset, int length)
         text->text[offset] = '\0';
     } else {
         int shift = (old_length - length - offset);
-        SDL_memcpy(&text->text[offset], &text->text[offset + length], shift);
+        SDL_memmove(&text->text[offset], &text->text[offset + length], shift);
         text->text[offset + shift] = '\0';
     }
 
