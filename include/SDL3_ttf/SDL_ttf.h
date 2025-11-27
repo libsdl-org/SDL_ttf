@@ -816,6 +816,9 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontLineSkip(const TTF_Font *font);
  * produce better rendering (with kerning disabled, some fonts might render
  * the word `kerning` as something that looks like `keming` for example).
  *
+ * If custom OpenType features are set using TTF_SetFontFeatures(), this
+ * has no effect.
+ *
  * This updates any TTF_Text objects using this font.
  *
  * \param font the font to set kerning on.
@@ -1117,6 +1120,85 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetGlyphScript(Uint32 ch);
  * \since This function is available since SDL_ttf 3.0.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
+
+/**
+ * An OpenType feature to apply.
+ *
+ * \since This struct is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_SetFontFeatures
+ */
+typedef struct TTF_Feature {
+    Uint32 tag;     /**< The feature specified */
+    Uint32 value;   /**< The value of the feature; 0 disables the feature, non-zero enables the feature */
+} TTF_Feature;
+
+/**
+ * Apply a list of OpenType features to the font.
+ *
+ * Features are specified as null-terminated strings. The following link
+ * documents the format of a feature string:
+ *
+ * https://harfbuzz.github.io/harfbuzz-hb-common.html#hb-feature-from-string
+ *
+ * Features set by previous calls to TTF_SetFontFeatures() are reset to their
+ * defaults, and the kerning policy set using TTF_SetFontKerning() is
+ * overridden.
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns false.
+ *
+ * This updates any TTF_Text objects using this font.
+ *
+ * Example:
+ *
+ * ```c
+ * TTF_Feature features[] = {
+ *     { TTF_StringToTag("kern"), 0 },
+ *     { TTF_StringToTag("ss01"), 1 },
+ *     { TTF_StringToTag("salt"), 2 },
+ * };
+ * TTF_SetFontFeatures(font, features, 3);
+ * ```
+ *
+ * [kern]: https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-kern
+ *
+ * \param font the font to specify features for.
+ * \param features an array of feature settings. If NULL, count must be 0.
+ * \param count the number of features specified.
+ * \returns true on success or false on failure; call SDL_GetError()
+ *          for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_GetFontFeatures
+ * \sa TTF_StringToTag
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontFeatures(TTF_Font *font, const TTF_Feature *features, size_t count);
+
+/**
+ * Get the OpenType features applied to the font.
+ *
+ * The returned array is stored internally, and should not be modified
+ * or freed by the caller. The array is invalidated on the next call to
+ * TTF_SetFontFeatures() or TTF_CloseFont() on the font.
+ *
+ * \param font the font to query.
+ * \param count a pointer that should receive the number of features specified.
+ *
+ * \returns the list of OpenType features applied, or NULL if not set.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_SetFontFeatures
+ * \sa TTF_TagToString
+ */
+extern SDL_DECLSPEC const TTF_Feature * SDLCALL TTF_GetFontFeatures(TTF_Font *font, size_t *count);
 
 /**
  * A variation setting.
