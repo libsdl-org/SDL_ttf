@@ -1119,6 +1119,74 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetGlyphScript(Uint32 ch);
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
 
 /**
+ * A variation setting.
+ *
+ * \since This struct is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_SetFontVariations
+ */
+typedef struct TTF_Variation
+{
+    Uint32 tag;     /**< The variation axis specified */
+    float value;    /**< The value of the variation axis */
+} TTF_Variation;
+
+/**
+ * Apply a list of variation settings to the font.
+ *
+ * This updates any TTF_Text objects using this font.
+ *
+ * Example:
+ *
+ * ```c
+ * TTF_Variation variations[] = {
+ *     { TTF_StringToTag("wght"), 600 },
+ *     { TTF_StringToTag("wdth"), 125 },
+ *     { TTF_StringToTag("slnt"), -7.5 },
+ * };
+ * TTF_SetFontVariations(font, variations, 3);
+ * ```
+ *
+ * \param font the font to specify variations for.
+ * \param variations an array of variation settings. If NULL, count must be 0.
+ * \param count the number of variation settings specified.
+ * \returns true on success or false on failure; call SDL_GetError()
+ *          for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_GetFontVariations
+ * \sa TTF_StringToTag
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontVariations(TTF_Font *font, const TTF_Variation *variations, size_t count);
+
+/**
+ * Query a font's variation settings.
+ *
+ * The returned array is stored internally, and should not be modified or freed
+ * by the caller. The array is invalidated when TTF_SetFontVariations() or
+ * TTF_CloseFont() are called on the font.
+ *
+ * \param font the font to query.
+ * \param count a pointer that should receive the number of variation settings
+ *              specified.
+ *
+ * \returns the list of variation settings applied, or NULL if not set.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_SetFontVariations
+ * \sa TTF_TagToString
+ */
+extern SDL_DECLSPEC const TTF_Variation * SDLCALL TTF_GetFontVariations(TTF_Font *font, size_t *count);
+
+/**
  * Check whether a glyph is provided by the font for a UNICODE codepoint.
  *
  * \param font the font to query.

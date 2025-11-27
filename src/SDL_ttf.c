@@ -33,6 +33,7 @@
 #include FT_TRUETYPE_IDS_H
 #include FT_TRUETYPE_TABLES_H
 #include FT_IMAGE_H
+#include FT_MULTIPLE_MASTERS_H
 
 // Enable Signed Distance Field rendering (requires latest FreeType version)
 #if defined(FT_RASTER_FLAG_SDF)
@@ -302,6 +303,12 @@ struct TTF_Font {
     int weight;
     int outline;
     FT_Stroker stroker;
+
+    TTF_Variation *variations;
+    size_t variation_count;
+    FT_MM_Var *mm_var;
+    FT_Fixed *design_coords;
+    FT_Fixed *default_design_coords;
 
     // Whether kerning is desired
     bool enable_kerning;
@@ -6113,6 +6120,105 @@ static bool RemoveOneTextCallback(void *userdata, const SDL_HashTable *table, co
     return false;
 }
 
+bool LoadMMVar(TTF_Font *font)
+{
+    if ((font->face->face_flags & FT_FACE_FLAG_MULTIPLE_MASTERS) == 0) {
+        return SDL_SetError("not a variable font");
+    }
+
+    FT_Error err = FT_Get_MM_Var(font->face, &font->mm_var);
+    if (err != FT_Err_Ok) {
+        return SDL_SetError("failed to get font variation info: %d", err);
+    }
+
+    font->default_design_coords = SDL_calloc(font->mm_var->num_axis, sizeof(FT_Fixed));
+    font->design_coords = SDL_calloc(font->mm_var->num_axis, sizeof(FT_Fixed));
+
+    if (!font->default_design_coords || !font->design_coords) {
+        SDL_LockMutex(TTF_state.lock);
+        FT_Done_MM_Var(TTF_state.library, font->mm_var);
+        SDL_UnlockMutex(TTF_state.lock);
+        SDL_free(font->default_design_coords);
+        SDL_free(font->design_coords);
+        font->mm_var = NULL;
+        font->default_design_coords = NULL;
+        font->design_coords = NULL;
+        return SDL_SetError("out of memory");
+    }
+
+    for (size_t i = 0; i < font->mm_var->num_axis; ++i) {
+        font->default_design_coords[i] = font->mm_var->axis[i].def;
+    }
+    SDL_memcpy(font->design_coords, font->default_design_coords, font->mm_var->num_axis * sizeof(FT_Fixed));
+    return true;
+}
+
+bool TTF_SetFontVariations(TTF_Font *font, const TTF_Variation *variations, size_t count)
+{
+    TTF_CHECK_FONT(font, false);
+
+    if ((font->face->face_flags & FT_FACE_FLAG_MULTIPLE_MASTERS) == 0) {
+        return SDL_SetError("not a variable font");
+    }
+
+    if (!font->mm_var && !LoadMMVar(font)) {
+        return false;
+    }
+
+    SDL_free(font->variations);
+
+    if (count == 0) {
+        font->variations = NULL;
+        font->variation_count = 0;
+        UpdateFontText(font, NULL);
+        return true;
+    }
+
+    font->variations = SDL_calloc(count, sizeof(TTF_Variation));
+    font->variation_count = count;
+
+    if (!font->variations) {
+        SDL_SetError("out of memory");
+        font->variations = NULL;
+        font->variation_count = 0;
+        UpdateFontText(font, NULL);
+        return false;
+    }
+
+    SDL_memcpy(font->variations, variations, count * sizeof(TTF_Variation));
+
+#if TTF_USE_HARFBUZZ
+    // TTF_Variations has the same struct layout as hb_variation_t
+    hb_font_set_variations(font->hb_font, (hb_variation_t *)font->variations, font->variation_count);
+    hb_ft_hb_font_changed(font->hb_font);
+#else
+    SDL_memcpy(font->design_coords, font->default_design_coords, font->mm_var->num_axis * sizeof(FT_Fixed));
+
+    for (size_t i = 0; i < font->variation_count; ++i) {
+        for (size_t j = 0; j < font->mm_var->num_axis; ++j) {
+            if (font->variations[i].tag == font->mm_var->axis[j].tag) {
+                font->design_coords[j] = SDL_roundf(font->variations[i].value * 65536);
+            }
+        }
+    }
+
+    FT_Set_Var_Design_Coordinates(font->face, font->mm_var->num_axis, font->design_coords);
+#endif
+
+    UpdateFontText(font, NULL);
+    return true;
+}
+
+const TTF_Variation *TTF_GetFontVariations(TTF_Font *font, size_t *count)
+{
+    TTF_CHECK_FONT(font, false);
+
+    if (count) {
+        *count = font->variation_count;
+    }
+    return font->variations;
+}
+
 void TTF_CloseFont(TTF_Font *font)
 {
     if (!font) {
@@ -6142,6 +6248,11 @@ void TTF_CloseFont(TTF_Font *font)
     if (font->props) {
         SDL_DestroyProperties(font->props);
     }
+    if (font->mm_var) {
+        SDL_LockMutex(TTF_state.lock);
+        FT_Done_MM_Var(TTF_state.library, font->mm_var);
+        SDL_UnlockMutex(TTF_state.lock);
+    }
     if (font->face) {
         FT_Done_Face(font->face);
     }
@@ -6154,6 +6265,9 @@ void TTF_CloseFont(TTF_Font *font)
     if (font->closeio) {
         TTF_CloseFontSource(font->src);
     }
+    SDL_free(font->variations);
+    SDL_free(font->design_coords);
+    SDL_free(font->default_design_coords);
     SDL_free(font->name);
     SDL_free(font);
 }
