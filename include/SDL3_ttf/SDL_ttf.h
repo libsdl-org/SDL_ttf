@@ -1013,6 +1013,16 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontCharSpacing(TTF_Font *font, int spac
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontCharSpacing(TTF_Font *font);
 
 /**
+ * Construct a 32-bit tag from 4 characters.
+ *
+ * \sa TTF_StringToTag
+ */
+#define TTF_TAG(c1, c2, c3, c4) ((((Uint32)(c1) & 0xff) << 24) \
+                                 | (((Uint32)(c2) & 0xff) << 16) \
+                                 | (((Uint32)(c3) & 0xff) << 8) \
+                                 | (((Uint32)(c4) & 0xff) << 0))
+
+/**
  * Convert from a 4 character string to a 32-bit tag.
  *
  * \param string the 4 character string to convert.
@@ -1023,6 +1033,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontCharSpacing(TTF_Font *font);
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_TagToString
+ * \sa TTF_TAG
  */
 extern SDL_DECLSPEC Uint32 SDLCALL TTF_StringToTag(const char *string);
 
@@ -1063,6 +1074,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_TagToString(Uint32 tag, char *string, size_
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_StringToTag
+ * \sa TTF_TAG
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScript(TTF_Font *font, Uint32 script);
 
@@ -1153,9 +1165,9 @@ typedef struct TTF_Feature {
  *
  * ```c
  * TTF_Feature features[] = {
- *     { TTF_StringToTag("kern"), 0 },
- *     { TTF_StringToTag("ss01"), 1 },
- *     { TTF_StringToTag("salt"), 2 },
+ *     { TTF_TAG('k', 'e', 'r', 'n'), 0 },
+ *     { TTF_TAG('s', 's', '0', '1'), 1 },
+ *     { TTF_TAG('s', 'a', 'l', 't'), 2 },
  * };
  * TTF_SetFontFeatures(font, features, 3);
  * ```
@@ -1175,6 +1187,7 @@ typedef struct TTF_Feature {
  *
  * \sa TTF_GetFontFeatures
  * \sa TTF_StringToTag
+ * \sa TTF_TAG
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontFeatures(TTF_Font *font, const TTF_Feature *features, size_t count);
 
@@ -1222,9 +1235,9 @@ typedef struct TTF_Variation
  *
  * ```c
  * TTF_Variation variations[] = {
- *     { TTF_StringToTag("wght"), 600 },
- *     { TTF_StringToTag("wdth"), 125 },
- *     { TTF_StringToTag("slnt"), -7.5 },
+ *     { TTF_TAG('w', 'g', 'h', 't'), 600 },
+ *     { TTF_TAG('w', 'd', 't', 'h'), 125 },
+ *     { TTF_TAG('s', 'l', 'n', 't'), -7.5 },
  * };
  * TTF_SetFontVariations(font, variations, 3);
  * ```
@@ -1242,6 +1255,7 @@ typedef struct TTF_Variation
  *
  * \sa TTF_GetFontVariations
  * \sa TTF_StringToTag
+ * \sa TTF_TAG
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontVariations(TTF_Font *font, const TTF_Variation *variations, size_t count);
 
@@ -2391,6 +2405,7 @@ extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetTextDirection(TTF_Text *text);
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_StringToTag
+ * \sa TTF_TAG
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextScript(TTF_Text *text, Uint32 script);
 
