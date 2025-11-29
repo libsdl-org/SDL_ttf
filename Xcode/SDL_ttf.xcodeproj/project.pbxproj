@@ -218,7 +218,6 @@
 		F3F7BDF42CB6FD6700C984AF /* SDL_surface_textengine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_surface_textengine.c; sourceTree = "<group>"; };
 		F3F7BDF62CB6FD6700C984AF /* stb_rect_pack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_rect_pack.h; sourceTree = "<group>"; };
 		F567D67A01CD962A01F3E8B9 /* SDL_ttf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SDL_ttf.c; path = ../src/SDL_ttf.c; sourceTree = SOURCE_ROOT; };
-		F59C710600D5CB5801000001 /* SDL_ttf.info */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SDL_ttf.info; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -405,7 +404,6 @@
 			isa = PBXGroup;
 			children = (
 				F59C710100D5CB5801000001 /* resources */,
-				F59C710600D5CB5801000001 /* SDL_ttf.info */,
 			);
 			path = "pkg-support";
 			sourceTree = SOURCE_ROOT;
