@@ -1464,8 +1464,8 @@ static bool Render_Line_TextEngine(TTF_Font *font, TTF_Direction direction, int 
 
         if (!glyph_font->render_sdf) {
             // Make sure glyph is inside text area
-            above_w = x + glyph_width - width;
-            above_h = y + glyph_rows  - height;
+            above_w = x + glyph_width - (xstart + width);
+            above_h = y + glyph_rows  - (ystart + height);
 
             if (x < 0) {
                 int tmp = -x;
