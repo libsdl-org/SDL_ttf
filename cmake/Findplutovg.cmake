@@ -2,7 +2,7 @@
 include(FindPackageHandleStandardArgs)
 
 find_package(PkgConfig QUIET)
-pkg_check_modules(PC_PLUTOSG QUIET plutovg)
+pkg_check_modules(PC_PLUTOVG QUIET plutovg)
 
 find_library(plutovg_LIBRARY
     NAMES plutovg
