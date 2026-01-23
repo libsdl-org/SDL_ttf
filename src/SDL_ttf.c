@@ -2332,6 +2332,8 @@ bool TTF_AddFallbackFont(TTF_Font *font, TTF_Font *fallback)
     return true;
 }
 
+static void Flush_Cache(TTF_Font *font);
+
 void TTF_RemoveFallbackFont(TTF_Font *font, TTF_Font *fallback)
 {
     if (!font || !fallback) {
@@ -2364,6 +2366,7 @@ void TTF_RemoveFallbackFont(TTF_Font *font, TTF_Font *fallback)
         }
     }
 
+    Flush_Cache(font);
     UpdateFontText(font, NULL);
 }
 
