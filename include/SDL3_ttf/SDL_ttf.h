@@ -816,6 +816,9 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontLineSkip(const TTF_Font *font);
  * produce better rendering (with kerning disabled, some fonts might render
  * the word `kerning` as something that looks like `keming` for example).
  *
+ * If custom OpenType features are set using TTF_SetFontFeatures(), this
+ * has no effect.
+ *
  * This updates any TTF_Text objects using this font.
  *
  * \param font the font to set kerning on.
@@ -1010,6 +1013,16 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontCharSpacing(TTF_Font *font, int spac
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontCharSpacing(TTF_Font *font);
 
 /**
+ * Construct a 32-bit tag from 4 characters.
+ *
+ * \sa TTF_StringToTag
+ */
+#define TTF_TAG(c1, c2, c3, c4) ((((Uint32)(c1) & 0xff) << 24) \
+                                 | (((Uint32)(c2) & 0xff) << 16) \
+                                 | (((Uint32)(c3) & 0xff) << 8) \
+                                 | (((Uint32)(c4) & 0xff) << 0))
+
+/**
  * Convert from a 4 character string to a 32-bit tag.
  *
  * \param string the 4 character string to convert.
@@ -1020,6 +1033,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontCharSpacing(TTF_Font *font);
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_TagToString
+ * \sa TTF_TAG
  */
 extern SDL_DECLSPEC Uint32 SDLCALL TTF_StringToTag(const char *string);
 
@@ -1060,6 +1074,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_TagToString(Uint32 tag, char *string, size_
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_StringToTag
+ * \sa TTF_TAG
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScript(TTF_Font *font, Uint32 script);
 
@@ -1117,6 +1132,155 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetGlyphScript(Uint32 ch);
  * \since This function is available since SDL_ttf 3.0.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
+
+/**
+ * An OpenType feature to apply.
+ *
+ * \since This struct is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_SetFontFeatures
+ */
+typedef struct TTF_Feature {
+    Uint32 tag;     /**< The feature specified */
+    Uint32 value;   /**< The value of the feature; 0 disables the feature, non-zero enables the feature */
+} TTF_Feature;
+
+/**
+ * Apply a list of OpenType features to the font.
+ *
+ * Features are specified as null-terminated strings. The following link
+ * documents the format of a feature string:
+ *
+ * https://harfbuzz.github.io/harfbuzz-hb-common.html#hb-feature-from-string
+ *
+ * Features set by previous calls to TTF_SetFontFeatures() are reset to their
+ * defaults, and the kerning policy set using TTF_SetFontKerning() is
+ * overridden.
+ *
+ * If SDL_ttf was not built with HarfBuzz support, this function returns false.
+ *
+ * This updates any TTF_Text objects using this font.
+ *
+ * Example:
+ *
+ * ```c
+ * TTF_Feature features[] = {
+ *     { TTF_TAG('k', 'e', 'r', 'n'), 0 },
+ *     { TTF_TAG('s', 's', '0', '1'), 1 },
+ *     { TTF_TAG('s', 'a', 'l', 't'), 2 },
+ * };
+ * TTF_SetFontFeatures(font, features, 3);
+ * ```
+ *
+ * [kern]: https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-kern
+ *
+ * \param font the font to specify features for.
+ * \param features an array of feature settings. If NULL, count must be 0.
+ * \param count the number of features specified.
+ * \returns true on success or false on failure; call SDL_GetError()
+ *          for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_GetFontFeatures
+ * \sa TTF_StringToTag
+ * \sa TTF_TAG
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontFeatures(TTF_Font *font, const TTF_Feature *features, size_t count);
+
+/**
+ * Get the OpenType features applied to the font.
+ *
+ * The returned array is stored internally, and should not be modified
+ * or freed by the caller. The array is invalidated on the next call to
+ * TTF_SetFontFeatures() or TTF_CloseFont() on the font.
+ *
+ * \param font the font to query.
+ * \param count a pointer that should receive the number of features specified.
+ *
+ * \returns the list of OpenType features applied, or NULL if not set.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_SetFontFeatures
+ * \sa TTF_TagToString
+ */
+extern SDL_DECLSPEC const TTF_Feature * SDLCALL TTF_GetFontFeatures(TTF_Font *font, size_t *count);
+
+/**
+ * A variation setting.
+ *
+ * \since This struct is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_SetFontVariations
+ */
+typedef struct TTF_Variation
+{
+    Uint32 tag;     /**< The variation axis specified */
+    float value;    /**< The value of the variation axis */
+} TTF_Variation;
+
+/**
+ * Apply a list of variation settings to the font.
+ *
+ * This updates any TTF_Text objects using this font.
+ *
+ * Example:
+ *
+ * ```c
+ * TTF_Variation variations[] = {
+ *     { TTF_TAG('w', 'g', 'h', 't'), 600 },
+ *     { TTF_TAG('w', 'd', 't', 'h'), 125 },
+ *     { TTF_TAG('s', 'l', 'n', 't'), -7.5 },
+ * };
+ * TTF_SetFontVariations(font, variations, 3);
+ * ```
+ *
+ * \param font the font to specify variations for.
+ * \param variations an array of variation settings. If NULL, count must be 0.
+ * \param count the number of variation settings specified.
+ * \returns true on success or false on failure; call SDL_GetError()
+ *          for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_GetFontVariations
+ * \sa TTF_StringToTag
+ * \sa TTF_TAG
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontVariations(TTF_Font *font, const TTF_Variation *variations, size_t count);
+
+/**
+ * Query a font's variation settings.
+ *
+ * The returned array is stored internally, and should not be modified or freed
+ * by the caller. The array is invalidated when TTF_SetFontVariations() or
+ * TTF_CloseFont() are called on the font.
+ *
+ * \param font the font to query.
+ * \param count a pointer that should receive the number of variation settings
+ *              specified.
+ *
+ * \returns the list of variation settings applied, or NULL if not set.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf !TODO!.
+ *
+ * \sa TTF_SetFontVariations
+ * \sa TTF_TagToString
+ */
+extern SDL_DECLSPEC const TTF_Variation * SDLCALL TTF_GetFontVariations(TTF_Font *font, size_t *count);
 
 /**
  * Check whether a glyph is provided by the font for a UNICODE codepoint.
@@ -2241,6 +2405,7 @@ extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetTextDirection(TTF_Text *text);
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_StringToTag
+ * \sa TTF_TAG
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextScript(TTF_Text *text, Uint32 script);
 
