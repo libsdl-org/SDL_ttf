@@ -118,4 +118,6 @@ _TTF_Version
 _TTF_WasInit
 _TTF_SetFontCharSpacing
 _TTF_GetFontCharSpacing
+_TTF_GetFirstFontChar
+_TTF_GetNextFontChar
 # extra symbols go here (don't modify this line)

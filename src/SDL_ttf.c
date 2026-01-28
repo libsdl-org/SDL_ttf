@@ -3163,6 +3163,32 @@ bool TTF_FontHasGlyph(TTF_Font *font, Uint32 ch)
     return (get_char_index_fallback(font, ch, NULL, NULL) > 0);
 }
 
+Uint32 TTF_GetFirstFontChar(TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, UINT32_MAX);
+
+    FT_UInt idx;
+    Uint32 ch = (Uint32)FT_Get_First_Char(font->face, &idx);
+
+    if (idx == 0) {
+        return UINT32_MAX;
+    }
+    return ch;
+}
+
+Uint32 TTF_GetNextFontChar(TTF_Font *font, Uint32 ch)
+{
+    TTF_CHECK_FONT(font, UINT32_MAX);
+
+    FT_UInt idx;
+    Uint32 next = (Uint32)FT_Get_Next_Char(font->face, ch, &idx);
+
+    if (idx == 0) {
+        return UINT32_MAX;
+    }
+    return next;
+}
+
 SDL_Surface *TTF_GetGlyphImage(TTF_Font *font, Uint32 ch, TTF_ImageType *image_type)
 {
     FT_UInt idx;
