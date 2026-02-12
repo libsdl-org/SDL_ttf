@@ -1504,8 +1504,6 @@ static bool Render_Line_TextEngine(TTF_Font *font, TTF_Direction direction, int 
             if (glyph_font->render_sdf) {
                 op->copy.dst.x -= DEFAULT_SDF_SPREAD;
                 op->copy.dst.y -= DEFAULT_SDF_SPREAD;
-                op->copy.dst.w -= DEFAULT_SDF_SPREAD;
-                op->copy.dst.h -= DEFAULT_SDF_SPREAD;
             }
         } else {
             // Use the distance to the next glyph as our bounds width
