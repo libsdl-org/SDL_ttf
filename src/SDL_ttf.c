@@ -2387,7 +2387,7 @@ static void TTF_InitFontMetrics(TTF_Font *font)
     FT_Face face = font->face;
     int underline_offset;
 
-    // Retrieve the weight from the OS2 TrueType table
+    // Retrieve the additional OS2 TrueType table for extra info
     const TT_OS2 *os2_table = (const TT_OS2 *)FT_Get_Sfnt_Table(face, FT_SFNT_OS2);
 
     // Make sure that our font face is scalable (global metrics)
