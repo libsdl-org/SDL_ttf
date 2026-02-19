@@ -2397,7 +2397,7 @@ static void TTF_InitFontMetrics(TTF_Font *font)
         font->ascent         = FT_CEIL(FT_MulFix(face->ascender, scale));
         font->descent        = FT_CEIL(FT_MulFix(face->descender, scale));
         font->capheight      = os2_table && os2_table->version >= 2 ? FT_CEIL(FT_MulFix(os2_table->sCapHeight, scale)) : font->ascent;
-        font->xheight        = os2_table && os2_table->version >= 2 ? FT_CEIL(FT_MulFix(os2_table->sxHeight, scale)) : font->ascent * 2 / 3;
+        font->xheight        = os2_table && os2_table->version >= 2 ? FT_CEIL(FT_MulFix(os2_table->sxHeight, scale)) : font->ascent * 3 / 5;
         font->height         = FT_CEIL(FT_MulFix(face->ascender - face->descender, scale));
         font->lineskip       = FT_CEIL(FT_MulFix(face->height, scale));
         underline_offset     = FT_FLOOR(FT_MulFix(face->underline_position, scale));
@@ -2407,7 +2407,7 @@ static void TTF_InitFontMetrics(TTF_Font *font)
         font->ascent         = FT_CEIL(face->size->metrics.ascender);
         font->descent        = FT_CEIL(face->size->metrics.descender);
         font->capheight      = os2_table && os2_table->version >= 2 ? FT_CEIL(os2_table->sCapHeight) : font->ascent;
-        font->xheight        = os2_table && os2_table->version >= 2 ? FT_CEIL(os2_table->sxHeight) : font->ascent * 2 / 3;
+        font->xheight        = os2_table && os2_table->version >= 2 ? FT_CEIL(os2_table->sxHeight) : font->ascent * 3 / 5;
         font->height         = FT_CEIL(face->size->metrics.height);
         font->lineskip       = FT_CEIL(face->size->metrics.height);
         /* face->underline_position and face->underline_height are only
