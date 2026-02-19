@@ -22,6 +22,7 @@ SDL3_ttf_0.0.0 {
     TTF_FontIsFixedWidth;
     TTF_FontIsScalable;
     TTF_GetFontAscent;
+    TTF_GetFontCapHeight;
     TTF_GetFontDPI;
     TTF_GetFontDescent;
     TTF_GetFontDirection;
@@ -40,6 +41,7 @@ SDL3_ttf_0.0.0 {
     TTF_GetFontStyleName;
     TTF_GetFontWeight;
     TTF_GetFontWrapAlignment;
+    TTF_GetFontXHeight;
     TTF_GetFreeTypeVersion;
     TTF_GetGlyphImage;
     TTF_GetGlyphImageForIndex;
