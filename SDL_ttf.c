@@ -139,6 +139,12 @@ int TTF_SetScript(int script) /* hb_script_t */
 /* Default: round glyph width to 4 bytes to copy them faster */
 #define HAVE_BLIT_GLYPH_32
 
+// The Playstation Portable doesn't work with either HAVE_BLIT_GLYPH setting
+#if defined (__PSP__)
+#    undef HAVE_BLIT_GLYPH_64
+#    undef HAVE_BLIT_GLYPH_32
+#endif
+
 /* Use Duff's device to unroll loops */
 //#define USE_DUFFS_LOOP
 
