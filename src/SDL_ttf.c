@@ -41,7 +41,7 @@
 #  define TTF_USE_SDF 0
 #endif
 
-#if TTF_USE_SDF
+#if TTF_USE_SDF || TTF_USE_PLUTOSVG
 #include FT_MODULE_H
 #endif
 #define DEFAULT_SDF_SPREAD 8
