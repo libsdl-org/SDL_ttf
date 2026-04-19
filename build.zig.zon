@@ -1,0 +1,15 @@
+.{
+    .name = .sdl3_ttf,
+    .version = "3.2.2",
+    .minimum_zig_version = "0.15.0",
+    .fingerprint = 0x8ea78b7c69f3868b,
+    .paths = .{"."},
+    .dependencies = .{
+        .sdl3 = .{
+            .name = .sdl3,
+            .version = "3.4.4",
+            .url = "https://github.com/schneiel/SDL/archive/refs/heads/zig-build-3.4.4.tar.gz",
+            .hash = "N-V-__8AABtk8gIAP7ZQ4yacjIPcrx3btsH0bGNpJG4MPpm6",
+        },
+    },
+}
