@@ -9,7 +9,7 @@
 [submodule "external/plutosvg"]
 	path = external/plutosvg
 	url = https://github.com/libsdl-org/plutosvg.git
-	branch = v0.0.7-SDL
+	branch = v0.0.8-SDL
 [submodule "external/plutovg"]
 	path = external/plutovg
 	url = https://github.com/libsdl-org/plutovg.git
