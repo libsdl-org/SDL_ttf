@@ -5,12 +5,15 @@
 // Shaders
 #include "testgputext/shaders/shader.vert.spv.h"
 #include "testgputext/shaders/shader.frag.spv.h"
+#include "testgputext/shaders/shader-solid.frag.spv.h"
 #include "testgputext/shaders/shader-sdf.frag.spv.h"
 #include "testgputext/shaders/shader.vert.dxil.h"
 #include "testgputext/shaders/shader.frag.dxil.h"
+#include "testgputext/shaders/shader-solid.frag.dxil.h"
 #include "testgputext/shaders/shader-sdf.frag.dxil.h"
 #include "testgputext/shaders/shader.vert.msl.h"
 #include "testgputext/shaders/shader.frag.msl.h"
+#include "testgputext/shaders/shader-solid.frag.msl.h"
 #include "testgputext/shaders/shader-sdf.frag.msl.h"
 
 #define SDL_MATH_3D_IMPLEMENTATION
@@ -24,6 +27,7 @@ typedef enum
 {
     VertexShader,
     PixelShader,
+    PixelShader_Solid,
     PixelShader_SDF,
 } Shader;
 
@@ -46,6 +50,7 @@ typedef struct Context
     SDL_GPUDevice *device;
     SDL_Window *window;
     SDL_GPUGraphicsPipeline *pipeline;
+    SDL_GPUGraphicsPipeline *solid_pipeline;
     SDL_GPUBuffer *vertex_buffer;
     SDL_GPUBuffer *index_buffer;
     SDL_GPUTransferBuffer *transfer_buffer;
@@ -106,6 +111,11 @@ SDL_GPUShader *load_shader(
             createinfo.code_size = shader_frag_dxil_len;
             createinfo.entrypoint = "PSMain";
             break;
+        case PixelShader_Solid:
+            createinfo.code = shader_solid_frag_dxil;
+            createinfo.code_size = shader_solid_frag_dxil_len;
+            createinfo.entrypoint = "PSMain";
+            break;
         case PixelShader_SDF:
             createinfo.code = shader_sdf_frag_dxil;
             createinfo.code_size = shader_sdf_frag_dxil_len;
@@ -123,6 +133,11 @@ SDL_GPUShader *load_shader(
         case PixelShader:
             createinfo.code = shader_frag_msl;
             createinfo.code_size = shader_frag_msl_len;
+            createinfo.entrypoint = "main0";
+            break;
+        case PixelShader_Solid:
+            createinfo.code = shader_solid_frag_msl;
+            createinfo.code_size = shader_solid_frag_msl_len;
             createinfo.entrypoint = "main0";
             break;
         case PixelShader_SDF:
@@ -144,6 +159,11 @@ SDL_GPUShader *load_shader(
             createinfo.code_size = shader_frag_spv_len;
             createinfo.entrypoint = "main";
             break;
+        case PixelShader_Solid:
+            createinfo.code = shader_solid_frag_spv;
+            createinfo.code_size = shader_solid_frag_spv_len;
+            createinfo.entrypoint = "main";
+            break;
         case PixelShader_SDF:
             createinfo.code = shader_sdf_frag_spv;
             createinfo.code_size = shader_sdf_frag_spv_len;
@@ -163,13 +183,14 @@ SDL_GPUShader *load_shader(
 void queue_text_sequence(GeometryData *geometry_data, TTF_GPUAtlasDrawSequence *sequence, SDL_FColor *colour)
 {
     for (int i = 0; i < sequence->num_vertices; i++) {
-        Vertex vert;
-        const SDL_FPoint pos = sequence->xy[i];
-        vert.pos = (Vec3){ pos.x, pos.y, 0.0f };
-        vert.colour = *colour;
-        vert.uv = sequence->uv[i];
-
-        geometry_data->vertices[geometry_data->vertex_count + i] = vert;
+        Vertex *vert = &geometry_data->vertices[geometry_data->vertex_count + i];
+        const SDL_FPoint *pos = &sequence->xy[i];
+        vert->pos.x = pos->x;
+        vert->pos.y = pos->y;
+        vert->colour = *colour;
+        if (sequence->uv) {
+            vert->uv = sequence->uv[i];
+        }
     }
 
     SDL_memcpy(geometry_data->indices + geometry_data->index_count, sequence->indices, sequence->num_indices * sizeof(int));
@@ -235,6 +256,7 @@ void draw(Context *context, SDL_Mat4X4 *matrices, int num_matrices, TTF_GPUAtlas
 
         SDL_GPURenderPass *render_pass = SDL_BeginGPURenderPass(context->cmd_buf, &colour_target_info, 1, NULL);
 
+        bool solid_pipeline = false;
         SDL_BindGPUGraphicsPipeline(render_pass, context->pipeline);
         SDL_BindGPUVertexBuffers(
             render_pass, 0,
@@ -250,11 +272,23 @@ void draw(Context *context, SDL_Mat4X4 *matrices, int num_matrices, TTF_GPUAtlas
 
         int index_offset = 0, vertex_offset = 0;
         for (TTF_GPUAtlasDrawSequence *seq = draw_sequence; seq != NULL; seq = seq->next) {
-            SDL_BindGPUFragmentSamplers(
-                render_pass, 0,
-                &(SDL_GPUTextureSamplerBinding){
-                    .texture = seq->atlas_texture, .sampler = context->sampler },
-                1);
+            if (seq->atlas_texture) {
+                if (solid_pipeline) {
+                    SDL_BindGPUGraphicsPipeline(render_pass, context->pipeline);
+                    solid_pipeline = false;
+                }
+
+                SDL_BindGPUFragmentSamplers(
+                    render_pass, 0,
+                    &(SDL_GPUTextureSamplerBinding){
+                        .texture = seq->atlas_texture, .sampler = context->sampler },
+                    1);
+            } else {
+                if (!solid_pipeline) {
+                    SDL_BindGPUGraphicsPipeline(render_pass, context->solid_pipeline);
+                    solid_pipeline = true;
+                }
+            }
 
             SDL_DrawGPUIndexedPrimitives(render_pass, seq->num_indices, 1, index_offset, vertex_offset, 0);
 
@@ -272,6 +306,7 @@ void free_context(Context *context)
     SDL_ReleaseGPUBuffer(context->device, context->vertex_buffer);
     SDL_ReleaseGPUBuffer(context->device, context->index_buffer);
     SDL_ReleaseGPUGraphicsPipeline(context->device, context->pipeline);
+    SDL_ReleaseGPUGraphicsPipeline(context->device, context->solid_pipeline);
     SDL_ReleaseWindowFromGPUDevice(context->device, context->window);
     SDL_DestroyGPUDevice(context->device);
     SDL_DestroyWindow(context->window);
@@ -281,6 +316,7 @@ int main(int argc, char *argv[])
 {
     const char *font_filename = NULL;
     bool use_SDF = false;
+    int style;
 
     (void)argc;
     for (int i = 1; argv[i]; ++i) {
@@ -310,6 +346,7 @@ int main(int argc, char *argv[])
 
     SDL_GPUShader *vertex_shader = check_error_ptr(load_shader(context.device, VertexShader, 0, 1, 0, 0));
     SDL_GPUShader *fragment_shader = check_error_ptr(load_shader(context.device, use_SDF ? PixelShader_SDF : PixelShader, 1, 0, 0, 0));
+    SDL_GPUShader *solid_shader = check_error_ptr(load_shader(context.device, PixelShader_Solid, 1, 0, 0, 0));
 
     SDL_GPUGraphicsPipelineCreateInfo pipeline_create_info = {
         .target_info = {
@@ -361,6 +398,8 @@ int main(int argc, char *argv[])
         .fragment_shader = fragment_shader
     };
     context.pipeline = check_error_ptr(SDL_CreateGPUGraphicsPipeline(context.device, &pipeline_create_info));
+    pipeline_create_info.fragment_shader = solid_shader;
+    context.solid_pipeline = check_error_ptr(SDL_CreateGPUGraphicsPipeline(context.device, &pipeline_create_info));
 
     SDL_ReleaseGPUShader(context.device, vertex_shader);
     SDL_ReleaseGPUShader(context.device, fragment_shader);
@@ -423,8 +462,35 @@ int main(int argc, char *argv[])
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
             case SDL_EVENT_KEY_UP:
-                if (event.key.key == SDLK_ESCAPE) {
+                switch (event.key.key) {
+                case SDLK_S:
+                    // Toggle strike-through style
+                    style = TTF_GetFontStyle(font);
+                    if (style & TTF_STYLE_STRIKETHROUGH) {
+                        style &= ~TTF_STYLE_STRIKETHROUGH;
+                    } else {
+                        style |= TTF_STYLE_STRIKETHROUGH;
+                    }
+                    TTF_SetFontStyle(font, style);
+                    break;
+
+                case SDLK_U:
+                    // Toggle underline style
+                    style = TTF_GetFontStyle(font);
+                    if (style & TTF_STYLE_UNDERLINE) {
+                        style &= ~TTF_STYLE_UNDERLINE;
+                    } else {
+                        style |= TTF_STYLE_UNDERLINE;
+                    }
+                    TTF_SetFontStyle(font, style);
+                    break;
+
+                case SDLK_ESCAPE:
                     running = false;
+                    break;
+
+                default:
+                    break;
                 }
                 break;
             case SDL_EVENT_QUIT:
