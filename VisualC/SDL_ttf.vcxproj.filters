@@ -159,6 +159,9 @@
     <ClCompile Include="..\external\harfbuzz\src\harfbuzz.cc">
       <Filter>Sources\HarfBuzz</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\SDL_gl_textengine.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\SDL_gpu_textengine.c">
       <Filter>Sources</Filter>
     </ClCompile>

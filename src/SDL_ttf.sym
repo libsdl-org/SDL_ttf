@@ -5,6 +5,8 @@ SDL3_ttf_0.0.0 {
     TTF_ClearFallbackFonts;
     TTF_CloseFont;
     TTF_CopyFont;
+    TTF_CreateGLTextEngine;
+    TTF_CreateGLTextEngineWithProperties;
     TTF_CreateGPUTextEngine;
     TTF_CreateGPUTextEngineWithProperties;
     TTF_CreateRendererTextEngine;
@@ -12,6 +14,7 @@ SDL3_ttf_0.0.0 {
     TTF_CreateSurfaceTextEngine;
     TTF_CreateText;
     TTF_DeleteTextString;
+    TTF_DestroyGLTextEngine;
     TTF_DestroyGPUTextEngine;
     TTF_DestroyRendererTextEngine;
     TTF_DestroySurfaceTextEngine;
@@ -46,6 +49,8 @@ SDL3_ttf_0.0.0 {
     TTF_GetGlyphKerning;
     TTF_GetGlyphMetrics;
     TTF_GetGlyphScript;
+    TTF_GetGLTextDrawData;
+    TTF_GetGLTextEngineWinding;
     TTF_GetGPUTextDrawData;
     TTF_GetGPUTextEngineWinding;
     TTF_GetHarfBuzzVersion;
@@ -100,6 +105,7 @@ SDL3_ttf_0.0.0 {
     TTF_SetFontSizeDPI;
     TTF_SetFontStyle;
     TTF_SetFontWrapAlignment;
+    TTF_SetGLTextEngineWinding;
     TTF_SetGPUTextEngineWinding;
     TTF_SetTextColor;
     TTF_SetTextColorFloat;
