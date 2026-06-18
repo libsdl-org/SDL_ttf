@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
 
     SDL_GPUShader *vertex_shader = check_error_ptr(load_shader(context.device, VertexShader, 0, 1, 0, 0));
     SDL_GPUShader *fragment_shader = check_error_ptr(load_shader(context.device, use_SDF ? PixelShader_SDF : PixelShader, 1, 0, 0, 0));
-    SDL_GPUShader *solid_shader = check_error_ptr(load_shader(context.device, PixelShader_Solid, 1, 0, 0, 0));
+    SDL_GPUShader *solid_shader = check_error_ptr(load_shader(context.device, PixelShader_Solid, 0, 0, 0, 0));
 
     SDL_GPUGraphicsPipelineCreateInfo pipeline_create_info = {
         .target_info = {
@@ -403,6 +403,7 @@ int main(int argc, char *argv[])
 
     SDL_ReleaseGPUShader(context.device, vertex_shader);
     SDL_ReleaseGPUShader(context.device, fragment_shader);
+    SDL_ReleaseGPUShader(context.device, solid_shader);
 
     SDL_GPUBufferCreateInfo vbf_info = {
         .usage = SDL_GPU_BUFFERUSAGE_VERTEX,
