@@ -248,7 +248,7 @@ static bool InitProgram(ShaderProgram *sp, const char *vert_src, const char *fra
     return true;
 }
 
-static void DrawText(ShaderProgram *sp, bool use_sdf, GLuint vbo, GLuint ebo,
+static void DrawGLText(ShaderProgram *sp, bool use_sdf, GLuint vbo, GLuint ebo,
                      TTF_GLAtlasDrawSequence *sequence,
                      SDL_Mat4X4 *projection, SDL_Mat4X4 *model,
                      SDL_FColor *color, SDL_FColor *out_color)
@@ -483,7 +483,7 @@ int main(int argc, char *argv[])
         gl.Clear(GL_COLOR_BUFFER_BIT);
 
         TTF_GLAtlasDrawSequence *sequence = TTF_GetGLTextDrawData(text);
-        DrawText(&prog, use_SDF, vbo, ebo, sequence, &projection, &model, &color, &out_color);
+        DrawGLText(&prog, use_SDF, vbo, ebo, sequence, &projection, &model, &color, &out_color);
 
         SDL_GL_SwapWindow(window);
     }

@@ -80,7 +80,7 @@ static inline SDL_Mat4X4 SDL_MatrixRotationY(float angle);
 static inline SDL_Mat4X4 SDL_MatrixRotationZ(float angle);
 
 static inline SDL_Mat4X4 SDL_MatrixOrtho(float left, float right, float bottom, float top, float back, float front);
-static inline SDL_Mat4X4 SDL_MatrixPerspective(float fovy, float aspect_ratio, float near, float far);
+static inline SDL_Mat4X4 SDL_MatrixPerspective(float fovy, float aspect_ratio, float nearval, float farval);
 static inline SDL_Mat4X4 SDL_MatrixLookAt(SDL_Vec3 pos, SDL_Vec3 target, SDL_Vec3 up);
 
 
@@ -259,9 +259,9 @@ static inline SDL_Mat4X4 SDL_MatrixRotationZ(float angle)
     );
 }
 
-static inline SDL_Mat4X4 SDL_MatrixOrtho(float left, float right, float bottom, float top, float near, float far)
+static inline SDL_Mat4X4 SDL_MatrixOrtho(float left, float right, float bottom, float top, float nearval, float farval)
 {
-    float l = left, r = right, b = bottom, t = top, n = near, f = far;
+    float l = left, r = right, b = bottom, t = top, n = nearval, f = farval;
 
     float dx = -(r + l) / (r - l);
     float dy = -(t + b) / (t - b);
@@ -275,9 +275,9 @@ static inline SDL_Mat4X4 SDL_MatrixOrtho(float left, float right, float bottom, 
     );
 }
 
-static inline SDL_Mat4X4 SDL_MatrixPerspective(float fovy, float aspect_ratio, float near, float far)
+static inline SDL_Mat4X4 SDL_MatrixPerspective(float fovy, float aspect_ratio, float nearval, float farval)
 {
-    float n = near; float f = far;
+    float n = nearval; float f = farval;
     float t = SDL_tanf(fovy/2.0f) * n;
     float b = -t;
     float r = t * aspect_ratio;
