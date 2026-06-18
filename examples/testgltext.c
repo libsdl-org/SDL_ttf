@@ -72,44 +72,44 @@ static GL_API gl;
 
 static bool Init_GL_API(GL_API *gl)
 {
-#define LOAD(name)                                                                \
-    gl->name = (typeof(gl->name))SDL_GL_GetProcAddress("gl" #name);               \
+#define LOAD(fntyp, name)                                                                \
+    gl->name = (fntyp) SDL_GL_GetProcAddress("gl" #name);               \
     if (!gl->name) {                                                              \
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load gl%s", #name); \
         return false;                                                             \
     }
-    LOAD(AttachShader)
-    LOAD(BindBuffer)
-    LOAD(BindTexture)
-    LOAD(BlendFunc)
-    LOAD(BufferData)
-    LOAD(Clear)
-    LOAD(ClearColor)
-    LOAD(CompileShader)
-    LOAD(CreateProgram)
-    LOAD(CreateShader)
-    LOAD(DeleteBuffers)
-    LOAD(DeleteProgram)
-    LOAD(DeleteShader)
-    LOAD(DisableVertexAttribArray)
-    LOAD(DrawElements)
-    LOAD(Enable)
-    LOAD(EnableVertexAttribArray)
-    LOAD(GenBuffers)
-    LOAD(GetAttribLocation)
-    LOAD(GetIntegerv)
-    LOAD(GetProgramInfoLog)
-    LOAD(GetProgramiv)
-    LOAD(GetShaderInfoLog)
-    LOAD(GetShaderiv)
-    LOAD(GetUniformLocation)
-    LOAD(LinkProgram)
-    LOAD(ShaderSource)
-    LOAD(Uniform1i)
-    LOAD(Uniform4f)
-    LOAD(UniformMatrix4fv)
-    LOAD(UseProgram)
-    LOAD(VertexAttribPointer)
+    LOAD(PFNGLATTACHSHADERPROC, AttachShader);
+    LOAD(PFNGLBINDBUFFERPROC, BindBuffer);
+    LOAD(PFNGLBINDTEXTUREPROC, BindTexture);
+    LOAD(PFNGLBLENDFUNCPROC, BlendFunc);
+    LOAD(PFNGLBUFFERDATAPROC, BufferData);
+    LOAD(PFNGLCLEARPROC, Clear);
+    LOAD(PFNGLCLEARCOLORPROC, ClearColor);
+    LOAD(PFNGLCOMPILESHADERPROC, CompileShader);
+    LOAD(PFNGLCREATEPROGRAMPROC, CreateProgram);
+    LOAD(PFNGLCREATESHADERPROC, CreateShader);
+    LOAD(PFNGLDELETEBUFFERSPROC, DeleteBuffers);
+    LOAD(PFNGLDELETEPROGRAMPROC, DeleteProgram);
+    LOAD(PFNGLDELETESHADERPROC, DeleteShader);
+    LOAD(PFNGLDISABLEVERTEXATTRIBARRAYPROC, DisableVertexAttribArray);
+    LOAD(PFNGLDRAWELEMENTSPROC, DrawElements);
+    LOAD(PFNGLENABLEPROC, Enable);
+    LOAD(PFNGLENABLEVERTEXATTRIBARRAYPROC, EnableVertexAttribArray);
+    LOAD(PFNGLGENBUFFERSPROC, GenBuffers);
+    LOAD(PFNGLGETATTRIBLOCATIONPROC, GetAttribLocation);
+    LOAD(PFNGLGETINTEGERVPROC, GetIntegerv);
+    LOAD(PFNGLGETPROGRAMINFOLOGPROC, GetProgramInfoLog);
+    LOAD(PFNGLGETPROGRAMIVPROC, GetProgramiv);
+    LOAD(PFNGLGETSHADERINFOLOGPROC, GetShaderInfoLog);
+    LOAD(PFNGLGETSHADERIVPROC, GetShaderiv);
+    LOAD(PFNGLGETUNIFORMLOCATIONPROC, GetUniformLocation);
+    LOAD(PFNGLLINKPROGRAMPROC, LinkProgram);
+    LOAD(PFNGLSHADERSOURCEPROC, ShaderSource);
+    LOAD(PFNGLUNIFORM1IPROC, Uniform1i);
+    LOAD(PFNGLUNIFORM4FPROC, Uniform4f);
+    LOAD(PFNGLUNIFORMMATRIX4FVPROC, UniformMatrix4fv);
+    LOAD(PFNGLUSEPROGRAMPROC, UseProgram);
+    LOAD(PFNGLVERTEXATTRIBPOINTERPROC, VertexAttribPointer);
 #undef LOAD
     return true;
 }
