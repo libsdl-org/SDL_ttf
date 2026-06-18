@@ -4,6 +4,8 @@ _TTF_AppendTextString
 _TTF_ClearFallbackFonts
 _TTF_CloseFont
 _TTF_CopyFont
+_TTF_CreateGLTextEngine
+_TTF_CreateGLTextEngineWithProperties
 _TTF_CreateGPUTextEngine
 _TTF_CreateGPUTextEngineWithProperties
 _TTF_CreateRendererTextEngine
@@ -11,6 +13,7 @@ _TTF_CreateRendererTextEngineWithProperties
 _TTF_CreateSurfaceTextEngine
 _TTF_CreateText
 _TTF_DeleteTextString
+_TTF_DestroyGLTextEngine
 _TTF_DestroyGPUTextEngine
 _TTF_DestroyRendererTextEngine
 _TTF_DestroySurfaceTextEngine
@@ -45,6 +48,8 @@ _TTF_GetGlyphImageForIndex
 _TTF_GetGlyphKerning
 _TTF_GetGlyphMetrics
 _TTF_GetGlyphScript
+_TTF_GetGLTextDrawData
+_TTF_GetGLTextEngineWinding
 _TTF_GetGPUTextDrawData
 _TTF_GetGPUTextEngineWinding
 _TTF_GetHarfBuzzVersion
@@ -99,6 +104,7 @@ _TTF_SetFontSize
 _TTF_SetFontSizeDPI
 _TTF_SetFontStyle
 _TTF_SetFontWrapAlignment
+_TTF_SetGLTextEngineWinding
 _TTF_SetGPUTextEngineWinding
 _TTF_SetTextColor
 _TTF_SetTextColorFloat

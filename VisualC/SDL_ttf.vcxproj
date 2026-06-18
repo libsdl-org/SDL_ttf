@@ -266,6 +266,7 @@
     <ClCompile Include="..\external\plutovg\source\plutovg-path.c" />
     <ClCompile Include="..\external\plutovg\source\plutovg-rasterize.c" />
     <ClCompile Include="..\external\plutovg\source\plutovg-surface.c" />
+    <ClCompile Include="..\src\SDL_gl_textengine.c" />
     <ClCompile Include="..\src\SDL_gpu_textengine.c" />
     <ClCompile Include="..\src\SDL_hashtable.c" />
     <ClCompile Include="..\src\SDL_hashtable_ttf.c" />
