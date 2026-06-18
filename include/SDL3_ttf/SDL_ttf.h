@@ -2085,8 +2085,9 @@ extern SDL_DECLSPEC TTF_GPUTextEngineWinding SDLCALL TTF_GetGPUTextEngineWinding
 /**
  * Create a text engine for drawing text with OpenGL.
  *
- * The caller is responsible for ensuring the correct OpenGL context is current
- * when calling this function and when using the resulting text engine.
+ * The caller is responsible for ensuring the correct OpenGL context is
+ * current when calling this function and when using the resulting text
+ * engine.
  *
  * The GL text engine and all text created with it become invalid if the
  * OpenGL context is destroyed. Destroy the engine before destroying the
@@ -2109,8 +2110,9 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGLTextEngine(void);
 /**
  * Create a text engine for drawing text with OpenGL, with extra properties.
  *
- * The caller is responsible for ensuring the correct OpenGL context is current
- * when calling this function and when using the resulting text engine.
+ * The caller is responsible for ensuring the correct OpenGL context is
+ * current when calling this function and when using the resulting text
+ * engine.
  *
  * The following properties are supported:
  *
@@ -2151,8 +2153,8 @@ typedef struct TTF_GLAtlasDrawVertex
 /**
  * A draw sequence in the linked list returned by TTF_GetGLTextDrawData.
  *
- * Each sequence groups primitives that share the same atlas texture
- * and image type, allowing them to be drawn in a single draw call.
+ * Each sequence groups primitives that share the same atlas texture and image
+ * type, allowing them to be drawn in a single draw call.
  *
  * \since This struct is available since SDL_ttf 3.3.0.
  *
@@ -2248,8 +2250,8 @@ typedef enum TTF_GLTextEngineWinding
 extern SDL_DECLSPEC void SDLCALL TTF_SetGLTextEngineWinding(TTF_TextEngine *engine, TTF_GLTextEngineWinding winding);
 
 /**
- * Get the winding order of the vertices returned by TTF_GetGLTextDrawData
- * for a particular GL text engine.
+ * Get the winding order of the vertices returned by TTF_GetGLTextDrawData for
+ * a particular GL text engine.
  *
  * \param engine a TTF_TextEngine object created with
  *               TTF_CreateGLTextEngine().
