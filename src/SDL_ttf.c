@@ -295,6 +295,8 @@ struct TTF_Font {
     int height;
     int ascent;
     int descent;
+    int capheight;
+    int xheight;
     int lineskip;
 
     // The font style
@@ -2385,12 +2387,17 @@ static void TTF_InitFontMetrics(TTF_Font *font)
     FT_Face face = font->face;
     int underline_offset;
 
+    // Retrieve the additional OS2 TrueType table for extra info
+    const TT_OS2 *os2_table = (const TT_OS2 *)FT_Get_Sfnt_Table(face, FT_SFNT_OS2);
+
     // Make sure that our font face is scalable (global metrics)
     if (FT_IS_SCALABLE(face)) {
         // Get the scalable font metrics for this font
         FT_Fixed scale       = face->size->metrics.y_scale;
         font->ascent         = FT_CEIL(FT_MulFix(face->ascender, scale));
         font->descent        = FT_CEIL(FT_MulFix(face->descender, scale));
+        font->capheight      = os2_table && os2_table->version >= 2 ? FT_CEIL(FT_MulFix(os2_table->sCapHeight, scale)) : font->ascent;
+        font->xheight        = os2_table && os2_table->version >= 2 ? FT_CEIL(FT_MulFix(os2_table->sxHeight, scale)) : font->ascent * 3 / 5;
         font->height         = FT_CEIL(FT_MulFix(face->ascender - face->descender, scale));
         font->lineskip       = FT_CEIL(FT_MulFix(face->height, scale));
         underline_offset     = FT_FLOOR(FT_MulFix(face->underline_position, scale));
@@ -2399,6 +2406,8 @@ static void TTF_InitFontMetrics(TTF_Font *font)
         // Get the font metrics for this font, for the selected size
         font->ascent         = FT_CEIL(face->size->metrics.ascender);
         font->descent        = FT_CEIL(face->size->metrics.descender);
+        font->capheight      = os2_table && os2_table->version >= 2 ? FT_CEIL(os2_table->sCapHeight) : font->ascent;
+        font->xheight        = os2_table && os2_table->version >= 2 ? FT_CEIL(os2_table->sxHeight) : font->ascent * 3 / 5;
         font->height         = FT_CEIL(face->size->metrics.height);
         font->lineskip       = FT_CEIL(face->size->metrics.height);
         /* face->underline_position and face->underline_height are only
@@ -5861,6 +5870,20 @@ int TTF_GetFontDescent(const TTF_Font *font)
     TTF_CHECK_FONT(font, 0);
 
     return font->descent;
+}
+
+int TTF_GetFontCapHeight(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, 0);
+
+    return font->capheight;
+}
+
+int TTF_GetFontXHeight(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, 0);
+
+    return font->xheight;
 }
 
 void TTF_SetFontLineSkip(TTF_Font *font, int lineskip)
