@@ -579,6 +579,7 @@ if(SDLTTF_SAMPLES)
     add_sdl_ttf_example_executable(testapp examples/testapp.c)
     add_sdl_ttf_example_executable(testgputext examples/testgputext.c)
     add_sdl_ttf_example_executable(testgltext examples/testgltext.c)
+    add_sdl_ttf_example_executable(variablefont examples/variablefont.c)
 
     set(OpenGL_GL_PREFERENCE GLVND)
     find_package(OpenGL)
