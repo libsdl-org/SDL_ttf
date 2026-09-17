@@ -41,7 +41,7 @@ extern "C" {
 /**
  * A font atlas draw command.
  *
- * \since This enum is available since SDL_ttf 3.0.0.
+ * \since This enum is available since SDL_ttf 3.2.0.
  */
 typedef enum TTF_DrawCommand
 {
@@ -53,7 +53,7 @@ typedef enum TTF_DrawCommand
 /**
  * A filled rectangle draw operation.
  *
- * \since This struct is available since SDL_ttf 3.0.0.
+ * \since This struct is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_DrawOperation
  */
@@ -66,7 +66,7 @@ typedef struct TTF_FillOperation
 /**
  * A texture copy draw operation.
  *
- * \since This struct is available since SDL_ttf 3.0.0.
+ * \since This struct is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_DrawOperation
  */
@@ -89,7 +89,7 @@ typedef struct TTF_CopyOperation
 /**
  * A text engine draw operation.
  *
- * \since This struct is available since SDL_ttf 3.0.0.
+ * \since This struct is available since SDL_ttf 3.2.0.
  */
 typedef union TTF_DrawOperation
 {
@@ -132,7 +132,7 @@ struct TTF_TextData
  *
  * This structure should be initialized using SDL_INIT_INTERFACE()
  *
- * \since This struct is available since SDL_ttf 3.0.0.
+ * \since This struct is available since SDL_ttf 3.2.0.
  *
  * \sa SDL_INIT_INTERFACE
  */
