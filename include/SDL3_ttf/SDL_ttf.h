@@ -69,7 +69,7 @@ extern "C" {
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC int SDLCALL TTF_Version(void);
 
@@ -84,7 +84,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_Version(void);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_Init
  */
@@ -101,7 +101,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_GetFreeTypeVersion(int *major, int *minor, 
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC void SDLCALL TTF_GetHarfBuzzVersion(int *major, int *minor, int *patch);
 
@@ -124,7 +124,7 @@ typedef struct TTF_Font TTF_Font;
  * \returns true on success or false on failure; call SDL_GetError() for more
  *          information.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_Quit
  */
@@ -146,7 +146,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_Init(void);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CloseFont
  */
@@ -173,7 +173,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFont(const char *file, float ptsi
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CloseFont
  */
@@ -218,7 +218,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontIO(SDL_IOStream *src, bool cl
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CloseFont
  */
@@ -249,7 +249,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_OpenFontWithProperties(SDL_Properties
  * \threadsafety This function should be called on the thread that created the
  *               original font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CloseFont
  */
@@ -275,7 +275,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_CopyFont(TTF_Font *existing_font);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetFontProperties(TTF_Font *font);
 
@@ -296,7 +296,7 @@ extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetFontProperties(TTF_Font *fon
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetFontGeneration(TTF_Font *font);
 
@@ -318,7 +318,7 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetFontGeneration(TTF_Font *font);
  * \threadsafety This function should be called on the thread that created
  *               both fonts.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_ClearFallbackFonts
  * \sa TTF_RemoveFallbackFont
@@ -336,7 +336,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_AddFallbackFont(TTF_Font *font, TTF_Font *f
  * \threadsafety This function should be called on the thread that created
  *               both fonts.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_AddFallbackFont
  * \sa TTF_ClearFallbackFonts
@@ -353,7 +353,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_RemoveFallbackFont(TTF_Font *font, TTF_Font
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_AddFallbackFont
  * \sa TTF_RemoveFallbackFont
@@ -374,7 +374,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_ClearFallbackFonts(TTF_Font *font);
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetFontSize
  */
@@ -396,7 +396,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSize(TTF_Font *font, float ptsize);
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetFontSize
  * \sa TTF_GetFontSizeDPI
@@ -413,7 +413,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, float ptsize
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontSize
  * \sa TTF_SetFontSizeDPI
@@ -432,7 +432,7 @@ extern SDL_DECLSPEC float SDLCALL TTF_GetFontSize(TTF_Font *font);
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontSizeDPI
  */
@@ -445,7 +445,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *
  * SDL_ttf. A combination of these flags can be used with functions that set
  * or query font style, such as TTF_SetFontStyle or TTF_GetFontStyle.
  *
- * \since This datatype is available since SDL_ttf 3.0.0.
+ * \since This datatype is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontStyle
  * \sa TTF_GetFontStyle
@@ -478,7 +478,7 @@ typedef Uint32 TTF_FontStyleFlags;
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetFontStyle
  */
@@ -500,7 +500,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontStyle(TTF_Font *font, TTF_FontStyleF
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontStyle
  */
@@ -524,7 +524,7 @@ extern SDL_DECLSPEC TTF_FontStyleFlags SDLCALL TTF_GetFontStyle(const TTF_Font *
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetFontOutline
  */
@@ -538,7 +538,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontOutline(TTF_Font *font, int outline)
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontOutline
  */
@@ -551,7 +551,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontOutline(const TTF_Font *font);
  * rendering. The hinting level determines how much the font's outlines are
  * adjusted for better alignment on the pixel grid.
  *
- * \since This enum is available since SDL_ttf 3.0.0.
+ * \since This enum is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontHinting
  * \sa TTF_GetFontHinting
@@ -578,7 +578,7 @@ typedef enum TTF_HintingFlags
  * - `TTF_HINTING_LIGHT`
  * - `TTF_HINTING_MONO`
  * - `TTF_HINTING_NONE`
- * - `TTF_HINTING_LIGHT_SUBPIXEL` (available in SDL_ttf 3.0.0 and later)
+ * - `TTF_HINTING_LIGHT_SUBPIXEL`
  *
  * \param font the font to set a new hinter setting on.
  * \param hinting the new hinter setting.
@@ -586,7 +586,7 @@ typedef enum TTF_HintingFlags
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetFontHinting
  */
@@ -600,7 +600,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontHinting(TTF_Font *font, TTF_HintingF
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC int SDLCALL TTF_GetNumFontFaces(const TTF_Font *font);
 
@@ -613,7 +613,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetNumFontFaces(const TTF_Font *font);
  * - `TTF_HINTING_LIGHT`
  * - `TTF_HINTING_MONO`
  * - `TTF_HINTING_NONE`
- * - `TTF_HINTING_LIGHT_SUBPIXEL` (available in SDL_ttf 3.0.0 and later)
+ * - `TTF_HINTING_LIGHT_SUBPIXEL`
  *
  * \param font the font to query.
  * \returns the font's current hinter value, or TTF_HINTING_INVALID if the
@@ -621,7 +621,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetNumFontFaces(const TTF_Font *font);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontHinting
  */
@@ -647,7 +647,7 @@ extern SDL_DECLSPEC TTF_HintingFlags SDLCALL TTF_GetFontHinting(const TTF_Font *
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetFontSDF
  */
@@ -661,7 +661,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSDF(TTF_Font *font, bool enabled);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontSDF
  */
@@ -694,7 +694,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontWeight(const TTF_Font *font);
 /**
  * The horizontal alignment used when rendering wrapped text.
  *
- * \since This enum is available since SDL_ttf 3.0.0.
+ * \since This enum is available since SDL_ttf 3.2.0.
  */
 typedef enum TTF_HorizontalAlignment
 {
@@ -715,7 +715,7 @@ typedef enum TTF_HorizontalAlignment
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetFontWrapAlignment
  */
@@ -729,7 +729,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontWrapAlignment(TTF_Font *font, TTF_Ho
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontWrapAlignment
  */
@@ -745,7 +745,7 @@ extern SDL_DECLSPEC TTF_HorizontalAlignment SDLCALL TTF_GetFontWrapAlignment(con
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontHeight(const TTF_Font *font);
 
@@ -759,7 +759,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontHeight(const TTF_Font *font);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontAscent(const TTF_Font *font);
 
@@ -773,7 +773,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontAscent(const TTF_Font *font);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontDescent(const TTF_Font *font);
 
@@ -788,7 +788,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontDescent(const TTF_Font *font);
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetFontLineSkip
  */
@@ -802,7 +802,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontLineSkip(TTF_Font *font, int lineski
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontLineSkip
  */
@@ -824,7 +824,7 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontLineSkip(const TTF_Font *font);
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetFontKerning
  */
@@ -838,7 +838,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetFontKerning(TTF_Font *font, bool enabled
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontKerning
  */
@@ -858,7 +858,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetFontKerning(const TTF_Font *font);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_FontIsFixedWidth(const TTF_Font *font);
 
@@ -872,7 +872,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_FontIsFixedWidth(const TTF_Font *font);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontSDF
  */
@@ -892,7 +892,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_FontIsScalable(const TTF_Font *font);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontFamilyName(const TTF_Font *font);
 
@@ -910,7 +910,7 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontFamilyName(const TTF_Font *f
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontStyleName(const TTF_Font *font);
 
@@ -921,7 +921,7 @@ extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontStyleName(const TTF_Font *fo
  * [hb_direction_t](https://harfbuzz.github.io/harfbuzz-hb-common.html#hb-direction-t)
  * .
  *
- * \since This enum is available since SDL_ttf 3.0.0.
+ * \since This enum is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetFontDirection
  */
@@ -950,7 +950,7 @@ typedef enum TTF_Direction
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direction direction);
 
@@ -965,7 +965,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direct
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetFontDirection(TTF_Font *font);
 
@@ -977,7 +977,7 @@ extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetFontDirection(TTF_Font *font);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_TagToString
  */
@@ -994,7 +994,7 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_StringToTag(const char *string);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_TagToString
  */
@@ -1017,7 +1017,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_TagToString(Uint32 tag, char *string, size_
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_StringToTag
  */
@@ -1034,7 +1034,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontScript(TTF_Font *font, Uint32 script
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_TagToString
  */
@@ -1051,7 +1051,7 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetFontScript(TTF_Font *font);
  *
  * \threadsafety This function is thread-safe.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_TagToString
  */
@@ -1074,7 +1074,7 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetGlyphScript(Uint32 ch);
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontLanguage(TTF_Font *font, const char *language_bcp47);
 
@@ -1088,14 +1088,14 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontLanguage(TTF_Font *font, const char 
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_FontHasGlyph(TTF_Font *font, Uint32 ch);
 
 /**
  * The type of data in a glyph image
  *
- * \since This enum is available since SDL_ttf 3.0.0.
+ * \since This enum is available since SDL_ttf 3.2.0.
  */
 typedef enum TTF_ImageType
 {
@@ -1118,7 +1118,7 @@ typedef enum TTF_ImageType
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImage(TTF_Font *font, Uint32 ch, TTF_ImageType *image_type);
 
@@ -1138,7 +1138,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImage(TTF_Font *font, Uint
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImageForIndex(TTF_Font *font, Uint32 glyph_index, TTF_ImageType *image_type);
 
@@ -1169,7 +1169,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_GetGlyphImageForIndex(TTF_Font *fo
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, int *minx, int *maxx, int *miny, int *maxy, int *advance);
 
@@ -1187,7 +1187,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphMetrics(TTF_Font *font, Uint32 ch, 
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphKerning(TTF_Font *font, Uint32 previous_ch, Uint32 ch, int *kerning);
 
@@ -1209,7 +1209,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetGlyphKerning(TTF_Font *font, Uint32 prev
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSize(TTF_Font *font, const char *text, size_t length, int *w, int *h);
 
@@ -1237,7 +1237,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSize(TTF_Font *font, const char *t
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSizeWrapped(TTF_Font *font, const char *text, size_t length, int wrap_width, int *w, int *h);
 
@@ -1265,7 +1265,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetStringSizeWrapped(TTF_Font *font, const 
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_MeasureString(TTF_Font *font, const char *text, size_t length, int max_width, int *measured_width, size_t *measured_length);
 
@@ -1296,7 +1296,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_MeasureString(TTF_Font *font, const char *t
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderText_Blended
  * \sa TTF_RenderText_LCD
@@ -1333,7 +1333,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font, c
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderText_Blended_Wrapped
  * \sa TTF_RenderText_LCD_Wrapped
@@ -1363,7 +1363,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font 
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderGlyph_Blended
  * \sa TTF_RenderGlyph_LCD
@@ -1400,7 +1400,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Solid(TTF_Font *font, 
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderText_Blended
  * \sa TTF_RenderText_LCD
@@ -1438,7 +1438,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font, 
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderText_Blended_Wrapped
  * \sa TTF_RenderText_LCD_Wrapped
@@ -1470,7 +1470,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderGlyph_Blended
  * \sa TTF_RenderGlyph_LCD
@@ -1505,7 +1505,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Shaded(TTF_Font *font,
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderText_Blended_Wrapped
  * \sa TTF_RenderText_LCD
@@ -1541,7 +1541,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderText_Blended
  * \sa TTF_RenderText_LCD_Wrapped
@@ -1571,7 +1571,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Fon
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderGlyph_LCD
  * \sa TTF_RenderGlyph_Shaded
@@ -1607,7 +1607,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_Blended(TTF_Font *font
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderText_Blended
  * \sa TTF_RenderText_LCD_Wrapped
@@ -1645,7 +1645,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font, con
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderText_Blended_Wrapped
  * \sa TTF_RenderText_LCD
@@ -1677,7 +1677,7 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *f
  * \threadsafety This function should be called on the thread that created the
  *               font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_RenderGlyph_Blended
  * \sa TTF_RenderGlyph_Shaded
@@ -1700,21 +1700,21 @@ extern SDL_DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph_LCD(TTF_Font *font, Ui
  *   TTF_CreateRendererTextEngine()
  * - Drawing with the SDL GPU API, created with TTF_CreateGPUTextEngine()
  *
- * \since This struct is available since SDL_ttf 3.0.0.
+ * \since This struct is available since SDL_ttf 3.2.0.
  */
 typedef struct TTF_TextEngine TTF_TextEngine;
 
 /**
  * Internal data for TTF_Text
  *
- * \since This struct is available since SDL_ttf 3.0.0.
+ * \since This struct is available since SDL_ttf 3.2.0.
  */
 typedef struct TTF_TextData TTF_TextData;
 
 /**
  * Text created with TTF_CreateText()
  *
- * \since This struct is available since SDL_ttf 3.0.0.
+ * \since This struct is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateText
  * \sa TTF_GetTextProperties
@@ -1739,7 +1739,7 @@ typedef struct TTF_Text
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_DestroySurfaceTextEngine
  * \sa TTF_DrawSurfaceText
@@ -1764,7 +1764,7 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateSurfaceTextEngine(void);
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateSurfaceTextEngine
  * \sa TTF_CreateText
@@ -1783,7 +1783,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_DrawSurfaceText(TTF_Text *text, int x, int 
  * \threadsafety This function should be called on the thread that created the
  *               engine.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateSurfaceTextEngine
  */
@@ -1799,7 +1799,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroySurfaceTextEngine(TTF_TextEngine *en
  * \threadsafety This function should be called on the thread that created the
  *               renderer.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_DestroyRendererTextEngine
  * \sa TTF_DrawRendererText
@@ -1825,7 +1825,7 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngine(SDL_Re
  * \threadsafety This function should be called on the thread that created the
  *               renderer.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateRendererTextEngine
  * \sa TTF_DestroyRendererTextEngine
@@ -1854,7 +1854,7 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateRendererTextEngineWithPro
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateRendererTextEngine
  * \sa TTF_CreateText
@@ -1873,7 +1873,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_DrawRendererText(TTF_Text *text, float x, f
  * \threadsafety This function should be called on the thread that created the
  *               engine.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateRendererTextEngine
  */
@@ -1890,7 +1890,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyRendererTextEngine(TTF_TextEngine *e
  * \threadsafety This function should be called on the thread that created the
  *               device.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateGPUTextEngineWithProperties
  * \sa TTF_DestroyGPUTextEngine
@@ -1916,7 +1916,7 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngine(SDL_GPUDevi
  * \threadsafety This function should be called on the thread that created the
  *               device.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateGPUTextEngine
  * \sa TTF_DestroyGPUTextEngine
@@ -1930,7 +1930,7 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_CreateGPUTextEngineWithProperti
 /**
  * Draw sequence returned by TTF_GetGPUTextDrawData
  *
- * \since This struct is available since SDL_ttf 3.0.0.
+ * \since This struct is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetGPUTextDrawData
  */
@@ -1969,7 +1969,7 @@ typedef struct TTF_GPUAtlasDrawSequence
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateGPUTextEngine
  * \sa TTF_CreateText
@@ -1988,7 +1988,7 @@ extern SDL_DECLSPEC TTF_GPUAtlasDrawSequence * SDLCALL TTF_GetGPUTextDrawData(TT
  * \threadsafety This function should be called on the thread that created the
  *               engine.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateGPUTextEngine
  */
@@ -1997,7 +1997,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyGPUTextEngine(TTF_TextEngine *engine
 /**
  * The winding order of the vertices returned by TTF_GetGPUTextDrawData
  *
- * \since This enum is available since SDL_ttf 3.0.0.
+ * \since This enum is available since SDL_ttf 3.2.0.
  */
 typedef enum TTF_GPUTextEngineWinding
 {
@@ -2017,7 +2017,7 @@ typedef enum TTF_GPUTextEngineWinding
  * \threadsafety This function should be called on the thread that created the
  *               engine.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetGPUTextEngineWinding
  */
@@ -2035,7 +2035,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_SetGPUTextEngineWinding(TTF_TextEngine *eng
  * \threadsafety This function should be called on the thread that created the
  *               engine.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetGPUTextEngineWinding
  */
@@ -2056,7 +2056,7 @@ extern SDL_DECLSPEC TTF_GPUTextEngineWinding SDLCALL TTF_GetGPUTextEngineWinding
  * \threadsafety This function should be called on the thread that created the
  *               font and text engine.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_DestroyText
  */
@@ -2072,7 +2072,7 @@ extern SDL_DECLSPEC TTF_Text * SDLCALL TTF_CreateText(TTF_TextEngine *engine, TT
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetTextProperties(TTF_Text *text);
 
@@ -2089,7 +2089,7 @@ extern SDL_DECLSPEC SDL_PropertiesID SDLCALL TTF_GetTextProperties(TTF_Text *tex
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetTextEngine
  */
@@ -2105,7 +2105,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextEngine(TTF_Text *text, TTF_TextEngin
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetTextEngine
  */
@@ -2128,7 +2128,7 @@ extern SDL_DECLSPEC TTF_TextEngine * SDLCALL TTF_GetTextEngine(TTF_Text *text);
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetTextFont
  */
@@ -2144,7 +2144,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextFont(TTF_Text *text, TTF_Font *font)
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetTextFont
  */
@@ -2164,7 +2164,7 @@ extern SDL_DECLSPEC TTF_Font * SDLCALL TTF_GetTextFont(TTF_Text *text);
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetTextDirection(TTF_Text *text, TTF_Direction direction);
 
@@ -2179,7 +2179,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextDirection(TTF_Text *text, TTF_Direct
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetTextDirection(TTF_Text *text);
 
@@ -2198,7 +2198,7 @@ extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetTextDirection(TTF_Text *text);
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_StringToTag
  */
@@ -2218,7 +2218,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextScript(TTF_Text *text, Uint32 script
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_TagToString
  */
@@ -2240,7 +2240,7 @@ extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetTextScript(TTF_Text *text);
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetTextColor
  * \sa TTF_SetTextColorFloat
@@ -2263,7 +2263,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextColor(TTF_Text *text, Uint8 r, Uint8
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetTextColorFloat
  * \sa TTF_SetTextColor
@@ -2288,7 +2288,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextColorFloat(TTF_Text *text, float r, 
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetTextColorFloat
  * \sa TTF_SetTextColor
@@ -2313,7 +2313,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextColor(TTF_Text *text, Uint8 *r, Uint
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetTextColor
  * \sa TTF_SetTextColorFloat
@@ -2337,7 +2337,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextColorFloat(TTF_Text *text, float *r,
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetTextPosition
  */
@@ -2357,7 +2357,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextPosition(TTF_Text *text, int x, int 
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetTextPosition
  */
@@ -2377,7 +2377,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextPosition(TTF_Text *text, int *x, int
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetTextWrapWidth
  */
@@ -2395,7 +2395,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapWidth(TTF_Text *text, int wrap_w
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetTextWrapWidth
  */
@@ -2420,7 +2420,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextWrapWidth(TTF_Text *text, int *wrap_
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_TextWrapWhitespaceVisible
  */
@@ -2436,7 +2436,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextWrapWhitespaceVisible(TTF_Text *text
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SetTextWrapWhitespaceVisible
  */
@@ -2457,7 +2457,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_TextWrapWhitespaceVisible(TTF_Text *text);
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_AppendTextString
  * \sa TTF_DeleteTextString
@@ -2484,7 +2484,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextString(TTF_Text *text, const char *s
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_AppendTextString
  * \sa TTF_DeleteTextString
@@ -2507,7 +2507,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_InsertTextString(TTF_Text *text, int offset
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_DeleteTextString
  * \sa TTF_InsertTextString
@@ -2533,7 +2533,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_AppendTextString(TTF_Text *text, const char
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_AppendTextString
  * \sa TTF_InsertTextString
@@ -2558,14 +2558,14 @@ extern SDL_DECLSPEC bool SDLCALL TTF_DeleteTextString(TTF_Text *text, int offset
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSize(TTF_Text *text, int *w, int *h);
 
 /**
  * Flags for TTF_SubString
  *
- * \since This datatype is available since SDL_ttf 3.0.0.
+ * \since This datatype is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_SubString
  */
@@ -2580,7 +2580,7 @@ typedef Uint32 TTF_SubStringFlags;
 /**
  * The representation of a substring within text.
  *
- * \since This struct is available since SDL_ttf 3.0.0.
+ * \since This struct is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_GetNextTextSubString
  * \sa TTF_GetPreviousTextSubString
@@ -2618,7 +2618,7 @@ typedef struct TTF_SubString
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset, TTF_SubString *substring);
 
@@ -2641,7 +2641,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubString(TTF_Text *text, int offset
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringForLine(TTF_Text *text, int line, TTF_SubString *substring);
 
@@ -2662,7 +2662,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringForLine(TTF_Text *text, int
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC TTF_SubString ** SDLCALL TTF_GetTextSubStringsForRange(TTF_Text *text, int offset, int length, int *count);
 
@@ -2684,7 +2684,7 @@ extern SDL_DECLSPEC TTF_SubString ** SDLCALL TTF_GetTextSubStringsForRange(TTF_T
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringForPoint(TTF_Text *text, int x, int y, TTF_SubString *substring);
 
@@ -2704,7 +2704,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextSubStringForPoint(TTF_Text *text, in
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetPreviousTextSubString(TTF_Text *text, const TTF_SubString *substring, TTF_SubString *previous);
 
@@ -2723,7 +2723,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetPreviousTextSubString(TTF_Text *text, co
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_GetNextTextSubString(TTF_Text *text, const TTF_SubString *substring, TTF_SubString *next);
 
@@ -2741,7 +2741,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetNextTextSubString(TTF_Text *text, const 
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_UpdateText(TTF_Text *text);
 
@@ -2753,7 +2753,7 @@ extern SDL_DECLSPEC bool SDLCALL TTF_UpdateText(TTF_Text *text);
  * \threadsafety This function should be called on the thread that created the
  *               text.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_CreateText
  */
@@ -2776,7 +2776,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_DestroyText(TTF_Text *text);
  * \threadsafety This function should not be called while any other thread is
  *               using the font.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_OpenFont
  * \sa TTF_OpenFontIO
@@ -2801,7 +2801,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_CloseFont(TTF_Font *font);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  */
 extern SDL_DECLSPEC void SDLCALL TTF_Quit(void);
 
@@ -2822,7 +2822,7 @@ extern SDL_DECLSPEC void SDLCALL TTF_Quit(void);
  *
  * \threadsafety It is safe to call this function from any thread.
  *
- * \since This function is available since SDL_ttf 3.0.0.
+ * \since This function is available since SDL_ttf 3.2.0.
  *
  * \sa TTF_Init
  * \sa TTF_Quit
