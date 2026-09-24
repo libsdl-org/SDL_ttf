@@ -2,6 +2,7 @@ projectfullname = SDL_ttf
 projectshortname = SDL_ttf
 incsubdir = include/SDL3_ttf
 wikisubdir = SDL3_ttf
+readmesubdir = docs
 apiprefixregex = (TTF_|SDL_TTF_)
 mainincludefname = SDL3_ttf/SDL_ttf.h
 versionfname = include/SDL3_ttf/SDL_ttf.h
