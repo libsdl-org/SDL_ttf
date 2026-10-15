@@ -3603,7 +3603,7 @@ static bool CollectGlyphs(TTF_Font *font, const char *text, size_t length, TTF_D
 
         // Compute positions
         pos->x = x + pos->x_offset;
-        pos->y = y + F26Dot6(pos->font->ascent) - pos->y_offset;
+        pos->y = y + F26Dot6(font->ascent) - pos->y_offset;
         x += pos->x_advance;
         y += pos->y_advance;
 #if !TTF_USE_HARFBUZZ
