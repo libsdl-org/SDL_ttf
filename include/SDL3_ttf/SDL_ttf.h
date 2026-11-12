@@ -1133,6 +1133,38 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontLanguage(TTF_Font *font, const char 
 extern SDL_DECLSPEC bool SDLCALL TTF_FontHasGlyph(TTF_Font *font, Uint32 ch);
 
 /**
+ * Get the first UNICODE codepoint for which the font provides a glyph.
+ *
+ * \param font the font to query.
+ * \returns the first codepoint, or UINT32_MAX if the font's charmap is empty.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.4.0.
+ *
+ * \sa TTF_GetNextFontChar
+ */
+extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetFirstFontChar(TTF_Font *font);
+
+/**
+ * Get the next UNICODE codepoint for which the font provides a glyph.
+ *
+ * \param font the font to query.
+ * \param ch the current codepoint.
+ * \returns the next codepoint, or UINT32_MAX if the end of the font's charmap
+ *          is reached.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.4.0.
+ *
+ * \sa TTF_GetFirstFontChar
+ */
+extern SDL_DECLSPEC Uint32 SDLCALL TTF_GetNextFontChar(TTF_Font *font, Uint32 ch);
+
+/**
  * The type of data in a glyph image
  *
  * \since This enum is available since SDL_ttf 3.0.0.
