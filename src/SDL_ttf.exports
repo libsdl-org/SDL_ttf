@@ -24,6 +24,7 @@ _TTF_FontHasGlyph
 _TTF_FontIsFixedWidth
 _TTF_FontIsScalable
 _TTF_GetFontAscent
+_TTF_GetFontCapHeight
 _TTF_GetFontDPI
 _TTF_GetFontDescent
 _TTF_GetFontDirection
@@ -42,6 +43,7 @@ _TTF_GetFontStyle
 _TTF_GetFontStyleName
 _TTF_GetFontWeight
 _TTF_GetFontWrapAlignment
+_TTF_GetFontXHeight
 _TTF_GetFreeTypeVersion
 _TTF_GetGlyphImage
 _TTF_GetGlyphImageForIndex

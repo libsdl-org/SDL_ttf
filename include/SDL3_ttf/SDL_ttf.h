@@ -778,6 +778,40 @@ extern SDL_DECLSPEC int SDLCALL TTF_GetFontAscent(const TTF_Font *font);
 extern SDL_DECLSPEC int SDLCALL TTF_GetFontDescent(const TTF_Font *font);
 
 /**
+ * Query the cap height of a font
+ * 
+ * This is the approximate height of a capital letter, from the baseline to the
+ * top of the flat.
+ *
+ * This is a positive value, relative to the baseline.
+ *
+ * \param font the font to query.
+ * \returns the font's cap height.
+ *
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC int SDLCALL TTF_GetFontCapHeight(const TTF_Font *font);
+
+/**
+ * Query the x-height of a font
+ * 
+ * This is the approximate height of a lowercase letter (or 'x'), from the
+ * baseline to the top of the flat.
+ *
+ * This is a positive value, relative to the baseline.
+ *
+ * \param font the font to query.
+ * \returns the font's x-height.
+ *
+ * \threadsafety It is safe to call this function from any thread.
+ *
+ * \since This function is available since SDL_ttf 3.0.0.
+ */
+extern SDL_DECLSPEC int SDLCALL TTF_GetFontXHeight(const TTF_Font *font);
+
+/**
  * Set the spacing between lines of text for a font.
  *
  * This updates any TTF_Text objects using this font.
