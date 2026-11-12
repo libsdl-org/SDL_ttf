@@ -439,6 +439,140 @@ extern SDL_DECLSPEC float SDLCALL TTF_GetFontSize(TTF_Font *font);
 extern SDL_DECLSPEC bool SDLCALL TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *vdpi);
 
 /**
+ * Information about a single OpenType variable-font axis.
+ *
+ * \since This struct is available since SDL_ttf 3.3.0.
+ *
+ * \sa TTF_GetFontAxisInfo
+ */
+typedef struct TTF_AxisInfo
+{
+    Uint32 tag;          /**< the axis tag; use TTF_TagToString() to read it as text (e.g. "wght") */
+    float min_value;     /**< the minimum value the axis accepts */
+    float default_value; /**< the value the axis takes in the font's default instance */
+    float max_value;     /**< the maximum value the axis accepts */
+    Uint32 flags;        /**< the OpenType 'fvar' axis flags; test against the TTF_FONT_AXIS_* bits */
+} TTF_AxisInfo;
+
+#define TTF_FONT_AXIS_HIDDEN 0x01u /**< the axis is not meant to be exposed in a user interface (OpenType fvar HIDDEN flag) */
+
+/**
+ * Get the number of OpenType variable-font axes in a font.
+ *
+ * Variable fonts expose one or more named axes (such as `'wght'` for weight or
+ * `'wdth'` for width) that can be adjusted with TTF_SetFontAxisValue() to
+ * select an arbitrary instance between the font's masters. Fonts that are not
+ * variable fonts simply report zero axes.
+ *
+ * \param font the font to query.
+ * \returns the number of variation axes, 0 if the font is not a variable font,
+ *          or -1 on failure; call SDL_GetError() for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.3.0.
+ *
+ * \sa TTF_GetFontAxisInfo
+ * \sa TTF_SetFontAxisValue
+ */
+extern SDL_DECLSPEC int SDLCALL TTF_GetNumFontAxes(const TTF_Font *font);
+
+/**
+ * Get information about a variable-font axis by index.
+ *
+ * `axis_index` must be in the range [0, TTF_GetNumFontAxes() - 1]. The filled
+ * in TTF_AxisInfo reports the axis tag and its minimum, default, and maximum
+ * values, which are the bounds accepted by TTF_SetFontAxisValue().
+ *
+ * \param font the font to query.
+ * \param axis_index the index of the axis to query.
+ * \param info a pointer filled in with the axis information on success.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.3.0.
+ *
+ * \sa TTF_GetNumFontAxes
+ * \sa TTF_SetFontAxisValue
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetFontAxisInfo(const TTF_Font *font, int axis_index, TTF_AxisInfo *info);
+
+/**
+ * Get the human-readable name of a variable-font axis.
+ *
+ * `axis_index` must be in the range [0, TTF_GetNumFontAxes() - 1]. The returned
+ * string (e.g. "Weight" or "Optical Size") comes from the font's name table,
+ * and is useful for presenting the axis in a UI.
+ *
+ * \param font the font to query.
+ * \param axis_index the index of the axis to query.
+ * \returns the axis name, owned by the font and valid until it is closed, or
+ *          NULL if the axis has no name or on failure; call SDL_GetError() for
+ *          more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.3.0.
+ *
+ * \sa TTF_GetNumFontAxes
+ * \sa TTF_GetFontAxisInfo
+ */
+extern SDL_DECLSPEC const char * SDLCALL TTF_GetFontAxisName(const TTF_Font *font, int axis_index);
+
+/**
+ * Set the value of a variable-font axis.
+ *
+ * `tag` is a 4-character OpenType axis tag, such as `'wght'` (weight) or
+ * `'wdth'` (width); build one from a string with TTF_StringToTag(), e.g.
+ * `TTF_StringToTag("wght")`. The value is clamped to the axis's [min, max]
+ * range as reported by TTF_GetFontAxisInfo().
+ *
+ * This updates any TTF_Text objects using this font, and clears
+ * already-generated glyphs, if any, from the cache.
+ *
+ * \param font the font to modify.
+ * \param tag the OpenType tag of the axis to set.
+ * \param value the value to set the axis to.
+ * \returns true on success or false on failure (for example, if the font has
+ *          no axis with that tag); call SDL_GetError() for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.3.0.
+ *
+ * \sa TTF_GetFontAxisValue
+ * \sa TTF_GetFontAxisInfo
+ * \sa TTF_StringToTag
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontAxisValue(TTF_Font *font, Uint32 tag, float value);
+
+/**
+ * Get the current value of a variable-font axis.
+ *
+ * \param font the font to query.
+ * \param tag the OpenType tag of the axis to query; build one with
+ *            TTF_StringToTag() (see TTF_SetFontAxisValue()).
+ * \param value a pointer filled in with the current axis value on success.
+ * \returns true on success or false on failure (for example, if the font has
+ *          no axis with that tag); call SDL_GetError() for more information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.3.0.
+ *
+ * \sa TTF_SetFontAxisValue
+ * \sa TTF_StringToTag
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_GetFontAxisValue(const TTF_Font *font, Uint32 tag, float *value);
+
+/**
  * Font style flags for TTF_Font
  *
  * These are the flags which can be used to set the style of a font in
