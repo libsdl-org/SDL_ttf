@@ -2192,7 +2192,6 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
 #endif
 
     if (!TTF_SetFontSizeDPI(font, ptsize, hdpi, vdpi)) {
-        TTF_SetFTError("Couldn't set font size", error);
         TTF_CloseFont(font);
         return NULL;
     }
