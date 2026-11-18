@@ -940,7 +940,7 @@ bool TTF_DrawRendererText(TTF_Text *text, float x, float y)
         }
 
         SDL_FColor color;
-        if (sequence->image_type == TTF_IMAGE_ALPHA) {
+        if (sequence->image_type == TTF_IMAGE_ALPHA || sequence->texture == NULL) {
             SDL_copyp(&color, &text->internal->color);
         } else {
             // Don't alter the color data in the image
