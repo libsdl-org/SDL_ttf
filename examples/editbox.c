@@ -838,8 +838,9 @@ void EditBox_Paste(EditBox *edit)
         return;
     }
 
-    const char *text = SDL_GetClipboardText();
+    char *text = SDL_GetClipboardText();
     EditBox_Insert(edit, text);
+    SDL_free(text);
 }
 
 void EditBox_Insert(EditBox *edit, const char *text)
