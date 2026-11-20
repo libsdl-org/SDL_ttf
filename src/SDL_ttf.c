@@ -33,6 +33,7 @@
 #include FT_TRUETYPE_IDS_H
 #include FT_TRUETYPE_TABLES_H
 #include FT_IMAGE_H
+#include FT_MULTIPLE_MASTERS_H
 
 // Enable Signed Distance Field rendering (requires latest FreeType version)
 #if defined(FT_RASTER_FLAG_SDF)
@@ -278,6 +279,11 @@ struct TTF_Font {
     // Freetype2 maintains all sorts of useful info itself
     FT_Face face;
     long face_index;
+
+    // Variable font (OpenType 'fvar') axis metadata, queried lazily on the
+    // first axis call; NULL if the font has no variation axes. Freed with
+    // FT_Done_MM_Var in TTF_CloseFont.
+    FT_MM_Var *mm_var;
 
     // Properties exposed to the application
     SDL_PropertiesID props;
@@ -2173,6 +2179,13 @@ TTF_Font *TTF_OpenFontWithProperties(SDL_PropertiesID props)
         } else {
             font->weight = TTF_FONT_WEIGHT_NORMAL;
         }
+    }
+
+    // Cache variable-font ('fvar') axis metadata up front -- NULL for
+    // non-variable fonts -- so the axis query functions can stay const.
+    // Freed with FT_Done_MM_Var in TTF_CloseFont.
+    if (FT_HAS_MULTIPLE_MASTERS(face)) {
+        FT_Get_MM_Var(face, &font->mm_var);
     }
 
 #if TTF_USE_HARFBUZZ
@@ -5631,6 +5644,198 @@ bool TTF_GetFontDPI(TTF_Font *font, int *hdpi, int *vdpi)
     return true;
 }
 
+// Returns the font's variable-axis ('fvar') metadata, queried and cached at
+// open time; NULL (without setting an error) for fonts with no variation axes.
+static FT_MM_Var *GetFontMMVar(const TTF_Font *font)
+{
+    return font->mm_var;
+}
+
+// Find the axis index for a 4-character OpenType tag, e.g. 'wght'.
+static bool FindFontAxis(FT_MM_Var *var, Uint32 tag, FT_UInt *index)
+{
+    for (FT_UInt i = 0; i < var->num_axis; ++i) {
+        if ((Uint32)var->axis[i].tag == tag) {
+            *index = i;
+            return true;
+        }
+    }
+    return false;
+}
+
+int TTF_GetNumFontAxes(const TTF_Font *font)
+{
+    TTF_CHECK_FONT(font, -1);
+
+    FT_MM_Var *var = GetFontMMVar(font);
+    if (!var) {
+        return 0;
+    }
+    return (int)var->num_axis;
+}
+
+bool TTF_GetFontAxisInfo(const TTF_Font *font, int axis_index, TTF_AxisInfo *info)
+{
+    if (info) {
+        SDL_zerop(info);
+    }
+
+    TTF_CHECK_FONT(font, false);
+
+    if (!info) {
+        return SDL_InvalidParamError("info");
+    }
+
+    FT_MM_Var *var = GetFontMMVar(font);
+    if (!var) {
+        return SDL_SetError("Font has no variation axes");
+    }
+    if (axis_index < 0 || (FT_UInt)axis_index >= var->num_axis) {
+        return SDL_InvalidParamError("axis_index");
+    }
+
+    // FreeType reports axis ranges as 16.16 fixed-point design values.
+    const FT_Var_Axis *axis = &var->axis[axis_index];
+    info->tag = (Uint32)axis->tag;
+    info->min_value = (float)(axis->minimum / 65536.0);
+    info->default_value = (float)(axis->def / 65536.0);
+    info->max_value = (float)(axis->maximum / 65536.0);
+
+    // Pass the OpenType 'fvar' axis flags straight through (FreeType returns
+    // them verbatim). The TTF_FONT_AXIS_* constants mirror the spec bit values,
+    // so future flags surface here without an API change.
+    FT_UInt ft_flags = 0;
+    FT_Get_Var_Axis_Flags(var, (FT_UInt)axis_index, &ft_flags);
+    info->flags = (Uint32)ft_flags;
+    return true;
+}
+
+const char *TTF_GetFontAxisName(const TTF_Font *font, int axis_index)
+{
+    TTF_CHECK_FONT(font, NULL);
+
+    FT_MM_Var *var = GetFontMMVar(font);
+    if (!var) {
+        SDL_SetError("Font has no variation axes");
+        return NULL;
+    }
+    if (axis_index < 0 || (FT_UInt)axis_index >= var->num_axis) {
+        SDL_InvalidParamError("axis_index");
+        return NULL;
+    }
+
+    // FreeType owns this string (part of the cached FT_MM_Var); it stays valid
+    // until the font is closed. May be NULL if the axis has no name entry.
+    return var->axis[axis_index].name;
+}
+
+bool TTF_SetFontAxisValue(TTF_Font *font, Uint32 tag, float value)
+{
+    TTF_CHECK_FONT(font, false);
+
+    FT_MM_Var *var = GetFontMMVar(font);
+    if (!var) {
+        return SDL_SetError("Font has no variation axes");
+    }
+
+    FT_UInt index;
+    if (!FindFontAxis(var, tag, &index)) {
+        char tag_string[5];
+        TTF_TagToString(tag, tag_string, sizeof(tag_string));
+        return SDL_SetError("Font has no '%s' variation axis", tag_string);
+    }
+
+    // Clamp to the axis's design range (FreeType clamps internally too; doing
+    // it here keeps a later TTF_GetFontAxisValue() consistent with the value
+    // that was actually applied).
+    FT_Fixed coord = (FT_Fixed)SDL_lround((double)value * 65536.0);
+    if (coord < var->axis[index].minimum) {
+        coord = var->axis[index].minimum;
+    }
+    if (coord > var->axis[index].maximum) {
+        coord = var->axis[index].maximum;
+    }
+
+    FT_Fixed *coords = SDL_stack_alloc(FT_Fixed, var->num_axis);
+    if (!coords) {
+        return SDL_OutOfMemory();
+    }
+
+    FT_Error error = FT_Get_Var_Design_Coordinates(font->face, var->num_axis, coords);
+    if (error) {
+        SDL_stack_free(coords);
+        return TTF_SetFTError("Couldn't get font variation coordinates", error);
+    }
+
+    if (coords[index] == coord) {
+        // No change; leave the caches and text objects untouched.
+        SDL_stack_free(coords);
+        return true;
+    }
+
+    coords[index] = coord;
+    error = FT_Set_Var_Design_Coordinates(font->face, var->num_axis, coords);
+    SDL_stack_free(coords);
+    if (error) {
+        return TTF_SetFTError("Couldn't set font variation coordinates", error);
+    }
+
+    /* Changing an axis reshapes the glyph outlines and, for fonts with an
+     * 'MVAR' table, the global metrics as well. Recompute metrics, drop every
+     * cached glyph/position, and notify text objects and HarfBuzz -- the same
+     * invalidation TTF_SetFontSizeDPI() performs when the size changes. */
+    TTF_InitFontMetrics(font);
+    Flush_Cache(font);
+    UpdateFontText(font, NULL);
+
+#if TTF_USE_HARFBUZZ
+    // Call when size or variations settings on underlying FT_Face change.
+    hb_ft_font_changed(font->hb_font);
+#endif
+
+    return true;
+}
+
+bool TTF_GetFontAxisValue(const TTF_Font *font, Uint32 tag, float *value)
+{
+    if (value) {
+        *value = 0.0f;
+    }
+
+    TTF_CHECK_FONT(font, false);
+
+    if (!value) {
+        return SDL_InvalidParamError("value");
+    }
+
+    FT_MM_Var *var = GetFontMMVar(font);
+    if (!var) {
+        return SDL_SetError("Font has no variation axes");
+    }
+
+    FT_UInt index;
+    if (!FindFontAxis(var, tag, &index)) {
+        char tag_string[5];
+        TTF_TagToString(tag, tag_string, sizeof(tag_string));
+        return SDL_SetError("Font has no '%s' variation axis", tag_string);
+    }
+
+    FT_Fixed *coords = SDL_stack_alloc(FT_Fixed, var->num_axis);
+    if (!coords) {
+        return SDL_OutOfMemory();
+    }
+
+    FT_Error error = FT_Get_Var_Design_Coordinates(font->face, var->num_axis, coords);
+    if (error) {
+        SDL_stack_free(coords);
+        return TTF_SetFTError("Couldn't get font variation coordinates", error);
+    }
+
+    *value = (float)(coords[index] / 65536.0);
+    SDL_stack_free(coords);
+    return true;
+}
+
 void TTF_SetFontStyle(TTF_Font *font, TTF_FontStyleFlags style)
 {
     TTF_FontStyleFlags prev_style;
@@ -6142,6 +6347,9 @@ void TTF_CloseFont(TTF_Font *font)
 #endif
     if (font->props) {
         SDL_DestroyProperties(font->props);
+    }
+    if (font->mm_var) {
+        FT_Done_MM_Var(TTF_state.library, font->mm_var);
     }
     if (font->face) {
         FT_Done_Face(font->face);
