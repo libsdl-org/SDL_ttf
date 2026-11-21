@@ -399,7 +399,6 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSize(TTF_Font *font, float ptsize);
  * \since This function is available since SDL_ttf 3.0.0.
  *
  * \sa TTF_GetFontSize
- * \sa TTF_GetFontSizeDPI
  */
 extern SDL_DECLSPEC bool SDLCALL TTF_SetFontSizeDPI(TTF_Font *font, float ptsize, int hdpi, int vdpi);
 
